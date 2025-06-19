@@ -3,34 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruitful Innovations - Your Future, Today</title>
+    <title>🌐 VaultMesh™ by Fruitful</title>
     <link rel="icon" href="/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* Base Styles - Apple inspired cleanliness */
-        :root {
-            --text-color-light: #1d1d1f;
-            --text-color-dark: #f5f5f7;
-            --bg-color-light: #ffffff; /* Set default light background to pure white */
-            --bg-color-dark: #1a1a1c;
-            --card-bg-light: #ffffff; /* Ensure card background is also pure white */
-            --card-bg-dark: #2a2a2e;
-            --border-color-light: #e8e8ed;
-            --border-color-dark: #3a3a3e;
-            --primary-color: #0071e3; /* Apple Blue */
-            --secondary-color: #30d158; /* Apple Green */
-            --tertiary-color: #ff3b30; /* Vibrant Red for specific accents */
-            --muted-text-light: #6e6e73;
-            --muted-text-dark: #a0a0a5;
-        }
-
+<style>
+        /* Base Styles */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color-light); /* Will now be pure white */
-            color: var(--text-color-light);
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
             line-height: 1.4;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -39,25 +22,13 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .dark-mode {
-            background-color: var(--bg-color-dark);
-            color: var(--text-color-dark);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header - Minimalist and clean */
+        /* Header */
         header {
-            /* Changed background to solid white, removed backdrop-filter for full white */
-            background-color: #ffffff;
-            border-bottom: 1px solid #e8e8ed;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
             padding-top: 1rem;
             padding-bottom: 1rem;
             box-shadow: 0 1px 0 rgba(0,0,0,0.05);
@@ -65,276 +36,109 @@
             top: 0;
             z-index: 50;
             display: flex;
-            justify-content: space-between; /* Space between logo and nav */
-            align-items: center;
-            padding: 15px 0; /* Base padding */
-        }
-        .dark-mode header {
-            background-color: var(--card-bg-dark);
-            border-bottom-color: var(--border-color-dark);
-            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
-        }
-
-        .header-content {
-            display: flex;
+            flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
         }
-
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-color-light);
-            transition: color 0.3s ease;
-        }
-        .dark-mode .logo-group {
-            color: var(--text-color-dark);
-        }
-        .logo-group .logo-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .logo-fruitful {
-            color: var(--primary-color);
-            font-size: 1.6rem;
-            font-weight: 800;
-        }
-        .logo-separator {
-            color: var(--muted-text-light);
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-        .dark-mode .logo-separator {
-            color: var(--muted-text-dark);
-        }
-        .logo-omnigrid {
-            color: var(--text-color-light);
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-        .dark-mode .logo-omnigrid {
-            color: var(--text-color-dark);
-        }
-
-        .main-nav {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* Space between nav list and actions */
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-list a {
-            text-decoration: none; /* No underline */
-            color: var(--muted-text-light);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-        }
-        .nav-list a:hover {
-            color: var(--primary-color);
-        }
-        .dark-mode .nav-list a {
-            color: var(--muted-text-dark);
-        }
-        .dark-mode .nav-list a:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px; /* Space between buttons */
-        }
-
-        /* Styling for header CTA buttons (cta-button and cta-button-secondary from original code) */
-        .cta-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .cta-button:hover {
-            background-color: #0066cc;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .cta-button.cta-button-secondary { /* Renamed from .secondary to match your existing hero buttons */
-            background-color: #e8e8ed; /* Light gray button */
-            color: #424245;
-            box-shadow: none;
-            border: 1px solid #dcdcdc;
-        }
-        .cta-button.cta-button-secondary:hover {
-            background-color: #dcdcdc; /* Slightly darker on hover */
+        header h1 {
             color: #1d1d1f;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-
-        .hamburger-menu {
-            display: none; /* Hidden on desktop */
-            background: none;
-            border: none;
+            font-weight: 700;
             font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-color-light);
-            transition: color 0.3s ease;
+            letter-spacing: -0.02em;
         }
-        .dark-mode .hamburger-menu {
-            color: var(--text-color-dark);
-        }
-
-        /* Pulse Grid Noodle Rope Styling */
-        .pulse-grid-noodle-rope {
+        header nav {
             display: flex;
             align-items: center;
-            height: 2px; /* Height of the line */
-            width: 200px; /* Expanded length for "sambok whip" effect */
-            background-color: var(--muted-text-light); /* Base color of the line */
-            border-radius: 1px;
-            position: relative;
-            margin: 0 30px; /* Space around the noodle rope */
-            opacity: 0.7;
-        }
-        .dark-mode .pulse-grid-noodle-rope {
-            background-color: var(--muted-text-dark);
-        }
-
-        .noodle-dot {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            transform: translate(-50%, -50%); /* Center dot on the line */
-            top: 50%;
-            animation: pulse 3s infinite ease-in-out; /* Pulse every 3 seconds */
-        }
-        .noodle-dot.dot-stepdad {
-            width: 10px; /* Larger */
-            height: 10px; /* Larger */
-            background-color: var(--secondary-color); /* Different color for stepdad */
-        }
-
-        /* Staggered animation delays */
-        .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; }
-        .noodle-dot.dot-2 { left: 20%; animation-delay: 0.5s; }
-        .noodle-dot.dot-3 { left: 40%; animation-delay: 1s; }
-        .noodle-dot.dot-stepdad { left: 60%; animation-delay: 1.5s; } /* Stepdad placed before brothers */
-        .noodle-dot.dot-4 { left: 80%; animation-delay: 2s; }
-        .noodle-dot.dot-5 { left: 100%; animation-delay: 2.5s; }
-
-
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.7;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.5);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.7;
-            }
-        }
-
-        /* Moved Hero Content Section */
-        .innovate-connect-thrive-section {
-            padding: 4rem 1.5rem; /* Adjust padding as needed */
-            text-align: center;
-            color: var(--text-color-light);
-            background-color: var(--bg-color-light); /* Match body background (now white) */
-            border-bottom: 1px solid var(--border-color-light); /* Keep separator */
-        }
-        .innovate-connect-thrive-section h2 {
-            font-size: 3.5rem; /* Retain large size for impact */
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: var(--text-color-light);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-        .innovate-connect-thrive-section h2 span {
-            color: var(--primary-color); /* Apply primary color accent */
-        }
-        .innovate-connect-thrive-section p {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: var(--muted-text-light);
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
-            line-height: 1.5;
-        }
-        .innovate-connect-thrive-section .cta-group {
-            display: flex;
             flex-wrap: wrap;
+            gap: 0.5rem;
             justify-content: center;
-            align-items: center;
-            gap: 1rem; /* Space between buttons */
         }
-        /* Using .cta-button for hero-cta-button as they have similar base styles in your provided code */
-        .innovate-connect-thrive-section .hero-cta-button {
-            background: #0071e3; /* Apple blue */
+        header nav a {
+            color: #424245;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        header nav a:hover {
+            color: #0071e3;
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        header nav a.button-style-original {
+            background-color: transparent;
+            color: #424245;
+            font-weight: 600;
+            border: 1px solid #dcdcdc;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            box-shadow: none;
+        }
+        header nav a.button-style-original:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+            color: #0071e3;
+            transform: none;
+            box-shadow: none;
+        }
+
+        header nav a.button-style-main {
+            background-color: #0071e3;
             color: white;
-            padding: 0.8rem 1.8rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease-in-out;
+            font-size: 0.9rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
         }
-        .innovate-connect-thrive-section .hero-cta-button:hover {
+        header nav a.button-style-main:hover {
             background-color: #0077ed;
             transform: translateY(-1px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
-        .innovate-connect-thrive-section .cta-button-secondary {
-            background-color: #f0f0f0; /* Light gray button */
-            color: #424245;
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+            }
+            header nav {
+                gap: 0;
+            }
+            header nav a:not(.button-style-original):not(.button-style-main) {
+                margin-right: 1.5rem;
+            }
+            header nav a.login-button {
+                margin-left: auto;
+            }
+            header nav a.button-style-original {
+                margin-left: 1rem;
+                margin-right: 0.5rem;
+            }
+            header nav a.button-style-main {
+                margin-left: 0;
+            }
+        }
+
+
+        /* Hero Section */
+        .hero-section {
+            background-color: white;
+            min-height: 70vh;
+            padding: 6rem 1.5rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
             box-shadow: none;
-            border: 1px solid #dcdcdc;
-        }
-        .innovate-connect-thrive-section .cta-button-secondary:hover {
-            background-color: #e8e8ed;
             color: #1d1d1f;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-
-        /* Hero Section (now just canvas background) */
-        .hero-canvas-section {
             position: relative;
-            min-height: 70vh; /* Increased height for immersive effect */
-            background-color: #ffffff; /* Explicitly set to pure white */
             overflow: hidden;
-            display: flex; /* Use flex to center content if any */
-            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically within the hero section */
             align-items: center;
+            text-align: center;
         }
-        .hero-canvas-section #rhythmicCanvas {
+        .hero-section canvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -344,30 +148,75 @@
             z-index: 0;
             background-color: transparent;
         }
-        .hero-canvas-overlay { /* New overlay for subtle effect */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(0, 113, 227, 0.1) 0%, transparent 70%); /* Subtle blue glow */
-            pointer-events: none; /* Allow clicks to pass through to canvas */
-            z-index: 1; /* Above canvas, below any text */
-            animation: subtlePulse 5s infinite ease-in-out alternate;
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Adjusted margin-top to bring title to absolute center of the pulse area */
+            margin-top: 50px; /* Changed to a positive value to push content down from the center */
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .hero-section h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #1d1d1f;
+            line-height: 1.1;
+            /* Space between title and buttons remains constant as before */
+            margin-bottom: 15rem; 
+        }
+        .hero-section h2 span {
+            color: #0071e3;
+        }
+        /* No p tag styling as it's removed from HTML */
+        
+        /* CTA button styling */
+        .cta-button, .cta-button-secondary {
+            padding: 0.8rem 1.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            height: 50px;
+            box-sizing: border-box;
+            width: 100%; /* Ensure buttons fill their grid cells */
+        }
+        .cta-button {
+            background: #0071e3;
+            color: white;
+        }
+        .cta-button:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .cta-button-secondary {
+            background-color: #f0f0f0;
+            color: #424245;
+            border: 1px solid #dcdcdc;
+            box-shadow: none;
+        }
+        .cta-button-secondary:hover {
+            background-color: #e8e8ed;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        @keyframes subtlePulse {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 0.8; transform: scale(1.05); }
-        }
-
-
-        /* Sections - Clean, defined blocks (general styling) */
+        /* Sections - Clean, defined blocks */
         section {
             padding: 8rem 2rem;
-            background-color: #ffffff; /* Ensure all sections have pure white background */
+            background-color: var(--bg-color-light);
             box-shadow: none;
-            border-bottom: 1px solid #e8e8ed;
+            border-bottom: 1px solid var(--border-color-light);
             text-align: center;
         }
         section:last-of-type {
@@ -381,25 +230,48 @@
             font-size: 2.2rem;
         }
         section p {
-            color: var(--muted-text-light);
+            color: #424245;
             font-size: 1.1rem;
             line-height: 1.5;
         }
 
-        /* Specific section background overrides to ensure white */
-        #shareprice { background-color: var(--bg-color-light); }
-        #seedwave { background-color: var(--card-bg-light); }
-        section.bg-gray-700 { background-color: var(--bg-color-light); } /* Founder's Note */
-        #vault-access { background-color: var(--card-bg-light); }
-        section.bg-gray-800.text-center { background-color: var(--bg-color-light); } /* Sector Scrolls */
-        #treaty { background-color: var(--card-bg-light); }
-        #vaultmesh { background-color: var(--bg-color-light); }
-        #about { background-color: var(--card-bg-light); }
-        #cta { background: var(--bg-color-light); }
-        footer { background-color: var(--bg-color-light); }
+        /* Feature Cards */
+        .feature-card {
+            background-color: var(--bg-color-light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid var(--border-color-light);
+            text-align: left;
+        }
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        .feature-card div:first-child {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        .feature-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color-light);
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+        }
 
-
-        /* Share Signal Section - Clean data display */
+        /* Share Signal Section */
+        #shareprice {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            padding: 4rem 1.5rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
         #shareprice h2 {
             font-size: 1.8rem;
             font-weight: 600;
@@ -416,14 +288,19 @@
             font-size: 0.85rem;
         }
 
-        /* Seedwave Growth - Integrated chart */
+        /* Seedwave Growth */
+        #seedwave {
+            background-color: var(--bg-color-light);
+            padding: 6rem 1.5rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
         #seedwave h2 {
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 2rem;
             color: var(--text-color-light);
         }
-        #seedwave .w-full.max-w-4xl {
+        #seedwave .w-full {
             background-color: #fcfcfc;
             border: 1px solid var(--border-color-light);
             padding: 1.5rem;
@@ -431,24 +308,30 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* Founder's Note - Elegant text block */
-        section.bg-gray-700 h2 {
+        /* Founder's Note */
+        section.founders-note-section {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        section.founders-note-section h2 {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--text-color-light);
         }
-        section.bg-gray-700 p {
+        section.founders-note-section p {
             font-size: 1.1rem;
-            color: var(--muted-text-light);
+            color: #424245;
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
-        section.bg-gray-700 p.italic {
+        section.founders-note-section p.italic {
             color: var(--muted-text-light);
             font-style: italic;
         }
-        section.bg-gray-700 p.font-semibold {
+        section.founders-note-section p.font-semibold {
             color: var(--primary-color);
             font-weight: 600;
             margin-top: 2rem;
@@ -456,7 +339,7 @@
 
         /* Vault Terminal Access - Clean buttons */
         #vault-access {
-            background-color: var(--card-bg-light);
+            background-color: var(--bg-color-light);
             padding: 6rem 2rem;
             border-bottom: 1px solid var(--border-color-light);
         }
@@ -466,14 +349,14 @@
             color: var(--text-color-light);
             margin-bottom: 2.5rem;
         }
-        #vault-access .w-full.h-\[800px\] { /* Iframe container */
-            background-color: #f0f0f0; /* Light gray background for iframe */
-            border: 1px solid #dcdcdc; /* Light border */
+        #vault-access .w-full.h-\[800px\] {
+            background-color: #f0f0f0;
+            border: 1px solid #dcdcdc;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
         .terminal-btn {
-            background-color: #f0f0f0; /* Light gray button */
+            background-color: #f0f0f0;
             color: #424245;
             padding: 1rem 1.5rem;
             border-radius: 8px;
@@ -485,32 +368,37 @@
         }
         .terminal-btn:hover {
             background-color: #e8e8ed;
-            color: #1d1d1f;
+            color: var(--text-color-light);
             transform: translateY(-1px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .terminal-btn.ring { /* Active state */
-            border-color: #0071e3;
-            box-shadow: 0 0 0 2px #0071e3;
+        .terminal-btn.ring {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
         }
 
         /* Sector Scrolls - Clean link grid */
-        section.bg-gray-800.text-center h2 {
+        section.sector-scrolls-section {
+            background-color: var(--card-bg-light);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        section.sector-scrolls-section h2 {
             font-size: 2.2rem;
             font-weight: 700;
             color: var(--text-color-light);
             margin-bottom: 2.5rem;
         }
         .glyph {
-            background-color: #ffffff; /* White background */
+            background-color: var(--bg-color-light);
             color: #424245;
             padding: 0.8rem 1.2rem;
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.2s ease-in-out;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #e8e8ed;
-            text-decoration: none; /* Remove underline for links */
+            border: 1px solid var(--border-color-light);
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -518,12 +406,17 @@
         }
         .glyph:hover {
             background-color: #f0f0f0;
-            color: #1d1d1f;
+            color: var(--text-color-light);
             transform: translateY(-1px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         /* Treaty Section - Elegant quote */
+        #treaty {
+            background-color: var(--bg-color-light);
+            padding: 6rem 2rem;
+            border-bottom: 1px solid var(--border-color-light);
+        }
         #treaty h2 {
             font-size: 2.2rem;
             font-weight: 700;
@@ -531,28 +424,22 @@
             margin-bottom: 1.5rem;
         }
         #treaty p {
+            color: #424245;
             font-size: 1.1rem;
-            color: var(--muted-text-light);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 2rem;
+            line-height: 1.5;
         }
         #treaty blockquote {
             font-size: 1.5rem;
             color: var(--text-color-light);
             font-weight: 600;
             line-height: 1.4;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
         }
         #treaty blockquote::before, #treaty blockquote::after {
-            content: '“'; /* Apple-style quotes */
+            content: '“';
             font-size: 2.5em;
             line-height: 0.1;
             vertical-align: -0.4em;
-            color: #dcdcdc; /* Muted quote color */
+            color: #dcdcdc;
             margin-right: 0.1em;
         }
         #treaty blockquote::after {
@@ -561,23 +448,29 @@
         }
 
         /* Signal Packet - Developer focused, clean code block */
-        section.bg-gray-900.text-green-400 { /* Signal Packet */
-            background-color: #1d1d1f; /* Dark background for code */
-            color: #00e393; /* Greenish text for code */
+        section.signal-packet-section {
+            background-color: #1d1d1f;
+            color: #00e393;
             padding: 4rem 1.5rem;
             border-bottom: 1px solid #333;
         }
-        section.bg-gray-900.text-green-400 pre {
-            background-color: #0a0a0a; /* Even darker code block */
+        section.signal-packet-section pre {
+            background-color: #0a0a0a;
             border: 1px solid #333;
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-            white-space: pre-wrap; /* Allow wrapping for long lines */
+            white-space: pre-wrap;
             word-break: break-all;
         }
 
-        /* VaultMesh Executive Summary - Structured and readable */
+        /* VaultMesh Executive Summary */
+        #vaultmesh {
+            background-color: var(--card-bg-light);
+            padding: 6rem 2rem;
+            color: var(--text-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+        }
         #vaultmesh h2 {
             font-size: 2.2rem;
             font-weight: 700;
@@ -585,7 +478,7 @@
             margin-bottom: 1.5rem;
         }
         #vaultmesh h2.text-purple-400 {
-            color: var(--primary-color); /* Apple blue for main heading */
+            color: var(--primary-color);
         }
         #vaultmesh h3 {
             font-size: 1.5rem;
@@ -596,13 +489,13 @@
         }
         #vaultmesh p {
             font-size: 1.05rem;
-            color: var(--muted-text-light);
+            color: #424245;
             line-height: 1.5;
         }
         #vaultmesh ul {
-            list-style-type: disc; /* Default disc */
+            list-style-type: disc;
             margin-left: 1.5rem;
-            color: var(--muted-text-light);
+            color: #424245;
         }
         #vaultmesh ul li {
             font-size: 1.05rem;
@@ -619,7 +512,13 @@
             color: var(--text-color-light);
         }
 
-        /* About Section - Simple and clear */
+        /* About Section */
+        #about {
+            background-color: var(--bg-color-light);
+            padding: 6rem 2rem;
+            color: var(--text-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+        }
         #about h3 {
             font-size: 2.2rem;
             font-weight: 700;
@@ -628,13 +527,19 @@
         }
         #about p {
             font-size: 1.1rem;
-            color: var(--muted-text-light);
+            color: #424245;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* Call to Action Section - Prominent and inviting */
+        /* Call to Action Section */
+        #cta {
+            background: var(--card-bg-light);
+            padding: 6rem 2rem;
+            color: var(--text-color-light);
+            text-align: center;
+        }
         #cta h3 {
             font-size: 2.5rem;
             font-weight: 700;
@@ -643,20 +548,21 @@
         }
         #cta p {
             font-size: 1.2rem;
-            color: var(--muted-text-light);
+            color: #424245;
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 2.5rem;
         }
 
-        /* Footer - Minimalist */
+        /* Footer */
         footer {
-            border-top: 1px solid var(--border-color-light);
-            text-align: center;
+            background-color: var(--card-bg-light);
             color: var(--muted-text-light);
             padding: 2rem;
             font-size: 0.85rem;
+            border-top: 1px solid var(--border-color-light);
+            text-align: center;
         }
         footer a {
             color: var(--muted-text-light);
@@ -669,99 +575,44 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding-bottom: 10px;
-                align-items: flex-start;
-                background-color: #ffffff; /* Ensure header is white on mobile */
-            }
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .logo-group {
-                margin-bottom: 15px;
-            }
-            .logo-group .logo-link {
-                gap: 5px;
-            }
-            .logo-fruitful {
-                font-size: 1.4rem;
-            }
-            .pulse-grid-noodle-rope {
-                display: none; /* Hide on small screens if it clutters */
-            }
-
-            .main-nav {
-                display: none; /* Hidden by default on mobile */
-                flex-direction: column;
-                position: static;
-                width: 100%;
-                background-color: var(--card-bg-light); /* Now pure white */
-                border-top: 1px solid var(--border-color-light);
-                padding: 10px 0;
-                box-shadow: none;
-            }
-            .dark-mode .main-nav {
-                background-color: var(--card-bg-dark);
-                border-top-color: var(--border-color-dark);
-            }
-            .main-nav.active {
-                display: flex;
-                background-color: #ffffff; /* Ensure mobile nav is white when active */
-            }
-            .nav-list {
-                flex-direction: column;
-                text-align: center;
-                width: 100%;
-                gap: 10px;
-            }
-            .nav-list li {
-                width: 100%;
-            }
-            .nav-list a {
-                display: block;
-                padding: 8px 0;
-            }
-            .nav-actions {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                padding-top: 10px;
-                border-top: 1px solid var(--border-color-light);
-                margin-top: 10px;
-            }
-            .dark-mode .nav-actions {
-                border-top-color: var(--border-color-dark);
-            }
-            .nav-actions .cta-button {
-                width: calc(100% - 40px);
-                margin: 0 20px;
-                text-align: center;
-            }
-
-            .hamburger-menu {
-                display: block;
-                position: absolute;
-                top: 15px;
-                right: 20px;
-                z-index: 1001;
-                color: var(--text-color-light); /* Ensure hamburger icon is visible on white */
-            }
-
-            .hero-section h1 {
+            .hero-section h2 {
                 font-size: 2.8rem;
             }
             .hero-section p {
                 font-size: 1rem;
             }
-            .hero-cta-button {
-                padding: 0.7rem 1.5rem;
-                font-size: 0.9rem;
+            /* Adjust buttons for smaller screens to ensure visibility and wrapping */
+            .cta-button, .cta-button-secondary {
+                width: 100%; /* Take full width on very small screens */
+                max-width: 200px; /* Max width to prevent them from becoming too wide on slightly larger small screens */
+                height: auto; /* Allow height to adjust based on content wrapping */
+                padding: 0.7rem 0.5rem; /* Adjust padding for smaller width */
+                font-size: 0.9rem; /* Smaller font size for mobile */
+                margin: 0.25rem auto; /* Center individual buttons when stacked */
             }
+
+            header nav {
+                flex-wrap: wrap; /* Allow nav items to wrap */
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+            }
+            /* Adjust spacing for header nav for small screens specifically */
+            header nav a:not(.button-style-original):not(.button-style-main),
+            header nav a.button-style-original,
+            header nav a.button-style-main,
+            header nav a.login-button {
+                margin-left: 0.25rem; /* Closer spacing for mobile */
+                margin-right: 0.25rem;
+            }
+            header nav a.login-button.ml-auto { /* Override ml-auto for mobile so it doesn't push to right */
+                margin-left: 0.25rem; /* Reset to match other links */
+            }
+
             section {
                 padding: 4rem 1.5rem;
-                background-color: #ffffff; /* Ensure all sections are white on mobile */
             }
             section h2, section h3 {
                 font-size: 1.8rem;
@@ -802,147 +653,237 @@
                 font-size: 1rem;
             }
         }
+
+        /* Specific adjustment for very small screens if buttons still overflow */
+        @media (max-width: 480px) {
+            .hero-content > div {
+                /* Handled by grid-cols-1 now, ensuring full width and auto margins */
+            }
+            .cta-button, .cta-button-secondary {
+                width: 90%; /* Adjust width to fit narrower screens */
+                margin: 0.25rem auto; /* Center buttons */
+            }
+            header nav {
+                flex-direction: column; /* Stack header nav links vertically on very small screens */
+                align-items: center;
+            }
+            header nav a {
+                margin: 0.2rem 0; /* Reduce vertical margin */
+            }
+            header nav a.login-button,
+            header nav a.button-style-original,
+            header nav a.button-style-main {
+                margin: 0.2rem auto; /* Center specific buttons as well */
+            }
+        }
     </style>
 </head>
-<body class="light-mode">
+<body>
 
-    <header class="main-header">
-        <div class="container header-content">
-            <div class="logo-group">
-                <a href="index.html" class="logo-link">
-                    <span class="logo-fruitful">Fruitful™</span>
-                </a>
-                <button class="hamburger-menu" aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            <div class="pulse-grid-noodle-rope">
-                <span class="noodle-dot dot-1"></span>
-                <span class="noodle-dot dot-2"></span>
-                <span class="noodle-dot dot-3"></span>
-                <span class="noodle-dot dot-stepdad"></span>
-                <span class="noodle-dot dot-4"></span>
-                <span class="noodle-dot dot-5"></span>
-            </div>
-            <nav class="main-nav">
-                <ul class="nav-list">
-                    </ul>
-                <div class="nav-actions">
-                    <a href="https://homemart.africa" target="_blank" class="cta-button cta-button-secondary">Homemart.africa</a>
-                    <a href="https://faa.zone/omnigrid.html" class="cta-button nav-cta">Explore Ecosystem</a>
-                    <a href="https://faa.zone/legal/index.html" class="cta-button nav-cta">Developers</a>
-                    <a href="https://vaultmesh.faa.zone/index.html" class="cta-button nav-cta">Vaultmesh</a>
-                </div>
-            </nav>
-        </div>
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0">🌐 VaultMesh™</h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center">
+            <a href="vaultmesh.faa.zone/index.html" class="transition-colors duration-200">Home</a>
+            <a href="#features" class="transition-colors duration-200">Features</a>
+            <a href="#shareprice" class="transition-colors duration-200">Signal</a>
+            <a href="#vault-access" class="transition-colors duration-200">Vault</a>
+            <a href="#treaty" class="transition-colors duration-200">Treaty</a>
+            <a href="#vaultmesh" class="transition-colors duration-200">VaultMesh</a>
+            <a href="#about" class="transition-colors duration-200">About</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" target="_blank" class="transition-colors duration-200">Careers</a>
+            <a href="https://seedwave.faa.zone/login.html" class="transition-colors duration-200 button-style-original login-button">Login</a>
+            <a href="https://faa.zone/legal/securesign.html" target="_blank" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-100 hover:text-gray-900 button-style-original">SecureSign</a>
+            <a href="https://seedwave.faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200 button-style-main">Sign Up</a>
+            <a href="https://faa.zone/contact-us.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200 button-style-main">Contact Us</a>
+        </nav>
     </header>
 
-    <main>
-        <section class="innovate-connect-thrive-section">
-            <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-                Innovate. Connect. <span class="text-blue-600">Thrive.</span>
+    <section class="hero-section">
+        <canvas id="rhythmicCanvas"></canvas>
+
+        <div class="hero-content">
+            <h2 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+                Welcome to <span class="text-blue-600">VaultMesh™</span>
             </h2>
-            <div class="cta-group">
-                <a href="https://fruitful.faa.zone/omnigrid.html" class="hero-cta-button">
+            <!-- Removed the descriptive paragraph as requested -->
+
+            <!-- Buttons now explicitly moved down by increased margin-top on their grid container -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mx-auto w-full max-w-6xl mt-40"> 
+                <a href="https://faa.zone/omnigrid.html" class="cta-button w-full">
                     Explore Ecosystem
                 </a>
-                  <a href="https://fruitful.faa.zone/dashboard.html" class="hero-cta-button">
-                    Bushveld Dashboard
-                      </a>
-                  <a href="https://faa.zone" class="hero-cta-button">
-                    FAA.ZONE
+                <a href="https://fruitful.faa.zone" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Fruitful™
                 </a>
-                <a href="https://baobab.faa.zone" class="hero-cta-button cta-button-secondary">
+                <a href="https://baobab.faa.zone" target="_blank" class="cta-button cta-button-secondary w-full">
                     Baobab Network
                 </a>
-                <a href="https://fruitfulcratedance.com/" class="hero-cta-button cta-button-secondary">
-                    Fruitful™ Crate Dance
+                <a href="https://fruitfulcratedance.com/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Fruitful Crate Dance
                 </a>
-                <a href="https://portal.faa.zone/payroll.html" class="hero-cta-button cta-button-secondary">
-                    Fruitful™ Payroll
-                <a href="admin-login.html" class="hero-cta-button cta-button-secondary">
-                    Admin Login
+                   <a href="https://vaultmesh.faa.zone/fruitful-brand-packages.html" target="_blank" class="cta-button cta-button-secondary">
+                    Global 💰 Packages
                 </a>
-                <a href="https://faa.zone/contact-us.html" class="hero-cta-button cta-button-secondary">
-                    Contact Us
+                <a href="products.html" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Enter Index
                 </a>
+                <a href="https://sellers.takealot.com/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Takealot Seller
+                </a>
+                <a href="https://www.zoho.com/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Vault Email
+                </a>
+                <a href="https://www.paypal.com/signin/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Paypal Access
+                </a>
+                <a href="https://vercel.com/faa-systems-projects/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Vecel Access
+                </a>
+                <a href="https://github.com/heyns1000/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Github Access
+                     </a>
+                <a href="https://dash.cloudflare.com/login" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Cloudfare Access
+                    </a>
+                <a href="https://accounts.hetzner.com/account/masterdata" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Hetzner Cloud
+                </a>
+                <a href="about.html" target="_blank" class="cta-button cta-button-secondary w-full">
+                    About us
+                </a>
+                 <a href="https://faa.zone/legal/" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Legal Access
+                </a>
+                <a href="https://accounting.sageone.co.za/Maintenance/OpenAndManageCompanyMaintenance.aspx" target="_blank" class="cta-button cta-button-secondary w-full">
+                    Sage Access
+                </a>
+
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="hero-canvas-section">
-            <canvas id="rhythmicCanvas"></canvas>
-            <div class="hero-canvas-overlay"></div> </section>
-
-        <section id="shareprice" class="py-12 text-center">
-            <h2 class="text-3xl font-semibold mb-2">FAA™ Share Signal</h2>
-            <div id="price" class="text-5xl font-bold">$88.88</div>
-            <div class="text-sm text-gray-400 mt-1">Last updated: <span id="timestamp">Live</span></div>
-        </section>
-
-        <section id="seedwave" class="py-16 px-6 text-center">
-            <h2 class="text-4xl font-bold mb-8">🌱 Seedwave Brand Growth 🌱</h2>
-            <div class="w-full max-w-4xl mx-auto p-6 rounded-xl shadow-lg">
-                <canvas id="brandChart"></canvas>
-            </div>
-        </section>
-
-        <section class="py-16 px-6 text-center">
-            <h2 class="text-4xl font-bold mb-8">🧬 Founder's Glyph™</h2>
-            <p class="max-w-3xl mx-auto text-xl leading-relaxed">
-                FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored.
-                What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.
-            </p>
-            <p class="mt-6 max-w-2xl mx-auto italic">
-                Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty.
-                That’s why this isn’t eCommerce. It’s TreatyCommerce™.
-            </p>
-            <p class="mt-6 font-semibold">— Written from the edge of code & culture 🌍 FAA.zone™ Founder Glyph Activated™</p>
-        </section>
-
-        <section id="vault-access" class="py-16 px-6">
-            <h3 class="text-4xl font-bold text-center mb-10">🔐 Sector Terminals</h3>
-
-            <div class="w-full max-w-6xl mx-auto mb-10">
-                <div class="w-full h-\[800px\] border-4 rounded-xl shadow-2xl overflow-hidden">
-                    <iframe
-                        id="vault-frame"
-                        src="vault-master.html"
-                        class="w-full h-full rounded-xl"
-                        frameborder="0"
-                        title="VaultMaster Terminal"
-                        sandbox="allow-scripts allow-same-origin allow-forms"
-                    ></iframe>
+    <section id="features" class="py-16 md:py-24 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-4xl font-bold text-center mb-16">
+                Unlock Your Potential with Our Core Features
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card">
+                    <div>💡</div>
+                    <h4>AI-Powered Insights</h4>
+                    <p>
+                        Leverage advanced AI to gain deep insights, optimize operations, and make smarter decisions.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🤝</div>
+                    <h4>Global Collaboration</h4>
+                    <p>
+                        Connect with thousands of independent brands and partners worldwide, fostering a network of mutual growth.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🌱</div>
+                    <h4>Sustainable Solutions</h4>
+                    <p>
+                        Champion eco-friendly practices and contribute to a healthier planet through our curated marketplace.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🔒</div>
+                    <h4>Secure VaultMesh™</h4>
+                    <p>
+                        Protect your data and transactions with our state-of-the-art blockchain-inspired security protocols.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>📈</div>
+                    <h4>Real-time Analytics</h4>
+                    <p>
+                        Monitor your progress and impact with intuitive dashboards and real-time performance metrics.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div>🌐</div>
+                    <h4>OmniScroll Integration</h4>
+                    <p>
+                        Seamlessly integrate with our OmniScroll ledger for transparent and efficient record-keeping.
+                    </p>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <button onclick="loadTerminal('vault-master.html')" class="terminal-btn p-6">🦍 VaultMaster Terminal</button>
-                <button onclick="loadTerminal('cube-lattice.html')" class="terminal-btn p-6">🧱 Cube Lattice GPT</button>
-                <button onclick="loadTerminal('global-view.html')" class="terminal-btn p-6">🌍 Global View GPT</button>
-                <button onclick="loadTerminal('freight-ops.html')" class="terminal-btn p-6">🚚 Freight Ops GPT</button>
-                <button onclick="loadTerminal('loop-watch.html')" class="terminal-btn p-6">♻️ Loop Watch GPT</button>
-                <button onclick="loadTerminal('seedwave.html')" class="terminal-btn p-6">🌱 Seedwave GPT</button>
-                <button onclick="loadTerminal('distribution.html')" class="terminal-btn p-6">📦 Distribution GPT</button>
-                <button onclick="loadTerminal('signal.html')" class="terminal-btn p-6">🔐 Signal GPT</button>
-                <button onclick="loadTerminal('faa-brands.html')" class="terminal-btn p-6">📦 7038 FAA Brands</button>
+    <section id="shareprice" class="py-12 text-center">
+        <h2 class="text-3xl font-semibold mb-2">FAA™ Share Signal</h2>
+        <div id="price" class="text-5xl font-bold">$88.88</div>
+        <div class="text-sm text-gray-400 mt-1">Last updated: <span id="timestamp">Live</span></div>
+    </section>
+
+    <section id="seedwave" class="py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-8">🌱 Seedwave Brand Growth 🌱</h2>
+        <div class="w-full max-w-4xl mx-auto p-6 rounded-xl shadow-lg">
+            <canvas id="brandChart"></canvas>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 text-center founders-note-section">
+        <h2 class="text-4xl font-bold mb-8">🧬 Founder's Glyph™</h2>
+        <p class="max-w-3xl mx-auto text-xl leading-relaxed">
+            FAA™ wasn’t built like a typical startup. It emerged — out of silence, out of signal, out of glyphs and patterns that refused to be ignored.
+            What you're seeing isn't a site. It’s a vault interface. A codebase of culture. A trust-machine powered by real human intelligence.
+        </p>
+        <p class="mt-6 max-w-2xl mx-auto italic">
+            Where others scale with speed, we scale with meaning. Every brand here agreed to something deeper than growth — they signed a Treaty.
+            That’s why this isn’t eCommerce. It’s TreatyCommerce™.
+        </p>
+        <p class="mt-6 font-semibold">— Written from the edge of code & culture 🌍 FAA.Zone Founder Glyph Activated™</p>
+    </section>
+
+    <section id="vault-access" class="py-16 px-6">
+        <h3 class="text-4xl font-bold text-center mb-10">🔐 Sector Terminals</h3>
+
+        <div class="w-full max-w-6xl mx-auto mb-10">
+            <div class="w-full h-[800px] border-4 rounded-xl shadow-2xl overflow-hidden">
+                <iframe
+                    id="vault-frame"
+                    src=""
+                    class="w-full h-full rounded-xl"
+                    frameborder="0"
+                    title="VaultMaster Terminal"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
+                ></iframe>
             </div>
-        </section>
+        </div>
 
-        <section class="py-16 px-6 text-center">
-            <h2 class="text-4xl font-bold mb-8">🧬 Sector Scrolls</h2>
-            <div id="sector-glyphs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <button onclick="loadTerminal('vault-master.html')" class="terminal-btn p-6">🦍 VaultMaster Terminal</button>
+            <button onclick="loadTerminal('cube-lattice.html')" class="terminal-btn p-6">🧱 Cube Lattice GPT</button>
+            <button onclick="loadTerminal('global-view.html')" class="terminal-btn p-6">🌍 Global View GPT</button>
+            <button onclick="loadTerminal('freight-ops.html')" class="terminal-btn p-6">🚚 Freight Ops GPT</button>
+            <button onclick="loadTerminal('loop-watch.html')" class="terminal-btn p-6">♻️ Loop Watch GPT</button>
+            <button onclick="loadTerminal('seedwave.html')" class="terminal-btn p-6">🌱 Seedwave GPT</button>
+            <button onclick="loadTerminal('distribution.html')" class="terminal-btn p-6">📦 Distribution GPT</button>
+            <button onclick="loadTerminal('signal.html')" class="terminal-btn p-6">🔐 Signal GPT</button>
+            <button onclick="loadTerminal('faa-brands.html')" class="terminal-btn p-6">📦 7038 FAA Brands</button>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 text-center sector-scrolls-section">
+        <h2 class="text-4xl font-bold mb-8">🧬 Sector Scrolls</h2>
+        <div id="sector-glyphs-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
             </div>
-            <div id="sector-content-container" class="mt-10 px-6 max-w-6xl mx-auto"></div>
-        </section>
+        <div id="sector-content-container" class="mt-10 px-6 max-w-6xl mx-auto"></div>
+    </section>
 
-        <section id="treaty" class="py-16 px-6 text-center">
-            <h2 class="text-4xl font-bold mb-6">📜 Treaty System™</h2>
-            <p class="max-w-2xl mx-auto text-lg mb-8">The FAA.zone™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
-            <blockquote class="text-2xl italic font-semibold">"FAA.zone™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
-        </section>
+    <section id="treaty" class="py-16 px-6 text-center">
+        <h2 class="text-4xl font-bold mb-6">📜 Treaty System™</h2>
+        <p class="max-w-2xl mx-auto text-lg mb-8">The FAA™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
+        <blockquote class="text-2xl italic font-semibold">"FAA™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
+    </section>
 
-        <section class="py-10 text-xs text-center bg-gray-900 text-green-400">
-            <pre class="max-w-2xl mx-auto p-4 rounded-lg overflow-auto"><code>{
+    <section class="py-10 text-xs text-center signal-packet-section">
+        <pre class="max-w-2xl mx-auto p-4 rounded-lg overflow-auto"><code>{
     "signal": "omnidrop",
     "origin": "If you dont like the fruits you are growing, change the seed™ / FAA Vault Layer",
     "payload": {
@@ -950,324 +891,176 @@
         "value": "homepage + VaultRouter + all terminal iframe buttons live + Treaty Grid"
     }
 }</code></pre>
-        </section>
+    </section>
 
-        <section id="vaultmesh" class="py-20 px-6">
-            <div class="max-w-4xl mx-auto text-left space-y-6">
+    <section id="vaultmesh" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto text-left space-y-6">
 
-                <h2 class="text-4xl font-bold">🧠 VaultMesh™: Executive Summary</h2>
+            <h2 class="text-4xl font-bold text-purple-400">🧠 VaultMesh™: Executive Summary</h2>
 
-                <p>VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.zone™.</p>
+            <p>VaultMesh™ is an intelligent data orchestration framework designed for the segmentation, synchronization, and secure deployment of high-value digital assets—referred to as scrolls—across decentralized and permissioned networks such as FAA.Zone™.</p>
 
-                <ul class="list-disc ml-6 space-y-2">
-                    <li>Captures metadata-rich content streams (chats, code, brands, assets)</li>
-                    <li>Assigns them to programmable claim structures (ScrollClaims™)</li>
-                    <li>Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers</li>
-                    <li>Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid</li>
-                </ul>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>Captures metadata-rich content streams (chats, code, brands, assets)</li>
+                <li>Assigns them to programmable claim structures (ScrollClaims™)</li>
+                <li>Secures their lineage using OmniSignal™, PulseGrid™, and GhostTrace™ layers</li>
+                <li>Enforces royalty logic, scroll integrity, and traceability on-chain and off-grid</li>
+            </ul>
 
-                <p>VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
+            <p>VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
 
-                <p>A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
+            <p>The framework is deeply integrated with platforms such as `vault.faa.zone™`, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.Zone™-compliant channels.</p>
 
-                <h3 class="text-2xl font-semibold mt-10">📖 VaultMesh™ Index</h3>
-                <ul class="list-decimal ml-6 space-y-2">
-                    <li>Introduction to VaultMesh™</li>
-                    <li>Core System Components</li>
-                    <li>ScrollClaim™ Infrastructure</li>
-                    <li>Data Flow and Claim Lifecycle</li>
-                    <li>Tiering, Royalties, and Compliance</li>
-                    <li>Integration with FAA.zone™</li>
-                    <li>Market Segments & Use Cases</li>
-                    <li>Revenue Streams & Monetization</li>
-                    <li>Technology Roadmap</li>
-                    <li>Team & Governance</li>
-                </ul>
+            <p>A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
 
-                <h3 class="text-xl font-bold mt-10">☑️ 1. Introduction to VaultMesh™</h3>
-                <p>VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
+            <h3 class="text-2xl font-semibold mt-10">📖 VaultMesh™ Index</h3>
+            <ul class="list-decimal ml-6 space-y-2">
+                <li>Introduction to VaultMesh™</li>
+                <li>Core System Components</li>
+                <li>ScrollClaim™ Infrastructure</li>
+                <li>Data Flow and Claim Lifecycle</li>
+                <li>Tiering, Royalties, and Compliance</li>
+                <li>Integration with FAA.Zone™</li>
+                <li>Market Segments & Use Cases</li>
+                <li>Revenue Streams & Monetization</li>
+                <li>Technology Roadmap</li>
+                <li>Team & Governance</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">⚒️ 2. Core System Components</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>VaultDNA™: Immutable identifiers for scroll content</li>
-                    <li>ClaimRoot™: Origin anchor & timestamp</li>
-                    <li>ScrollClaim™ Contracts: Programmable wrappers</li>
-                    <li>PulseGrid™ Sync: Real-time scroll presence & sync</li>
-                    <li>OmniSignal™: Global scroll verification</li>
-                    <li>GhostTrace™ Gen2: Scroll interaction backtrace</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">☑️ 1. Introduction to VaultMesh™</h3>
+            <p>VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
 
-                <h3 class="text-xl font-bold mt-10">🛠️ 3. ScrollClaim™ Infrastructure</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Set tier access (e.g., Diamond)</li>
-                    <li>Define royalty logic (10–11%)</li>
-                    <li>Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
-                    <li>Deploy via FAA.zone™ with compliant ZIP bundles</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">⚒️ 2. Core System Components</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>VaultDNA™: Immutable identifiers for scroll content</li>
+                <li>ClaimRoot™: Origin anchor & timestamp</li>
+                <li>ScrollClaim™ Contracts: Programmable wrappers</li>
+                <li>PulseGrid™ Sync: Real-time scroll presence & sync</li>
+                <li>OmniSignal™: Global scroll verification</li>
+                <li>GhostTrace™ Gen2: Scroll interaction backtrace</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">📀 4. Data Flow and Claim Lifecycle</h3>
-                <ul class="list-decimal ml-6 space-y-1">
-                    <li>Ingest — content enters VaultMesh™</li>
-                    <li>Encode — metadata & VaultDNA™ attached</li>
-                    <li>Wrap — ScrollClaim™ smart-wrapped</li>
-                    <li>Deploy — FAA.zone™ push (ZIP, manifest, HTML)</li>
-                    <li>Sync — PulseGrid™ status & OmniSignal™ locked</li>
-                    <li>Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">🛠️ 3. ScrollClaim™ Infrastructure</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Set tier access (e.g., Diamond)</li>
+                <li>Define royalty logic (10–11%)</li>
+                <li>Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
+                <li>Deploy via FAA.Zone™ with compliant ZIP bundles</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">💸 5. Tiering, Royalties, and Compliance</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Diamond Tier: 10–11% royalty enforced</li>
-                    <li>SmartWallet Integration: ScrollClaim™ payments and transfers</li>
-                    <li>VaultPay™ Tier III: Required for commercial deployments</li>
-                    <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">📀 4. Data Flow and Claim Lifecycle</h3>
+            <ul class="list-decimal ml-6 space-y-1">
+                <li>Ingest — content enters VaultMesh™</li>
+                <li>Encode — metadata & VaultDNA™ attached</li>
+                <li>Wrap — ScrollClaim™ smart-wrapped</li>
+                <li>Deploy — FAA.Zone™ push (ZIP, manifest, HTML)</li>
+                <li>Sync — PulseGrid™ status & OmniSignal™ locked</li>
+                <li>Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">📡 6. Integration with FAA.zone™</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Native support for /public/diamond/ structure</li>
-                    <li>ZIP, HTML, Manifest deployment bundles</li>
-                    <li>ClaimRoot™ timestamp validation</li>
-                    <li>Seamless PulseGrid™ auto-sync for live claim state</li>
-                    <li>Brand hosting via vault.faa.zone™</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">💸 5. Tiering, Royalties, and Compliance</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Diamond Tier: 10–11% royalty enforced</li>
+                <li>SmartWallet Integration: ScrollClaim™ payments and transfers</li>
+                <li>VaultPay™ Tier III: Required for commercial deployments</li>
+                <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">🏢 7. Market Segments & Use Cases</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>GPT Conversations & Expert Threads</li>
-                    <li>Knowledge/Training Archives</li>
-                    <li>Creative IP Scrolls (music, literature, visuals)</li>
-                    <li>GeoSector Deployment Archives</li>
-                    <li>Enterprise Scroll Logs & Audit Trails</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">📡 6. Integration with FAA.Zone™</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Native support for /public/diamond/ structure</li>
+                <li>ZIP, HTML, Manifest deployment bundles</li>
+                <li>ClaimRoot™ timestamp validation</li>
+                <li>Seamless PulseGrid™ auto-sync for live claim state</li>
+                <li>Brand hosting via vault.faa.zone™</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">💰 8. Revenue Streams & Monetization</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Diamond Royalties (10–11%)</li>
-                    <li>Scroll Packaging Fees</li>
-                    <li>VaultMesh™ API Subscriptions</li>
-                    <li>PulseGrid™ and OmniSignal™ Licensing</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">🏢 7. Market Segments & Use Cases</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>GPT Conversations & Expert Threads</li>
+                <li>Knowledge/Training Archives</li>
+                <li>Creative IP Scrolls (music, literature, visuals)</li>
+                <li>GeoSector Deployment Archives</li>
+                <li>Enterprise Scroll Logs & Audit Trails</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">⚖️ 9. Technology Roadmap</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
-                    <li>Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
-                    <li>Q4 2025: Autonomous AI Sector Agents</li>
-                    <li>Q1 2026: Inter-vault Federation</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">💰 8. Revenue Streams & Monetization</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Diamond Royalties (10–11%)</li>
+                <li>Scroll Packaging Fees</li>
+                <li>VaultMesh™ API Subscriptions</li>
+                <li>PulseGrid™ and OmniSignal™ Licensing</li>
+            </ul>
 
-                <h3 class="text-xl font-bold mt-10">🔧 10. Team & Governance</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>FAA-certified engineers (scroll claimers)</li>
-                    <li>Scroll Ministers: Compliance + tiering</li>
-                    <li>Vault Admins: Metadata + ClaimRoot™ enforcement</li>
-                    <li>HSOMNI9000™ Operators: Diamond-tier execution agents</li>
-                </ul>
+            <h3 class="text-xl font-bold mt-10">⚖️ 9. Technology Roadmap</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
+                <li>Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
+                <li>Q4 2025: Autonomous AI Sector Agents</li>
+                <li>Q1 2026: Inter-vault Federation</li>
+            </ul>
 
-                <p class="text-sm mt-10">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
-            </div>
-        </section>
+            <h3 class="text-xl font-bold mt-10">🔧 10. Team & Governance</h3>
+            <ul class="list-disc ml-6 space-y-1">
+                <li>FAA-certified engineers (scroll claimers)</li>
+                <li>Scroll Ministers: Compliance + tiering</li>
+                <li>Vault Admins: Metadata + ClaimRoot™ enforcement</li>
+                <li>HSOMNI9000™ Operators: Diamond-tier execution agents</li>
+            </ul>
 
-        <section id="about" class="py-16 md:py-24 px-6 md:px-12 text-center">
-            <div class="max-w-4xl mx-auto">
-                <h3 class="text-4xl font-bold mb-8">About Fruitful™ Innovations</h3>
-                <p class="text-lg leading-relaxed mb-6">
-                    At Fruitful™, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.
-                </p>
-                <p class="text-lg leading-relaxed">
-                    We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful™ planet.
-                </p>
-            </div>
-        </section>
+            <p class="text-sm mt-10">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
+        </div>
+    </section>
 
-        <section id="cta" class="py-16 md:py-24 px-6 md:px-12 text-center">
-            <div class="max-w-3xl mx-auto">
-                <h3 class="text-4xl font-extrabold mb-8 leading-tight">
-                    Ready to Transform Your Future?
-                </h3>
-                <p class="text-xl mb-10">
-                    Join the Fruitful™ community today and start your journey towards innovation, connection, and a sustainable tomorrow.
-                </p>
-                <a href="signup.html" class="hero-cta-button">
-                    Sign Up Now
-                </a>
-            </div>
-        </section>
+    <section id="about" class="py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-4xl font-bold mb-8">About Fruitful Innovations</h3>
+            <p class="text-lg leading-relaxed mb-6">
+                At Fruitful, we believe in a future where technology empowers positive change. Our platform is designed to break down traditional barriers, fostering a collaborative ecosystem where businesses and individuals can thrive while making a meaningful impact on the world.
+            </p>
+            <p class="text-lg leading-relaxed">
+                We are committed to transparency, sustainability, and innovation, driven by a powerful AI that ensures fairness, efficiency, and personalized experiences for every user. Join us in building a more fruitful planet.
+            </p>
+        </div>
+    </section>
 
-        <footer class="py-8 px-6 md:px-12 text-center">
-            © 2025 FAA.zone™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.
-        </footer>
+    <section id="cta" class="py-16 md:py-24 px-6 md:px-12 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h3 class="text-4xl font-extrabold mb-8 leading-tight">
+                Ready to Transform Your Future?
+            </h3>
+            <p class="text-xl mb-10">
+                Join the Fruitful community today and start your journey towards innovation, connection, and a sustainable tomorrow.
+            </p>
+            <a href="https://seedwave.faa.zone/signup.html" class="cta-button">
+                Sign Up Now
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        © 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.
+    </footer>
 
     <script>
-        // --- Rhythmic Canvas Glyph Drawing Logic ---
-        const canvas = document.getElementById('rhythmicCanvas');
-        const ctx = canvas.getContext('2d');
-        let animationFrameId;
-
-        // Set canvas size for responsiveness
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            if (canvas.width < 300) canvas.width = 300;
-            if (canvas.height < 150) canvas.height = 150;
-            // Recalculate lineAmplitude based on new height
-            lineAmplitude = canvas.height / 4;
-        }
-
-        // Initial resize and add listener for window resize
-        window.addEventListener('load', resizeCanvas);
-        window.addEventListener('resize', resizeCanvas);
-
-        let time = 0;
-        const numLines = 50;
-        let lineAmplitude; // This will be set by resizeCanvas initially
-        const lineFrequency = 0.05;
-        const lineSpeed = 0.005;
-
-        function drawGlyph() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Changed fillStyle to transparent, as hero-canvas-section provides background
-            // The original provided code had rgba(10,10,10,0.0) which is already transparent. Keeping it for consistency.
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.0)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            time += lineSpeed;
-
-            for (let i = 0; i < numLines; i++) {
-                ctx.beginPath();
-                const offset = i * (Math.PI * 2 / numLines);
-                
-                // Keep the "much nicer" HSL color logic from your provided working code
-                const colorHue = (time * 100 + i * 5) % 360;
-                ctx.strokeStyle = `hsla(${colorHue}, 80%, 60%, 0.7)`; /* Alpha added to strokeStyle, now uses HSL */
-                
-                ctx.lineWidth = 1.5;
-
-                for (let x = 0; x < canvas.width; x += 5) {
-                    // Keeping the exact 'y' calculation from your provided working code
-                    const y = Math.sin(x * lineFrequency + time + offset) * (lineAmplitude * (Math.sin(time * 0.1 + i * 0.1) * 0.5 + 0.5)) + canvas.height / 2;
-                    if (x === 0) {
-                        ctx.moveTo(x, y);
-                    } else {
-                        ctx.lineTo(x, y);
-                    }
-                }
-                ctx.stroke();
+        // Function to load terminal content into the iframe
+        function loadTerminal(url) {
+            const vaultFrame = document.getElementById('vault-frame');
+            vaultFrame.src = url;
+            // Remove ring from all buttons and add to the clicked one
+            document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
+            // Use event.currentTarget to ensure the clicked button is targeted
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('ring', 'ring-blue-500');
             }
-
-            animationFrameId = requestAnimationFrame(drawGlyph);
+            console.log("🧬 Terminal loaded:", url);
         }
 
-        // Start the animation on window load (as per your working code)
-        window.onload = function () {
-            resizeCanvas();
-            drawGlyph();
-        };
-
-
-        // --- Vault Navigation Logic ---
-        const vaultStatusDisplay = document.getElementById('vaultStatus');
-        if (document.getElementById('accessCoreBtn')) {
-            document.getElementById('accessCoreBtn').addEventListener('click', () => {
-                if (vaultStatusDisplay) vaultStatusDisplay.textContent = `Vault Status: Accessing Core. Time: ${new Date().toLocaleTimeString()}`;
-            });
-        }
-        if (document.getElementById('exploreArchivesBtn')) {
-            document.getElementById('exploreArchivesBtn').addEventListener('click', () => {
-                if (vaultStatusDisplay) vaultStatusDisplay.textContent = `Vault Status: Querying Archives. Time: ${new Date().toLocaleTimeString()}`;
-            });
-        }
-        if (document.getElementById('hyperspaceLinkBtn')) {
-            document.getElementById('hyperspaceLinkBtn').addEventListener('click', () => {
-                if (vaultStatusDisplay) vaultStatusDisplay.textContent = `Vault Status: Initiating Hyperspace Link. Standby. Time: ${new Date().toLocaleTimeString()}`;
-            });
-        }
-
-        // --- Aetherium Console (LLM Integration) Logic ---
-        const consoleOutput = document.getElementById('consoleOutput');
-        const consoleInput = document.getElementById('consoleInput');
-        const consoleLoading = document.getElementById('consoleLoading');
-        let chatHistory = []; // Stores conversation for LLM context
-
-        if (consoleInput) { /* Added null check */
-            consoleInput.addEventListener('keydown', async (event) => {
-                if (event.key === 'Enter' && consoleInput.value.trim() !== '') {
-                    const command = consoleInput.value.trim();
-                    appendToConsole(command, 'user');
-                    consoleInput.value = ''; // Clear input
-
-                    if (consoleLoading) consoleLoading.classList.remove('hidden'); // Show loading indicator
-
-                    try {
-                        const prompt = `You are the Aetherium Console, an intelligent system. Respond to the following command. Keep responses concise and in character, using a futuristic, slightly cryptic tone. Avoid overly long explanations. If asked about "Treaty juice noodle sticks", acknowledge it as a key energetic concept within the Treaty Grid, symbolizing the flowing essence of alliances. Previous conversation: ${chatHistory.map(entry => `${entry.role}: ${entry.parts[0].text}`).join('\n')}\nUser command: ${command}`;
-
-                        const payload = {
-                            contents: chatHistory.concat([{ role: "user", parts: [{ text: prompt }] }]), // Send full history + current prompt
-                        };
-
-                        const apiKey = ""; // Canvas will provide this at runtime
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-
-                        const result = await response.json();
-
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
-                            const text = result.candidates[0].content.parts[0].text;
-                            appendToConsole(text, 'ai');
-                        } else {
-                            appendToConsole("Error: Unable to process command. Response structure unexpected.", 'ai');
-                            console.error("LLM response error:", result);
-                        }
-                    } catch (error) {
-                        appendToConsole(`Error: Communication breakdown. System error: ${error.message}`, 'ai');
-                        console.error("Fetch error:", error);
-                    } finally {
-                        if (consoleLoading) consoleLoading.classList.add('hidden'); // Hide loading indicator
-                        consoleInput.focus(); // Keep focus on input
-                    }
-                }
-            });
-        }
-
-
-        // --- Treaty Grid Logic ---
-        const treatyNodes = document.querySelectorAll('.treaty-node');
-        const treatyNodeInfoDisplay = document.getElementById('treatyNodeInfo');
-
-        if (treatyNodes.length > 0 && treatyNodeInfoDisplay) {
-            let currentActiveNode = null;
-            treatyNodes.forEach(node => {
-                node.addEventListener('click', () => {
-                    // Remove active class from previous node
-                    if (currentActiveNode) {
-                        currentActiveNode.classList.remove('active');
-                    }
-
-                    // Add active class to clicked node
-                    node.classList.add('active');
-                    currentActiveNode = node; // Update current active node
-
-                    const nodeName = node.getAttribute('data-node-name');
-                    const nodeInfo = node.getAttribute('data-node-info');
-                    if (treatyNodeInfoDisplay) treatyNodeInfoDisplay.textContent = `Selected Node: ${nodeName}. ${nodeInfo}`;
-                });
-            });
-        }
         // Script for Share Signal (mock price update)
         function updateSharePrice() {
             const mockPrice = (80 + Math.random() * 10).toFixed(2);
-            const priceElement = document.getElementById('price');
-            const timestampElement = document.getElementById('timestamp');
-            if (priceElement) priceElement.innerText = `$${mockPrice}`;
-            if (timestampElement) timestampElement.innerText = new Date().toLocaleTimeString();
+            document.getElementById('price').innerText = `$${mockPrice}`;
+            document.getElementById('timestamp').innerText = new Date().toLocaleTimeString();
         }
         // Update every 9 seconds
         setInterval(updateSharePrice, 9000);
@@ -1343,7 +1136,7 @@
             "education": "📚 Education & IP",
             "fashion": "✂ Fashion & Identity",
             "gaming": "🎮 Gaming & Simulation",
-            "health-hygiene": "🧴 Health & Hygiene", // Updated glyph for main index
+            "health-hygiene": "🧴 Health & Hygiene",
             "housing": "🏛️ Housing & Infrastructure",
             "justice": "⚖ Justice & Ethics",
             "knowledge": "🧠 Knowledge & Archives",
@@ -1363,8 +1156,8 @@
             "professional": "🧾 Professional Services",
             "ai-logic": "🧠 AI, Logic & Grid Systems",
             "mining": "⛏️ Mining & Resources",
-            "payroll": "💰 Payroll Core Systems", // Added payroll
-            "wildlife": "🚁 Wildlife Sector", // Ensure wildlife is present
+            "payroll": "💰 Payroll Core Systems",
+            "wildlife": "🚁 Wildlife Sector",
             "admin": "⚙️ Admin & Manual Sync Panel",
             "global-index": "🌐 Global Brand Index"
         };
@@ -1388,7 +1181,9 @@
             sectorGlyphsContainer.innerHTML = '';
 
             // Sort sectors alphabetically by their display name for consistent order
-            const sortedSectorSlugs = Object.keys(sectorList).sort((a, b) => {
+            const sortedSectorSlugs = Object.keys(sectorList).filter(slug =>
+                slug !== 'admin' && slug !== 'global-index'
+            ).sort((a, b) => {
                 const nameA = sectorList[a];
                 const nameB = sectorList[b];
                 // Exclude admin and global-index from sorting and rendering in this section
@@ -1431,42 +1226,53 @@
             });
         }
 
-        // Hamburger menu toggle for mobile
-        document.addEventListener('DOMContentLoaded', () => {
-            const mainNav = document.querySelector('.main-nav');
-            const hamburgerMenu = document.querySelector('.hamburger-menu');
+        // Rhythmic Canvas Logic (from original VaultMesh index)
+        const rhythmicCanvas = document.getElementById('rhythmicCanvas');
+        if (rhythmicCanvas) {
+            const ctx = rhythmicCanvas.getContext('2d');
+            let animationFrameId;
+            let lineAmplitude;
 
-            if (hamburgerMenu && mainNav) {
-                hamburgerMenu.addEventListener('click', () => {
-                    mainNav.classList.toggle('active');
-                });
-            }
+            const resizeCanvas = () => {
+                rhythmicCanvas.width = rhythmicCanvas.offsetWidth;
+                rhythmicCanvas.height = rhythmicCanvas.offsetHeight;
+                lineAmplitude = rhythmicCanvas.height / 4;
+            };
+            window.addEventListener('resize', resizeCanvas, false);
+            resizeCanvas();
 
-            // Close mobile nav on link click
-            document.querySelectorAll('.main-nav .nav-list a').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (mainNav.classList.contains('active')) {
-                        mainNav.classList.remove('active');
-                    }
-                });
-            });
+            let time = 0;
+            const numLines = 30;
+            const lineFrequency = 0.02;
+            const lineSpeed = 0.003;
+            const colorSpeed = 50;
 
-            // Smooth scrolling for internal links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href && href.length > 1) { // Check if it's not just '#'
-                        e.preventDefault();
-                        const targetElement = document.querySelector(href);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({
-                                behavior: 'smooth'
-                            });
+            function drawGlyph() {
+                ctx.clearRect(0, 0, rhythmicCanvas.width, rhythmicCanvas.height);
+                time += lineSpeed;
+
+                for (let i = 0; i < numLines; i++) {
+                    ctx.beginPath();
+                    const offset = i * (Math.PI * 2 / numLines);
+                    const colorHue = (time * colorSpeed + i * 10) % 360;
+                    ctx.strokeStyle = `hsla(${colorHue}, 70%, 50%, 0.2)`;
+                    ctx.lineWidth = 1.5;
+
+                    for (let x = 0; x <= rhythmicCanvas.width; x += 10) {
+                        // The 'y' calculation for the pulse remains unchanged from the last confirmed good version
+                        const y = Math.sin(x * lineFrequency + time + offset) * lineAmplitude + rhythmicCanvas.height * 0.25;
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
                         }
                     }
-                });
-            });
-        });
+                    ctx.stroke();
+                }
+                animationFrameId = requestAnimationFrame(drawGlyph);
+            }
+            drawGlyph();
+        }
     </script>
 
 </body>
