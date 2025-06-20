@@ -659,16 +659,22 @@
 
         /* Responsive adjustments for overall layout and content */
         @media (max-width: 1023px) { /* Tablet and below */
-            aside#sidebar {
+            aside#admin-portal-sidebar { /* Updated to target correct ID */
+                position: fixed; /* Use fixed position for mobile sidebar */
+                top: var(--announcement-bar-height, 0px); /* Position below announcement bar */
+                left: 0;
+                height: calc(100vh - var(--announcement-bar-height, 0px) - var(--header-height, 0px)); /* Full height minus header */
                 transform: translateX(-100%); /* Hidden by default */
                 transition: transform 0.3s ease-in-out;
                 z-index: 60; /* Higher than main content and mobile overlay */
+                width: 280px; /* Adjust sidebar width for mobile */
+                max-width: 80%; /* Don't let it be too wide on very small screens */
             }
-            aside#sidebar.active {
+            aside#admin-portal-sidebar.active {
                 transform: translateX(0%); /* Visible when active */
                 box-shadow: 4px 0 15px rgba(0,0,0,0.2);
             }
-            #main-content-area {
+            #admin-portal-main-content-area { /* Updated to target correct ID */
                 margin-left: 0; /* No left margin on mobile */
                 width: 100%; /* Take full width */
             }
@@ -762,7 +768,7 @@
 
     <div id="announcement-bar">
         <span>⚡️ NEW: Baobab Security Network™ Global Dashboard is Live!</span>
-        <a href="#admin-global-dashboard" data-view-id="admin-global-dashboard" class="announcement-link">Explore the Insights Now</a>
+        <a href="#admin-portal-section" data-view-id="admin-global-dashboard" class="announcement-link">Explore the Insights Now</a>
         <button class="close-btn" aria-label="Close announcement">
             <i class="fas fa-times"></i>
         </button>
@@ -770,10 +776,10 @@
 
     <div class="app-container">
 
-        <header class="main-header">
+        <header class="main-header" id="main-header">
             <div class="container header-content">
                 <div class="logo-group">
-                    <a href="#" class="logo-link">
+                    <a href="#" class="logo-link" data-view-id="innovate-connect-thrive">
                         <span class="logo-fruitful">Fruitful™</span>
                     </a>
                     <span class="logo-separator">|</span>
@@ -783,12 +789,12 @@
                     </button>
                 </div>
                 <div class="pulse-grid-noodle-rope">
-                    <span class="noodle-dot dot-1"></span>
-                    <span class="noodle-dot dot-2"></span>
-                    <span class="noodle-dot dot-3"></span>
-                    <span class="noodle-dot dot-stepdad"></span>
-                    <span class="noodle-dot dot-4"></span>
-                    <span class="noodle-dot dot-5"></span>
+                    <span class="noodle-dot dot-1" style="left: 20%;"></span>
+                    <span class="noodle-dot dot-2" style="left: 40%;"></span>
+                    <span class="noodle-dot dot-3" style="left: 60%;"></span>
+                    <span class="noodle-dot dot-stepdad" style="left: 80%;"></span>
+                    <span class="noodle-dot dot-4" style="left: 100%;"></span>
+                    <span class="noodle-dot dot-5" style="left: 0%;"></span>
                 </div>
                 <nav class="nav-actions">
                     <a href="#cta" class="cta-button">Sign Up</a>
@@ -798,7 +804,7 @@
 
         <main class="main-content-wrapper">
 
-            <section id="innovate-connect-thrive" class="content-section">
+            <section id="innovate-connect-thrive" class="content-section active">
                 <h2 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
                     Innovate. Connect. <span class="text-blue-600">Thrive.</span>
                 </h2>
@@ -806,22 +812,22 @@
                     Discover a new era of collaboration and sustainable growth with Fruitful's cutting-edge platform.
                 </p>
                 <div class="cta-group">
-                    <a href="https://faa.zone/omnigrid.html" class="hero-cta-button" target="_blank">
+                    <a href="https://faa.zone/omnigrid.html" class="hero-cta-button cta-button" target="_blank">
                         🕸️ Explore Ecosystem
                     </a>
-                    <a href="https://baobab.faa.zone" class="hero-cta-button cta-button-secondary" target="_blank">
+                    <a href="https://baobab.faa.zone" class="hero-cta-button cta-button cta-button-secondary" target="_blank">
                         🌳 Baobab Network
                     </a>
-                    <a href="https://fruitfulcratedance.com/" class="hero-cta-button cta-button-secondary" target="_blank">
+                    <a href="https://fruitfulcratedance.com/" class="hero-cta-button cta-button cta-button-secondary" target="_blank">
                         📦 Fruitful™ Crate Dance
                     </a>
-                    <a href="https://portal.faa.zone/payroll.html" class="hero-cta-button cta-button-secondary" target="_blank">
+                    <a href="https://portal.faa.zone/payroll.html" class="hero-cta-button cta-button cta-button-secondary" target="_blank">
                         💰 Fruitful™ Payroll
                     </a>
-                    <a href="admin-login.html" class="hero-cta-button cta-button-secondary" target="_blank">
+                    <a href="#admin-portal-section" data-view-id="admin-quick-view" class="hero-cta-button cta-button cta-button-secondary">
                         ⚙️ Admin Login
                     </a>
-                    <a href="https://faa.zone/contact-us.html" class="hero-cta-button cta-button-secondary" target="_blank">
+                    <a href="https://faa.zone/contact-us.html" class="hero-cta-button cta-button cta-button-secondary" target="_blank">
                         ✉️ Contact Us
                     </a>
                 </div>
@@ -1082,14 +1088,14 @@
             <section id="admin-portal-section" class="content-section">
                 <aside id="admin-portal-sidebar">
                     <div class="py-8 flex" id="admin-sidebar-logo-section">
-                        <a href="#" class="block w-full">
+                        <a href="#" class="block w-full" data-view-id="innovate-connect-thrive">
                             <div class="logo-container">
                                 <img class="logo-full" src="https://placehold.co/150x40/f5f5f7/1d1d1f?text=Admin+Fruitful" alt="Admin Fruitful Logo">
                                 <img class="logo-collapsed hidden" src="https://placehold.co/40x40/f5f5f7/1d1d1f?text=A" alt="Admin Icon">
                             </div>
                         </a>
                     </div>
-                    <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+                    <div class="flex flex-col overflow-y-auto duration-300 ease-in-out no-scrollbar">
                         <nav class="mb-6">
                             <div class="flex flex-col gap-1">
                                 <h2 class="mb-2 text-xs uppercase flex leading-[20px] text-gray-500 justify-start pl-4 pt-4">Admin Menu</h2>
@@ -1123,10 +1129,10 @@
                             <p class="text-sm opacity-80 mt-2 ml-4 hidden md:block">✿Corebrands management & AI logic deployment center</p>
                         </div>
                         <div class="flex flex-wrap justify-center md:justify-end space-x-2 mt-4 md:mt-0">
-                            <a href="/admin/admin-portal-approval" class="access-button" target="_blank">🪙 Loyalty Access</a>
-                            <a href="/admin/admin-portal-approval" class="access-button" target="_blank">📊 Shareholder Access</a>
-                            <a href="/admin/admin-portal-approval" class="access-button" target="_blank">🤝 Service Provider</a>
-                            <a href="/admin/admin-portal-approval" class="access-button" target="_blank">👨‍👩‍👧‍👦 Family Access</a>
+                            <a href="/admin/admin-portal-approval" class="access-button cta-button cta-button-secondary" target="_blank">🪙 Loyalty Access</a>
+                            <a href="/admin/admin-portal-approval" class="access-button cta-button cta-button-secondary" target="_blank">📊 Shareholder Access</a>
+                            <a href="/admin/admin-portal-approval" class="access-button cta-button cta-button-secondary" target="_blank">🤝 Service Provider</a>
+                            <a href="/admin/admin-portal-approval" class="access-button cta-button cta-button-secondary" target="_blank">👨‍👩‍👧‍👦 Family Access</a>
                         </div>
                     </header>
 
@@ -1165,7 +1171,7 @@
                                 <input id="subnodesInput" class="w-full border rounded p-2" placeholder="e.g. VaultDrop, QRClaim">
                             </div>
                             <div class="flex items-end">
-                                <button id="add-brand-btn">➕ Add Brand</button>
+                                <button id="add-brand-btn" class="cta-button">➕ Add Brand</button>
                             </div>
                         </div>
 
@@ -1209,107 +1215,107 @@
 
                         <div class="content-block">
                             <nav class="sector-grid-nav overflow-x-auto flex gap-3 pb-2">
-                                <a href="#" class="sector-link" data-sector-panel="embedded-agriculture-snapshot">🌱 Agriculture & Biotech</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-fsf-snapshot">🥦 Food, Soil & Farming</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-banking-snapshot">🏦 Banking & Finance</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-creative-snapshot">🖋️ Creative Tech</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-logistics-snapshot">📦 Logistics & Packaging</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-education-snapshot">📚 Education & IP</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-fashion-snapshot">✂ Fashion & Identity</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-gaming-snapshot">🎮 Gaming & Simulation</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-health-snapshot">🧠 Health & Hygiene</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-housing-snapshot">🏗️ Housing & Infrastructure</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-justice-snapshot">⚖ Justice & Ethics</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-knowledge-snapshot">🧠 Knowledge & Archives</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-micromesh-snapshot">☰ Micro-Mesh Logistics</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-media-snapshot" data-sector="media">🎬 Motion, Media & Sonic</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-nutrition-snapshot">✿ Nutrition & Food Chain</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-ailogic-snapshot">🧠 AI, Logic & Grid Systems</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-packaging-snapshot">📦 Packaging & Materials</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-quantum-snapshot">✴️ Quantum Protocols</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-ritual-snapshot">☯ Ritual & Culture</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-saas-snapshot">🔑 SaaS & Licensing</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-trade-snapshot">🧺 Trade Systems</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-utilities-snapshot">🔋 Utilities & Energy</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-voice-snapshot">🎙️ Voice & Audio</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-webless-snapshot">📡 Webless Tech & Nodes</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-nft-snapshot">🔁 NFT & Ownership</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-zerowaste-snapshot">♻️ Zero Waste</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-professional-snapshot">🧾 Professional Services</a>
-                                <a href="#" class="sector-link" data-sector-panel="embedded-admin-snapshot">⚙️ Admin & Manual Sync Panel</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-agriculture-snapshot">🌱 Agriculture & Biotech</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-fsf-snapshot">🥦 Food, Soil & Farming</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-banking-snapshot">🏦 Banking & Finance</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-creative-snapshot">🖋️ Creative Tech</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-logistics-snapshot">📦 Logistics & Packaging</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-education-snapshot">📚 Education & IP</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-fashion-snapshot">✂ Fashion & Identity</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-gaming-snapshot">🎮 Gaming & Simulation</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-health-snapshot">🧠 Health & Hygiene</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-housing-snapshot">🏗️ Housing & Infrastructure</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-justice-snapshot">⚖ Justice & Ethics</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-knowledge-snapshot">🧠 Knowledge & Archives</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-micromesh-snapshot">☰ Micro-Mesh Logistics</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-media-snapshot" data-sector="media">🎬 Motion, Media & Sonic</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-nutrition-snapshot">✿ Nutrition & Food Chain</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-packaging-snapshot">📦 Packaging & Materials</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-quantum-snapshot">✴️ Quantum Protocols</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-ritual-snapshot">☯ Ritual & Culture</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-saas-snapshot">🔑 SaaS & Licensing</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-trade-snapshot">🧺 Trade Systems</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-utilities-snapshot">🔋 Utilities & Energy</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-voice-snapshot">🎙️ Voice & Audio</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-webless-snapshot">📡 Webless Tech & Nodes</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-nft-snapshot">🔁 NFT & Ownership</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-zerowaste-snapshot">♻️ Zero Waste</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-professional-snapshot">🧾 Professional Services</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-ailogic-snapshot">🧠 AI, Logic & Grid Systems</a>
+                                <a href="#" class="sector-link cta-button cta-button-secondary" data-sector-panel="embedded-admin-snapshot">⚙️ Admin & Manual Sync Panel</a>
                             </nav>
 
-                            <div id="embedded-agriculture-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-agriculture-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-green-400 mb-4">🌾 FAA™ Agriculture Core Brand Dashboard</div>
                                 <div id="agri-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="agri-snapshots"></div>
                             </div>
-                            <div id="embedded-fsf-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-fsf-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-green-400 mb-4">🥦 FAA™ Food, Soil & Farming Dashboard</div>
                                 <div id="fsf-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="fsf-snapshots"></div>
                             </div>
-                            <div id="embedded-banking-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-banking-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🏦 FAA™ Banking & Finance Dashboard</div>
                                 <div id="banking-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="banking-snapshots"></div>
                             </div>
-                            <div id="embedded-creative-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-creative-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-purple-400 mb-4">🖋️ FAA™ Creative Tech Dashboard</div>
                                 <div id="creative-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="creative-snapshots"></div>
                             </div>
-                            <div id="embedded-logistics-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-logistics-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-yellow-400 mb-4">📦 FAA™ Logistics & Packaging Dashboard</div>
                                 <div id="logistics-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="logistics-snapshots"></div>
                             </div>
-                            <div id="embedded-education-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-education-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-green-400 mb-4">🎓 FAA™ Education & Youth Dashboard</div>
                                 <div id="education-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="education-snapshots"></div>
                             </div>
-                            <div id="embedded-fashion-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-fashion-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-pink-400 mb-4">✂ FAA™ Fashion & Identity Dashboard</div>
                                 <div id="fashion-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="fashion-snapshots"></div>
                             </div>
-                            <div id="embedded-gaming-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-gaming-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🎮 FAA™ Gaming & Simulation Dashboard</div>
                                 <div id="gaming-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="gaming-snapshots"></div>
                             </div>
-                            <div id="embedded-health-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-health-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">🧠 FAA™ Health & Hygiene Dashboard</div>
                                 <div id="health-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="health-snapshots"></div>
                             </div>
-                            <div id="embedded-housing-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-housing-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-blue-400 mb-4">🏗️ FAA™ Housing & Infrastructure Dashboard</div>
                                 <div id="housing-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="housing-snapshots"></div>
                             </div>
-                            <div id="embedded-justice-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-justice-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">⚖ FAA™ Justice & Ethics Dashboard</div>
                                 <div id="justice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="justice-snapshots"></div>
                             </div>
-                            <div id="embedded-professional-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-professional-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🧾 FAA™ Professional Services Dashboard</div>
                                 <div id="professional-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="professional-snapshots"></div>
                             </div>
-                            <div id="embedded-knowledge-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-knowledge-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-blue-400 mb-4">🧠 FAA™ Knowledge & Archives Dashboard</div>
                                 <div id="knowledge-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="knowledge-snapshots"></div>
                             </div>
-                            <div id="embedded-micromesh-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-micromesh-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-yellow-400 mb-4">☰ FAA™ Micro-Mesh Logistics Dashboard</div>
                                 <div id="micromesh-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="micromesh-snapshots"></div>
                             </div>
-                            <div id="embedded-media-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-media-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">🎬 FAA™ Motion, Media & Sonic Dashboard</div>
                                 <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="media-snapshots"></div>
@@ -1317,78 +1323,78 @@
                                     <div class="scroll-cards flex space-x-6 min-w-full pb-4"></div>
                                 </div>
                             </div>
-                            <div id="embedded-nutrition-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-nutrition-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-green-400 mb-4">✿ FAA™ Nutrition & Food Chain Dashboard</div>
                                 <div id="nutrition-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="nutrition-snapshots"></div>
                             </div>
-                            <div id="embedded-packaging-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-packaging-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-yellow-400 mb-4">📦 FAA™ Packaging & Materials Dashboard</div>
                                 <div id="packaging-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="packaging-snapshots"></div>
                             </div>
-                            <div id="embedded-quantum-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-quantum-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-purple-400 mb-4">✴️ FAA™ Quantum Protocols Dashboard</div>
                                 <div id="quantum-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="quantum-snapshots"></div>
                             </div>
-                            <div id="embedded-ritual-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-ritual-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">☯ FAA™ Ritual & Culture Dashboard</div>
                                 <div id="ritual-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="ritual-snapshots"></div>
                             </div>
-                            <div id="embedded-saas-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-saas-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-blue-400 mb-4">🔑 FAA™ SaaS & Licensing Dashboard</div>
                                 <div id="saas-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="saas-snapshots"></div>
                             </div>
-                            <div id="embedded-trade-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-trade-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-orange-400 mb-4">🧺 FAA™ Trade Systems Dashboard</div>
                                 <div id="trade-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="trade-snapshots"></div>
                             </div>
-                            <div id="embedded-utilities-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-utilities-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-yellow-400 mb-4">🔋 FAA™ Utilities & Energy Dashboard</div>
                                 <div id="utilities-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="utilities-snapshots"></div>
                             </div>
-                            <div id="embedded-voice-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-voice-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🎙️ FAA™ Voice & Audio Dashboard</div>
                                 <div id="voice-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="voice-snapshots"></div>
                             </div>
-                            <div id="embedded-webless-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-webless-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">📡 FAA™ Webless Tech & Nodes Dashboard</div>
                                 <div id="webless-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="webless-snapshots"></div>
                             </div>
-                            <div id="embedded-nft-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-nft-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-pink-400 mb-4">🔁 FAA™ NFT & Ownership Dashboard</div>
                                 <div id="nft-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="nft-snapshots"></div>
                             </div>
-                            <div id="embedded-zerowaste-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-zerowaste-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-lime-400 mb-4">♻️ FAA™ Zero Waste Dashboard</div>
                                 <div id="zerowaste-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="zerowaste-snapshots"></div>
                             </div>
-                            <div id="embedded-professional-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-professional-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🧾 FAA™ Professional Services Dashboard</div>
                                 <div id="professional-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="professional-snapshots"></div>
                             </div>
-                            <div id="embedded-ailogic-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-ailogic-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-indigo-400 mb-4">🧠 FAA™ AI, Logic & Grid Brand Dashboard</div>
                                 <div id="ailogic-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="ailogic-snapshots"></div>
                             </div>
-                            <div id="embedded-admin-snapshot" class="hidden brand-snapshot">
+                            <div id="embedded-admin-snapshot" class="hidden brand-snapshot content-block">
                                 <div class="text-2xl font-bold text-gray-400 mb-4">⚙️ Admin & Manual Sync Panel</div>
                                 <div id="admin-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-4"></div>
                                 <div class="p-6" id="admin-snapshots"></div>
                             </div>
 
-                            <section class="w-full px-6 py-8">
+                            <section class="w-full px-6 py-8 content-block">
                                 <div class="bg-gray-800 p-6 rounded shadow-lg">
                                     <h2 class="text-xl font-bold text-gray-200">📉 FAA Scroll Pulse Monitor</h2>
                                     <p class="text-sm text-gray-400 mb-4">Dynamic scroll sync across sectors in real-time.</p>
@@ -1796,7 +1802,7 @@
                 targetView.classList.add('active'); // Show the target view
                 // Only scroll if not the admin portal view, which handles its own scrolling
                 if (viewId !== 'admin-portal-section') {
-                     targetView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    targetView.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
                 
                 // Re-render charts for the active view to ensure they appear correctly
@@ -1805,50 +1811,36 @@
                 console.error(`Error: Main content view with ID '${viewId}' not found.`);
             }
 
-            // Update sidebar active state (if sidebar is present)
-            const sidebarLinks = document.querySelectorAll('#admin-portal-sidebar .menu-link, #admin-portal-sidebar .menu-dropdown-item');
+            // Update sidebar active state (if sidebar is present) - Specific for admin portal sidebar
+            const sidebarLinks = document.querySelectorAll('#admin-portal-sidebar .admin-sidebar-link');
             sidebarLinks.forEach(link => {
-                link.classList.remove('active'); // Remove active from all sidebar links
-                if (link.dataset.viewId === viewId) {
-                    link.classList.add('active'); // Activate current link
-                    // Open parent submenu if applicable
-                    let parentButton = link.closest('.submenu-content')?.previousElementSibling;
-                    if (parentButton && parentButton.classList.contains('menu-item')) {
-                        parentButton.classList.add('active');
-                        parentButton.querySelector('.submenu-arrow')?.classList.add('active');
-                        parentButton.nextElementSibling.classList.add('open');
-                    }
-                } else {
-                    // If a link is not the active one, and its parent submenu is open, check if any sibling is active
-                    let parentButton = link.closest('.submenu-content')?.previousElementSibling;
-                    if (parentButton && parentButton.classList.contains('menu-item')) {
-                        let anyChildActive = Array.from(parentButton.nextElementSibling.querySelectorAll('.menu-dropdown-item')).some(child => child.classList.contains('active'));
-                        if (!anyChildActive) {
-                            parentButton.classList.remove('active');
-                            parentButton.querySelector('.submenu-arrow')?.classList.remove('active');
-                            parentButton.nextElementSibling.classList.remove('open');
-                        }
-                    }
+                link.classList.remove('active'); 
+                if (link.dataset.adminView === viewId) { // Check data-admin-view for admin sidebar links
+                    link.classList.add('active');
                 }
             });
-            // Handle active state for top-level sidebar menu items (not in dropdowns)
-            document.querySelectorAll('#admin-portal-sidebar > .flex.flex-col > nav > ul > li > .menu-item').forEach(item => {
-                if (!item.dataset.submenuToggle && item.dataset.viewId === viewId) {
-                    item.classList.add('active');
+
+            // Update top nav active state for admin views
+            const topNavLinks = document.querySelectorAll('.admin-nav-link');
+            topNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.adminView === viewId) { // Check data-admin-view for admin top nav links
+                    link.classList.add('active');
                 }
             });
+
 
             // Specific logic for admin portal section visibility
             const adminPortalSection = document.getElementById('admin-portal-section');
             if (adminPortalSection) {
-                if (viewId.startsWith('admin-') || viewId === 'admin-portal-section') {
+                if (viewId.startsWith('admin-')) { // If an admin-specific view is requested
                     adminPortalSection.classList.add('active');
                     // For admin portal, scroll to top of its internal content
                     const adminMainContentArea = document.getElementById('admin-portal-main-content-area');
                     if (adminMainContentArea) {
                         adminMainContentArea.scrollTop = 0;
                     }
-                    // For mobile, ensure sidebar is not active
+                    // For mobile, ensure sidebar is not active if it was open
                     const sidebar = document.getElementById('admin-portal-sidebar');
                     const mobileOverlay = document.getElementById('mobile-overlay');
                     if (sidebar && mobileOverlay && window.innerWidth < 1024) {
@@ -1857,7 +1849,7 @@
                         document.body.style.overflow = '';
                     }
 
-                } else {
+                } else { // If a non-admin view is requested, hide the admin portal section
                     adminPortalSection.classList.remove('active');
                 }
             }
@@ -1933,6 +1925,9 @@
                             }
                         });
                     }
+                    // Also ensure these are populated/loaded when admin-quick-view is active
+                    populateAdminSectorSelect();
+                    loadBrandDashboard(appData.admin.sectors);
                     break;
                 case 'admin-global-dashboard':
                     // Populate metrics
@@ -2020,8 +2015,10 @@
                     
                     // Setup Tech Stack details and Ecosystem Explorer
                     setupTechStackInteraction();
-                    document.querySelector('#admin-global-dashboard .tech-pillar')?.click(); 
+                    // Simulate click on the first tech pillar to show content by default
+                    document.querySelector('#admin-global-dashboard .tech-pillar')?.click();
                     populateEcosystemSectorFilter();
+                    // Display info for the first sector by default or the currently selected one
                     displayEcosystemSectorInfo(document.getElementById('sector-filter')?.value || Object.keys(appData.admin.sectors)[0]);
                     updateSovereignScrollsProgressBar();
                     break;
@@ -2030,6 +2027,24 @@
                     break;
             }
         }
+
+        // --- Live Share Price Update ---
+        function updateSharePrice() {
+            const priceElement = document.getElementById('price');
+            const timestampElement = document.getElementById('timestamp');
+            if (priceElement && timestampElement) {
+                // Simulate a price fluctuation
+                const oldPrice = appData.fruitful.sharePrice.value;
+                const newPrice = (oldPrice + (Math.random() - 0.5) * 2).toFixed(2); // +/- 1
+                appData.fruitful.sharePrice.value = parseFloat(newPrice);
+                appData.fruitful.sharePrice.timestamp = new Date().toLocaleTimeString();
+
+                priceElement.textContent = `$${appData.fruitful.sharePrice.value}`;
+                timestampElement.textContent = appData.fruitful.sharePrice.timestamp;
+            }
+        }
+        // Update price every 5 seconds
+        setInterval(updateSharePrice, 5000);
 
 
         // --- Admin Portal Specifics (functions called from showMainContentView) ---
@@ -2042,7 +2057,7 @@
                 Object.entries(appData.admin.sectors).forEach(([key, value]) => {
                     const option = document.createElement('option');
                     option.value = key;
-                    option.textContent = value.name;
+                    option.textContent = value.name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Fallback if name is missing
                     select.appendChild(option);
                 });
             }
@@ -2092,7 +2107,8 @@
             dashboard.innerHTML = '';
 
             Object.entries(data).forEach(([key, val]) => {
-                const label = val.name;
+                // Check if 'name' property exists, otherwise format the key
+                const label = val.name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
                 const section = document.createElement("div"); // Changed from <section> to <div> to avoid nested <section> in HTML5
                 section.className = "mb-8 bg-white p-6 rounded-lg shadow-sm";
@@ -2116,18 +2132,21 @@
 
         // showSmartSnapshot (displays brand details in Admin Quick View)
         window.showSmartSnapshot = function(sectorKey, brandName, nodes) {
-            document.querySelectorAll('.admin-main-content .snapshot-box').forEach(box => box.remove());
+            // Remove previous snapshot boxes within the same sector, not globally
+            document.querySelectorAll(`#${sectorKey}-snapshots .snapshot-box`).forEach(box => box.remove());
 
             const container = document.getElementById(`${sectorKey}-snapshots`);
             if (!container) return;
 
             const box = document.createElement("div");
-            box.className = "snapshot-box";
+            box.className = "snapshot-box"; // Uses the .snapshot-box style
             box.innerHTML = `
                 <h4 class="text-lg font-bold mb-2">${brandName}™ Snapshot</h4>
+                <p class="text-xs text-muted-text-light mb-2">Associated nodes for this brand:</p>
                 <ul class="list-disc pl-6 space-y-1 text-sm">
                     ${nodes.map(node => `<li>${node}</li>`).join('')}
                 </ul>
+                <button class="mt-4 cta-button cta-button-secondary text-sm" onclick="this.closest('.snapshot-box').remove()">Dismiss</button>
             `;
             container.appendChild(box);
         }
@@ -2169,10 +2188,17 @@
             const sectorFilter = document.getElementById('sector-filter');
             if (sectorFilter) {
                 sectorFilter.innerHTML = '';
-                Object.keys(appData.admin.sectors).forEach(key => {
+                // Sort sectors alphabetically by their display name
+                const sortedSectorKeys = Object.keys(appData.admin.sectors).sort((a, b) => {
+                    const nameA = appData.admin.sectors[a].name || a.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    const nameB = appData.admin.sectors[b].name || b.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    return nameA.localeCompare(nameB);
+                });
+
+                sortedSectorKeys.forEach(key => {
                     const option = document.createElement('option');
                     option.value = key;
-                    option.textContent = appData.admin.sectors[key].name;
+                    option.textContent = appData.admin.sectors[key].name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
                     sectorFilter.appendChild(option);
                 });
                 sectorFilter.removeEventListener('change', handleSectorFilterChange); // Prevent duplicates
@@ -2188,16 +2214,19 @@
         function displayEcosystemSectorInfo(sectorKey) {
             const explorerContent = document.getElementById('explorer-content');
             const sector = appData.admin.sectors[sectorKey];
-            if (!explorerContent || !sector) return;
+            if (!explorerContent || !sector) {
+                explorerContent.innerHTML = `<p class="text-center text-slate-500">Select a sector to view its details.</p>`;
+                return;
+            }
 
             explorerContent.innerHTML = `
                 <div class="dashboard-metric-card">
-                    <h3 class="dashboard-header-h2">${sector.name}</h3>
+                    <h3 class="dashboard-header-h2">${sector.name || sectorKey.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</h3>
                     <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <h4 class="font-semibold text-slate-600">Core Brands</h4>
                             <ul class="mt-2 list-disc list-inside text-slate-500">
-                                ${sector.brands.map(b => `<li>${b}™</li>`).join('')}
+                                ${sector.brands.length > 0 ? sector.brands.map(b => `<li>${b}™</li>`).join('') : '<li>No brands listed.</li>'}
                             </ul>
                         </div>
                         <div>
@@ -2232,32 +2261,29 @@
         // This is still needed for the main #sector-scrolls-section
         const sectorGlyphsContainer = document.getElementById('sector-glyphs-container');
         if (sectorGlyphsContainer) {
-            // Remove existing event listeners to prevent duplicates
-            Array.from(sectorGlyphsContainer.children).forEach(child => {
-                const newChild = child.cloneNode(true);
-                child.parentNode.replaceChild(newChild, child);
-            });
-
+            // No need to remove and re-add children for simple population, just clear.
             sectorGlyphsContainer.innerHTML = ''; // Clear for dynamic population
 
             const sortedSectorSlugs = Object.keys(appData.fruitful.sectorList).sort((a, b) => {
                 const nameA = appData.fruitful.sectorList[a];
                 const nameB = appData.fruitful.sectorList[b];
+                // Push 'admin' and 'global-index' to the end of the sorted list
                 if (a === 'admin' || a === 'global-index') return 1;
                 if (b === 'admin' || b === 'global-index') return -1;
                 return nameA.localeCompare(nameB);
             });
 
             sortedSectorSlugs.forEach(slug => {
+                // Ensure 'admin' and 'global-index' are not added to the public sector glyphs
                 if (slug !== 'admin' && slug !== 'global-index') {
                     const display = appData.fruitful.sectorList[slug];
-                    const fileName = (slug === 'wildlife') ? 'dashboard.html' : 'index.html';
+                    const fileName = (slug === 'wildlife') ? 'dashboard.html' : 'index.html'; // Special case for wildlife
                     const url = `/sectors/${slug}/${fileName}`;
                     
                     const glyphLink = document.createElement('a');
-                    glyphLink.href = url;
-                    glyphLink.className = "glyph";
-                    glyphLink.setAttribute('data-vault', slug);
+                    glyphLink.href = "#"; // Prevent default navigation for internal handling
+                    glyphLink.className = "glyph"; // Apply the existing glyph styling
+                    glyphLink.setAttribute('data-vault', slug); // Custom data attribute to identify the sector
                     glyphLink.innerHTML = display;
 
                     glyphLink.addEventListener('click', (e) => {
@@ -2270,7 +2296,7 @@
                             const loadingMessageText = appData.fruitful.sectorList[clickedSectorSlug] || clickedSectorSlug.charAt(0).toUpperCase() + clickedSectorSlug.slice(1).replace('-', ' ');
                             sectorContentContainer.innerHTML =
                                 `<div class="text-gray-600 text-sm mb-2">🔄 Loading sector: ${loadingMessageText}...</div>
-                                <iframe src="${iframeUrl}" class="w-full h-[900px] border-none rounded-xl bg-gray-100"></iframe>`;
+                                <iframe src="${iframeUrl}" class="w-full h-[900px] border-none rounded-xl bg-gray-100" title="${loadingMessageText} Sector"></iframe>`;
                         } else if (sectorContentContainer) {
                             sectorContentContainer.innerHTML =
                                 `<div class="text-red-500 text-sm mb-2">Error: Sector URL not found for ${clickedSectorSlug}.</div>`;
@@ -2281,8 +2307,176 @@
             });
         }
 
+        // --- Centralized Event Listener for ALL View Switches (main sections, announcement bar) ---
+        // This targets elements with `data-view-id` which are used for general page section navigation
+        document.querySelectorAll('[data-view-id]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewId = e.currentTarget.dataset.viewId; // Use currentTarget to get the element with data-view-id
+                showMainContentView(viewId);
 
+                // If it's an admin view specifically, also activate its corresponding internal admin panel
+                if (viewId.startsWith('admin-')) {
+                    const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                    adminViews.forEach(view => view.classList.remove('active')); // Hide all internal admin panels
+                    const targetAdminView = document.getElementById(viewId);
+                    if (targetAdminView) {
+                        targetAdminView.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // --- Admin Sidebar Links Event Listeners ---
+        // These are specific to navigating *within* the admin portal
+        document.querySelectorAll('.admin-sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewId = this.dataset.adminView; // Get the data-admin-view attribute
+                showMainContentView('admin-portal-section'); // First, make sure the overall admin portal is visible
+                
+                // Then, activate the specific view within the admin portal
+                const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                adminViews.forEach(view => view.classList.remove('active')); // Hide all admin panels
+                
+                const targetView = document.getElementById(viewId);
+                if (targetView) {
+                    targetView.classList.add('active'); // Show the clicked panel
+                }
+
+                // Update active state for sidebar links
+                document.querySelectorAll('.admin-sidebar-link').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active state for top nav links (to sync if sidebar is used)
+                document.querySelectorAll('.admin-nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                    if (navLink.dataset.adminView === viewId) {
+                        navLink.classList.add('active');
+                    }
+                });
+
+                // Ensure charts are rendered/re-rendered for the newly active view
+                renderChartsForView(viewId);
+            });
+        });
+
+        // --- Admin Top Navigation Links Event Listeners ---
+        // These are for navigating within the main content area of the admin portal
+        document.querySelectorAll('.admin-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewId = this.dataset.adminView;
+                
+                const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                adminViews.forEach(view => view.classList.remove('active'));
+                
+                const targetView = document.getElementById(viewId);
+                if (targetView) {
+                    targetView.classList.add('active');
+                }
+
+                // Update active state for top nav links
+                document.querySelectorAll('.admin-nav-link').forEach(navLink => navLink.classList.remove('active'));
+                this.classList.add('active');
+
+                // Ensure charts are rendered/re-rendered for the newly active view
+                renderChartsForView(viewId);
+            });
+        });
+
+        // --- Hamburger Menu Logic ---
+        document.getElementById('hamburger-btn').addEventListener('click', () => {
+            const sidebar = document.getElementById('admin-portal-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            sidebar.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        });
+
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            const sidebar = document.getElementById('admin-portal-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            sidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // --- Announcement Bar Close Button ---
+        document.querySelector('#announcement-bar .close-btn').addEventListener('click', () => {
+            const announcementBar = document.getElementById('announcement-bar');
+            announcementBar.classList.add('hidden');
+            // Adjust header top position after hiding announcement bar
+            document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+            // Store preference in localStorage to keep it hidden on subsequent visits
+            localStorage.setItem('hideAnnouncementBar', 'true');
+        });
+
+        // --- On Load Initializations ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize dynamic header top position based on announcement bar
+            const announcementBar = document.getElementById('announcement-bar');
+            const mainHeader = document.getElementById('main-header');
+            if (announcementBar && mainHeader) {
+                const updateHeaderTop = () => {
+                    if (!announcementBar.classList.contains('hidden')) {
+                        const announcementHeight = announcementBar.offsetHeight;
+                        document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                    }
+                    document.documentElement.style.setProperty('--header-height', `${mainHeader.offsetHeight}px`);
+                };
+
+                // Check localStorage for announcement bar preference
+                if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                    announcementBar.classList.add('hidden');
+                    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                } else {
+                    announcementBar.classList.remove('hidden'); // Ensure visible if not hidden
+                    updateHeaderTop(); // Set initial height
+                }
+                
+                // Update on resize
+                window.addEventListener('resize', updateHeaderTop);
+                // Also update after fonts/images might load and affect layout
+                window.addEventListener('load', updateHeaderTop);
+            }
+
+            // Initialize Rhythmic Canvas
+            if (canvas && ctx) {
+                resizeCanvas();
+                drawGlyph();
+                window.addEventListener('resize', resizeCanvas);
+            }
+
+            // Initialize the default view (Innovate, Connect, Thrive)
+            showMainContentView('innovate-connect-thrive');
+
+            // Set initial active state for the default view's link
+            const defaultNavLink = document.querySelector(`[data-view-id="innovate-connect-thrive"]`);
+            if (defaultNavLink) {
+                // Ensure the logo link is also correctly activating the main page view
+                document.querySelector('.logo-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMainContentView('innovate-connect-thrive');
+                });
+            }
+        });
+
+        // Load terminal iframe function
+        window.loadTerminal = function(iframeSrc) {
+            const vaultFrame = document.getElementById('vault-frame');
+            if (vaultFrame) {
+                vaultFrame.src = iframeSrc;
+                // Optional: add a class to the button that was clicked to highlight it
+                document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring'));
+                event.target.classList.add('ring');
+            }
+        };
+
+        // Initialize with default terminal iframe
+        window.addEventListener('load', () => {
+            loadTerminal('vault-master.html'); // Load default terminal on page load
+        });
     </script>
-
 </body>
 </html>
