@@ -42,9 +42,98 @@ flex-direction: column;
 transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dark-mode {
+/* Dark Mode styles */
+body.dark-mode {
 background-color: var(--bg-color-dark);
 color: var(--text-color-dark);
+}
+.dark-mode header {
+background-color: var(--card-bg-dark);
+border-bottom-color: var(--border-color-dark);
+box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+.dark-mode .logo-group {
+color: var(--text-color-dark);
+}
+.dark-mode .logo-separator {
+color: var(--muted-text-dark);
+}
+.dark-mode .logo-omnigrid {
+color: var(--text-color-dark);
+}
+.dark-mode .nav-list a {
+color: var(--muted-text-dark);
+}
+.dark-mode .nav-list a:hover {
+color: var(--primary-color);
+}
+.dark-mode .hamburger-menu {
+color: var(--text-color-dark);
+}
+.dark-mode .pulse-grid-noodle-rope {
+background-color: rgba(0, 113, 227, 0.3); /* Slightly more visible in dark mode */
+}
+/* Ensure specific sections also adapt to dark mode for backgrounds */
+.dark-mode #shareprice,
+.dark-mode #seedwave,
+.dark-mode section.bg-gray-700,
+.dark-mode #vault-access,
+.dark-mode section.bg-gray-800.text-center,
+.dark-mode #treaty,
+.dark-mode #vaultmesh,
+.dark-mode #about,
+.dark-mode #cta,
+.dark-mode footer {
+    background-color: var(--bg-color-dark); /* Use dark background for all sections */
+    color: var(--text-color-dark);
+}
+.dark-mode section h2, .dark-mode section h3 {
+    color: var(--text-color-dark);
+}
+.dark-mode section p {
+    color: var(--muted-text-dark);
+}
+.dark-mode #seedwave .w-full.max-w-4xl,
+.dark-mode #vault-access .w-full.h-\[800px\] {
+    background-color: var(--card-bg-dark); /* Darker card/iframe background */
+    border-color: var(--border-color-dark);
+}
+.dark-mode .terminal-btn {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+.dark-mode .terminal-btn:hover {
+    background-color: #3a3a3e;
+    color: var(--text-color-dark);
+}
+.dark-mode .glyph {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+.dark-mode .glyph:hover {
+    background-color: #3a3a3e;
+    color: var(--text-color-dark);
+}
+.dark-mode footer a {
+    color: var(--muted-text-dark);
+}
+.dark-mode footer a:hover {
+    color: var(--text-color-dark);
+}
+
+/* Fruitful Shock Mode styles */
+body.fruitful-shock-active {
+    filter: saturate(200%) hue-rotate(180deg) contrast(150%); /* Intense color shift and contrast */
+    animation: flicker 0.1s infinite alternate; /* Subtle flicker effect */
+    transition: filter 0s; /* Instant transition for shock */
+}
+
+@keyframes flicker {
+    0% { opacity: 1; }
+    50% { opacity: 0.95; }
+    100% { opacity: 1; }
 }
 
 .container {
@@ -69,11 +158,6 @@ justify-content: space-between; /* Space between logo and nav */
 align-items: center;
 padding: 15px 0; /* Base padding */
 }
-.dark-mode header {
-background-color: var(--card-bg-dark);
-border-bottom-color: var(--border-color-dark);
-box-shadow: 0 1px 0 rgba(0,0,0,0.2);
-}
 
 .header-content {
 display: flex;
@@ -89,9 +173,7 @@ gap: 10px;
 color: var(--text-color-light);
 transition: color 0.3s ease;
 }
-.dark-mode .logo-group {
-color: var(--text-color-dark);
-}
+
 .logo-group .logo-link {
 text-decoration: none;
 color: inherit;
@@ -109,16 +191,10 @@ color: var(--muted-text-light);
 font-size: 1.4rem;
 font-weight: 600;
 }
-.dark-mode .logo-separator {
-color: var(--muted-text-dark);
-}
 .logo-omnigrid {
 color: var(--text-color-light);
 font-size: 1.4rem;
 font-weight: 600;
-}
-.dark-mode .logo-omnigrid {
-color: var(--text-color-dark);
 }
 
 .main-nav {
@@ -142,12 +218,6 @@ font-size: 0.95rem;
 transition: color 0.3s ease;
 }
 .nav-list a:hover {
-color: var(--primary-color);
-}
-.dark-mode .nav-list a {
-color: var(--muted-text-dark);
-}
-.dark-mode .nav-list a:hover {
 color: var(--primary-color);
 }
 
@@ -197,9 +267,6 @@ cursor: pointer;
 color: var(--text-color-light);
 transition: color 0.3s ease;
 }
-.dark-mode .hamburger-menu {
-color: var(--text-color-dark);
-}
 
 /* Pulse Grid Noodle Rope Styling */
 .pulse-grid-noodle-rope {
@@ -213,49 +280,62 @@ position: relative;
 margin: 0 30px; /* Space around the noodle rope */
 opacity: 0.7;
 }
-.dark-mode .pulse-grid-noodle-rope {
-background-color: rgba(0, 113, 227, 0.3); /* Slightly more visible in dark mode */
-}
 
 .noodle-dot {
+/* Adjusted for more microscopic look */
 position: absolute;
-width: 8px;
-height: 8px;
+width: 5px; /* Smaller */
+height: 5px; /* Smaller */
 background-color: var(--primary-color); /* Primary color for dots */
 border-radius: 50%;
 transform: translate(-50%, -50%); /* Center dot on the line */
 top: 50%;
-animation: pulse-dot 3s infinite ease-in-out; /* Pulse every 3 seconds */
-box-shadow: 0 0 8px rgba(0, 113, 227, 0.6); /* Subtle glow effect */
+animation: pulse-dot 2.5s infinite ease-in-out; /* Slightly faster pulse for more activity */
+box-shadow: 0 0 5px rgba(0, 113, 227, 0.4); /* Smaller, subtler glow effect */
 }
 .noodle-dot.dot-stepdad {
-width: 10px; /* Larger */
-height: 10px; /* Larger */
+width: 8px; /* Slightly larger for stepdad */
+height: 8px; /* Slightly larger for stepdad */
 background-color: var(--secondary-color); /* Different color for stepdad */
-box-shadow: 0 0 10px rgba(48, 209, 88, 0.8); /* Green glow for stepdad */
+box-shadow: 0 0 8px rgba(48, 209, 88, 0.6); /* Green glow for stepdad */
 }
 
 /* Staggered animation delays (using a slightly faster base pulse for more energy) */
 @keyframes pulse-dot {
 0% {
-transform: translate(-50%, -50%) scale(0.8);
-opacity: 0.5;
+transform: translate(-50%, -50%) scale(0.7); /* Smaller minimum scale */
+opacity: 0.4; /* More translucent at min scale */
 }
 50% {
-transform: translate(-50%, -50%) scale(1.3);
-opacity: 1;
+transform: translate(-50%, -50%) scale(1.2); /* Slightly smaller max scale */
+opacity: 0.9; /* Slightly less opaque at max scale */
 }
 100% {
-transform: translate(-50%, -50%) scale(0.8);
-opacity: 0.5;
+transform: translate(-50%, -50%) scale(0.7);
+opacity: 0.4;
 }
 }
 .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; }
-.noodle-dot.dot-2 { left: 20%; animation-delay: 0.3s; }
-.noodle-dot.dot-3 { left: 40%; animation-delay: 0.6s; }
-.noodle-dot.dot-stepdad { left: 60%; animation-delay: 0.9s; } /* Stepdad placed before brothers */
-.noodle-dot.dot-4 { left: 80%; animation-delay: 1.2s; }
-.noodle-dot.dot-5 { left: 100%; animation-delay: 1.5s; }
+.noodle-dot.dot-2 { left: 5%; animation-delay: 0.05s; } /* Even more dots */
+.noodle-dot.dot-3 { left: 10%; animation-delay: 0.1s; }
+.noodle-dot.dot-4 { left: 15%; animation-delay: 0.15s; }
+.noodle-dot.dot-5 { left: 20%; animation-delay: 0.2s; }
+.noodle-dot.dot-6 { left: 25%; animation-delay: 0.25s; }
+.noodle-dot.dot-7 { left: 30%; animation-delay: 0.3s; }
+.noodle-dot.dot-8 { left: 35%; animation-delay: 0.35s; }
+.noodle-dot.dot-9 { left: 40%; animation-delay: 0.4s; }
+.noodle-dot.dot-10 { left: 45%; animation-delay: 0.45s; }
+.noodle-dot.dot-stepdad { left: 50%; animation-delay: 0.5s; } /* Central dot */
+.noodle-dot.dot-11 { left: 55%; animation-delay: 0.55s; }
+.noodle-dot.dot-12 { left: 60%; animation-delay: 0.6s; }
+.noodle-dot.dot-13 { left: 65%; animation-delay: 0.65s; }
+.noodle-dot.dot-14 { left: 70%; animation-delay: 0.7s; }
+.noodle-dot.dot-15 { left: 75%; animation-delay: 0.75s; }
+.noodle-dot.dot-16 { left: 80%; animation-delay: 0.8s; }
+.noodle-dot.dot-17 { left: 85%; animation-delay: 0.85s; }
+.noodle-dot.dot-18 { left: 90%; animation-delay: 0.9s; }
+.noodle-dot.dot-19 { left: 95%; animation-delay: 0.95s; }
+.noodle-dot.dot-20 { left: 100%; animation-delay: 1.0s; }
 
 
 /* Moved Hero Content Section */
@@ -267,7 +347,7 @@ background-color: var(--bg-color-light); /* Match body background (now white) */
 border-bottom: 1px solid var(--border-color-light); /* Keep separator */
 }
 .innovate-connect-thrive-section h2 {
-font-size: 3.5rem; /* Retain large size for impact */
+font-size: 3.5rem;
 font-weight: 800;
 letter-spacing: -0.03em;
 color: var(--text-color-light);
@@ -606,6 +686,71 @@ font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, mono
 color: var(--text-color-light);
 }
 
+/* New: VaultMesh Pulser section styles */
+#vaultmesh-pulser {
+    padding: 4rem 2rem;
+    background-color: var(--bg-color-light);
+    border-top: 1px solid var(--border-color-light);
+    text-align: center;
+}
+.dark-mode #vaultmesh-pulser {
+    background-color: var(--bg-color-dark);
+    border-top-color: var(--border-color-dark);
+}
+#vaultmesh-pulser h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color-light);
+}
+.dark-mode #vaultmesh-pulser h3 {
+    color: var(--text-color-dark);
+}
+
+#vaultmesh-pulser-frame {
+    width: 100%;
+    max-width: 600px;
+    height: 150px; /* Small iframe for status */
+    border: 3px solid var(--primary-color);
+    border-radius: 12px;
+    margin: 2rem auto;
+    overflow: hidden;
+    background-color: var(--card-bg-light);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease; /* Smooth transition for non-pulsing properties */
+}
+.dark-mode #vaultmesh-pulser-frame {
+    background-color: var(--card-bg-dark);
+    box-shadow: 0 4px 15px rgba(255,255,255,0.05);
+}
+
+/* Pulsing border animation for iframe */
+@keyframes pulse-border {
+    0% { border-color: var(--primary-color); box-shadow: 0 0 10px 2px rgba(0, 113, 227, 0.4); }
+    50% { border-color: var(--secondary-color); box-shadow: 0 0 20px 5px rgba(48, 209, 88, 0.6); }
+    100% { border-color: var(--primary-color); box-shadow: 0 0 10px 2px rgba(0, 113, 227, 0.4); }
+}
+.pulsing-border {
+    animation: pulse-border 2s infinite ease-in-out;
+}
+
+/* Styling for active VaultMesh list item */
+.vaultmesh-item-active {
+    background-color: rgba(0, 113, 227, 0.1); /* Light blue highlight */
+    color: var(--primary-color);
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0.2em 0.5em;
+    box-shadow: 0 0 8px rgba(0, 113, 227, 0.3);
+    transition: all 0.3s ease;
+}
+.dark-mode .vaultmesh-item-active {
+    background-color: rgba(0, 113, 227, 0.25);
+    color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 113, 227, 0.5);
+}
+
+
 /* About Section - Simple and clear */
 #about h3 {
 font-size: 2.2rem;
@@ -735,9 +880,6 @@ right: 20px;
 z-index: 1001;
 color: var(--text-color-light); /* Ensure hamburger icon is visible on white */
 }
-.dark-mode .hamburger-menu {
-color: var(--text-color-dark);
-}
 
 .hero-section h1 {
 font-size: 2.8rem;
@@ -810,15 +952,37 @@ font-size: 1rem;
 <span class="noodle-dot dot-1"></span>
 <span class="noodle-dot dot-2"></span>
 <span class="noodle-dot dot-3"></span>
-<span class="noodle-dot dot-stepdad"></span>
 <span class="noodle-dot dot-4"></span>
 <span class="noodle-dot dot-5"></span>
+<span class="noodle-dot dot-6"></span>
+<span class="noodle-dot dot-7"></span>
+<span class="noodle-dot dot-8"></span>
+<span class="noodle-dot dot-9"></span>
+<span class="noodle-dot dot-10"></span>
+<span class="noodle-dot dot-11"></span>
+<span class="noodle-dot dot-12"></span>
+<span class="noodle-dot dot-13"></span>
+<span class="noodle-dot dot-14"></span>
+<span class="noodle-dot dot-15"></span>
+<span class="noodle-dot dot-16"></span>
+<span class="noodle-dot dot-17"></span>
+<span class="noodle-dot dot-18"></span>
+<span class="noodle-dot dot-19"></span>
+<span class="noodle-dot dot-20"></span>
 </div>
             <nav class="main-nav">
                 <ul class="nav-list">
                     <li><a href="https://faa.zone/contact-us.html">✉️ Contact Us</a></li>
                     
                 </ul>
+                <div class="nav-actions">
+                    <button id="dayNightToggle" class="header-cta-button secondary">
+                        <i class="fas fa-moon"></i> Day/Night
+                    </button>
+                    <button id="fruitfulShockToggle" class="header-cta-button" style="background-color: var(--tertiary-color);">
+                        <i class="fas fa-bolt"></i> Fruitful™
+                    </button>
+                </div>
             </nav>
         </div>
     </header>
@@ -941,16 +1105,16 @@ font-size: 1rem;
 
                 <h3 class="text-2xl font-semibold mt-10">📖 VaultMesh™ Index</h3>
                 <ul class="list-decimal ml-6 space-y-2">
-                    <li>Introduction to VaultMesh™</li>
-                    <li>Core System Components</li>
-                    <li><li>ScrollClaim™ Infrastructure</li>
-                    <li>Data Flow and Claim Lifecycle</li>
-                    <li>Tiering, Royalties, and Compliance</li>
-                    <li>Integration with FAA.zone™</li>
-                    <li>Market Segments & Use Cases</li>
-                    <li>Revenue Streams & Monetization</li>
-                    <li>Technology Roadmap</li>
-                    <li>Team & Governance</li>
+                    <li data-index="1">Introduction to VaultMesh™</li>
+                    <li data-index="2">Core System Components</li>
+                    <li data-index="3">ScrollClaim™ Infrastructure</li>
+                    <li data-index="4">Data Flow and Claim Lifecycle</li>
+                    <li data-index="5">Tiering, Royalties, and Compliance</li>
+                    <li data-index="6">Integration with FAA.zone™</li>
+                    <li data-index="7">Market Segments & Use Cases</li>
+                    <li data-index="8">Revenue Streams & Monetization</li>
+                    <li data-index="9">Technology Roadmap</li>
+                    <li data-index="10">Team & Governance</li>
                 </ul>
 
                 <h3 class="text-xl font-bold mt-10">☑️ 1. Introduction to VaultMesh™</h3>
@@ -992,7 +1156,7 @@ font-size: 1rem;
                     <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
                 </ul>
 
-                <h3 class="text-xl font-bold mt-10">� 6. Integration with FAA.zone™</h3>
+                <h3 class="text-xl font-bold mt-10">📡 6. Integration with FAA.zone™</h3>
                 <ul class="list-disc ml-6 space-y-1">
                     <li>Native support for /public/diamond/ structure</li>
                     <li>ZIP, HTML, Manifest deployment bundles</li>
@@ -1035,6 +1199,20 @@ font-size: 1rem;
                 </ul>
 
                 <p class="text-sm mt-10">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
+            </div>
+        </section>
+
+        <!-- New: VaultMesh Index Pulser Section -->
+        <section id="vaultmesh-pulser" class="py-16 px-6">
+            <h3 class="text-4xl font-bold text-center mb-8">⚡ VaultMesh Index Pulser ⚡</h3>
+            <div class="w-full max-w-2xl mx-auto">
+                <iframe
+                    id="vaultmesh-pulser-frame"
+                    srcdoc="<body style='display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; margin: 0; font-family: Inter, sans-serif; font-size: 1.2rem; text-align: center; color: #1d1d1f; background-color: #fcfcfc; border-radius: 8px;'><p style='font-weight: 500; color: #6e6e73;'>Currently Igniting:</p><p style='font-size: 1.5rem; font-weight: 700; color: #0071e3;'></p></body><style>body { background-color: #fcfcfc; color: #1d1d1f; }p { color: #6e6e73; }p:last-child { color: #0071e3; }body.parent-dark-mode {background-color: #2a2a2e; color: #f5f5f7;}body.parent-dark-mode p { color: #a0a0a5; }body.parent-dark-mode p:last-child { color: #0071e3; }</style><scr' + 'ipt>window.addEventListener('message', (event) => {if (event.data === 'dark-mode-on') {document.body.classList.add('parent-dark-mode');} else if (event.data === 'dark-mode-off') {document.body.classList.remove('parent-dark-mode');}});window.parent.postMessage('request-dark-mode-state', '*');</scr' + 'ipt>"
+                    frameborder="0"
+                    title="VaultMesh Index Pulser"
+                    sandbox="allow-scripts allow-same-origin"
+                ></iframe>
             </div>
         </section>
 
@@ -1086,7 +1264,7 @@ font-size: 1rem;
         const SPOTIFY_ACCESS_TOKEN = "BQBDSZ232IQmSLVbROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...";
         const GEMINI_AI_API_KEY = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
         const XERO_CLIENT_ID = "81B3573D453040508996432C5DAD565B";
-        const XERO_CLIENT_SECRET = "FIaJGmsaCcKR3Z8kWxPnQd04EhYy2_bImPmoitQDP1U6Smaq";
+        const XERO_CLIENT_SECRET = "FIaJGmsaCcKR3Z3k_WdXPnQd04EhYy2_bImPmoitQDP1U6Smaq"; 
         const XERO_REDIRECT_URI = "https://seedwave.faa.zone/admin_panel_xero.html";
         const XERO_WEBHOOK_KEY = "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==";
 
@@ -1096,6 +1274,24 @@ font-size: 1rem;
         const ctx = canvas.getContext('2d');
         let animationFrameId;
 
+        // Default canvas parameters
+        let defaultNumLines = 50;
+        let defaultLineFrequency = 0.05;
+        let defaultLineSpeed = 0.005;
+        let defaultLineAmplitudeFactor = 0.25; // canvas.height / 4
+
+        // Shock mode canvas parameters
+        let shockNumLines = 200; // More lines for "millions metrics"
+        let shockLineFrequency = 0.07; // Faster, denser waves
+        let shockLineSpeed = 0.02; // Much faster movement
+        let shockLineAmplitudeFactor = 0.4; // Larger amplitude during shock
+
+        let currentNumLines = defaultNumLines;
+        let currentLineFrequency = defaultLineFrequency;
+        let currentLineSpeed = defaultLineSpeed;
+        let currentLineAmplitudeFactor = defaultLineAmplitudeFactor;
+
+
         // Set canvas size for responsiveness
         function resizeCanvas() {
             canvas.width = canvas.offsetWidth;
@@ -1103,7 +1299,7 @@ font-size: 1rem;
             if (canvas.width < 300) canvas.width = 300;
             if (canvas.height < 150) canvas.height = 150;
             // Recalculate lineAmplitude based on new height
-            lineAmplitude = canvas.height / 4;
+            lineAmplitude = canvas.height * currentLineAmplitudeFactor;
         }
 
         // Initial resize and add listener for window resize
@@ -1111,29 +1307,39 @@ font-size: 1rem;
         window.addEventListener('resize', resizeCanvas);
 
         let time = 0;
-        const numLines = 50;
         let lineAmplitude; // This will be set by resizeCanvas initially
-        const lineFrequency = 0.05;
-        const lineSpeed = 0.005;
 
         function drawGlyph() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.0)';
+            // Apply a subtle transparent overlay on each frame to create a trailing effect
+            // This is dynamically adjusted for shock mode to be more intense
+            const overlayAlpha = document.body.classList.contains('fruitful-shock-active') ? 0.2 : 0.08;
+            ctx.fillStyle = `rgba(255, 255, 255, ${overlayAlpha})`; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            time += lineSpeed;
+            time += currentLineSpeed;
 
-            for (let i = 0; i < numLines; i++) {
+            for (let i = 0; i < currentNumLines; i++) {
                 ctx.beginPath();
-                const offset = i * (Math.PI * 2 / numLines);
+                const offset = i * (Math.PI * 2 / currentNumLines) * 2; 
                 
-                const colorHue = (time * 100 + i * 5) % 360;
-                ctx.strokeStyle = `hsla(${colorHue}, 80%, 60%, 0.7)`;
-                
-                ctx.lineWidth = 1.5;
+                // Dynamic, colorful hue based on time and line index
+                const colorHue = (time * 150 + i * 8) % 360;
+                // Vary saturation and lightness for more intensity and depth
+                const saturation = 70 + Math.sin(time * 0.5 + i * 0.05) * 20; // Subtle pulse in saturation
+                const lightness = 50 + Math.cos(time * 0.3 + i * 0.03) * 15; // Subtle pulse in lightness
+                // Opacity also varies dynamically
+                const opacity = 0.5 + Math.sin(time * 0.2 + i * 0.1) * 0.2;
+                ctx.strokeStyle = `hsla(${colorHue}, ${saturation}%, ${lightness}%, ${opacity})`;
+
+                ctx.lineWidth = 0.8; // Thinner lines for higher density
 
                 for (let x = 0; x < canvas.width; x += 5) {
-                    const y = Math.sin(x * lineFrequency + time + offset) * (lineAmplitude * (Math.sin(time * 0.1 + i * 0.1) * 0.5 + 0.5)) + canvas.height / 2;
+                    // Combine multiple sine waves for a more complex, organic "noodle"
+                    const y = Math.sin(x * currentLineFrequency + time + offset) * (lineAmplitude * (0.5 + Math.sin(time * 0.1 + i * 0.05) * 0.5))
+                              + Math.sin(x * (currentLineFrequency * 2) + time * 0.5 + offset * 0.5) * (lineAmplitude * 0.2) // Second, faster wave
+                              + Math.cos(x * (currentLineFrequency * 0.7) + time * 0.8 + offset * 1.2) * (lineAmplitude * 0.1) // Third wave for subtle complexity
+                              + canvas.height / 2;
                     if (x === 0) {
                         ctx.moveTo(x, y);
                     } else {
@@ -1149,7 +1355,147 @@ font-size: 1rem;
         window.onload = function () {
             resizeCanvas();
             drawGlyph();
+            loadDayNightPreference(); // Load day/night preference on load
+            pulseVaultMeshIndex(); // Start pulsing the VaultMesh Index
         };
+
+
+        // --- Day/Night Toggle Logic ---
+        const dayNightToggle = document.getElementById('dayNightToggle');
+        if (dayNightToggle) {
+            dayNightToggle.addEventListener('click', () => {
+                const isDarkMode = !document.body.classList.contains('dark-mode'); // Determine target mode first
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                dayNightToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Day/Night' : '<i class="fas fa-moon"></i> Day/Night';
+
+                // Post message to iframe to update its theme
+                const vaultMeshPulserFrame = document.getElementById('vaultmesh-pulser-frame');
+                if (vaultMeshPulserFrame && vaultMeshPulserFrame.contentWindow) {
+                    if (isDarkMode) {
+                        vaultMeshPulserFrame.contentWindow.postMessage('dark-mode-on', '*');
+                    } else {
+                        vaultMeshPulserFrame.contentWindow.postMessage('dark-mode-off', '*');
+                    }
+                }
+            });
+        }
+
+        function loadDayNightPreference() {
+            const savedTheme = localStorage.getItem('theme');
+            const dayNightToggle = document.getElementById('dayNightToggle');
+            const isDarkMode = savedTheme === 'dark'; // Determine initial dark mode state
+
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                if (dayNightToggle) dayNightToggle.innerHTML = '<i class="fas fa-sun"></i> Day/Night';
+            } else {
+                document.body.classList.remove('dark-mode');
+                if (dayNightToggle) dayNightToggle.innerHTML = '<i class="fas fa-moon"></i> Day/Night';
+            }
+
+            // Post message to iframe to update its theme on initial load
+            const vaultMeshPulserFrame = document.getElementById('vaultmesh-pulser-frame');
+            if (vaultMeshPulserFrame && vaultMeshPulserFrame.contentWindow) {
+                if (isDarkMode) {
+                    vaultMeshPulserFrame.contentWindow.postMessage('dark-mode-on', '*');
+                } else {
+                    vaultMeshPulserFrame.contentWindow.postMessage('dark-mode-off', '*');
+                }
+            }
+        }
+
+
+        // --- Fruitful Shock Toggle Logic ---
+        const fruitfulShockToggle = document.getElementById('fruitfulShockToggle');
+        // Removed shockTimeout as the effect will now persist
+        let originalNoodleRopeColors = []; // To store original dot colors
+
+        // Store original noodle dot styles for reset
+        // Ensure this runs AFTER all static CSS is applied, e.g., on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.noodle-dot').forEach((dot, index) => {
+                // Clone computed style for accurate original state capture
+                const computedStyle = window.getComputedStyle(dot);
+                originalNoodleRopeColors[index] = {
+                    backgroundColor: computedStyle.backgroundColor,
+                    boxShadow: computedStyle.boxShadow,
+                    width: computedStyle.width,
+                    height: computedStyle.height,
+                    animation: computedStyle.animation, // Capture full animation property
+                    transform: computedStyle.transform, // Capture initial transform for pulse-dot
+                    opacity: computedStyle.opacity // Capture initial opacity for pulse-dot
+                };
+            });
+        });
+
+        if (fruitfulShockToggle) {
+            fruitfulShockToggle.addEventListener('click', () => {
+                const isShockActive = document.body.classList.contains('fruitful-shock-active');
+
+                if (isShockActive) {
+                    // If shock is active, deactivate it
+                    document.body.classList.remove('fruitful-shock-active');
+                    resetCanvasParameters();
+                    resetNoodleRope();
+                } else {
+                    // If shock is not active, activate it
+                    document.body.classList.add('fruitful-shock-active');
+                    activateShockCanvasParameters();
+                    activateShockNoodleRope();
+                }
+            });
+        }
+
+        function activateShockCanvasParameters() {
+            currentNumLines = shockNumLines;
+            currentLineFrequency = shockLineFrequency;
+            currentLineSpeed = shockLineSpeed;
+            currentLineAmplitudeFactor = shockLineAmplitudeFactor;
+            resizeCanvas(); // Recalculate amplitude with new factor
+        }
+
+        function resetCanvasParameters() {
+            currentNumLines = defaultNumLines;
+            currentLineFrequency = defaultLineFrequency;
+            currentLineSpeed = defaultLineSpeed;
+            currentLineAmplitudeFactor = defaultLineAmplitudeFactor;
+            resizeCanvas(); // Recalculate amplitude with default factor
+        }
+
+        function activateShockNoodleRope() {
+            document.querySelectorAll('.noodle-dot').forEach(dot => {
+                const randomHue = Math.random() * 360;
+                dot.style.backgroundColor = `hsl(${randomHue}, 100%, 50%)`;
+                dot.style.boxShadow = `0 0 15px 5px hsl(${randomHue}, 100%, 50%)`;
+                dot.style.width = '15px';
+                dot.style.height = '15px';
+                dot.style.animation = 'pulse-dot 0.2s infinite ease-in-out alternate'; /* Even faster pulse */
+            });
+        }
+
+        function resetNoodleRope() {
+            document.querySelectorAll('.noodle-dot').forEach((dot, index) => {
+                if (originalNoodleRopeColors[index]) {
+                    dot.style.backgroundColor = originalNoodleRopeColors[index].backgroundColor;
+                    dot.style.boxShadow = originalNoodleRopeColors[index].boxShadow;
+                    dot.style.width = originalNoodleRopeColors[index].width;
+                    dot.style.height = originalNoodleRopeColors[index].height;
+                    dot.style.animation = originalNoodleRopeColors[index].animation; // Revert to original animation
+                    dot.style.transform = originalNoodleRopeColors[index].transform; // Revert transform as it's part of animation
+                    dot.style.opacity = originalNoodleRopeColors[index].opacity; // Revert opacity
+                } else {
+                    // Fallback to default if somehow original wasn't captured (e.g., initial state)
+                    dot.style.backgroundColor = ''; /* Clear inline style */
+                    dot.style.boxShadow = ''; /* Clear inline style */
+                    dot.style.width = ''; /* Clear inline style */
+                    dot.style.height = ''; /* Clear inline style */
+                    dot.style.animation = 'pulse-dot 2.5s infinite ease-in-out'; // Default animation
+                    dot.style.transform = ''; /* Clear transform */
+                    dot.style.opacity = ''; /* Clear opacity */
+                }
+            });
+        }
 
 
         // --- Vault Navigation Logic ---
@@ -1172,6 +1518,79 @@ font-size: 1rem;
             console.log("🧬 Terminal loaded:", url);
         };
         // Removed non-existent element listeners to prevent errors.
+
+        // --- VaultMesh Index Pulser Logic ---
+        function pulseVaultMeshIndex() {
+            const vaultMeshListItems = document.querySelectorAll('#vaultmesh ul.list-decimal li');
+            const vaultMeshPulserFrame = document.getElementById('vaultmesh-pulser-frame');
+            let currentIndex = 0;
+            const pulseInterval = 2000; // 2 seconds
+
+            if (vaultMeshListItems.length === 0 || !vaultMeshPulserFrame) {
+                console.warn("VaultMesh index items or pulser iframe not found. Skipping pulse animation.");
+                return;
+            }
+
+            setInterval(() => {
+                // Remove active class from previous item
+                if (currentIndex > 0) {
+                    vaultMeshListItems[currentIndex - 1].classList.remove('vaultmesh-item-active');
+                } else if (vaultMeshListItems.length > 0) {
+                    // Handle wrap-around: remove from last item when starting over
+                    vaultMeshListItems[vaultMeshListItems.length - 1].classList.remove('vaultmesh-item-active');
+                }
+
+                // Add active class to current item
+                const currentItem = vaultMeshListItems[currentIndex];
+                currentItem.classList.add('vaultmesh-item-active');
+
+                // Update iframe content with current item's text
+                const itemText = currentItem.textContent;
+                vaultMeshPulserFrame.srcdoc = `
+                    <body style='display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; margin: 0; font-family: Inter, sans-serif; font-size: 1.2rem; text-align: center; color: #1d1d1f; background-color: #fcfcfc; border-radius: 8px;'>
+                        <p style="font-weight: 500; color: #6e6e73;">Currently Igniting:</p>
+                        <p style="font-size: 1.5rem; font-weight: 700; color: #0071e3;">${itemText}</p>
+                    </body>
+                    <style>
+                        /* Hardcoded colors for iframe to ensure consistency */
+                        body { background-color: #fcfcfc; color: #1d1d1f; }
+                        p { color: #6e6e73; }
+                        p:last-child { color: #0071e3; }
+
+                        /* Apply dark mode if parent body has dark-mode class */
+                        body.parent-dark-mode {
+                            background-color: #2a2a2e; /* card-bg-dark */
+                            color: #f5f5f7; /* text-color-dark */
+                        }
+                        body.parent-dark-mode p { color: #a0a0a5; } /* muted-text-dark */
+                        body.parent-dark-mode p:last-child { color: #0071e3; } /* primary-color */
+                    </style>
+                    <scr' + 'ipt>
+                        // Communicate dark mode changes from parent to iframe
+                        window.addEventListener('message', (event) => {
+                            // Ensure the event origin is secure before processing
+                            // For this specific case, allowing all origins as this is local srcdoc,
+                            // but in a real app, restrict to specific origins.
+                            if (event.data === 'dark-mode-on') {
+                                document.body.classList.add('parent-dark-mode');
+                            } else if (event.data === 'dark-mode-off') {
+                                document.body.classList.remove('parent-dark-mode');
+                            }
+                        });
+
+                        // Request parent's current dark mode state on iframe load
+                        // This helps synchronize the theme if the iframe loads after the parent's theme is set
+                        window.parent.postMessage('request-dark-mode-state', '*');
+                    </scr' + 'ipt>
+`;
+                // Add/remove pulsing border on the iframe itself
+                vaultMeshPulserFrame.classList.toggle('pulsing-border');
+
+
+                // Move to next index, wrap around if necessary
+                currentIndex = (currentIndex + 1) % vaultMeshListItems.length;
+            }, pulseInterval);
+        }
 
         // --- Aetherium Console (Placeholder for LLM Integration) ---
         // These elements and the associated logic are commented out as they were not in the primary HTML structure
@@ -1344,7 +1763,7 @@ font-size: 1rem;
             "saas": "🔑 SaaS & Licensing",
             "trade": "🧺 Trade Systems",
             "utilities": "🔋 Utilities & Energy",
-            "voice": "🎙️️ Voice & Audio",
+            "voice": "�️️ Voice & Audio",
             "webless": "📡 Webless Tech & Nodes",
             "nft": "🔁 NFT & Ownership",
             "zerowaste": "♻️ Zero Waste",
