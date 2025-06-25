@@ -12,15 +12,15 @@
     <style>
         /* Base Styles - Apple inspired cleanliness + Baobab Corporate */
         :root {
-            /* Fruitful/Apple-inspired colors */
+            /* Fruitful/Apple-inspired colors (Light Mode Defaults) */
             --text-color-light: #1d1d1f;
-            --text-color-dark: #f5f5f7;
+            --text-color-dark: #f5f5f7; /* Used for text on dark backgrounds */
             --bg-color-light: #ffffff; /* Pure white */
-            --bg-color-dark: #1a1a1c;
+            --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
             --card-bg-light: #ffffff; /* Pure white */
-            --card-bg-dark: #2a2a2e;
+            --card-bg-dark: #2a2a2e; /* Darker grey for card backgrounds */
             --border-color-light: #e8e8ed;
-            --border-color-dark: #3a3a3e;
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
             --primary-color: #0071e3; /* Apple Blue */
             --secondary-color: #30d158; /* Apple Green */
             --tertiary-color: #ff3b30; /* Vibrant Red */
@@ -41,6 +41,48 @@
             --baobab-slate-text-dark: #64748b; /* slate-500 for chart labels */
         }
 
+        /* Dark Mode Overrides - Inspired by 1000-year-old Baobab (Earthy, deep tones) */
+        body.dark-mode {
+            --text-color-light: #f5f5f7; /* White text on dark backgrounds */
+            --text-color-dark: #1d1d1f; /* Dark text on light backgrounds (not used much in dark mode) */
+            --bg-color-light: #252525; /* Deep charcoal for main background */
+            --bg-color-dark: #141414; /* Even darker, almost black for deepest sections */
+            --card-bg-light: #333333; /* Darker grey for card backgrounds */
+            --card-bg-dark: #1f1f1f; /* Near black for very dark cards */
+            --border-color-light: #444444; /* Darker, subtle border */
+            --border-color-dark: #555555; /* Slightly lighter border */
+            --primary-color: #81b214; /* Muted green for primary action (Baobab leaves) */
+            --secondary-color: #fca311; /* Warm orange/gold (Baobab bark/fruit) */
+            --tertiary-color: #d62828; /* Slightly muted red */
+            --muted-text-light: #aaaaaa; /* Lighter muted text */
+            --muted-text-dark: #cccccc; /* Even lighter muted text */
+
+            --baobab-primary-dark: #141414; /* Pure black for Baobab sections */
+            --baobab-secondary-dark: #1a1a1a;
+            --baobab-light-text: #EAEAEA;
+            --baobab-gold: #D4AF37; /* Brighter gold in dark mode */
+            --baobab-muted-gray: #666666;
+            --baobab-border-gray: #555555;
+            --baobab-slate-light: #2c2c2c; /* Darker slate for dashboard */
+            --baobab-slate-medium: #3a3a3a;
+            --baobab-slate-dark: #999999;
+            --baobab-slate-text-dark: #bbbbbb;
+
+            /* Override chart colors for dark mode */
+            .chart-options-default canvas {
+                background-color: var(--card-bg-dark); /* Ensure charts have a dark background */
+            }
+            .chart-options-default {
+                background-color: var(--card-bg-dark);
+                border-color: var(--border-color-dark);
+            }
+            .dashboard-metric-card, .tech-pillar, .explorer-brand-card, .ledger-metric-card, .sovereign-scrolls-info {
+                background-color: var(--card-bg-light);
+                border-color: var(--border-color-dark);
+            }
+        }
+
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color-light); /* Pure white background by default */
@@ -53,7 +95,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.5s ease, color 0.5s ease; /* Slower, organic transition */
             scroll-behavior: smooth; /* Smooth scrolling for anchor links */
         }
 
@@ -145,9 +187,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px; /* Base padding */
-            transition: top 0.3s ease; /* Smooth transition for sticky header */
+            transition: top 0.3s ease, background-color 0.5s ease, border-color 0.5s ease;
         }
-        .dark-mode header.main-header {
+        body.dark-mode header.main-header {
             background-color: var(--card-bg-dark);
             border-bottom-color: var(--border-color-dark);
             box-shadow: 0 1px 0 rgba(0,0,0,0.2);
@@ -168,8 +210,8 @@
             transition: color 0.3s ease;
             flex-shrink: 0; /* Prevent shrinking */
         }
-        .dark-mode .logo-group {
-            color: var(--text-color-dark);
+        body.dark-mode .logo-group {
+            color: var(--text-color-light);
         }
         .logo-group .logo-link {
             text-decoration: none;
@@ -188,16 +230,16 @@
             font-size: 1.4rem;
             font-weight: 600;
         }
-        .dark-mode .logo-separator {
-            color: var(--muted-text-dark);
+        body.dark-mode .logo-separator {
+            color: var(--muted-text-light);
         }
         .logo-omnigrid {
             color: var(--text-color-light);
             font-size: 1.4rem;
             font-weight: 600;
         }
-        .dark-mode .logo-omnigrid {
-            color: var(--text-color-dark);
+        body.dark-mode .logo-omnigrid {
+            color: var(--text-color-light);
         }
 
         .main-nav {
@@ -233,11 +275,12 @@
             color: var(--primary-color);
             background-color: rgba(0, 0, 0, 0.03);
         }
-        .dark-mode .nav-list a {
-            color: var(--muted-text-dark);
+        body.dark-mode .nav-list a {
+            color: var(--muted-text-light);
         }
-        .dark-mode .nav-list a:hover {
+        body.dark-mode .nav-list a:hover {
             color: var(--primary-color);
+            background-color: rgba(255,255,255,0.05);
         }
 
         /* Active Nav Link */
@@ -245,6 +288,9 @@
             color: var(--primary-color);
             font-weight: 600;
             background-color: rgba(0, 113, 227, 0.05);
+        }
+        body.dark-mode .nav-list a.active-nav-link {
+            background-color: rgba(129, 178, 20, 0.1); /* Dark mode active bg */
         }
 
         .nav-actions { /* CTA buttons section (hidden by default on desktop) */
@@ -286,6 +332,24 @@
             color: #1d1d1f;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+        body.dark-mode .cta-button {
+            background-color: var(--primary-color); /* Dark mode primary button */
+            box-shadow: 0 2px 8px rgba(129, 178, 20, 0.3);
+        }
+        body.dark-mode .cta-button:hover {
+            background-color: #729a17;
+            box-shadow: 0 4px 12px rgba(129, 178, 20, 0.5);
+        }
+        body.dark-mode .cta-button.cta-button-secondary {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-dark);
+        }
+        body.dark-mode .cta-button.cta-button-secondary:hover {
+            background-color: var(--border-color-dark);
+            color: var(--text-color-light);
+        }
+
 
         .hamburger-menu {
             display: none; /* Hidden on desktop, shown on mobile */
@@ -296,8 +360,8 @@
             color: var(--text-color-light);
             transition: color 0.3s ease;
         }
-        .dark-mode .hamburger-menu {
-            color: var(--text-color-dark);
+        body.dark-mode .hamburger-menu {
+            color: var(--text-color-light);
         }
 
         /* Pulse Grid Noodle Rope Styling - Now Baobab Roots */
@@ -314,7 +378,7 @@
             flex-shrink: 0;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); /* Inner shadow for depth */
         }
-        .dark-mode .pulse-grid-noodle-rope {
+        body.dark-mode .pulse-grid-noodle-rope {
             background-color: #6F4E37; /* Lighter earthy brown for dark mode */
         }
 
@@ -357,6 +421,12 @@
             color: var(--text-color-light);
             background-color: var(--bg-color-light);
             border-bottom: 1px solid var(--border-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode .innovate-connect-thrive-section {
+            background-color: var(--bg-color-light);
+            border-bottom-color: var(--border-color-dark);
+            color: var(--text-color-light);
         }
         .innovate-connect-thrive-section h2 {
             font-size: 3.5rem;
@@ -365,6 +435,10 @@
             color: var(--text-color-light);
             line-height: 1.1;
             margin-bottom: 1.5rem;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode .innovate-connect-thrive-section h2 {
+            color: var(--text-color-light);
         }
         .innovate-connect-thrive-section h2 span {
             color: var(--primary-color); /* Apple Blue accent */
@@ -376,6 +450,10 @@
             max-width: 800px;
             margin: 0 auto 2.5rem;
             line-height: 1.5;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode .innovate-connect-thrive-section p {
+            color: var(--muted-text-light);
         }
         .innovate-connect-thrive-section .cta-group {
             display: flex;
@@ -383,36 +461,6 @@
             justify-content: center;
             align-items: center;
             gap: 1rem;
-        }
-        .innovate-connect-thrive-section .hero-cta-button { /* Re-used cta-button styles for these specific buttons */
-            background: var(--primary-color);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-        .innovate-connect-thrive-section .hero-cta-button:hover {
-            background-color: #0077ed;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-        }
-        .innovate-connect-thrive-section .hero-cta-button.cta-button-secondary {
-            background-color: #f0f0f0;
-            color: #424245;
-            box-shadow: none;
-            border: 1px solid #dcdcdc;
-        }
-        .innovate-connect-thrive-section .hero-cta-button.cta-button-secondary:hover {
-            background-color: #e8e8ed;
-            color: #1d1d1f;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         /* Hero Section (now just canvas background) */
@@ -424,6 +472,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: background-color 0.5s ease;
+        }
+        body.dark-mode .hero-canvas-section {
+            background-color: var(--bg-color-light); /* Also dark in dark mode */
         }
         .hero-canvas-section #rhythmicCanvas {
             position: absolute;
@@ -446,6 +498,9 @@
             z-index: 1;
             animation: subtlePulse 5s infinite ease-in-out alternate;
         }
+        body.dark-mode .hero-canvas-overlay {
+            background: radial-gradient(circle at center, rgba(129, 178, 20, 0.15) 0%, transparent 70%); /* Dark mode primary accent */
+        }
 
         @keyframes subtlePulse {
             0% { opacity: 0.6; transform: scale(1); }
@@ -459,6 +514,12 @@
             color: var(--baobab-light-text);
             text-align: center;
             border-bottom: 1px solid var(--baobab-border-gray);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode #baobab-terminal-access {
+            background-color: var(--baobab-primary-dark);
+            color: var(--baobab-light-text);
+            border-bottom-color: var(--baobab-border-gray);
         }
         #baobab-terminal-access h2 {
             font-size: 3.5rem;
@@ -467,14 +528,22 @@
             color: var(--baobab-gold); /* Gold accent */
             line-height: 1.1;
             margin-bottom: 1.5rem;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode #baobab-terminal-access h2 {
+            color: var(--baobab-gold);
         }
         #baobab-terminal-access p {
             font-size: 1.2rem;
             color: var(--baobab-light-text);
             max-width: 800px;
             margin: 0 auto 2.5rem;
+            transition: color 0.5s ease;
         }
-        #baobab-terminal-access .terminal-iframe-container {
+        body.dark-mode #baobab-terminal-access p {
+            color: var(--baobab-light-text);
+        }
+        #baobab-terminal-access .terminal-iframe-container { /* Renamed to .terminal-embedded-container */
             width: 100%;
             max-width: 900px;
             height: 700px;
@@ -485,13 +554,109 @@
             overflow: hidden;
             box-shadow: 0 0 20px rgba(184, 134, 11, 0.4); /* Gold glow */
             position: relative;
+            display: flex; /* Added for terminal internal layout */
+            flex-direction: column; /* Added for terminal internal layout */
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
         }
-        #baobab-terminal-access .terminal-iframe-container iframe {
+        body.dark-mode #baobab-terminal-access .terminal-iframe-container {
+            background-color: #0d0d0d;
+            border-color: var(--baobab-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); /* Brighter gold glow */
+        }
+
+
+        /* Baobabe Terminal specific styles - Integrated */
+        .baobabe-terminal-container {
             width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+            height: 100%; /* Take full height of parent */
+            background-color: #000; /* Pure black for terminal background */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensure content inside respects border-radius */
         }
+
+        .baobabe-terminal-header {
+            background-color: #2d3748; /* Darker header */
+            color: #cbd5e0;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem; /* sm text */
+            font-weight: bold;
+            border-bottom: 1px solid #4a5568;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .baobabe-terminal-header {
+            background-color: #1a1a1a; /* Even darker header in terminal */
+            color: #f0f0f0;
+            border-bottom-color: #3a3a3a;
+        }
+
+        .baobabe-terminal-header-buttons span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        .baobabe-terminal-header-buttons .red { background-color: #ef4444; }
+        .baobabe-terminal-header-buttons .yellow { background-color: #fbbf24; }
+        .baobabe-terminal-header-buttons .green { background-color: #10b981; }
+
+        .baobabe-terminal-output {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto; /* Scrollable output */
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Preserve whitespace and wrap lines */
+            word-break: break-all; /* Break long words */
+            color: #a0aec0; /* Lighter grey for output text */
+            transition: color 0.5s ease;
+        }
+        body.dark-mode .baobabe-terminal-output {
+            color: #bbbbbb; /* Lighter text in dark terminal */
+        }
+
+        .baobabe-terminal-input-area {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-top: 1px solid #4a5568;
+            background-color: #000; /* Keep input area black */
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode .baobabe-terminal-input-area {
+            background-color: #000;
+            border-top-color: #3a3a3a;
+        }
+
+        .baobabe-terminal-prompt {
+            color: #48bb78; /* Green prompt */
+            margin-right: 0.5rem;
+            font-weight: bold;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode .baobabe-terminal-prompt {
+            color: #90ee90; /* Lighter green in dark terminal */
+        }
+
+        .baobabe-terminal-input {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            color: #fff; /* White input text */
+            font-size: 0.875rem;
+            caret-color: #48bb78; /* Green caret */
+            transition: color 0.5s ease, caret-color 0.5s ease;
+        }
+        body.dark-mode .baobabe-terminal-input {
+            color: #f5f5f5;
+            caret-color: #90ee90;
+        }
+
         .baobab-terminal-btn {
             background-color: var(--baobab-gold); /* Gold button */
             color: var(--baobab-primary-dark); /* Dark text on gold */
@@ -524,6 +689,7 @@
             box-shadow: none;
             border-bottom: 1px solid var(--border-color-light);
             text-align: center;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
         }
         section:last-of-type {
             border-bottom: none;
@@ -534,24 +700,33 @@
             letter-spacing: -0.03em;
             margin-bottom: 2rem;
             font-size: 2.2rem;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode section h2, body.dark-mode section h3 {
+            color: var(--text-color-light);
         }
         section p {
             color: var(--muted-text-light);
             font-size: 1.1rem;
             line-height: 1.5;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode section p {
+            color: var(--muted-text-light);
         }
 
-        /* Specific section background overrides to ensure white */
-        #shareprice { background-color: var(--bg-color-light); }
-        #seedwave { background-color: var(--card-bg-light); }
-        .founders-note-section { background-color: var(--bg-color-light) !important; }
-        #vault-access { background-color: var(--card-bg-light); }
-        .sector-scrolls-section { background-color: var(--bg-color-light) !important; }
-        #treaty { background-color: var(--card-bg-light); }
-        #vaultmesh { background-color: var(--bg-color-light); }
-        #about { background-color: var(--card-bg-light); }
-        #cta { background: var(--bg-color-light); }
-        footer { background-color: var(--bg-color-light); }
+
+        /* Specific section background overrides to ensure white/dark on toggle */
+        #shareprice, #seedwave, .founders-note-section, #vault-access, .sector-scrolls-section, #treaty, #vaultmesh, #about, #cta, footer {
+            background-color: var(--bg-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode #shareprice, body.dark-mode #seedwave, body.dark-mode .founders-note-section,
+        body.dark-mode #vault-access, body.dark-mode .sector-scrolls-section, body.dark-mode #treaty,
+        body.dark-mode #vaultmesh, body.dark-mode #about, body.dark-mode #cta, body.dark-mode footer {
+            background-color: var(--bg-color-light);
+            border-color: var(--border-color-dark);
+        }
 
 
         /* Share Signal Section - Clean data display */
@@ -566,6 +741,9 @@
             color: var(--primary-color);
             letter-spacing: -0.02em;
         }
+        body.dark-mode #price {
+            color: var(--primary-color);
+        }
         #timestamp {
             color: var(--muted-text-light);
             font-size: 0.85rem;
@@ -578,18 +756,29 @@
             margin-bottom: 2rem;
             color: var(--text-color-light);
         }
+        body.dark-mode #seedwave h2 {
+            color: var(--text-color-light);
+        }
         #seedwave .w-full.max-w-4xl {
             background-color: #fcfcfc;
             border: 1px solid var(--border-color-light);
             padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode #seedwave .w-full.max-w-4xl {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-dark);
         }
 
         /* Founder's Note - Elegant text block */
         .founders-note-section h2 {
             font-size: 2.5rem;
             font-weight: 700;
+            color: var(--text-color-light);
+        }
+        body.dark-mode .founders-note-section h2 {
             color: var(--text-color-light);
         }
         .founders-note-section p {
@@ -608,6 +797,9 @@
             font-weight: 600;
             margin-top: 2rem;
         }
+        body.dark-mode .founders-note-section p.font-semibold {
+            color: var(--primary-color);
+        }
 
         /* Vault Terminal Access - Clean buttons */
         #vault-access {
@@ -621,11 +813,20 @@
             color: var(--text-color-light);
             margin-bottom: 2.5rem;
         }
+        body.dark-mode #vault-access h3 {
+            color: var(--text-color-light);
+        }
         #vault-access .w-full.h-\[800px\] { /* Iframe container */
             background-color: #f0f0f0; /* Light gray background for iframe */
             border: 1px solid #dcdcdc; /* Light border */
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-mode #vault-access .w-full.h-\[800px\] {
+            background-color: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .terminal-btn {
             background-color: #f0f0f0; /* Light gray button */
@@ -648,6 +849,21 @@
             border-color: #0071e3;
             box-shadow: 0 0 0 2px #0071e3;
         }
+        body.dark-mode .terminal-btn {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .terminal-btn:hover {
+            background-color: var(--border-color-dark);
+            color: var(--text-color-light);
+        }
+        body.dark-mode .terminal-btn.ring {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
 
         /* Sector Scrolls - Clean link grid */
         .sector-scrolls-section h2 {
@@ -655,6 +871,9 @@
             font-weight: 700;
             color: var(--text-color-light);
             margin-bottom: 2.5rem;
+        }
+        body.dark-mode .sector-scrolls-section h2 {
+            color: var(--text-color-light);
         }
         .glyph {
             background-color: #ffffff; /* White background */
@@ -677,6 +896,16 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        body.dark-mode .glyph {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .glyph:hover {
+            background-color: var(--border-color-dark);
+            color: var(--text-color-light);
+        }
 
         /* Treaty Section - Elegant quote */
         #treaty h2 {
@@ -684,6 +913,9 @@
             font-weight: 700;
             color: var(--text-color-light);
             margin-bottom: 1.5rem;
+        }
+        body.dark-mode #treaty h2 {
+            color: var(--text-color-light);
         }
         #treaty p {
             font-size: 1.1rem;
@@ -702,6 +934,9 @@
             margin-left: auto;
             margin-right: auto;
         }
+        body.dark-mode #treaty blockquote {
+            color: var(--text-color-light);
+        }
         #treaty blockquote::before, #treaty blockquote::after {
             content: '“'; /* Apple-style quotes */
             font-size: 2.5em;
@@ -710,9 +945,8 @@
             color: #dcdcdc; /* Muted quote color */
             margin-right: 0.1em;
         }
-        #treaty blockquote::after {
-            content: '”';
-            margin-left: 0.05em;
+        body.dark-mode #treaty blockquote::before, body.dark-mode #treaty blockquote::after {
+            color: #555555; /* Darker muted quote color */
         }
 
         /* Signal Packet - Developer focused, clean code block */
@@ -723,6 +957,12 @@
             border-bottom: 1px solid #333;
             text-align: center;
             font-size: 0.75rem; /* text-xs equivalent */
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode .signal-packet-section {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: #444;
+            color: #90ee90; /* Lighter green */
         }
         .signal-packet-section pre {
             background-color: #0a0a0a; /* Even darker code block */
@@ -733,6 +973,11 @@
             white-space: pre-wrap; /* Allow wrapping for long lines */
             word-break: break-all;
         }
+        body.dark-mode .signal-packet-section pre {
+            background-color: #000; /* Pure black in dark mode */
+            border-color: #444;
+        }
+
 
         /* VaultMesh Executive Summary - Structured and readable */
         #vaultmesh h2 {
@@ -741,8 +986,14 @@
             color: var(--text-color-light);
             margin-bottom: 1.5rem;
         }
+        body.dark-mode #vaultmesh h2 {
+            color: var(--text-color-light);
+        }
         #vaultmesh h2.text-purple-400 {
             color: var(--primary-color); /* Apple blue for main heading */
+        }
+        body.dark-mode #vaultmesh h2.text-purple-400 {
+            color: var(--primary-color);
         }
         #vaultmesh h3 {
             font-size: 1.5rem;
@@ -751,14 +1002,23 @@
             margin-top: 2.5rem;
             margin-bottom: 1rem;
         }
+        body.dark-mode #vaultmesh h3 {
+            color: var(--text-color-light);
+        }
         #vaultmesh p {
             font-size: 1.05rem;
             color: var(--muted-text-light);
             line-height: 1.5;
         }
+        body.dark-mode #vaultmesh p {
+            color: var(--muted-text-light);
+        }
         #vaultmesh ul {
             list-style-type: disc;
             margin-left: 1.5rem;
+            color: var(--muted-text-light);
+        }
+        body.dark-mode #vaultmesh ul {
             color: var(--muted-text-light);
         }
         #vaultmesh ul li {
@@ -775,6 +1035,10 @@
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
             color: var(--text-color-light);
         }
+        body.dark-mode #vaultmesh code {
+            background-color: #444444;
+            color: var(--text-color-light);
+        }
 
         /* About Section - Simple and clear */
         #about h3 {
@@ -783,12 +1047,18 @@
             color: var(--text-color-light);
             margin-bottom: 1.5rem;
         }
+        body.dark-mode #about h3 {
+            color: var(--text-color-light);
+        }
         #about p {
             font-size: 1.1rem;
             color: var(--muted-text-light);
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+        }
+        body.dark-mode #about p {
+            color: var(--muted-text-light);
         }
 
         /* Call to Action Section - Prominent and inviting */
@@ -798,6 +1068,9 @@
             color: var(--text-color-light);
             margin-bottom: 1.5rem;
         }
+        body.dark-mode #cta h3 {
+            color: var(--text-color-light);
+        }
         #cta p {
             font-size: 1.2rem;
             color: var(--muted-text-light);
@@ -805,6 +1078,9 @@
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 2.5rem;
+        }
+        body.dark-mode #cta p {
+            color: var(--muted-text-light);
         }
 
         /* Footer - Minimalist */
@@ -815,6 +1091,10 @@
             padding: 2rem;
             font-size: 0.85rem;
         }
+        body.dark-mode footer {
+            border-top-color: var(--border-color-dark);
+            color: var(--muted-text-light);
+        }
         footer a {
             color: var(--muted-text-light);
             text-decoration: none;
@@ -823,15 +1103,29 @@
         footer a:hover {
             color: var(--text-color-light);
         }
+        body.dark-mode footer a {
+            color: var(--muted-text-light);
+        }
+        body.dark-mode footer a:hover {
+            color: var(--text-color-light);
+        }
 
         /* Admin Portal Specific Styles (Integrated into Apple.com style) */
         .admin-portal-container {
             padding: 4rem 2rem; /* Consistent padding for the whole section */
             background-color: var(--bg-color-light); /* White background for the entire admin section */
             border-bottom: 1px solid var(--border-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container {
+            background-color: var(--bg-color-light);
+            border-bottom-color: var(--border-color-dark);
         }
         .admin-portal-container h1 {
             color: var(--text-color-light); /* Dark text for admin header title */
+        }
+        body.dark-mode .admin-portal-container h1 {
+            color: var(--text-color-light);
         }
         .admin-portal-container .admin-header {
             background: #f5f5f7; /* Very light background for admin header bar */
@@ -842,6 +1136,12 @@
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
             margin-bottom: 2rem;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .admin-header {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-bottom-color: var(--border-color-dark);
         }
         .admin-portal-container .admin-header .access-button {
             background-color: var(--primary-color);
@@ -852,10 +1152,8 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border: none;
         }
-        .admin-portal-container .admin-header .access-button:hover {
-            background-color: #0077ed;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        body.dark-mode .admin-portal-container .admin-header .access-button {
+            background-color: var(--primary-color);
         }
 
         .admin-portal-container main.admin-main-content {
@@ -865,6 +1163,12 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.1);
             margin-top: 0;
             border: 1px solid var(--border-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container main.admin-main-content {
+            background-color: var(--bg-color-light);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
         .admin-portal-container main.admin-main-content section {
             background-color: #fcfcfc; /* Very light background for sub-sections */
@@ -873,6 +1177,12 @@
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color-light);
             margin-bottom: 1.5rem; /* Margin between sections */
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container main.admin-main-content section {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
         }
         .admin-portal-container main.admin-main-content input, .admin-portal-container main.admin-main-content select {
             background-color: var(--bg-color-light);
@@ -880,10 +1190,19 @@
             color: var(--text-color-light);
             border-radius: 6px;
             padding: 0.6rem 0.8rem;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container main.admin-main-content input, body.dark-mode .admin-portal-container main.admin-main-content select {
+            background-color: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-light);
         }
         .admin-portal-container main.admin-main-content input:focus, .admin-portal-container main.admin-main-content select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+        }
+        body.dark-mode .admin-portal-container main.admin-main-content input:focus, body.dark-mode .admin-portal-container main.admin-main-content select:focus {
+            box-shadow: 0 0 0 2px rgba(129, 178, 20, 0.3);
         }
         .admin-portal-container main.admin-main-content button {
             background: var(--primary-color);
@@ -893,11 +1212,13 @@
             font-weight: 600;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .admin-portal-container main.admin-main-content button:hover {
-            background-color: #0077ed;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        body.dark-mode .admin-portal-container main.admin-main-content button {
+            background: var(--primary-color);
         }
+        body.dark-mode .admin-portal-container main.admin-main-content button:hover {
+            background-color: #729a17;
+        }
+
 
         .admin-portal-container .snapshot-box {
             background: #fcfcfc;
@@ -907,6 +1228,12 @@
             padding: 1.5rem;
             border-radius: 8px;
             margin-top: 1.5rem;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .snapshot-box {
+            background: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-light);
         }
         .admin-portal-container .brand-snapshot {
             background-color: var(--bg-color-light);
@@ -916,6 +1243,12 @@
             padding: 2rem;
             margin-top: 2rem;
         }
+        body.dark-mode .admin-portal-container .brand-snapshot {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
 
         /* FAA.ZONE INDEX Table Styling (Admin) */
         .admin-portal-container .admin-table {
@@ -926,12 +1259,22 @@
         .admin-portal-container .admin-table thead {
             background-color: #f5f5f7;
             color: #424245;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .admin-table thead {
+            background-color: #3a3a3a;
+            color: var(--text-color-light);
         }
         .admin-portal-container .admin-table th, .admin-portal-container .admin-table td {
+            padding: 0.8rem 1rem;
             border-bottom: 1px solid var(--border-color-light);
             border-right: 1px solid var(--border-color-light);
-            padding: 0.8rem 1rem;
             text-align: left;
+            transition: border-color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .admin-table th, body.dark-mode .admin-portal-container .admin-table td {
+            border-bottom-color: var(--border-color-dark);
+            border-right-color: var(--border-color-dark);
         }
         .admin-portal-container .admin-table th:last-child,
         .admin-portal-container .admin-table td:last-child {
@@ -939,17 +1282,31 @@
         }
         .admin-portal-container .admin-table tbody tr {
             background-color: var(--bg-color-light);
+            transition: background-color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .admin-table tbody tr {
+            background-color: var(--card-bg-light);
         }
         .admin-portal-container .admin-table tbody tr:hover {
             background-color: #f0f0f5;
         }
+        body.dark-mode .admin-portal-container .admin-table tbody tr:hover {
+            background-color: #444444;
+        }
         .admin-portal-container .admin-table tbody tr:nth-child(odd) {
             background-color: #fcfcfc;
         }
+        body.dark-mode .admin-portal-container .admin-table tbody tr:nth-child(odd) {
+            background-color: var(--card-bg-dark);
+        }
         .admin-portal-container .admin-table button.text-blue-400 { color: var(--primary-color); }
         .admin-portal-container .admin-table button.text-blue-400:hover { background-color: rgba(0, 113, 227, 0.1); }
+        body.dark-mode .admin-portal-container .admin-table button.text-blue-400 { color: var(--primary-color); }
+        body.dark-mode .admin-portal-container .admin-table button.text-blue-400:hover { background-color: rgba(129, 178, 20, 0.1); }
         .admin-portal-container .admin-table button.text-green-400 { color: var(--secondary-color); }
         .admin-portal-container .admin-table button.text-green-400:hover { background-color: rgba(48, 209, 88, 0.1); }
+        body.dark-mode .admin-portal-container .admin-table button.text-green-400 { color: var(--secondary-color); }
+        body.dark-mode .admin-portal-container .admin-table button.text-green-400:hover { background-color: rgba(252, 163, 17, 0.1); }
 
         /* Top Navigation (Admin) */
         .admin-portal-container .top-nav {
@@ -961,6 +1318,11 @@
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             padding: 0.75rem 1.25rem; /* Adjusted padding */
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        body.dark-mode .admin-portal-container .top-nav {
+            background-color: var(--card-bg-light);
+            border-bottom-color: var(--border-color-dark);
         }
         .admin-portal-container .top-nav a {
             color: #424245;
@@ -970,10 +1332,12 @@
             font-weight: 500;
             transition: all 0.2s ease-in-out;
         }
-        .admin-portal-container .top-nav a:hover {
-            color: #1d1d1f;
-            background-color: rgba(0, 0, 0, 0.03);
-            transform: none;
+        body.dark-mode .admin-portal-container .top-nav a {
+            color: var(--muted-text-light);
+        }
+        body.dark-mode .admin-portal-container .top-nav a:hover {
+            color: var(--text-color-light);
+            background-color: rgba(255,255,255,0.05);
         }
         .admin-portal-container .top-nav a::after {
             content: '';
@@ -986,12 +1350,16 @@
             background: var(--primary-color);
             transition: width 0.3s ease;
         }
+        body.dark-mode .admin-portal-container .top-nav a::after {
+            background: var(--primary-color);
+        }
         .admin-portal-container .top-nav a.active {
             color: var(--primary-color);
             background-color: rgba(0, 113, 227, 0.05);
         }
-        .admin-portal-container .top-nav a.active::after {
-            width: calc(100% - 1.6rem); /* Adjust width to account for padding */
+        body.dark-mode .admin-portal-container .top-nav a.active {
+            color: var(--primary-color);
+            background-color: rgba(129, 178, 20, 0.1);
         }
 
         /* Metrics Section (Admin) */
@@ -1004,12 +1372,16 @@
             border-radius: 12px;
             text-align: center;
             display: block;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out, background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
         }
-        .admin-portal-container .metrics-grid a:hover {
-            background-color: #f0f0f5;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        body.dark-mode .admin-portal-container .metrics-grid a {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .admin-portal-container .metrics-grid a:hover {
+            background-color: #444444;
         }
         .admin-portal-container .metrics-grid h3 {
             color: var(--muted-text-light);
@@ -1017,80 +1389,84 @@
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
+        body.dark-mode .admin-portal-container .metrics-grid h3 {
+            color: var(--muted-text-light);
+        }
         .admin-portal-container .metrics-grid p {
             color: var(--primary-color);
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.02em;
         }
+        body.dark-mode .admin-portal-container .metrics-grid p {
+            color: var(--primary-color);
+        }
 
-        /* Sidebar Specific Styles */
+        /* Sidebar Specific Styles (not directly in this HTML, but for consistency if used) */
         #sidebar {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-right: 1px solid var(--border-color-light);
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
-        #sidebar .logo-container { height: 60px; display: flex; align-items: center; justify-content: center; }
-        #sidebar .logo-full { height: 40px; width: auto; object-fit: contain; }
-        #sidebar .logo-collapsed { height: 40px; width: 40px; object-fit: contain; }
+        body.dark-mode #sidebar {
+            background-color: rgba(26, 26, 28, 0.9);
+            border-right-color: var(--border-color-dark);
+        }
         #sidebar h2 {
             color: var(--muted-text-light);
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
-            padding-left: 1rem; padding-top: 1rem; margin-bottom: 0.5rem;
+            transition: color 0.5s ease;
+        }
+        body.dark-mode #sidebar h2 {
+            color: var(--muted-text-light);
         }
         #sidebar .menu-item {
-            display: flex; align-items: center; gap: 0.8rem;
-            padding: 0.6rem 1rem; border-radius: 6px; font-weight: 500;
-            color: #424245; transition: all 0.2s ease-in-out; position: relative; cursor: pointer;
+            color: #424245;
+            transition: all 0.2s ease-in-out;
         }
-        #sidebar .menu-item:hover { background-color: rgba(0, 0, 0, 0.03); color: var(--primary-color); }
+        body.dark-mode #sidebar .menu-item {
+            color: var(--text-color-light);
+        }
+        body.dark-mode #sidebar .menu-item:hover { background-color: rgba(255,255,255,0.05); color: var(--primary-color); }
         #sidebar .menu-item-active {
             background-color: rgba(0, 113, 227, 0.1);
-            color: var(--primary-color); font-weight: 600;
+            color: var(--primary-color);
         }
-        #sidebar .menu-item-active .menu-item-icon-inactive { color: var(--primary-color); }
+        body.dark-mode #sidebar .menu-item-active {
+            background-color: rgba(129, 178, 20, 0.1);
+            color: var(--primary-color);
+        }
         #sidebar .menu-item-icon-inactive { color: var(--muted-text-light); }
+        body.dark-mode #sidebar .menu-item-icon-inactive { color: var(--muted-text-light); }
         #sidebar .menu-dropdown-item {
-            display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem 1rem;
-            border-radius: 4px; font-size: 0.85rem; color: #424245;
-            background-color: transparent; transition: all 0.2s ease-in-out;
+            color: #424245;
         }
-        #sidebar .menu-dropdown-item:hover { background-color: rgba(0, 0, 0, 0.02); color: var(--primary-color); }
-        #sidebar .menu-dropdown-item-active { background-color: rgba(0, 113, 227, 0.05); color: var(--primary-color); font-weight: 500; }
+        body.dark-mode #sidebar .menu-dropdown-item {
+            color: var(--muted-text-light);
+        }
+        body.dark-mode #sidebar .menu-dropdown-item:hover { background-color: rgba(255,255,255,0.02); color: var(--primary-color); }
+        #sidebar .menu-dropdown-item-active { background-color: rgba(0, 113, 227, 0.05); color: var(--primary-color); }
+        body.dark-mode #sidebar .menu-dropdown-item-active { background-color: rgba(129, 178, 20, 0.05); color: var(--primary-color); }
         #sidebar .menu-dropdown-badge {
-            background-color: var(--border-color-light); color: var(--muted-text-light);
-            font-size: 0.7rem; padding: 0.2em 0.5em; border-radius: 10px;
+            background-color: var(--border-color-light);
+            color: var(--muted-text-light);
         }
-        /* Submenu arrow specific styling */
-        .submenu-arrow { color: var(--muted-text-light); transition: transform 0.2s ease, color 0.2s ease; }
+        body.dark-mode #sidebar .menu-dropdown-badge {
+            background-color: var(--border-color-dark);
+            color: var(--muted-text-light);
+        }
+        .submenu-arrow { color: var(--muted-text-light); }
+        body.dark-mode .submenu-arrow {
+            color: var(--muted-text-light);
+        }
         .menu-item-active .submenu-arrow, .submenu-content.open + .menu-item .submenu-arrow {
-            color: var(--primary-color); transform: rotate(180deg);
+            color: var(--primary-color);
         }
-        /* Submenu content transition */
-        .submenu-content {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            overflow: hidden; max-height: 0; opacity: 0; padding-left: 1.5rem;
-        }
-        .submenu-content.open { max-height: 500px; opacity: 1; }
-
-        /* Dashboard Pulse Animation (for sidebar dashboard item) */
-        @keyframes dashboardPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 rgba(0, 113, 227, 0); }
-            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 113, 227, 0.4); }
-            100% { transform: scale(1); box-shadow: 0 0 0 rgba(0, 113, 227, 0); }
-        }
-        .dashboard-pulse { animation: dashboardPulse 2s ease-in-out infinite; }
-
-        /* Main content wrapper adjustment for mobile sidebar open */
-        @media (max-width: 1023px) {
-            .sidebar-open-mobile-shift { padding-left: 290px; }
+        body.dark-mode .menu-item-active .submenu-arrow, body.dark-mode .submenu-content.open + .menu-item .submenu-arrow {
+            color: var(--primary-color);
         }
 
-        /* Sidebar Logo Sizing and Alignment */
-        #sidebar .logo-container { height: 60px; display: flex; align-items: center; justify-content: center; }
-        #sidebar .logo-full { height: 40px; width: auto; object-fit: contain; }
-        #sidebar .logo-collapsed { height: 40px; width: 40px; object-fit: contain; }
 
         /* Chart.js specific container styles for admin charts */
         .chart-container { position: relative; width: 100%; margin-left: auto; margin-right: auto; }
@@ -1101,19 +1477,33 @@
         .admin-portal-container .admin-main-content h2,
         .admin-portal-container .admin-main-content h3,
         .admin-portal-container .admin-main-content label { color: var(--text-color-light); }
+        body.dark-mode .admin-portal-container .admin-main-content h2,
+        body.dark-mode .admin-portal-container .admin-main-content h3,
+        body.dark-mode .admin-portal-container .admin-main-content label { color: var(--text-color-light); }
         .admin-portal-container .admin-main-content p,
         .admin-portal-container .admin-table tbody td { color: #424245; }
+        body.dark-mode .admin-portal-container .admin-main-content p,
+        body.dark-mode .admin-portal-container .admin-table tbody td { color: var(--muted-text-light); }
         .admin-portal-container .admin-main-content #adminStatus { color: var(--muted-text-light); }
+        body.dark-mode .admin-portal-container .admin-main-content #adminStatus { color: var(--muted-text-light); }
         .admin-portal-container .snapshot-box h4 { color: var(--primary-color); }
+        body.dark-mode .admin-portal-container .snapshot-box h4 { color: var(--primary-color); }
         .admin-portal-container .snapshot-box ul li { color: #424245; }
+        body.dark-mode .admin-portal-container .snapshot-box ul li { color: var(--muted-text-light); }
         .admin-portal-container .bg-gray-700 { /* Adjusting general gray-700 where used in admin section */
             background-color: #fcfcfc; color: var(--text-color-light);
+        }
+        body.dark-mode .admin-portal-container .bg-gray-700 {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-light);
         }
 
         /* Baobab Global Dashboard specific styles (from baobab_spa_dashboard.html) */
         .dashboard-app-container {
-            display: flex;
-            height: 100%; /* Take full height of its parent */
+            background-color: var(--baobab-slate-light);
+            transition: background-color 0.5s ease;
+        }
+        body.dark-mode .dashboard-app-container {
             background-color: var(--baobab-slate-light);
         }
         .dashboard-main-content {
@@ -1122,141 +1512,169 @@
             padding: 2.5rem; /* Adjusted padding */
             background-color: var(--baobab-slate-light);
             color: var(--text-color-light); /* Default text color */
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .dashboard-main-content {
+            background-color: var(--baobab-slate-light);
+            color: var(--text-color-light);
         }
         .dashboard-view { /* Base class for dashboard views */
-            display: none;
             background-color: var(--bg-color-light);
-            padding: 2rem;
-            border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            min-height: 500px; /* Ensure content area has some height */
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
         }
-        .dashboard-view.active {
-            display: block;
+        body.dark-mode .dashboard-view {
+            background-color: var(--card-bg-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .dashboard-header-h2 {
              color: var(--text-color-light); /* Darker text */
-             font-size: 2.2rem;
-             font-weight: 800;
-             letter-spacing: -0.02em;
+        }
+        body.dark-mode .dashboard-header-h2 {
+            color: var(--text-color-light);
         }
         .dashboard-header-p {
              color: var(--muted-text-light);
+        }
+        body.dark-mode .dashboard-header-p {
+            color: var(--muted-text-light);
         }
 
         /* Dashboard Metric Cards */
         .dashboard-metric-card {
             background-color: var(--bg-color-light);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color-light);
             color: var(--text-color-light); /* Ensure text is dark */
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .dashboard-metric-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-light);
         }
         .dashboard-metric-card h3 {
             font-weight: 600;
             color: var(--muted-text-light);
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
+        }
+        body.dark-mode .dashboard-metric-card h3 {
+            color: var(--muted-text-light);
         }
         .dashboard-metric-card p {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary-color); /* Apple Blue for numbers */
         }
+        body.dark-mode .dashboard-metric-card p {
+            color: var(--primary-color);
+        }
 
         /* Tech Stack Section */
         .tech-pillar {
             background-color: var(--bg-color-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            border-top-width: 4px;
             border-top-color: var(--border-color-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease, border-color 0.5s ease;
         }
-        .tech-pillar:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        body.dark-mode .tech-pillar {
+            background-color: var(--card-bg-light);
+            border-top-color: var(--border-color-dark);
         }
         .tech-pillar h3 {
             color: var(--text-color-light);
-            font-size: 1.25rem;
-            font-weight: 700;
+        }
+        body.dark-mode .tech-pillar h3 {
+            color: var(--text-color-light);
         }
         .tech-pillar p {
             color: var(--muted-text-light);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
+        }
+        body.dark-mode .tech-pillar p {
+            color: var(--muted-text-light);
         }
         #tech-stack-content {
             background-color: #fcfcfc;
             border: 1px solid var(--border-color-light);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--text-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode #tech-stack-content {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
             color: var(--text-color-light);
         }
         #tech-stack-content h3 {
             color: var(--primary-color);
         }
+        body.dark-mode #tech-stack-content h3 {
+            color: var(--primary-color);
+        }
         #tech-stack-content p, #tech-stack-content ul {
             color: var(--muted-text-light);
         }
-        #tech-stack-content ul li {
-            font-size: 0.95rem;
+        body.dark-mode #tech-stack-content p, body.dark-mode #tech-stack-content ul {
+            color: var(--muted-text-light);
         }
 
         /* Ecosystem Explorer */
         .explorer-brand-card {
             background-color: var(--bg-color-light);
             border: 1px solid var(--border-color-light);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            color: var(--text-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .explorer-brand-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-dark);
             color: var(--text-color-light);
         }
         .explorer-brand-card h4 {
             color: var(--primary-color);
-            font-weight: 600;
-            font-size: 1rem;
+        }
+        body.dark-mode .explorer-brand-card h4 {
+            color: var(--primary-color);
         }
         .explorer-brand-card p {
-            font-size: 0.875rem;
+            color: var(--muted-text-light);
+        }
+        body.dark-mode .explorer-brand-card p {
             color: var(--muted-text-light);
         }
 
         /* Sovereign Scrolls */
         .progress-bar-container {
             background-color: var(--border-color-light);
-            border-radius: 10px;
-            height: 30px;
-            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+        body.dark-mode .progress-bar-container {
+            background-color: var(--border-color-dark);
         }
         .progress-bar {
             background-color: var(--primary-color);
-            height: 100%;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: width 0.5s ease-out;
+            transition: width 0.5s ease-out, background-color 0.5s ease;
+        }
+        body.dark-mode .progress-bar {
+            background-color: var(--primary-color);
         }
         .sovereign-scrolls-info {
             background-color: #fcfcfc;
             border: 1px solid var(--border-color-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--text-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .sovereign-scrolls-info {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
             color: var(--text-color-light);
         }
         .sovereign-scrolls-info h3 {
             color: var(--text-color-light);
         }
+        body.dark-mode .sovereign-scrolls-info h3 {
+            color: var(--text-color-light);
+        }
         .sovereign-scrolls-info p, .sovereign-scrolls-info ul {
+            color: var(--muted-text-light);
+        }
+        body.dark-mode .sovereign-scrolls-info p, body.dark-mode .sovereign-scrolls-info ul {
             color: var(--muted-text-light);
         }
 
@@ -1264,36 +1682,39 @@
         .ledger-metric-card {
             background-color: var(--bg-color-light);
             border: 1px solid var(--border-color-light);
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            text-align: center;
+            color: var(--text-color-light);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+        body.dark-mode .ledger-metric-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-dark);
             color: var(--text-color-light);
         }
         .ledger-metric-card h3 {
             color: var(--muted-text-light);
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+        }
+        body.dark-mode .ledger-metric-card h3 {
+            color: var(--muted-text-light);
         }
         .ledger-metric-card p {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary-color);
         }
+        body.dark-mode .ledger-metric-card p {
+            color: var(--primary-color);
+        }
 
         /* Chart-specific styling for consistency across all charts */
         .chart-options-default {
             background-color: var(--bg-color-light);
-            border-radius: 10px;
-            padding: 1rem;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            transition: background-color 0.5s ease;
+        }
+        body.dark-mode .chart-options-default {
+            background-color: var(--card-bg-dark);
         }
         .chart-options-default canvas {
             background-color: transparent; /* Charts should not have their own background */
-        }
-        .chart-options-default .chart-container { /* Ensure chart containers have size */
-            height: 350px; /* Default chart height */
         }
 
         /* Responsive adjustments */
@@ -1368,7 +1789,7 @@
             #baobab-terminal-access { padding: 4rem 1.5rem; }
             #baobab-terminal-access h2 { font-size: 2.2rem; }
             #baobab-terminal-access p { font-size: 1rem; }
-            #baobab-terminal-access .terminal-iframe-container { height: 400px; }
+            #baobab-terminal-access .terminal-iframe-container { height: 400px; } /* Use terminal-embedded-container */
             .baobab-terminal-btn { padding: 0.8rem 1.5rem; font-size: 1rem; }
 
             /* Baobab Global Dashboard - Mobile */
@@ -1433,6 +1854,27 @@
                     <li><a href="https://faa.zone/support.html">🆘 Support</a></li>
                 </ul>
             </nav>
+            <div class="flex items-center gap-4 ml-4">
+                <!-- Language Selection -->
+                <div class="relative inline-block text-left">
+                    <button id="langToggle" class="text-gray-600 dark:text-gray-300 hover:text-primary-color dark:hover:text-primary-color px-3 py-1 rounded-md font-medium transition-colors duration-300">
+                        <i class="fas fa-globe mr-2"></i><span id="currentLangDisplay">EN</span> <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div id="langDropdown" class="absolute right-0 mt-2 w-28 rounded-md shadow-lg bg-white dark:bg-card-bg-dark ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="langToggle">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" data-lang="en">English</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" data-lang="es">Español</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" role="menuitem" data-lang="fr">Français</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baobabe Day/Night Toggle -->
+                <button id="themeToggle" class="px-3 py-1 rounded-md font-medium transition-colors duration-300 text-gray-600 dark:text-gray-300 hover:text-primary-color dark:hover:text-primary-color">
+                    <i class="fas fa-sun" data-icon-light></i>
+                    <i class="fas fa-moon hidden" data-icon-dark></i>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -1475,11 +1917,29 @@
             <h2>🌳 Baobab Security Network™ Terminal</h2>
             <p>Access the unified global intelligence and operations hub powered by the Baobab Security Network. Experience real-time threat intelligence, strategic resource monitoring, and ethical governance protocols.</p>
             <div class="terminal-iframe-container">
-                <iframe id="baobab-terminal-frame" src="baobab_terminal.html" title="Baobab Security Terminal"></iframe>
+                <!-- Embedded Baobabe Terminal Code Start -->
+                <div class="baobabe-terminal-container">
+                    <div class="baobabe-terminal-header">
+                        <span>Baobabe Terminal</span>
+                        <div class="baobabe-terminal-header-buttons">
+                            <span class="red"></span>
+                            <span class="yellow"></span>
+                            <span class="green"></span>
+                        </div>
+                    </div>
+                    <div id="terminalOutput" class="baobabe-terminal-output">
+                        <span style="color: #48bb78;">Welcome to Baobabe Terminal!</span><br>
+                        Type 'help' for a list of commands.<br>
+                        <br>
+                    </div>
+                    <div class="baobabe-terminal-input-area">
+                        <span class="baobabe-terminal-prompt">user@baobabe:~$</span>
+                        <input type="text" id="terminalInput" class="baobabe-terminal-input" autofocus>
+                    </div>
+                </div>
+                <!-- Embedded Baobabe Terminal Code End -->
             </div>
-            <a href="baobab_terminal.html" class="baobab-terminal-btn" target="_blank">
-                <i class="fas fa-external-link-alt icon"></i> Launch Full Terminal
-            </a>
+            <!-- Removed Launch Full Terminal button as it's now embedded -->
         </section>
 
         <section id="features" class="py-16 md:py-24 px-6 md:px-12">
@@ -1628,10 +2088,11 @@
                 </ul>
 
                 <p>VaultMesh™ powers high-tier operations like HSOMNI9000™, enabling Diamond-tier deployments, cross-sector scroll claims, and enterprise-scale content monetization with full compliance and provenance.</p>
-
+                <p>The framework is deeply integrated with platforms such as <code class="bg-gray-100 dark:bg-gray-700 text-blue-600 dark:text-blue-400">vault.faa.zone™</code>, where scrolls tied to brands like Fruitful Global Planet™ are securely hosted, organized into structured sectors, and deployed through FAA.zone™-compliant channels.</p>
                 <p>A critical operator in this ecosystem is HSOMNI9000™, the certified scroll class which governs Diamond-tier logic, enforces 10–11% royalty triggers, and auto-deploys ScrollClaims™ with real-time ClaimRoot™ verification.</p>
 
-                <h3 class="text-2xl font-semibold mt-10">📖 VaultMesh™ Index</h3>
+
+                <h3 class="text-xl font-bold mt-10">📖 VaultMesh™ Index</h3>
                 <ul class="list-decimal ml-6 space-y-2">
                     <li>Introduction to VaultMesh™</li>
                     <li>Core System Components</li>
@@ -1645,84 +2106,30 @@
                     <li>Team & Governance</li>
                 </ul>
 
-                <h3 class="text-xl font-bold mt-10">☑️ 1. Introduction to VaultMesh™</h3>
-                <p>VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure.</p>
+                <!-- Section for VaultMesh Index Snapshots -->
+                <div class="mt-10 pt-8 border-t border-border-color-light dark:border-border-color-dark">
+                    <h3 class="text-xl font-bold mb-4">📚 VaultMesh Index Snapshots</h3>
+                    <p class="text-sm text-muted-text-light mb-4">Click on each section to expand its detailed snapshot.</p>
+                    <button id="loadVaultMeshIndexSnapshotsBtn" class="action-button mb-4">
+                        <i class="fas fa-list-alt mr-2"></i> Load Index Snapshots
+                    </button>
+                    <div id="vaultMeshIndexContainer" class="space-y-4">
+                        <!-- Snapshots will be loaded here dynamically -->
+                    </div>
+                </div>
 
-                <h3 class="text-xl font-bold mt-10">⚒️ 2. Core System Components</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>VaultDNA™: Immutable identifiers for scroll content</li>
-                    <li>ClaimRoot™: Origin anchor & timestamp</li>
-                    <li>ScrollClaim™ Contracts: Programmable wrappers</li>
-                    <li>PulseGrid™ Sync: Real-time scroll presence & sync</li>
-                    <li>OmniSignal™: Global scroll verification</li>
-                    <li>GhostTrace™ Gen2: Scroll interaction backtrace</li>
-                </ul>
+                <!-- Existing VaultMesh Status Snapshot button moved to the bottom of the section -->
+                <div class="mt-10 pt-8 border-t border-border-color-light dark:border-border-color-dark">
+                    <h3 class="text-xl font-bold mb-4">📈 VaultMesh Status Snapshot</h3>
+                    <p class="text-sm text-muted-text-light mb-4">Get a real-time overview of key VaultMesh operational metrics.</p>
+                    <button id="getSnapshotBtn" class="action-button">
+                        <i class="fas fa-camera mr-2"></i> Get Live Status Snapshot
+                    </button>
+                    <div id="vaultMeshSnapshotOutput" class="mt-4 p-4 rounded-lg bg-gray-100 dark:bg-card-bg-dark text-left text-sm hidden">
+                        <!-- Status Snapshot content will be dynamically inserted here -->
+                    </div>
+                </div>
 
-                <h3 class="text-xl font-bold mt-10">🛠️ 3. ScrollClaim™ Infrastructure</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Set tier access (e.g., Diamond)</li>
-                    <li>Define royalty logic (10–11%)</li>
-                    <li>Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
-                    <li>Deploy via FAA.zone™ with compliant ZIP bundles</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">📀 4. Data Flow and Claim Lifecycle</h3>
-                <ul class="list-decimal ml-6 space-y-1">
-                    <li>Ingest — content enters VaultMesh™</li>
-                    <li>Encode — metadata & VaultDNA™ attached</li>
-                    <li>Wrap — ScrollClaim™ smart-wrapped</li>
-                    <li>Deploy — FAA.zone™ push (ZIP, manifest, HTML)</li>
-                    <li>Sync — PulseGrid™ status & OmniSignal™ locked</li>
-                    <li>Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">💸 5. Tiering, Royalties, and Compliance</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Diamond Tier: 10–11% royalty enforced</li>
-                    <li>SmartWallet Integration: ScrollClaim™ payments and transfers</li>
-                    <li>VaultPay™ Tier III: Required for commercial deployments</li>
-                    <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">📡 6. Integration with FAA.zone™</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Native support for /public/diamond/ structure</li>
-                    <li>ZIP, HTML, Manifest deployment bundles</li>
-                    <li>ClaimRoot™ timestamp validation</li>
-                    <li>Seamless PulseGrid™ auto-sync for live claim state</li>
-                    <li>Brand hosting via vault.faa.zone™</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">🏢 7. Market Segments & Use Cases</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>GPT Conversations & Expert Threads</li>
-                    <li>Knowledge/Training Archives</li>
-                    <li>Creative IP Scrolls (music, literature, visuals)</li>
-                    <li>GeoSector Deployment Archives</li>
-                    <li>Enterprise Scroll Logs & Audit Trails</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">💰 8. Revenue Streams & Monetization</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>Diamond Royalties (10–11%)</li>
-                    <li>Scroll Packaging Fees</li>
-                    <li>VaultMesh™ API Subscriptions</li>
-                    <li>PulseGrid™ and OmniSignal™ Licensing</li>
-                <li>Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
-                    <li>Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
-                    <li>Q4 2025: Autonomous AI Sector Agents</li>
-                    <li>Q1 2026: Inter-vault Federation</li>
-                </ul>
-
-                <h3 class="text-xl font-bold mt-10">🔧 10. Team & Governance</h3>
-                <ul class="list-disc ml-6 space-y-1">
-                    <li>FAA-certified engineers (scroll claimers)</li>
-                    <li>Scroll Ministers: Compliance + tiering</li>
-                    <li>Vault Admins: Metadata + ClaimRoot™ enforcement</li>
-                    <li>HSOMNI9000™ Operators: Diamond-tier execution agents</li>
-                </ul>
-
-                <p class="text-sm mt-10">📎 This plan can now be exported as HTML, PDF, or ZIP.</p>
             </div>
         </section>
 
@@ -1844,7 +2251,7 @@
                     <p>880</p>
                 </div>
                 <div class="ledger-metric-card">
-                    <h3>Tier 3 (Enterprise)</h3>
+                    <h3>Tier 3 (Enterprise)
                     <p>734</p>
                 </div>
                 <div class="ledger-metric-card">
@@ -1904,6 +2311,24 @@
     </main>
 
     <script>
+        // --- ALL API KEYS (as requested by user) ---
+        // Note: For production environments, it is strongly recommended to manage API keys securely
+        // on a backend server or through environment variables, rather than embedding them directly
+        // in client-side code. This is done here based on explicit user instruction.
+        const PAYPAL_SDK_KEY = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+        const PAYPAL_HOSTED_BUTTON_STARTER = "EMWGPGHNN8Y8E";
+        const PAYPAL_HOSTED_BUTTON_PRO = "QGU3ZUQCMD49Q";
+        const PAYPAL_HOSTED_BUTTON_ENTERPRISE = "9C88S44F93M5J";
+        const PAYPAL_HOSTED_BUTTON_BANIMAL_PLACEHOLDER = "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE";
+        const GOOGLE_MAPS_API_KEY = "AIzaSyBPG8dG29cl0TvYRGyLozejGed5Wj5Ab80";
+        const SPOTIFY_ACCESS_TOKEN = "BQBDSZ232IQmSLVbROkxqNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhU...";
+        const GEMINI_AI_API_KEY = "AIzaSyBGSDZATtITv5iIoB3rgKHBpWx9MrufxXE";
+        const XERO_CLIENT_ID = "81B3573D453040508996432C5DAD565B";
+        const XERO_CLIENT_SECRET = "FIaJGmsaCcKR3Z8kWxPnQd04EhYy2_bImPmoitQDP1U6Smaq";
+        const XERO_REDIRECT_URI = "https://seedwave.faa.zone/admin_panel_xero.html";
+        const XERO_WEBHOOK_KEY = "2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw==";
+
+
         // --- Centralized Data Store for ALL dashboards and admin functions ---
         const appData = {
             // Data for Fruitful portal sections (existing)
@@ -1964,10 +2389,10 @@
                     "micromesh": { name: "☰ Micro-Mesh Logistics", brands: ["MicroLogix", "NanoRoute"], nodes: ["Tiny Package", "Drone Delivery"] },
                     "media": { name: "🎬 Motion, Media & Sonic", brands: ["VisualPulse", "SonicScape"], nodes: ["Video Editor", "Audio Mixer"] },
                     "nutrition": { name: "✿ Nutrition & Food Chain", brands: ["NutriFlow", "FarmTrack"], nodes: ["Recipe Optimizer", "Crop Monitor"] },
-                    "packaging": { name: "📦 Packaging & Materials", brands: ["PackSmart", "EcoWrap"], nodes: ["Material Optimizer", "Recycle Trace"] },
-                    "quantum": { name: "✴️ Quantum Protocols", brands: ["QuantumLink", "EntangleOS"], nodes: ["Qubit Manager", "Secure Comm"] },
-                    "ritual": { name: "☯ Ritual & Culture", brands: ["AuraFlow", "SpiritWeave"], nodes: ["Ceremony Guide", "Community Hub"] },
-                    "saas": { name: "🔑 SaaS & Licensing", brands: ["CloudFlow", "AppStack"], nodes: ["Subscription Manager", "API Gateway"] },
+                    "packaging": { brands: ["PackSmart", "EcoWrap"], nodes: ["Material Optimizer", "Recycle Trace"] },
+                    "quantum": { brands: ["QuantumLink", "EntangleOS"], nodes: ["Qubit Manager", "Secure Comm"] },
+                    "ritual": { brands: ["AuraFlow", "SpiritWeave"], nodes: ["Ceremony Guide", "Community Hub"] },
+                    "saas": { brands: ["CloudFlow", "AppStack"], nodes: ["Subscription Manager", "API Gateway"] },
                     "trade": { brands: ["TradeLink", "MarketPulse"], nodes: ["Supply Chain", "Demand Predictor"] },
                     "utilities": { brands: ["PowerGrid", "WaterFlow"], nodes: ["Smart Meter", "Resource Opt"] },
                     "voice": { brands: ["VoiceSynth", "AudioSense"], nodes: ["Speech Rec", "Sound Analysis"] },
@@ -1988,6 +2413,9 @@
                     coreBrands: 168,
                     totalNodes: 700,
                     totalPages: 780,
+                    activeVaults: 12,
+                    totalScrollClaims: 25000,
+                    networkHealth: 98.7
                 },
                 brandDistribution: {
                     labels: ['Finance', 'Logistics', 'Health', 'Education', 'Agriculture', 'AI', 'Other'],
@@ -2062,6 +2490,120 @@
             }
         };
 
+        // VaultMesh Index Sections (consolidated from the provided text)
+        const vaultMeshSections = [
+            {
+                title: "1. Introduction to VaultMesh™",
+                content: "VaultMesh™ transforms disorganized digital content into claimable, trackable assets. It bridges enterprise content systems, decentralized data vaults, and monetization layers through FAA-compliant infrastructure."
+            },
+            {
+                title: "2. Core System Components",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>VaultDNA™: Immutable identifiers for scroll content</li>
+                        <li>ClaimRoot™: Origin anchor & timestamp</li>
+                        <li>ScrollClaim™ Contracts: Programmable wrappers</li>
+                        <li>PulseGrid™ Sync: Real-time scroll presence & sync</li>
+                        <li>OmniSignal™: Global scroll verification</li>
+                        <li>GhostTrace™ Gen2: Scroll interaction backtrace</li>
+                    </ul>
+                `
+            },
+            {
+                title: "3. ScrollClaim™ Infrastructure",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>Set tier access (e.g., Diamond)</li>
+                        <li>Define royalty logic (10–11%)</li>
+                        <li>Lock scrolls with PulseGrid™ sync and OmniSignal™</li>
+                        <li>Deploy via FAA.zone™ with compliant ZIP bundles</li>
+                    </ul>
+                `
+            },
+            {
+                title: "4. Data Flow and Claim Lifecycle",
+                content: `
+                    <ul class="list-decimal pl-6 space-y-1">
+                        <li>Ingest — content enters VaultMesh™</li>
+                        <li>Encode — metadata & VaultDNA™ attached</li>
+                        <li>Wrap — ScrollClaim™ smart-wrapped</li>
+                        <li>Deploy — FAA.zone™ push (ZIP, manifest, HTML)</li>
+                        <li>Sync — PulseGrid™ status & OmniSignal™ locked</li>
+                        <li>Enforce — Royalties, access & scroll activity logged via GhostTrace™</li>
+                    </ul>
+                `
+            },
+            {
+                title: "5. Tiering, Royalties, and Compliance",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>Diamond Tier: 10–11% royalty enforced</li>
+                        <li>SmartWallet Integration: ScrollClaim™ payments and transfers</li>
+                        <li>VaultPay™ Tier III: Required for commercial deployments</li>
+                        <li>Compliance: FAA scroll ID, ClaimRoot™ hash, and royalty schema</li>
+                    </ul>
+                `
+            },
+            {
+                title: "6. Integration with FAA.zone™",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>Native support for /public/diamond/ structure</li>
+                        <li>ZIP, HTML, Manifest deployment bundles</li>
+                        <li>ClaimRoot™ timestamp validation</li>
+                        <li>Seamless PulseGrid™ auto-sync for live claim state</li>
+                        <li>Brand hosting via vault.faa.zone™</li>
+                    </ul>
+                `
+            },
+            {
+                title: "7. Market Segments & Use Cases",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>GPT Conversations & Expert Threads</li>
+                        <li>Knowledge/Training Archives</li>
+                        <li>Creative IP Scrolls (music, literature, visuals)</li>
+                        <li>GeoSector Deployment Archives</li>
+                        <li>Enterprise Scroll Logs & Audit Trails</li>
+                    </ul>
+                `
+            },
+            {
+                title: "8. Revenue Streams & Monetization",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>Diamond Royalties (10–11%)</li>
+                        <li>Scroll Packaging Fees</li>
+                        <li>VaultMesh™ API Subscriptions</li>
+                        <li>PulseGrid™ and OmniSignal™ Licensing</li>
+                    </ul>
+                `
+            },
+            {
+                title: "9. Technology Roadmap",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>Q2 2025: ScrollClaim™ v2.2 with multi-claim staking</li>
+                        <li>Q3 2025: GhostTrace™ Gen3 with forensic backtrace tooling</li>
+                        <li>Q4 2025: Autonomous AI Sector Agents</li>
+                        <li>Q1 2026: Inter-vault Federation</li>
+                    </ul>
+                `
+            },
+            {
+                title: "10. Team & Governance",
+                content: `
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li>FAA-certified engineers (scroll claimers)</li>
+                        <li>Scroll Ministers: Compliance + tiering</li>
+                        <li>Vault Admins: Metadata + ClaimRoot™ enforcement</li>
+                        <li>HSOMNI9000™ Operators: Diamond-tier execution agents</li>
+                    </ul>
+                `
+            }
+        ];
+
+
         // --- Rhythmic Canvas Glyph Drawing Logic (Hero Background) ---
         const canvas = document.getElementById('rhythmicCanvas');
         const ctx = canvas ? canvas.getContext('2d') : null;
@@ -2098,7 +2640,7 @@
                 this.endX = startX + Math.cos(angle) * length;
                 this.endY = startY + Math.sin(angle) * length;
                 this.currentLength = 0;
-                this.parent = parentBranch; 
+                this.parent = parentBranch;
                 this.pulseOffset = Math.random() * Math.PI * 2; // Unique pulse offset for each branch
                 this.id = Math.random(); // Unique ID for potential selective pulsing
             }
@@ -2118,11 +2660,11 @@
                 let hue = (this.baseHue + this.depth * 5) % 360; // Hue varies slightly with depth
                 let saturation = 50 - this.depth * 5; // Less saturated deeper
                 let lightness = 20 + this.depth * 3; // Lighter deeper
-                
+
                 // Add a glowing effect to certain "sap" points or along the branches
                 const glowStrength = 0.5 + pulseIntensity * 0.5; // Stronger glow when pulsing
                 let color = `hsla(${hue}, ${saturation}%, ${lightness}%, ${0.7 + pulseIntensity * 0.3})`;
-                
+
                 ctx.strokeStyle = color;
                 ctx.lineWidth = Math.max(0.5, (maxDepth - this.depth + 1) * 1.5 * glowStrength); // Line width also pulses
                 ctx.lineCap = 'round';
@@ -2161,13 +2703,13 @@
         function drawBaobabRoots() {
             if (!ctx) return;
             // Clear with a slight transparency to create a subtle "trail" effect
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; 
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            angleOffset += branchSpeed; 
+            angleOffset += branchSpeed;
 
             // Trigger new root generation occasionally to maintain density or if branches thin out
-            if (branches.length < maxBranches * 0.8 || Math.random() < 0.002) { 
+            if (branches.length < maxBranches * 0.8 || Math.random() < 0.002) {
                 const startX = Math.random() * canvas.width;
                 const startY = canvas.height * (0.9 + Math.random() * 0.1); // Start from lower 10% of canvas
                 const initialAngle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI / 4; // Mostly upwards, with spread
@@ -2183,7 +2725,7 @@
             if (branches.length > maxBranches * 1.2) {
                 branches.splice(0, branches.length - maxBranches);
             }
-            
+
             animationFrameId = requestAnimationFrame(drawBaobabRoots);
         }
 
@@ -2220,8 +2762,11 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Initial setup for the entire page
-            updateSharePrice();
+            updateSharePrice(); // Call once immediately
+            setInterval(updateSharePrice, 9000); // Then set interval
             setupAnnouncementBar();
+            setupThemeToggle(); // Initialize theme toggle
+            setupLanguageSelector(); // Initialize language selector
             updateHeaderPosition(); // Call this after announcement bar is potentially hidden/moved
 
             // Set up main navigation scroll spy
@@ -2292,6 +2837,21 @@
                     }
                 });
             }
+
+            // Initialize the embedded Baobabe Terminal
+            initBaobabeTerminal();
+
+            // Initialize VaultMesh Snapshot Button
+            const getSnapshotBtn = document.getElementById('getSnapshotBtn');
+            if (getSnapshotBtn) {
+                getSnapshotBtn.addEventListener('click', generateVaultMeshStatusSnapshot);
+            }
+
+            // Initialize VaultMesh Index Snapshots button
+            const loadVaultMeshIndexSnapshotsBtn = document.getElementById('loadVaultMeshIndexSnapshotsBtn');
+            if (loadVaultMeshIndexSnapshotsBtn) {
+                loadVaultMeshIndexSnapshotsBtn.addEventListener('click', renderVaultMeshIndexSnapshots);
+            }
         });
 
         // --- Announcement Bar Logic ---
@@ -2336,12 +2896,12 @@
         // --- Global Main Navigation Scroll Spy ---
         function setupGlobalNavScrollSpy() {
             const navLinks = document.querySelectorAll('.nav-list a[href^="#"]');
-            const sections = document.querySelectorAll('section[id], .innovate-connect-thrive-section[id]'); 
+            const sections = document.querySelectorAll('section[id], .innovate-connect-thrive-section[id]');
 
             const observerOptions = {
-                root: null, 
-                rootMargin: '0px 0px -50% 0px', 
-                threshold: 0 
+                root: null,
+                rootMargin: '0px 0px -50% 0px',
+                threshold: 0
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -2385,7 +2945,7 @@
                         const targetElement = document.querySelector(href);
                         if (targetElement) {
                             targetElement.scrollIntoView({ behavior: 'smooth' });
-                            history.pushState(null, '', href); 
+                            history.pushState(null, '', href);
                         }
                     }
                 });
@@ -2398,10 +2958,13 @@
             const mockPrice = (80 + Math.random() * 10).toFixed(2);
             const priceElement = document.getElementById('price');
             const timestampElement = document.getElementById('timestamp');
-            if (priceElement) priceElement.innerText = `$${mockPrice}`;
-            if (timestampElement) timestampElement.innerText = new Date().toLocaleTimeString();
+            if (priceElement) {
+                priceElement.innerText = `$${mockPrice}`;
+            }
+            if (timestampElement) {
+                timestampElement.innerText = new Date().toLocaleTimeString();
+            }
         }
-        setInterval(updateSharePrice, 9000); 
 
         // --- Vault Terminal Navigation Logic ---
         window.loadTerminal = function(url) {
@@ -2419,7 +2982,7 @@
             });
             console.log("🧬 Terminal loaded:", url);
         };
-        
+
         // --- Sector Glyphs and Iframe Loading ---
         const sectorGlyphsContainer = document.getElementById('sector-glyphs-container');
         if (sectorGlyphsContainer) {
@@ -2427,7 +2990,7 @@
             const sortedSectorSlugs = Object.keys(appData.fruitful.sectorList).sort((a, b) => {
                 const nameA = appData.fruitful.sectorList[a];
                 const nameB = appData.fruitful.sectorList[b];
-                if (a === 'admin' || a === 'global-index') return 1; 
+                if (a === 'admin' || a === 'global-index') return 1;
                 if (b === 'admin' || b === 'global-index') return -1;
                 return nameA.localeCompare(nameB);
             });
@@ -2436,8 +2999,8 @@
                 if (slug !== 'admin' && slug !== 'global-index') {
                     const display = appData.fruitful.sectorList[slug];
                     const fileName = (slug === 'wildlife') ? 'dashboard.html' : 'index.html';
-                    const url = `/sectors/${slug}/${fileName}`; 
-                    
+                    const url = `/sectors/${slug}/${fileName}`;
+
                     const glyphLink = document.createElement('a');
                     glyphLink.href = url;
                     glyphLink.className = "glyph";
@@ -2447,7 +3010,7 @@
                     glyphLink.addEventListener('click', (e) => {
                         e.preventDefault();
                         const clickedSectorSlug = e.currentTarget.getAttribute('data-vault');
-                        const iframeUrl = `/sectors/${clickedSectorSlug}/${(clickedSectorSlug === 'wildlife' ? 'dashboard.html' : 'index.html')}`; 
+                        const iframeUrl = `/sectors/${clickedSectorSlug}/${(clickedSectorSlug === 'wildlife' ? 'dashboard.html' : 'index.html')}`;
                         const sectorContentContainer = document.getElementById('sector-content-container');
 
                         if (iframeUrl) {
@@ -2470,7 +3033,7 @@
         const adminNavLinks = document.querySelectorAll('.admin-nav-link');
         const adminViewPanels = document.querySelectorAll('.admin-view-panel');
         const adminStatusDiv = document.getElementById("adminStatus");
-        let adminCharts = {}; 
+        let adminCharts = {};
 
         function showAdminView(viewId) {
             const targetPanel = document.getElementById(viewId);
@@ -2491,7 +3054,7 @@
             if (clickedAdminNavLink) {
                  clickedAdminNavLink.classList.add('active');
             }
-           
+
             renderAdminCharts(viewId);
         }
 
@@ -2511,7 +3074,7 @@
                         position: 'bottom',
                         labels: {
                             font: { size: 12, family: 'Inter' },
-                            color: 'var(--muted-text-light)' 
+                            color: 'var(--muted-text-light)'
                         }
                     }
                 },
@@ -2519,7 +3082,7 @@
                     y: {
                         beginAtZero: true,
                         ticks: { color: 'var(--muted-text-light)' },
-                        grid: { color: 'var(--border-color-light)' } 
+                        grid: { color: 'var(--border-color-light)' }
                     },
                     x: {
                         ticks: { color: 'var(--muted-text-light)' },
@@ -2547,7 +3110,7 @@
                             datasets: [{
                                 label: 'Core Brands',
                                 data: appData.admin.brandDistribution.data,
-                                backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#14b8a6'], 
+                                backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#14b8a6'],
                                 hoverOffset: 4
                             }]
                         },
@@ -2573,7 +3136,7 @@
                             datasets: [{
                                 label: 'Clause Allocations',
                                 data: appData.admin.licenseLedger.clauses.data,
-                                backgroundColor: ['#4f46e5B3', '#10b981B3', '#f59e0bB3', '#ef4444B3', '#8b5cf6B3'], 
+                                backgroundColor: ['#4f46e5B3', '#10b981B3', '#f59e0bB3', '#ef4444B3', '#8b5cf6B3'],
                             }]
                         },
                         options: { ...chartDefaultOptions, scales: { r: { grid: { color: 'var(--border-color-light)' } } } }
@@ -2586,8 +3149,8 @@
                 document.getElementById('dashboard-metric-total-pages').textContent = appData.admin.globalMetrics.totalPages.toLocaleString() + '+';
 
                 setupTechStackInteraction();
-                document.querySelector('.tech-pillar')?.click(); 
-                
+                document.querySelector('.tech-pillar')?.click();
+
                 populateEcosystemSectorFilter();
                 displayEcosystemSectorInfo(document.getElementById('sector-filter')?.value || Object.keys(appData.admin.sectors)[0]);
 
@@ -2629,7 +3192,7 @@
 
         function setupAdminNav() {
             adminNavLinks.forEach(link => {
-                link.removeEventListener('click', handleAdminNavLinkClick); 
+                link.removeEventListener('click', handleAdminNavLinkClick);
                 link.addEventListener('click', handleAdminNavLinkClick);
             });
         }
@@ -2762,7 +3325,7 @@
         function populateEcosystemSectorFilter() {
             const sectorFilter = document.getElementById('sector-filter');
             if (sectorFilter) {
-                sectorFilter.innerHTML = ''; 
+                sectorFilter.innerHTML = '';
                 Object.keys(appData.admin.sectors).forEach(key => {
                     const option = document.createElement('option');
                     option.value = key;
@@ -2837,6 +3400,346 @@
                 });
             });
         });
+
+        // --- VaultMesh Status Snapshot Feature ---
+        function generateVaultMeshStatusSnapshot() {
+            const snapshotOutputDiv = document.getElementById('vaultMeshSnapshotOutput');
+            if (!snapshotOutputDiv) return;
+
+            const metrics = appData.admin.globalMetrics;
+
+            const snapshotContent = `
+                <p class="font-semibold text-primary-color dark:text-primary-color mb-2">VaultMesh Live Status Snapshot (${new Date().toLocaleString()})</p>
+                <ul class="list-disc pl-4 space-y-1">
+                    <li>Total Brands Monitored: <strong class="text-text-color-light">${metrics.totalBrands.toLocaleString()}</strong></li>
+                    <li>Active Vaults Connected: <strong class="text-text-color-light">${metrics.activeVaults}</strong></li>
+                    <li>Total Scroll Claims: <strong class="text-text-color-light">${metrics.totalScrollClaims.toLocaleString()}</strong></li>
+                    <li>Network Health Index: <strong class="text-text-color-light">${metrics.networkHealth}%</strong></li>
+                    <li>Sovereign Scrolls Generated: <strong class="text-text-color-light">${appData.admin.sovereignScrolls.generated.toLocaleString()} / ${appData.admin.sovereignScrolls.total.toLocaleString()}</strong></li>
+                    <li>Next Audit Cycle: <strong class="text-text-color-light">Automated, every 12 hours</strong></li>
+                </ul>
+                <p class="mt-3 italic text-muted-text-light text-xs">Data derived from PulseGrid™ and OmniSignal™ layers.</p>
+            `;
+
+            snapshotOutputDiv.innerHTML = snapshotContent;
+            snapshotOutputDiv.classList.remove('hidden');
+        }
+
+        // --- VaultMesh Index Snapshots (1-10) Feature ---
+        function renderVaultMeshIndexSnapshots() {
+            const container = document.getElementById('vaultMeshIndexContainer');
+            if (!container) return;
+
+            container.innerHTML = ''; // Clear previous snapshots
+
+            vaultMeshSections.forEach((section, index) => {
+                const snapshotCard = document.createElement('div');
+                snapshotCard.className = 'vaultmesh-snapshot-card bg-card-bg-light dark:bg-card-bg-dark p-4 rounded-lg shadow-md border border-border-color-light dark:border-border-color-dark cursor-pointer transition-all duration-300 ease-in-out';
+                snapshotCard.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-semibold text-text-color-dark dark:text-text-color-light text-lg">${section.title}</h4>
+                        <i class="fas fa-chevron-down text-muted-text-light dark:text-muted-text-light transition-transform duration-300"></i>
+                    </div>
+                    <div class="vaultmesh-snapshot-content mt-3 hidden text-muted-text-light dark:text-muted-text-light overflow-hidden transition-all duration-300 ease-in-out">
+                        ${section.content}
+                        <p class="mt-4 text-xs italic text-blue-500 dark:text-blue-400">
+                            (API/Credential integration relevant for this section. Example: ${GEMINI_AI_API_KEY.substring(0, 10)}... (truncated for security))
+                        </p>
+                    </div>
+                `;
+
+                const chevronIcon = snapshotCard.querySelector('.fa-chevron-down');
+                const contentDiv = snapshotCard.querySelector('.vaultmesh-snapshot-content');
+
+                snapshotCard.addEventListener('click', () => {
+                    const isOpen = contentDiv.classList.contains('active');
+                    // Close all others and open this one, or just close this one
+                    document.querySelectorAll('.vaultmesh-snapshot-content.active').forEach(openContent => {
+                        if (openContent !== contentDiv) {
+                            openContent.classList.remove('active');
+                            openContent.classList.add('hidden');
+                            openContent.style.maxHeight = '0px';
+                            openContent.closest('.vaultmesh-snapshot-card').querySelector('.fa-chevron-down').classList.remove('rotate-180');
+                        }
+                    });
+
+                    if (isOpen) {
+                        contentDiv.classList.remove('active');
+                        contentDiv.classList.add('hidden');
+                        contentDiv.style.maxHeight = '0px';
+                        chevronIcon.classList.remove('rotate-180');
+                    } else {
+                        contentDiv.classList.add('active');
+                        contentDiv.classList.remove('hidden');
+                        contentDiv.style.maxHeight = contentDiv.scrollHeight + 'px'; // Set max-height for smooth transition
+                        chevronIcon.classList.add('rotate-180');
+                    }
+                });
+
+                container.appendChild(snapshotCard);
+            });
+        }
+
+
+        // --- Baobabe Day/Night Theme Toggle ---
+        function setupThemeToggle() {
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const lightIcon = themeToggleBtn.querySelector('[data-icon-light]');
+            const darkIcon = themeToggleBtn.querySelector('[data-icon-dark]');
+
+            // Check for saved theme preference or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            } else {
+                document.body.classList.remove('dark-mode');
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                }
+            });
+        }
+
+        // --- Secure Language Selection ---
+        function setupLanguageSelector() {
+            const langToggleBtn = document.getElementById('langToggle');
+            const langDropdown = document.getElementById('langDropdown');
+            const currentLangDisplay = document.getElementById('currentLangDisplay');
+
+            // Set initial language from localStorage or default to English
+            let currentLang = localStorage.getItem('language') || 'en';
+            currentLangDisplay.textContent = currentLang.toUpperCase();
+
+            // Toggle dropdown visibility
+            langToggleBtn.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent document click from closing immediately
+                langDropdown.classList.toggle('hidden');
+            });
+
+            // Handle language selection
+            langDropdown.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const selectedLang = event.target.dataset.lang;
+                    if (selectedLang) {
+                        currentLang = selectedLang;
+                        localStorage.setItem('language', currentLang); // Securely store preference
+                        currentLangDisplay.textContent = currentLang.toUpperCase();
+                        langDropdown.classList.add('hidden');
+                        console.log(`Language preference set to: ${currentLang}`);
+                        // Optionally, trigger a UI update or API call for content in chosen language
+                        const terminalOutput = document.getElementById('terminalOutput');
+                        if(terminalOutput) {
+                            const line = document.createElement('span');
+                            line.style.color = '#81e6d9'; // Cyan
+                            line.textContent = `Language preference set to: ${currentLang.toUpperCase()}.`;
+                            terminalOutput.appendChild(line);
+                            terminalOutput.appendChild(document.createElement('br'));
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        }
+                    }
+                });
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!langToggleBtn.contains(event.target) && !langDropdown.contains(event.target)) {
+                    langDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+
+        // --- Baobabe Terminal Logic (Embedded) ---
+        function initBaobabeTerminal() {
+            const terminalOutput = document.getElementById('terminalOutput');
+            const terminalInput = document.getElementById('terminalInput');
+
+            // Function to append output to the terminal
+            function appendToOutput(text, color = '#a0aec0') { // Default to light grey
+                const line = document.createElement('span');
+                line.style.color = color;
+                line.textContent = text;
+                terminalOutput.appendChild(line);
+                terminalOutput.appendChild(document.createElement('br'));
+                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Auto-scroll to bottom
+            }
+
+            // Function to simulate an API call for command processing
+            async function processCommand(command) {
+                appendToOutput(`user@baobabe:~$ ${command}`, '#fff'); // Echo command in white
+
+                const lowerCommand = command.toLowerCase().trim();
+
+                if (lowerCommand === 'help') {
+                    appendToOutput("Available commands:", '#81e6d9'); // Cyan
+                    appendToOutput("  help - Display this help message.");
+                    appendToOutput("  clear - Clear the terminal screen.");
+                    appendToOutput("  echo [text] - Echo the provided text.");
+                    appendToOutput("  about - Learn about Baobabe.");
+                    appendToOutput("  date - Display the current date and time.");
+                    appendToOutput("  generate ✨ [prompt] - Generate text using the Gemini API. (Example: 'generate a short story about a tree')");
+                    appendToOutput("  summarize ✨ [text] - Summarize the provided text. (Example: 'summarize The quick brown fox jumps over the lazy dog.')");
+                    appendToOutput("  idea-storm ✨ [topic] - Brainstorm ideas for a given topic. (Example: 'idea-storm new app features')");
+                } else if (lowerCommand === 'clear') {
+                    terminalOutput.innerHTML = '<span style="color: #48bb78;">Welcome to Baobabe Terminal!</span><br>Type \'help\' for a list of commands.<br><br>';
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight; // Auto-scroll to bottom
+                } else if (lowerCommand.startsWith('echo ')) {
+                    const textToEcho = command.substring(5);
+                    appendToOutput(textToEcho, '#f6ad55'); // Orange
+                } else if (lowerCommand === 'about') {
+                    appendToOutput("Baobabe Terminal is a simulated command-line interface.", '#9f7aea'); // Purple
+                    appendToOutput("It's built with HTML, CSS (TailwindCSS), and JavaScript.", '#9f7aea');
+                    appendToOutput("It demonstrates basic terminal functionality and integrates with the Gemini API for text generation.", '#9f7aea');
+                } else if (lowerCommand === 'date') {
+                    const now = new Date();
+                    appendToOutput(now.toLocaleString(), '#ed8936'); // Amber
+                } else if (lowerCommand.startsWith('generate ')) {
+                    const prompt = command.substring(9).trim();
+                    if (prompt) {
+                        appendToOutput("Generating response...", '#63b3ed'); // Blue
+                        try {
+                            let chatHistory = [];
+                            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                            const payload = { contents: chatHistory };
+                            const apiKey = GEMINI_AI_API_KEY; // Using the explicitly provided API key
+                            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                            const response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+
+                            const result = await response.json();
+
+                            if (result.candidates && result.candidates.length > 0 &&
+                                result.candidates[0].content && result.candidates[0].content.parts &&
+                                result.candidates[0].content.parts.length > 0) {
+                                const text = result.candidates[0].content.parts[0].text;
+                                appendToOutput(`Response ✨:`, '#48bb78'); // Green for successful response header with sparkle
+                                // Split the text by newlines and append each line
+                                text.split('\n').forEach(line => appendToOutput(line));
+                            } else {
+                                appendToOutput("Error: Could not get a valid response from the API.", '#f56565'); // Red
+                                console.error("API Response structure unexpected:", result);
+                            }
+                        } catch (error) {
+                            appendToOutput(`Error during API call: ${error.message}`, '#f56565'); // Red
+                            console.error("Fetch error:", error);
+                        }
+                    } else {
+                        appendToOutput("Usage: generate ✨ [prompt]", '#f6e05e'); // Yellow
+                    }
+                } else if (lowerCommand.startsWith('summarize ')) {
+                    const textToSummarize = command.substring(10).trim();
+                    if (textToSummarize) {
+                        appendToOutput("Summarizing...", '#63b3ed'); // Blue
+                        try {
+                            let chatHistory = [];
+                            chatHistory.push({ role: "user", parts: [{ text: `Summarize the following text: ${textToSummarize}` }] });
+                            const payload = { contents: chatHistory };
+                            const apiKey = GEMINI_AI_API_KEY; // Using the explicitly provided API key
+                            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                            const response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+
+                            const result = await response.json();
+
+                            if (result.candidates && result.candidates.length > 0 &&
+                                result.candidates[0].content && result.candidates[0].content.parts &&
+                                result.candidates[0].content.parts.length > 0) {
+                                const summary = result.candidates[0].content.parts[0].text;
+                                appendToOutput(`Summary ✨:`, '#48bb78');
+                                summary.split('\n').forEach(line => appendToOutput(line));
+                            } else {
+                                appendToOutput("Error: Could not get a valid summary from the API.", '#f56565');
+                                console.error("API Response structure unexpected:", result);
+                            }
+                        } catch (error) {
+                            appendToOutput(`Error during API call: ${error.message}`, '#f56565');
+                            console.error("Fetch error:", error);
+                        }
+                    } else {
+                        appendToOutput("Usage: summarize ✨ [text]", '#f6e05e');
+                    }
+                } else if (lowerCommand.startsWith('idea-storm ')) {
+                    const topic = command.substring(11).trim();
+                    if (topic) {
+                        appendToOutput(`Brainstorming ideas for '${topic}'...`, '#63b3ed'); // Blue
+                        try {
+                            let chatHistory = [];
+                            chatHistory.push({ role: "user", parts: [{ text: `Brainstorm ideas for the following topic: ${topic}` }] });
+                            const payload = { contents: chatHistory };
+                            const apiKey = GEMINI_AI_API_KEY; // Using the explicitly provided API key
+                            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                            const response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+
+                            const result = await response.json();
+
+                            if (result.candidates && result.candidates.length > 0 &&
+                                result.candidates[0].content && result.candidates[0].content.parts &&
+                                result.candidates[0].content.parts.length > 0) {
+                                const ideas = result.candidates[0].content.parts[0].text;
+                                appendToOutput(`Ideas for '${topic}' ✨:`, '#48bb78');
+                                ideas.split('\n').forEach(line => appendToOutput(line));
+                            } else {
+                                appendToOutput("Error: Could not get ideas from the API.", '#f56565');
+                                console.error("API Response structure unexpected:", result);
+                            }
+                        } catch (error) {
+                            appendToOutput(`Error during API call: ${error.message}`, '#f56565');
+                            console.error("Fetch error:", error);
+                        }
+                    } else {
+                        appendToOutput("Usage: idea-storm ✨ [topic]", '#f6e05e');
+                    }
+                }
+                else {
+                    appendToOutput(`Command not found: '${command}'. Type 'help' for a list of commands.`, '#f56565'); // Red
+                }
+                appendToOutput(""); // Add an empty line for spacing
+            }
+
+            // Event listener for Enter key on the input field
+            if (terminalInput) {
+                terminalInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        const command = terminalInput.value.trim();
+                        if (command) {
+                            processCommand(command);
+                        }
+                        terminalInput.value = ''; // Clear input field
+                    }
+                });
+                terminalInput.focus(); // Initial focus on the input field
+            } else {
+                console.error("Terminal input element not found!");
+            }
+        }
     </script>
 
 </body>
