@@ -18,7 +18,7 @@ This project showcases the front-end interactive elements of such a transformati
 ---
 
 ## ✨ Cultivating Change: Core Ecosystem Features
-
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5RKQ5NdjSh2QzD4MaunT91?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 The **Fruitful™ portal** is a rich tapestry of interconnected features, each contributing to a vibrant, evolving ecosystem of change:
 
 * **OmniGrid Navigation**: Intuitive navigation connecting you directly to key FAA.zone™ properties like **Homemart.africa**, **Signal**, **Vault**, **Treaty**, **VaultMesh**, and more. This provides seamless access to the broader FAA.zone™ universe, where every click opens a new avenue for impact.
