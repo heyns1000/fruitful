@@ -1,3 +1,5 @@
+![Fruitful. Thank. You](assets/Fruitful.thank.you.png)
+
 # 🌳 Fruitful™ : Igniting Global Transformation
 *Catalyzing a Sector-Driven Ecosystem of Change.*
 
