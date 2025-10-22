@@ -87,21 +87,63 @@
     <!-- END OF COLLAPSED ROSSOUW NODE WIDGET DIV -->
 
     <script>
-        const collapseInterval = 900;
-        const lockTimestampMs = 1730013441000; 
+        const ROOT_KEY = "0f19bb22-ad64-45d2-abc9-ad5686a978dc";
+        const LOCK_TIMESTAMP_MS = 1730013441000; 
+        const COLLAPSE_INTERVAL_MS = 900;
+        const ROOT_KEY_WITH_SEED_TIME = ROOT_KEY + '-TS' + LOCK_TIMESTAMP_MS; 
+
+        function calculateCollapseMetrics(keyWithSeed) {
+            const now = new Date().getTime();
+            const timeElapsedMs = now - LOCK_TIMESTAMP_MS;
+            const lapCount = Math.floor(timeElapsedMs / COLLAPSE_INTERVAL_MS);
+            const timeSinceLastStrike = timeElapsedMs % COLLAPSE_INTERVAL_MS;
+            
+            return {
+                timeElapsedMs: timeElapsedMs,
+                storeID: timeElapsedMs / 1000,
+                lapCount: lapCount,
+                timeSinceLastStrike: timeSinceLastStrike,
+                ghostGap: timeSinceLastStrike,
+            };
+        }
+
+        function generateAtomicKey(metrics, baseKey) {
+            const totalStrikes = metrics.lapCount;
+            const storeID = metrics.storeID.toFixed(3);
+            const DECOHERENCE_FRACTION = (0.1 / 0.9);
+            const decoherenceTraceValue = (metrics.storeID * DECOHERENCE_FRACTION).toFixed(12);
+
+            return (
+                `[TR:${totalStrikes.toString(16).toUpperCase().padStart(10, '0')}]` +
+                `{ID:${storeID}}` +
+                `<DC:${decoherenceTraceValue.substring(0, 10)}>` +
+                `[ANCHOR:${baseKey.substring(0, 8)}]`
+            );
+        }
+
+        function executeCollapseHandshake() {
+            const baseKey = ROOT_KEY_WITH_SEED_TIME.split('-').slice(0, 5).join('-');
+            const metrics = calculateCollapseMetrics(ROOT_KEY_WITH_SEED_TIME);
+            const atomicKey = generateAtomicKey(metrics, baseKey);
+            const routemeshTraceID = btoa(metrics.storeID.toString()).substring(0, 20);
+
+            return {
+                HandshakeToken: atomicKey,
+                StoreID: metrics.storeID,
+                Strikes: metrics.lapCount,
+                GhostGap: metrics.ghostGap / 1000, 
+                RoutemeshTraceID: routemeshTraceID,
+                KeyStatus: "Active / Traceable (Open Source)",
+            };
+        }
 
         function updateNodeMetrics() {
-            const now = new Date().getTime();
-            const timeElapsedMs = now - lockTimestampMs;
-            const timeSinceLastStrike = timeElapsedMs % collapseInterval;
+            const handshakeResult = executeCollapseHandshake();
             
-            // Calculate synchronization latency (how far into the 0.9s lap we are, simulated as latency)
-            const latency = timeSinceLastStrike; 
+            // The GhostGap (time since last strike) is the visual latency we want to track.
+            const latencyDisplay = handshakeResult.GhostGap.toFixed(3) + 's'; 
             
-            // The typo has been corrected in the previous file, ensuring 'timeSinceLastStrike' is used correctly.
-            const displayLatency = (latency / 1000).toFixed(3); 
-            
-            document.getElementById('latency-display').textContent = displayLatency + 's';
+            document.getElementById('latency-display').textContent = latencyDisplay;
             
             // Update local time for context
             const options = { timeZone: 'Africa/Johannesburg', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -110,6 +152,10 @@
 
         updateNodeMetrics();
         setInterval(updateNodeMetrics, 50); 
+    </script>
+</body>
+</html>
+
     </script>
 </body>
 </html>
