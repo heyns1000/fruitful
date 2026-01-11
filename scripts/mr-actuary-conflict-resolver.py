@@ -87,7 +87,9 @@ def resolve_conflicts_ai(pr_number: int, auto_resolve: bool = False, push: bool 
         result = subprocess.run(["git", "rebase", "--continue"], capture_output=True, text=True)
         if result.returncode != 0:
             print(f"❌ Failed to continue rebase: {result.stderr}")
-            subprocess.run(["git", "rebase", "--abort"])
+            abort_result = subprocess.run(["git", "rebase", "--abort"], capture_output=True, text=True)
+            if abort_result.returncode != 0:
+                print(f"❌ Failed to abort rebase: {abort_result.stderr}")
             return
         
         if push:
