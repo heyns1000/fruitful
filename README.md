@@ -45,6 +45,9 @@ See `.github/workflows/` for the complete automation framework:
 | **ecosystem-sync-monitor.yml** | Syncs ecosystem repositories | Every 15 minutes |
 | **pulse-trade-9s.yml** | 9-second pulse heartbeat | Every minute |
 | **jekyll-docker.yml** | Jekyll site CI/CD | Push/PR to main |
+| **vaultrouter-diagonal.yml** | VaultRouter diagonal routing sync | Every 20 minutes / Manual / Config changes |
+| **treatygrid-center.yml** | TreatyGrid center coordination & chess-ledger sync | Every 2 hours / Manual / Content updates |
+| **omnidrop-bishop.yml** | OmniDrop bishop deployment for FAA zones | Every 30 minutes / Manual / Omnigrid updates |
 
 ### Scripts
 
@@ -53,9 +56,31 @@ See `.github/workflows/` for the complete automation framework:
 
 ### Configuration
 
-- **`config/ecosystem-repos.json`** - Defines monitored repositories and sync parameters
+- **`config/ecosystem-repos.json`** - Defines monitored repositories, FAA zones, and sync parameters
+  - Supports fruitful.faa.zone (primary deployment)
+  - Integrates fruitfulplanetchange.faa.zone (mirror deployment)
+  - Coordinates kidscast-empire.faa.zone (specialized deployment)
+  - Chess-ledger synchronized workflows enabled
+  - Zero-touch sovereignty validation active
 
-**Status**: 🌌 OPERATIONAL - Multi-repository automation active.
+### New Operational Components (Post PR #35)
+
+The following workflows extend the automation framework with advanced coordination capabilities:
+
+- **VaultRouter Diagonal (♦️)** - Implements diagonal routing strategy across FAA zones every 20 minutes, ensuring seamless data flow between fruitful.faa.zone, fruitfulplanetchange.faa.zone, and kidscast-empire.faa.zone.
+
+- **TreatyGrid Center (📜)** - Coordinates chess-ledger synchronized workflows every 2 hours, maintaining treaty alignment across all ecosystem repositories. The "🦍 Gorilla holds the flame" principle ensures unwavering governance.
+
+- **OmniDrop Bishop (♗)** - Executes bishop deployment pattern every 30 minutes, validating FAA seedwave operations and maintaining zero-touch sovereignty across all deployment pipelines.
+
+These components work in concert with existing workflows to provide:
+- ✅ Cross-zone synchronization
+- ✅ Chess-ledger workflow coordination
+- ✅ Zero-touch sovereignty enforcement
+- ✅ CI/CD compliance validation
+- ✅ Diagonal routing optimization
+
+**Status**: 🌌 OPERATIONAL - Multi-repository automation active across all FAA seedwave environments.
 
 ---
 
