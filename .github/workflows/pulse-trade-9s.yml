@@ -3,12 +3,18 @@ on:
   schedule:
     - cron: '*/15 * * * *'  # Every 15 minutes (reasonable frequency for pulse monitoring)
   workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   pulse:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      security-events: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
       
@@ -17,6 +23,87 @@ jobs:
           echo "🌊 Pulse: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> pulse.log
           git config user.name "OmniGrid Pulse Bot"
           git config user.email "action@github.com"
-          git add pulse.log
+          git add -f pulse.log
           git diff --cached --quiet || git commit -m "🌊 Pulse update: $(date -u +%Y-%m-%d\ %H:%M:%S) UTC"
           git push
+  
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript
+          queries: security-and-quality
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript"
+          upload: true
+          output: sarif-results
+          sarif-file: codeql-results.sarif
+      
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: codeql-results.sarif
+  
+  dependency-graph:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Generate package.json if missing
+        run: |
+          if [ ! -f package.json ]; then
+            echo "Creating package.json for dependency tracking..."
+            cat > package.json << 'EOF'
+          {
+            "name": "fruitful",
+            "version": "1.0.0",
+            "description": "Fruitful Global Change - FAA.zone ecosystem",
+            "main": "index.html",
+            "scripts": {
+              "test": "echo \"No tests specified\" && exit 0"
+            },
+            "repository": {
+              "type": "git",
+              "url": "git+https://github.com/heyns1000/fruitful.git"
+            },
+            "author": "Heyns Schoeman",
+            "license": "Apache-2.0",
+            "dependencies": {}
+          }
+          EOF
+          fi
+      
+      - name: Install dependencies (if any)
+        run: |
+          if [ -f package.json ] && [ -n "$(jq '.dependencies // {} | keys | .[]' package.json 2>/dev/null)" ]; then
+            npm install
+          else
+            echo "No dependencies to install"
+          fi
+      
+      - name: Submit Dependency Snapshot
+        uses: actions/dependency-review-action@v4
+        continue-on-error: true
+        with:
+          fail-on-severity: high
