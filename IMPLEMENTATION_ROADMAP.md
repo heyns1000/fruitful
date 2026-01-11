@@ -161,7 +161,7 @@ Production (Vercel + Railway)
 
 ## 🔐 Security Checklist
 
-- [x] HTTPS everywhere
+- [ ] HTTPS everywhere
 - [ ] Input validation on all endpoints
 - [ ] SQL injection prevention (parameterized queries)
 - [ ] XSS protection (sanitize output)
@@ -187,9 +187,18 @@ Building on existing FAA Actuary Mastery™ framework:
 # Note: Commands below are for the planned React/FastAPI migration
 on: [push, pull_request]
 jobs:
-  - Frontend: npm run test:ci  # Vitest + React Testing Library
-  - Backend: pytest --cov=app tests/
-  - E2E: playwright test
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run test:ci  # Vitest + React Testing Library
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest --cov=app tests/
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - run: playwright test
 ```
 
 **2. Code Quality** (`code-quality.yml`)
@@ -197,21 +206,38 @@ jobs:
 # Note: Commands below are for the planned React/FastAPI migration
 on: [pull_request]
 jobs:
-  - ESLint frontend
-  - Black/isort backend
-  - TypeScript type check
-  - Dependency audit
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run lint
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - run: black --check . && isort --check .
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run type-check
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm audit && pip-audit
 ```
 
 **3. Security Scanning** (`security-scan.yml`)
 ```yaml
 # Note: Commands below are for the planned React/FastAPI migration
-on: [schedule: daily]
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily
 jobs:
-  - npm audit
-  - pip-audit
-  - Snyk security scan
-  - OWASP ZAP scan
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm audit
+      - run: pip-audit
+      - run: npx snyk test
+      - run: docker run owasp/zap2docker-stable zap-baseline.py
 ```
 
 **4. Performance Testing** (`performance.yml`)
@@ -219,9 +245,18 @@ jobs:
 # Note: Commands below are for the planned React/FastAPI migration
 on: [pull_request]
 jobs:
-  - Lighthouse CI
-  - Load test (k6)
-  - Bundle size check
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run lighthouse:ci
+  load-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: k6 run tests/load/test.js
+  bundle-size:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run build && bundlesize
 ```
 
 ---
