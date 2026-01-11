@@ -2541,19 +2541,32 @@
         // Simulate mock data updates when API is unavailable
         function simulateMockDataUpdate() {
             // Slightly randomize metrics to simulate live updates
+            // Keep changes minimal to avoid excessive drift
             const metrics = appData.admin.globalMetrics;
-            metrics.totalBrands += Math.floor(Math.random() * 3) - 1; // ±1
-            metrics.coreBrands += Math.random() > 0.8 ? 1 : 0; // Occasional increment
-            metrics.totalNodes += Math.floor(Math.random() * 5) - 2; // ±2
+            const brandChange = Math.floor(Math.random() * 3) - 1; // ±1
+            const nodeChange = Math.floor(Math.random() * 5) - 2; // ±2
             
-            // Update pulse chart data
-            if (appData.admin.pulseChartData && appData.admin.pulseChartData.datasets) {
+            // Only update if within reasonable bounds
+            if (metrics.totalBrands + brandChange > 7000) {
+                metrics.totalBrands += brandChange;
+            }
+            if (Math.random() > 0.8 && metrics.coreBrands < 200) {
+                metrics.coreBrands += 1;
+            }
+            if (metrics.totalNodes + nodeChange > 650) {
+                metrics.totalNodes += nodeChange;
+            }
+            
+            // Update pulse chart data with null checks
+            if (appData.admin.pulseChartData?.datasets?.length > 0) {
                 appData.admin.pulseChartData.datasets.forEach(dataset => {
-                    // Shift data left and add new point
-                    dataset.data.shift();
-                    const lastValue = dataset.data[dataset.data.length - 1];
-                    const newValue = Math.max(0, lastValue + Math.floor(Math.random() * 10) - 5);
-                    dataset.data.push(newValue);
+                    if (dataset.data && Array.isArray(dataset.data) && dataset.data.length > 0) {
+                        // Shift data left and add new point
+                        dataset.data.shift();
+                        const lastValue = dataset.data[dataset.data.length - 1] || 50;
+                        const newValue = Math.max(0, lastValue + Math.floor(Math.random() * 10) - 5);
+                        dataset.data.push(newValue);
+                    }
                 });
             }
 
@@ -2581,7 +2594,9 @@
                     icon: '🟢', 
                     text: 'Live', 
                     color: '#30d158',
-                    detail: `Synced ${new Date(connectionState.lastSuccessfulSync).toLocaleTimeString()}`
+                    detail: connectionState.lastSuccessfulSync 
+                        ? `Synced ${new Date(connectionState.lastSuccessfulSync).toLocaleTimeString()}`
+                        : 'Connected'
                 },
                 'mock-mode': { 
                     icon: '🟡', 
@@ -2623,10 +2638,18 @@
             if (totalNodesEl) totalNodesEl.textContent = appData.admin.globalMetrics.totalNodes.toLocaleString();
             if (totalPagesEl) totalPagesEl.textContent = appData.admin.globalMetrics.totalPages.toLocaleString() + '+';
 
-            // Update charts if they exist
-            if (window.initializedCharts && window.initializedCharts.globalPulseChart) {
-                window.initializedCharts.globalPulseChart.data = appData.admin.pulseChartData;
-                window.initializedCharts.globalPulseChart.update('none'); // Update without animation for smoother real-time updates
+            // Update charts if they exist - use 'none' mode to skip animation for smoother real-time updates
+            if (window.initializedCharts?.globalPulseChart && appData.admin.pulseChartData) {
+                // Update data directly without replacing entire object
+                const chart = window.initializedCharts.globalPulseChart;
+                if (chart.data?.datasets && appData.admin.pulseChartData.datasets) {
+                    appData.admin.pulseChartData.datasets.forEach((newDataset, index) => {
+                        if (chart.data.datasets[index] && newDataset.data) {
+                            chart.data.datasets[index].data = [...newDataset.data];
+                        }
+                    });
+                    chart.update('none'); // Update without animation
+                }
             }
 
             console.log('🔄 Dashboard metrics refreshed');
