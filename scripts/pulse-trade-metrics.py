@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 PulseTrade Metrics - Ecosystem Repository Sync Monitor
+Supports both legacy repositories array and new FAA zones configuration
 """
 
 import json
@@ -11,14 +12,35 @@ from pathlib import Path
 def scan_ecosystem(config_path: str, auto_sync: bool = False, create_prs: bool = False):
     """
     Scan all ecosystem repositories for branch divergence
+    Supports both legacy and new configuration formats
     """
     token = os.environ.get("GITHUB_TOKEN")
     g = Github(token)
     
     config = json.loads(Path(config_path).read_text())
-    repos = config["repositories"]
     
-    print(f"🔍 Scanning {len(repos)} repositories...")
+    # Get repositories from both legacy and new config formats
+    repos_set = set(config.get("repositories", []))
+    
+    # Add repositories from FAA zones if present
+    if "faa_zones" in config:
+        for zone in config["faa_zones"]:
+            if "repository" in zone:
+                repos_set.add(zone["repository"])
+        print(f"🌐 Found {len(config['faa_zones'])} FAA zones in configuration")
+    
+    repos = list(repos_set)
+    print(f"🔍 Scanning {len(repos)} unique repositories...")
+    
+    # Check for chess-ledger configuration
+    chess_ledger = config.get("chess_ledger", {})
+    if chess_ledger.get("enabled"):
+        print(f"♟️ Chess-ledger sync: {chess_ledger.get('sync_strategy', 'default')} strategy")
+    
+    # Check for zero-touch sovereignty
+    zts = config.get("zero_touch_sovereignty", {})
+    if zts.get("enabled"):
+        print(f"✅ Zero-touch sovereignty: enabled")
     
     divergent = []
     
