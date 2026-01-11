@@ -115,7 +115,7 @@ Time:        0.633 s
 
 ---
 
-## Frontend Tests (130+ Tests - 138 Passing, 2 Failing)
+## Frontend Tests (140 Tests - 138 Passing, 2 Failing)
 
 ### Test File: `tests/frontend/html-pages.test.js`
 

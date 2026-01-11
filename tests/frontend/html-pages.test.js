@@ -111,7 +111,7 @@ describe('Frontend HTML Pages', () => {
     });
 
     it('should have tests directory', () => {
-      const dirPath = path.join(__dirname, '..', '..');
+      const dirPath = path.join(__dirname, '..', '..', 'tests');
       expect(fs.existsSync(dirPath)).toBe(true);
     });
 
