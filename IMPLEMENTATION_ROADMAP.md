@@ -182,6 +182,8 @@ Building on existing FAA Actuary Mastery™ framework:
 
 ### New Workflows to Add
 
+**Note:** The YAML examples below are simplified for clarity. Complete workflow files would include name, checkout steps, and environment setup.
+
 **1. Test Automation** (`auto-test.yml`)
 ```yaml
 # Note: Commands below are for the planned React/FastAPI migration
