@@ -577,6 +577,13 @@
             margin-bottom: 2rem;
             color: var(--text-color-light);
         }
+
+        /* Baobab Portal Orchestration Engine Animations */
+        @keyframes transit-move {
+            0% { left: 0%; }
+            100% { left: 100%; }
+        }
+
         #seedwave .w-full.max-w-4xl {
             background-color: #fcfcfc;
             border: 1px solid var(--border-color-light);
@@ -2899,22 +2906,22 @@
             });
 
             // --- Baobab Portal Orchestration Engine Animation ---
+            let orchestrationAnimationFrame = null;
+            let orchestrationStartTime = null;
+            
             function animateOrchestrationMetrics() {
-                // Quantum Lock Resonance - oscillate between 99.8% and 99.9%
+                // Get elements
                 const quantumResonance = document.getElementById('quantum-resonance');
                 const quantumBar = document.getElementById('quantum-bar');
                 const quantumStatus = document.getElementById('quantum-status');
                 
-                // Seedwave-Core Propagation - gradually increase from 98.5% to 98.9%
                 const seedwaveAlignment = document.getElementById('seedwave-alignment');
                 const seedwaveBar = document.getElementById('seedwave-bar');
                 const seedwaveStatus = document.getElementById('seedwave-status');
                 
-                // Deployment Velocity - maintain x10.5 with pulse effect
                 const deploymentVelocity = document.getElementById('deployment-velocity');
                 const velocityStatus = document.getElementById('velocity-status');
                 
-                // Ecosystem Count - cycle through 94
                 const ecosystemCount = document.getElementById('ecosystem-count');
                 const ecosystemStatus = document.getElementById('ecosystem-status');
                 
@@ -2924,43 +2931,47 @@
                 if (velocityStatus) velocityStatus.style.color = '#a855f7';
                 if (ecosystemStatus) ecosystemStatus.style.color = '#f97316';
                 
-                let oscillationPhase = 0;
-                setInterval(() => {
-                    oscillationPhase += 0.1;
+                function animate(timestamp) {
+                    if (!orchestrationStartTime) orchestrationStartTime = timestamp;
+                    const elapsed = timestamp - orchestrationStartTime;
+                    const oscillationPhase = elapsed / 10000; // Slower oscillation (10 seconds per cycle)
                     
                     // Quantum Lock - subtle oscillation
-                    const quantumValue = 99.85 + Math.sin(oscillationPhase) * 0.05;
+                    const quantumValue = 99.85 + Math.sin(oscillationPhase * 2 * Math.PI) * 0.05;
                     if (quantumResonance) quantumResonance.textContent = quantumValue.toFixed(1) + '%';
                     if (quantumBar) quantumBar.style.width = quantumValue.toFixed(1) + '%';
                     
                     // Seedwave - gradual growth
-                    const seedwaveValue = 98.7 + Math.sin(oscillationPhase * 0.5) * 0.2;
+                    const seedwaveValue = 98.7 + Math.sin(oscillationPhase * Math.PI) * 0.2;
                     if (seedwaveAlignment) seedwaveAlignment.textContent = seedwaveValue.toFixed(1) + '%';
                     if (seedwaveBar) seedwaveBar.style.width = seedwaveValue.toFixed(1) + '%';
                     
-                    // Add pulse effect to status indicators
-                    const pulseScale = 1 + Math.abs(Math.sin(oscillationPhase * 2)) * 0.1;
+                    // Add pulse effect to status indicators (faster pulse)
+                    const pulseScale = 1 + Math.abs(Math.sin(oscillationPhase * 4 * Math.PI)) * 0.1;
                     if (quantumStatus) quantumStatus.style.transform = `scale(${pulseScale})`;
                     if (seedwaveStatus) seedwaveStatus.style.transform = `scale(${pulseScale})`;
                     if (velocityStatus) velocityStatus.style.transform = `scale(${pulseScale})`;
                     if (ecosystemStatus) ecosystemStatus.style.transform = `scale(${pulseScale})`;
-                }, 1000);
+                    
+                    // Continue animation
+                    orchestrationAnimationFrame = requestAnimationFrame(animate);
+                }
+                
+                // Start animation
+                orchestrationAnimationFrame = requestAnimationFrame(animate);
             }
             
-            // Initialize orchestration animations
+            // Initialize orchestration animations and cleanup on page unload
             if (document.getElementById('baobab-orchestration')) {
                 animateOrchestrationMetrics();
+                
+                // Cleanup function
+                window.addEventListener('beforeunload', () => {
+                    if (orchestrationAnimationFrame) {
+                        cancelAnimationFrame(orchestrationAnimationFrame);
+                    }
+                });
             }
-            
-            // Add CSS animation for transit pulse
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes transit-move {
-                    0% { left: 0%; }
-                    100% { left: 100%; }
-                }
-            `;
-            document.head.appendChild(style);
         });
     </script>
 
