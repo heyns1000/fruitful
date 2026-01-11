@@ -1,0 +1,27 @@
+name: Auto Deploy Baobab
+on:
+  schedule:
+    - cron: '0 * * * *'  # Hourly pings
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'baobab.html'
+      - 'baobab_terminal.html'
+
+jobs:
+  deploy-baobab:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Baobab Hourly Ping
+        run: |
+          echo "🌳 Baobab Ping: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> baobab-pulse.log
+          git config user.name "Baobab Deployment Bot"
+          git config user.email "action@github.com"
+          git add baobab-pulse.log
+          git diff --cached --quiet || git commit -m "🌳 Baobab hourly ping: $(date -u +%Y-%m-%d\ %H:%M:%S) UTC"
+          git push

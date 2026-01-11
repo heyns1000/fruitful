@@ -1,0 +1,32 @@
+name: Ecosystem Sync Monitor
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:
+
+jobs:
+  sync-ecosystem:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: |
+          pip install requests pygithub
+          
+      - name: Sync Ecosystem Repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/pulse-trade-metrics.py \
+            --config config/ecosystem-repos.json \
+            --auto-sync \
+            --create-prs
