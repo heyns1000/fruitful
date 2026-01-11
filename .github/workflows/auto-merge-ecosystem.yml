@@ -28,8 +28,11 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
           
+          # Load PR alignment configuration to check for fruitful integration target
+          FRUITFUL_TARGET_PR=$(python3 -c "import json; data=json.load(open('config/ecosystem-repos.json')); print(data['pr_alignment']['fruitful_integration_target'].split('#')[1])" 2>/dev/null || echo "5")
+          
           # Mark as omnigrid-favorable if it's part of cascade integration
-          if [[ "$PR_TITLE" == *"omnigrid"* ]] || [[ "$PR_TITLE" == *"cascade"* ]] || [[ "$PR_NUMBER" == "5" ]]; then
+          if [[ "$PR_TITLE" == *"omnigrid"* ]] || [[ "$PR_TITLE" == *"cascade"* ]] || [[ "$PR_NUMBER" == "$FRUITFUL_TARGET_PR" ]]; then
             echo "omnigrid_favorable=true" >> $GITHUB_OUTPUT
             echo "✅ PR marked as omnigrid-favorable automation backbone"
           else
@@ -76,7 +79,8 @@ jobs:
               
               // Trigger cascade integration if this is fruitful#5 type PR
               if (isOmnigridFavorable) {
-                console.log('🔄 Triggering cascade integration to ThesisGallery and ecosystem...');
+                console.log('🔄 Cascade integration logged for ecosystem-sync-monitor workflow');
+                console.log('   ThesisGallery and ecosystem repos will sync within 15 minutes');
               }
               
               // Delete branch
