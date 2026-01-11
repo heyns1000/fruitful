@@ -62,37 +62,14 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Generate package.json if missing
-        run: |
-          if [ ! -f package.json ]; then
-            echo "Creating package.json for dependency tracking..."
-            cat > package.json << 'EOF'
-          {
-            "name": "fruitful",
-            "version": "1.0.0",
-            "description": "Fruitful Global Change - FAA.zone ecosystem",
-            "main": "index.html",
-            "scripts": {
-              "test": "echo \"No tests specified\" && exit 0"
-            },
-            "repository": {
-              "type": "git",
-              "url": "git+https://github.com/heyns1000/fruitful.git"
-            },
-            "author": "Heyns Schoeman",
-            "license": "Apache-2.0",
-            "dependencies": {}
-          }
-          EOF
-            echo "✅ Created package.json for dependency graph tracking"
-          else
-            echo "✅ package.json already exists"
-          fi
-      
       - name: Verify Dependency Configuration
         run: |
-          echo "📦 Dependency graph will be automatically enabled by GitHub"
+          echo "📦 Dependency graph enabled via package.json"
           echo "📊 View at: https://github.com/${{ github.repository }}/network/dependencies"
           if [ -f package.json ]; then
             echo "✅ package.json present - dependencies will be tracked"
+            cat package.json | jq -r '.name, .version, .description'
+          else
+            echo "⚠️  package.json not found"
+            exit 1
           fi
