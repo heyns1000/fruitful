@@ -32,5 +32,10 @@ jobs:
         run: |
           python scripts/mr-actuary-conflict-resolver.py \
             --pr-number ${{ github.event.pull_request.number || github.event.inputs.pr_number }} \
-            --auto-resolve \
-            --push
+            --auto-resolve
+        
+      - name: Review and Push Changes
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Only push when manually triggered for validation
+          git push --force-with-lease origin pr-${{ github.event.inputs.pr_number }}

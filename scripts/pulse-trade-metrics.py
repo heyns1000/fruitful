@@ -50,8 +50,8 @@ def scan_ecosystem(config_path: str, auto_sync: bool = False, create_prs: bool =
                             pr = repo.create_pull(
                                 title=f"🔄 Auto-sync: Update {branch.name} from {default_branch}",
                                 body="FAA Actuary Mastery™ automated synchronization - merging latest changes from default branch",
-                                head=default_branch,
-                                base=branch.name
+                                head=branch.name,
+                                base=default_branch
                             )
                             pr.add_to_labels("automerge", "ecosystem-sync")
                             print(f"    ✅ Created sync PR #{pr.number}")

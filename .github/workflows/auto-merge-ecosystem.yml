@@ -9,7 +9,7 @@ jobs:
   auto-merge:
     if: |
       (github.event.label.name == 'automerge' ||
-       github.event.pull_request.user.id == 41898282) &&
+       contains(fromJSON('[\"copilot\", \"github-actions[bot]\"]'), github.event.pull_request.user.login)) &&
       github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:

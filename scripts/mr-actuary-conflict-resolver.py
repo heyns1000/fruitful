@@ -36,8 +36,15 @@ def resolve_conflicts_ai(pr_number: int, auto_resolve: bool = False, push: bool 
         capture_output=True, text=True
     )
     
+    if result.returncode != 0:
+        print(f"❌ Failed to fetch PR #{pr_number}: {result.stderr}")
+        return
+    
     # Checkout PR branch
-    subprocess.run(["git", "checkout", f"pr-{pr_number}"])
+    result = subprocess.run(["git", "checkout", f"pr-{pr_number}"], capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"❌ Failed to checkout PR #{pr_number}: {result.stderr}")
+        return
     
     # Attempt rebase
     result = subprocess.run(
@@ -77,7 +84,11 @@ def resolve_conflicts_ai(pr_number: int, auto_resolve: bool = False, push: bool 
             subprocess.run(["git", "add", file_path])
         
         # Continue rebase
-        subprocess.run(["git", "rebase", "--continue"])
+        result = subprocess.run(["git", "rebase", "--continue"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"❌ Failed to continue rebase: {result.stderr}")
+            subprocess.run(["git", "rebase", "--abort"])
+            return
         
         if push:
             subprocess.run(["git", "push", "--force-with-lease", "origin", f"pr-{pr_number}"])
