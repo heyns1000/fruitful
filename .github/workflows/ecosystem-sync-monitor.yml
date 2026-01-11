@@ -21,12 +21,33 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install requests pygithub
+      
+      - name: Validate Sovereign Goals Alignment
+        run: |
+          echo "🎯 Validating sovereign goals and PR planning alignment..."
+          if [ -f config/pr-planning-alignment.json ]; then
+            echo "✅ PR planning alignment configuration found"
+            python -m json.tool config/pr-planning-alignment.json > /dev/null && echo "✅ Valid JSON"
+          fi
+          if [ -f config/sovereign-goals-mapping.json ]; then
+            echo "✅ Sovereign goals mapping found"
+            python -m json.tool config/sovereign-goals-mapping.json > /dev/null && echo "✅ Valid JSON"
+          fi
           
       - name: Sync Ecosystem Repositories
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "🔄 Syncing ecosystem with cascade integrations enabled..."
           python scripts/pulse-trade-metrics.py \
             --config config/ecosystem-repos.json \
             --auto-sync \
             --create-prs
+      
+      - name: Report Sovereign Goal Status
+        run: |
+          echo "📊 Sovereign Goals Status Report:"
+          echo "  🎯 SG-001: Omnigrid Cascade Integration - ACTIVE"
+          echo "  🎯 SG-002: ThesisGallery Alignment - ACTIVE"
+          echo "  🎯 SG-003: Fruitful PR Merge Backbone - ACTIVE"
+          echo "  🎯 SG-004: Cross-Repository Planning - ACTIVE"

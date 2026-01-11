@@ -31,6 +31,32 @@ This repository is **self-managing** with comprehensive automation for PR lifecy
 - ✅ **Baobab Pulse** → Hourly deployment pings
 - ✅ **System Pulse** → 9s heartbeat monitoring
 
+### 🎯 Sovereign Goals & PR Planning Alignment (NEW)
+
+**Expanding Repository Alignment**: FAA.zone ↔ ThesisGallery
+
+The repository now includes **sovereign goals mapping** that enables:
+
+- 🔗 **Cascade Integrations**: Omnigrid#35 → Fruitful#5 → ThesisGallery
+- 🎯 **Sovereign Goals Framework**: Structured goal tracking across repositories
+- 🤝 **PR Planning Alignment**: Unified planning between FAA.zone and ThesisGallery
+- ⚡ **Omnigrid-Favorable Automation**: Fruitful#5 PRs become automation backbones
+
+#### Key Configuration Files
+
+| File | Purpose |
+|------|---------|
+| **config/pr-planning-alignment.json** | Maps repository alignment and cascade integrations |
+| **config/sovereign-goals-mapping.json** | Tracks sovereign goals and success criteria |
+| **config/ecosystem-repos.json** | Extended with ThesisGallery and cascade settings |
+
+#### Sovereign Goals Active
+
+- **SG-001**: Omnigrid Cascade Integration - Enable omnigrid#35 cascade flows
+- **SG-002**: ThesisGallery Ecosystem Alignment - Bidirectional sync enabled
+- **SG-003**: Fruitful PR Merge Automation Backbone - Omnigrid-favorable merges
+- **SG-004**: Cross-Repository PR Planning - Unified planning framework
+
 ### Automation Workflows
 
 See `.github/workflows/` for the complete automation framework:
@@ -40,9 +66,9 @@ See `.github/workflows/` for the complete automation framework:
 | **auto-deploy-baobab.yml** | Baobab hourly deployment pings | Hourly / Manual / Push to baobab files |
 | **auto-mark-ready.yml** | Converts draft PRs to ready | Draft PR opened / Every 5 min |
 | **auto-approve-copilot.yml** | Auto-approves Copilot PRs | PR opened/updated |
-| **auto-merge-ecosystem.yml** | Auto-merges approved PRs | Label added / Review submitted |
+| **auto-merge-ecosystem.yml** | Auto-merges approved PRs with omnigrid-favorable detection | Label added / Review submitted |
 | **conflict-resolver.yml** | AI-powered conflict resolution | PR opened / Manual |
-| **ecosystem-sync-monitor.yml** | Syncs ecosystem repositories | Every 15 minutes |
+| **ecosystem-sync-monitor.yml** | Syncs ecosystem repositories including ThesisGallery | Every 15 minutes |
 | **pulse-trade-9s.yml** | 9-second pulse heartbeat | Every minute |
 | **jekyll-docker.yml** | Jekyll site CI/CD | Push/PR to main |
 
@@ -53,9 +79,11 @@ See `.github/workflows/` for the complete automation framework:
 
 ### Configuration
 
-- **`config/ecosystem-repos.json`** - Defines monitored repositories and sync parameters
+- **`config/ecosystem-repos.json`** - Defines monitored repositories including ThesisGallery and cascade integration settings
+- **`config/pr-planning-alignment.json`** - Repository alignment configuration for FAA.zone and ThesisGallery
+- **`config/sovereign-goals-mapping.json`** - Sovereign goals framework with cascade flow definitions
 
-**Status**: 🌌 OPERATIONAL - Multi-repository automation active.
+**Status**: 🌌 OPERATIONAL - Multi-repository automation active with sovereign goals enabled.
 
 ---
 
