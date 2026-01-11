@@ -184,15 +184,17 @@ Building on existing FAA Actuary Mastery™ framework:
 
 **1. Test Automation** (`auto-test.yml`)
 ```yaml
+# Note: Commands below are for the planned React/FastAPI migration
 on: [push, pull_request]
 jobs:
-  - Frontend: npm run test:ci
+  - Frontend: npm run test:ci  # Vitest + React Testing Library
   - Backend: pytest --cov=app tests/
   - E2E: playwright test
 ```
 
 **2. Code Quality** (`code-quality.yml`)
 ```yaml
+# Note: Commands below are for the planned React/FastAPI migration
 on: [pull_request]
 jobs:
   - ESLint frontend
@@ -203,6 +205,7 @@ jobs:
 
 **3. Security Scanning** (`security-scan.yml`)
 ```yaml
+# Note: Commands below are for the planned React/FastAPI migration
 on: [schedule: daily]
 jobs:
   - npm audit
@@ -213,6 +216,7 @@ jobs:
 
 **4. Performance Testing** (`performance.yml`)
 ```yaml
+# Note: Commands below are for the planned React/FastAPI migration
 on: [pull_request]
 jobs:
   - Lighthouse CI
