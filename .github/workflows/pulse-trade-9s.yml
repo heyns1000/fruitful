@@ -1,0 +1,22 @@
+name: PulseTrade 9s Heartbeat
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes (reasonable frequency for pulse monitoring)
+  workflow_dispatch:
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 9s Pulse Update
+        run: |
+          echo "🌊 Pulse: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> pulse.log
+          git config user.name "OmniGrid Pulse Bot"
+          git config user.email "action@github.com"
+          git add pulse.log
+          git diff --cached --quiet || git commit -m "🌊 Pulse update: $(date -u +%Y-%m-%d\ %H:%M:%S) UTC"
+          git push

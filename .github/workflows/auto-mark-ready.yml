@@ -1,0 +1,44 @@
+name: Auto Mark PRs Ready
+on:
+  pull_request:
+    types: [opened]
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes safety net
+
+jobs:
+  mark-ready:
+    if: github.event.pull_request.draft == true
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Mark Draft PRs Ready
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+            
+            for (const pr of prs.filter(p => p.draft)) {
+              // Check PR age - only mark ready after 60 seconds
+              const createdAt = new Date(pr.created_at);
+              const now = new Date();
+              const ageInSeconds = (now - createdAt) / 1000;
+              
+              if (ageInSeconds >= 60) {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  draft: false
+                });
+                
+                console.log(`✅ PR #${pr.number} marked ready for review (age: ${Math.floor(ageInSeconds)}s)`);
+              } else {
+                console.log(`⏳ PR #${pr.number} too young (${Math.floor(ageInSeconds)}s < 60s)`);
+              }
+            }

@@ -1,0 +1,41 @@
+name: Auto Resolve Merge Conflicts
+on:
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to resolve'
+        required: true
+
+jobs:
+  resolve-conflicts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: |
+          # No Python dependencies needed - using git directly
+          
+      - name: Run AI Conflict Resolver
+        run: |
+          python scripts/mr-actuary-conflict-resolver.py \
+            --pr-number ${{ github.event.pull_request.number || github.event.inputs.pr_number }} \
+            --auto-resolve
+        
+      - name: Review and Push Changes
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          # Only push when manually triggered for validation
+          git push --force-with-lease origin pr-${{ github.event.inputs.pr_number }}
