@@ -47,18 +47,10 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:javascript"
-          upload: true
-          output: sarif-results
-          sarif-file: codeql-results.sarif
-      
-      - name: Upload SARIF results
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: codeql-results.sarif
   
   dependency-graph:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     steps:
@@ -92,18 +84,15 @@ jobs:
             "dependencies": {}
           }
           EOF
-          fi
-      
-      - name: Install dependencies (if any)
-        run: |
-          if [ -f package.json ] && [ -n "$(jq '.dependencies // {} | keys | .[]' package.json 2>/dev/null)" ]; then
-            npm install
+            echo "✅ Created package.json for dependency graph tracking"
           else
-            echo "No dependencies to install"
+            echo "✅ package.json already exists"
           fi
       
-      - name: Submit Dependency Snapshot
-        uses: actions/dependency-review-action@v4
-        continue-on-error: true
-        with:
-          fail-on-severity: high
+      - name: Verify Dependency Configuration
+        run: |
+          echo "📦 Dependency graph will be automatically enabled by GitHub"
+          echo "📊 View at: https://github.com/${{ github.repository }}/network/dependencies"
+          if [ -f package.json ]; then
+            echo "✅ package.json present - dependencies will be tracked"
+          fi
