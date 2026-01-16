@@ -1,0 +1,53 @@
+name: VaultRouter Diagonal Sync
+on:
+  schedule:
+    - cron: '*/20 * * * *'  # Every 20 minutes for diagonal routing sync
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'config/ecosystem-repos.json'
+      - '.github/workflows/vaultrouter-diagonal.yml'
+
+jobs:
+  diagonal-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: |
+          pip install requests pygithub
+          
+      - name: VaultRouter Diagonal Routing
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔷 VaultRouter Diagonal Sync: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          
+          # Execute diagonal routing sync across FAA seedwave operations
+          python scripts/pulse-trade-metrics.py \
+            --config config/ecosystem-repos.json \
+            --auto-sync \
+            --create-prs
+          
+          # Log diagonal sync status
+          echo "🔷 VaultRouter diagonal sync completed: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> vaultrouter-diagonal.log
+          
+      - name: Commit Diagonal Sync Logs
+        run: |
+          git config user.name "VaultRouter Diagonal Bot"
+          git config user.email "action@github.com"
+          git add vaultrouter-diagonal.log
+          git diff --cached --quiet || git commit -m "🔷 VaultRouter diagonal sync: $(date -u +%Y-%m-%d\ %H:%M:%S) UTC"
+          git push
