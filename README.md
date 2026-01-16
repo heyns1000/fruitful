@@ -9,6 +9,39 @@ This isn't just code; it's the seed of a vision for a harmonious future, inspire
 
 ---
 
+## 🔄 Version 2.0.0 - Complete Full-Stack Rebuild
+
+**Major Update:** The Baobab Bush Portal has been completely rebuilt with a modern full-stack architecture while preserving the original frontend look and feel.
+
+### What's New in 2.0.0
+
+✅ **Modern Backend** - Complete Node.js/Express server with RESTful API  
+✅ **Comprehensive Testing** - 130+ test cases for frontend and backend  
+✅ **Security Best Practices** - Helmet.js, CORS, input validation  
+✅ **API Endpoints** - Dynamic data, health checks, ecosystem metrics  
+✅ **Documentation** - Complete technical documentation  
+✅ **CI/CD Integration** - Automated testing and deployment  
+✅ **Production Ready** - Environment configuration, logging, monitoring  
+
+### Quick Start (New)
+
+```bash
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Start development server
+npm run dev
+
+# Access at http://localhost:3000
+```
+
+**📚 Full Documentation:**
+- [Rebuild Documentation](docs/REBUILD.md) - Complete rebuild details
+- [Setup Guide](docs/SETUP.md) - Installation and deployment
+- [API Reference](docs/API.md) - API endpoint documentation
 ## 🌳 Baobab Portal Orchestration Engine - VERIFIED ✅
 
 ### PR #5 Integration Status: OPERATIONAL
