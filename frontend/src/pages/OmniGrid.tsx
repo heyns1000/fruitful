@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import Card from '@/components/ui/Card';
 import { ROUTES } from '@/utils/constants';
 
 const OmniGrid: React.FC = () => {
+  const [activeTerminal, setActiveTerminal] = useState('vaultmaster');
   const navigationButtons = [
     { to: 'https://homemart.africa', label: '🛍️ Homemart.africa', external: true },
     { to: ROUTES.HOME, label: '🏠 Portal Home', external: false },
@@ -45,6 +46,22 @@ const OmniGrid: React.FC = () => {
       description: 'Threat intelligence and orchestration dashboard',
     },
   ];
+
+  const sectorTerminals = [
+    { id: 'vaultmaster', label: '🦍 VaultMaster Terminal', sector: 'VaultMaster' },
+    { id: 'cube-lattice', label: '🧱 Cube Lattice GPT', sector: 'Cube Lattice' },
+    { id: 'global-view', label: '🌍 Global View GPT', sector: 'Global View' },
+    { id: 'freight-ops', label: '🚚 Freight Ops GPT', sector: 'Freight & Logistics' },
+    { id: 'loop-watch', label: '♻️ Loop Watch GPT', sector: 'Circular Economy' },
+    { id: 'seedwave', label: '🌱 Seedwave GPT', sector: 'Agriculture' },
+    { id: 'distribution', label: '📦 Distribution GPT', sector: 'Distribution' },
+    { id: 'signal', label: '🔐 Signal GPT', sector: 'Communications' },
+    { id: 'faa-brands', label: '📦 7038 FAA Brands', sector: 'Brand Management' },
+  ];
+
+  const handleTerminalChange = (terminalId: string) => {
+    setActiveTerminal(terminalId);
+  };
 
   return (
     <Layout>
@@ -186,8 +203,62 @@ const OmniGrid: React.FC = () => {
         </div>
       </section>
 
-      {/* Integration Section */}
+      {/* Sector Terminals */}
       <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 gradient-text">🔐 Sector Terminals</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              AI-powered sector intelligence with Perplexity integration
+            </p>
+          </div>
+
+          {/* Terminal Display */}
+          <div className="w-full max-w-6xl mx-auto mb-10">
+            <Card className="overflow-hidden">
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-4 border-b border-gray-700">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="ml-4 text-sm text-gray-400">
+                    {sectorTerminals.find(t => t.id === activeTerminal)?.sector} Terminal
+                  </span>
+                </div>
+              </div>
+              <div className="w-full h-[600px] bg-gray-50 dark:bg-gray-900 overflow-hidden">
+                <iframe
+                  key={activeTerminal}
+                  src={`https://www.perplexity.ai/?q=${encodeURIComponent(`Tell me about ${sectorTerminals.find(t => t.id === activeTerminal)?.sector} in the context of FAA.ZONE ecosystem`)}`}
+                  className="w-full h-full"
+                  title={`${sectorTerminals.find(t => t.id === activeTerminal)?.sector} Terminal`}
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                />
+              </div>
+            </Card>
+          </div>
+
+          {/* Terminal Selector Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+            {sectorTerminals.map((terminal) => (
+              <button
+                key={terminal.id}
+                onClick={() => handleTerminalChange(terminal.id)}
+                className={`p-6 rounded-xl font-semibold transition-all duration-300 ${
+                  activeTerminal === terminal.id
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg transform scale-105'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-gray-700 shadow-md hover:shadow-xl'
+                }`}
+              >
+                {terminal.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Integration Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">

@@ -1,6 +1,7 @@
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hotstack.faa.zone/api';
 export const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'wss://hotstack.faa.zone/ws';
 export const AUTH_DOMAIN = import.meta.env.VITE_AUTH_DOMAIN || 'fruitful.faa.zone';
+export const PERPLEXITY_API_KEY = import.meta.env.VITE_PERPLEXITY_API_KEY || '';
 
 export const ROUTES = {
   HOME: '/',
