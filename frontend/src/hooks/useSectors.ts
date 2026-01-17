@@ -18,8 +18,8 @@ export const useSectors = () => {
       } else {
         setError(response.error || 'Failed to fetch sectors');
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch sectors');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch sectors');
     } finally {
       setIsLoading(false);
     }

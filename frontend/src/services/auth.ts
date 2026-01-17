@@ -21,10 +21,13 @@ class AuthService {
       }
       
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error || 'Login failed'
+        : 'Login failed';
       return {
         success: false,
-        error: error.response?.data?.error || 'Login failed',
+        error: message,
       };
     }
   }
@@ -44,10 +47,13 @@ class AuthService {
       }
       
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error && 'response' in error 
+        ? (error as { response?: { data?: { error?: string } } }).response?.data?.error || 'Registration failed'
+        : 'Registration failed';
       return {
         success: false,
-        error: error.response?.data?.error || 'Registration failed',
+        error: message,
       };
     }
   }

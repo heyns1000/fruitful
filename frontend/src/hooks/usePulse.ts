@@ -17,8 +17,8 @@ export const usePulse = () => {
       } else {
         setError(response.error || 'Failed to fetch pulse');
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch pulse');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch pulse');
     } finally {
       setIsLoading(false);
     }
