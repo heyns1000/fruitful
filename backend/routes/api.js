@@ -187,4 +187,249 @@ router.get('/sectors', (req, res) => {
   }
 });
 
+/**
+ * GET /api/sectors/:id
+ * Get specific sector details
+ */
+router.get('/sectors/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const sectors = {
+      'agriculture': { id: 'agriculture', name: 'Agriculture', icon: '🌾', active: true, description: 'Agricultural sector solutions' },
+      'banking': { id: 'banking', name: 'Banking', icon: '🏦', active: true, description: 'Financial services and banking' },
+      'creative-tech': { id: 'creative-tech', name: 'Creative Tech', icon: '🎨', active: true, description: 'Creative technology solutions' },
+    };
+    
+    const sector = sectors[id];
+    if (!sector) {
+      return res.status(404).json({
+        success: false,
+        error: 'Sector not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: sector
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/sectors/:id/subscribe
+ * Subscribe to a sector
+ */
+router.post('/sectors/:id/subscribe', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // In production, this would save subscription to database
+    console.log(`User subscribed to sector: ${id}`);
+    
+    res.json({
+      success: true,
+      data: { subscribed: true }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/pulses
+ * Get pulse history data
+ */
+router.get('/pulses', (req, res) => {
+  try {
+    const pulses = [];
+    const now = Date.now();
+    
+    // Generate mock pulse history for the last hour
+    for (let i = 0; i < 10; i++) {
+      pulses.push({
+        timestamp: new Date(now - i * 9000).toISOString(),
+        pulse: '9s',
+        status: 'active',
+        metrics: {
+          requestsPerSecond: Math.floor(Math.random() * 100) + 50,
+          activeConnections: Math.floor(Math.random() * 500) + 200,
+          uptime: process.uptime()
+        }
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: pulses
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/users
+ * Get list of users
+ */
+router.get('/users', (req, res) => {
+  try {
+    const users = [
+      {
+        id: '1',
+        email: 'admin@fruitful.faa.zone',
+        name: 'Admin User',
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: '2',
+        email: 'user@fruitful.faa.zone',
+        name: 'Test User',
+        role: 'user',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ];
+    
+    res.json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/users/:id
+ * Get specific user
+ */
+router.get('/users/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = {
+      id,
+      email: 'user@fruitful.faa.zone',
+      name: 'Test User',
+      role: 'user',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/users
+ * Create new user
+ */
+router.post('/users', (req, res) => {
+  try {
+    const { email, name, role } = req.body;
+    
+    if (!email || !name) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email and name are required'
+      });
+    }
+    
+    const user = {
+      id: Date.now().toString(),
+      email,
+      name,
+      role: role || 'user',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * PUT /api/users/:id
+ * Update user
+ */
+router.put('/users/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email, name, role } = req.body;
+    
+    const user = {
+      id,
+      email: email || 'user@fruitful.faa.zone',
+      name: name || 'Test User',
+      role: role || 'user',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/users/:id
+ * Delete user
+ */
+router.delete('/users/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // In production, this would delete from database
+    console.log(`User deleted: ${id}`);
+    
+    res.json({
+      success: true,
+      data: { deleted: true }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
