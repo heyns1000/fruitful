@@ -1,0 +1,29 @@
+name: Code Quality
+on:
+  push:
+    branches: [main, copilot/**]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: cd frontend && npm ci
+      
+      - name: Run lint
+        run: cd frontend && npm run lint
+      
+      - name: Type check
+        run: cd frontend && npm run type-check
