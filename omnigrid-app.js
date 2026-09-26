@@ -41,6 +41,12 @@
         'faa-brands.html': { page: 'omnigrid_zone.html' }
     };
 
+    // Sites that refuse to be shown inside another page: open them in a new tab.
+    var NO_FRAME = /(^|\.)(github\.com|paypal\.com|google\.com|spotify\.com|facebook\.com|linkedin\.com|x\.com|twitter\.com)$/i;
+
+    // True when this page is itself shown inside the OmniGrid viewer or a terminal frame.
+    var IN_FRAME = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
+
     var STATUS = { green: '#30d158', amber: '#ff9f0a', red: '#ff453a' };
 
     var dataPromise = null;
@@ -183,12 +189,30 @@
         return (a.textContent || '').replace(/\s+/g, ' ').trim() || a.getAttribute('href');
     }
 
+    function samePage(target) {
+        try { return new URL(target, location.href).pathname === location.pathname; } catch (e) { return false; }
+    }
+
+    function hostOf(url) {
+        var m = url.match(/^(?:https?:)?\/\/([^\/?#]+)/i);
+        return m ? m[1].toLowerCase() : '';
+    }
+
     function route(target, label) {
         if (target === '#top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return true; }
         if (target.charAt(0) === '#') {
             var el = document.querySelector(target);
             if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return true; }
             return false;
+        }
+        var host = hostOf(target);
+        if (host && NO_FRAME.test(host)) { window.open(target, '_blank', 'noopener'); return true; }
+        if (IN_FRAME) {
+            // Already inside the app: local pages navigate this frame; external sites go to the top viewer.
+            if (!host) { location.assign(target); return true; }
+            try { if (window.top.__ogOpenView) { window.top.__ogOpenView(target, label); return true; } } catch (e) {}
+            window.open(target, '_blank', 'noopener');
+            return true;
         }
         openView(target, label);
         return true;
@@ -210,6 +234,11 @@
         if (!target || target.charAt(0) === '#') return; // plain anchors: page behaviour
         var external = /^([a-z]+:)?\/\//i.test(target);
         if (!external && !isLocalPage(target)) return;
+        if (!external && !/#./.test(target) && samePage(target)) {
+            e.preventDefault();
+            route('#top');
+            return;
+        }
         if (route(target, labelOf(a))) e.preventDefault();
     }
     document.addEventListener('click', function (e) { onClick(e, true); }, true);
@@ -346,6 +375,7 @@
 
     function init() {
         window.loadTerminal = renderTerminal;
+        if (!IN_FRAME) window.__ogOpenView = openView;
         document.body.appendChild(view);
         document.body.appendChild(card);
         wireNoodle();
