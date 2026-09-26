@@ -17,7 +17,7 @@
 
     // External or broken targets -> in-app page. Keys are normalised (no scheme, no trailing slash).
     var ROUTES = {
-        'faa.zone/omnigrid.html': '#innovate-connect-thrive',
+        'faa.zone/omnigrid.html': 'omnigrid.html',
         'faa.zone': 'index.html',
         'fruitful.faa.zone': 'frontend/index.html',
         'vaultmesh.faa.zone/index.html': 'checkout.html',
@@ -60,7 +60,7 @@
     }
 
     function isDark() {
-        return document.body.classList.contains('dark-mode') ||
+        return document.body.classList.contains('dark-mode') || document.body.classList.contains('hyper-mode') ||
             (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches &&
              !document.body.classList.contains('light-mode'));
     }
@@ -70,8 +70,8 @@
     }
 
     function isLocalPage(href) {
-        return !/^([a-z]+:)?\/\//i.test(href) && !/^(mailto|tel|javascript):/i.test(href) &&
-            href.charAt(0) !== '#' && /\.html?(\?|#|$)/i.test(href);
+        return !/^([a-z]+:)?\/\//i.test(href) && !/^[a-z]+:/i.test(href) &&
+            href.charAt(0) !== '#' && !/\.(css|js|json|ico|png|jpe?g|svg|webp|pdf|zip)(\?|#|$)/i.test(href);
     }
 
     // ---------- styles (card + viewer only) ----------
@@ -115,8 +115,22 @@
     var viewTitle = view.querySelector('.og-title');
     var viewExt = view.querySelector('.og-ext');
 
+    function missingPanel(url, title) {
+        loadData().then(function (data) {
+            viewFrame.removeAttribute('src');
+            viewFrame.srcdoc = stationPanel(title || url, 'flow', data,
+                '<p class="h">' + esc(url) + ' is not built yet. Global flow below.</p>');
+        });
+    }
+
     function openView(url, title, push) {
+        viewFrame.removeAttribute('srcdoc');
         viewFrame.src = url;
+        if (!/^([a-z]+:)?\/\//i.test(url)) {
+            fetch(url, { method: 'HEAD' }).then(function (r) {
+                if (r.status === 404 && viewFrame.getAttribute('src') === url) missingPanel(url, title);
+            }).catch(function () {});
+        }
         viewTitle.textContent = title || url;
         viewExt.href = url;
         view.classList.add('on');
@@ -129,6 +143,7 @@
     function closeView() {
         if (!view.classList.contains('on')) return;
         view.classList.remove('on');
+        viewFrame.removeAttribute('srcdoc');
         viewFrame.src = 'about:blank';
         document.documentElement.style.overflow = '';
         if (/^#app=/.test(location.hash)) {
@@ -146,12 +161,22 @@
     });
 
     // ---------- routing ----------
+    var PAGE = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+    // A route only applies when it is needed on this page: an anchor route only
+    // when the anchor is missing here, and a link to the current page scrolls to top.
+    function routeFor(href) {
+        if (!href || href === '#') return null;
+        var r = ROUTES[href] || ROUTES[normalise(href)];
+        if (!r) return null;
+        if (href.charAt(0) === '#' && document.querySelector(href)) return null;
+        if (r.toLowerCase() === PAGE) return '#top';
+        return r;
+    }
+
     function resolve(href) {
         if (!href || href === '#') return null;
-        if (ROUTES[href]) return ROUTES[href];
-        var key = normalise(href);
-        if (ROUTES[key]) return ROUTES[key];
-        return href;
+        return routeFor(href) || href;
     }
 
     function labelOf(a) {
@@ -159,6 +184,7 @@
     }
 
     function route(target, label) {
+        if (target === '#top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return true; }
         if (target.charAt(0) === '#') {
             var el = document.querySelector(target);
             if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); return true; }
@@ -173,7 +199,7 @@
         var a = e.target.closest('a[href]');
         if (!a || view.contains(a) || a.closest('.og-card')) return;
         var href = a.getAttribute('href');
-        var routed = ROUTES[href] || ROUTES[normalise(href)];
+        var routed = routeFor(href);
         // Capture phase: explicit routes win over the page's own handlers.
         if (capture) {
             if (routed && route(routed, labelOf(a))) { e.preventDefault(); e.stopPropagation(); }
@@ -190,7 +216,7 @@
     document.addEventListener('click', function (e) { onClick(e, false); }, false);
 
     // ---------- sector terminals ----------
-    function stationPanel(title, station, data) {
+    function stationPanel(title, station, data, intro) {
         var dark = isDark();
         var bg = dark ? '#0d0d0d' : '#f5f5f7', fg = dark ? '#f5f5f7' : '#1d1d1f', card = dark ? '#1c1c1e' : '#fff';
         var body;
@@ -217,7 +243,7 @@
             '.led{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}' +
             '.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}' +
             '.c{background:' + card + ';border-radius:12px;padding:14px}.t{margin-top:32px;font-size:12px;opacity:.55}' +
-            '</style></head><body><h1>' + esc(title) + '</h1>' + body + '<p class="t">' + stamp + '</p></body></html>';
+            '</style></head><body><h1>' + esc(title) + '</h1>' + (intro || '') + body + '<p class="t">' + stamp + '</p></body></html>';
     }
 
     function markActive(name) {
@@ -288,14 +314,22 @@
     function wireNoodle() {
         var rope = document.querySelector('.pulse-grid-noodle-rope');
         if (!rope) return;
-        var dots = rope.querySelectorAll('.noodle-dot');
+        var dots = Array.prototype.slice.call(rope.querySelectorAll('.noodle-dot'));
+
+        // Stations follow the flow left to right, whatever the dot class names are.
+        function orderOf(dot) {
+            var sorted = dots.slice().sort(function (a, b) {
+                return (parseFloat(getComputedStyle(a).left) || 0) - (parseFloat(getComputedStyle(b).left) || 0);
+            });
+            return sorted.indexOf(dot);
+        }
 
         dots.forEach(function (dot) {
             dot.addEventListener('mouseenter', function (e) {
                 e.stopPropagation();
                 loadData().then(function (data) {
                     if (!data) return;
-                    var s = data.stations.filter(function (x) { return dot.classList.contains(x.dot); })[0];
+                    var s = data.stations[orderOf(dot)];
                     if (s) show(dot, stationHtml(s, data));
                 });
             });
