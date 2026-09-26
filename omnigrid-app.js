@@ -13,7 +13,9 @@
 (function () {
     'use strict';
 
-    var DATA_URL = 'omnigrid-pulse.json';
+    // Resolve the data next to this script, so pages in sub-folders find it too.
+    var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || location.href;
+    var DATA_URL = new URL('omnigrid-pulse.json', SCRIPT_SRC).href;
 
     // External or broken targets -> in-app page. Keys are normalised (no scheme, no trailing slash).
     var ROUTES = {
@@ -134,7 +136,16 @@
         viewFrame.src = url;
         if (!/^([a-z]+:)?\/\//i.test(url)) {
             fetch(url, { method: 'HEAD' }).then(function (r) {
-                if (r.status === 404 && viewFrame.getAttribute('src') === url) missingPanel(url, title);
+                if (r.status !== 404 || viewFrame.getAttribute('src') !== url) return;
+                // Clean URLs: "/admin/page" is served as "/admin/page.html" once hosted.
+                if (!/\.[a-z0-9]+([?#]|$)/i.test(url)) {
+                    var alt = url.replace(/([?#].*)?$/, '.html$1');
+                    return fetch(alt, { method: 'HEAD' }).then(function (r2) {
+                        if (viewFrame.getAttribute('src') !== url) return;
+                        if (r2.ok) viewFrame.src = alt; else missingPanel(url, title);
+                    });
+                }
+                missingPanel(url, title);
             }).catch(function () {});
         }
         viewTitle.textContent = title || url;
