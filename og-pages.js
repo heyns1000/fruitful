@@ -38,6 +38,34 @@
     }
     function pageLink(file, text) { return '<a href="' + esc(base + file) + '">' + esc(text || file) + '</a>'; }
 
+    function sectorName(g, key) {
+        var sl = (g && g.sectorList) || {};
+        return sl[key] || (key.charAt(0).toUpperCase() + key.slice(1)).replace(/-/g, ' ');
+    }
+    function sectorRows(g) {
+        return Object.keys((g && g.sectors) || {}).map(function (k) {
+            var s = g.sectors[k], nodes = 0;
+            (s.subNodes || []).forEach(function (x) { nodes += (x && x.length) || 0; });
+            return { key: k, name: sectorName(g, k), brands: s.brands.length, nodes: nodes, zone: (g.zoneIndex || {})[k] || null, data: s };
+        });
+    }
+    function table(head, rows) {
+        return '<div class="tbl"><table><thead><tr>' + head.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') +
+            '</tr></thead><tbody>' + rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') +
+            '</tbody></table></div>';
+    }
+    function bars(labels, data, suffix) {
+        var max = Math.max.apply(null, data.concat([1]));
+        return '<div class="bars">' + labels.map(function (l, i) {
+            return '<div class="barrow"><span class="bl">' + esc(l) + '</span><span class="bt"><span style="width:' + (data[i] * 100 / max) + '%"></span></span><b>' + fmt(data[i]) + (suffix || '') + '</b></div>';
+        }).join('') + '</div>';
+    }
+    function noGrid() { return [card('Catalogue', '<p class="muted">Catalogue data unavailable right now.</p>')]; }
+    function joinCards() {
+        return [card('Where to next', list([pageLink('admin/admin-portal-approval.html', '🔑 Request portal access'),
+            pageLink('ecosystem.html', '🌍 Explore the Global Ecosystem'), pageLink('omnigrid.html', '🕸️ Enter the OmniGrid')]))];
+    }
+
     var RENDER = {
         deployments: function (m, p) {
             var pages = m ? m.pages : [];
@@ -105,6 +133,136 @@
                 fmt(i.applications && i.applications.applications) + ' applications · ' + fmt(i.applications && i.applications.instances) + ' instances',
                 fmt(m && m.pages.length) + ' portal pages · ' + fmt(m && m.sectors.length) + ' sectors']))].concat(st);
         },
+        brandmetrics: function (m, p, g) {
+            if (!g) return noGrid();
+            var a = g.admin || {}, gm = a.globalMetrics || {}, bd = a.brandDistribution;
+            var rows = sectorRows(g).filter(function (r) { return r.brands; }).sort(function (x, y) { return y.brands - x.brands; });
+            return [card('Global brand metrics', list(['<b>' + fmt(gm.totalBrands) + '</b> total brands', '<b>' + fmt(gm.coreBrands) + '</b> core brands',
+                    '<b>' + fmt(gm.totalNodes) + '</b> nodes', '<b>' + fmt(gm.totalPages) + '</b> pages'])),
+                bd ? card('Brand distribution', bars(bd.labels, bd.data)) : '',
+                card('Catalogued brands by sector · ' + fmt(rows.reduce(function (t, r) { return t + r.brands; }, 0)), bars(rows.map(function (r) { return r.name; }), rows.map(function (r) { return r.brands; })), 'wide')];
+        },
+        clauses: function (m, p, g) {
+            var c = g && g.admin && g.admin.licenseLedger && g.admin.licenseLedger.clauses;
+            if (!c) return noGrid();
+            var total = c.data.reduce(function (t, x) { return t + x; }, 0);
+            return [card('FAA™ clause allocation · ' + fmt(total), bars(c.labels, c.data), 'wide'),
+                card('Clause register', table(['Clause', 'Allocations', 'Share'], c.labels.map(function (l, i) {
+                    return [esc(l), fmt(c.data[i]), Math.round(c.data[i] * 100 / total) + '%'];
+                })), 'wide')];
+        },
+        distributor: function (m, p, g) {
+            if (!g) return noGrid();
+            var rows = sectorRows(g).filter(function (r) { return r.zone; });
+            return [card('Distributor tariff index · ' + rows.length + ' sectors', table(['Sector', 'Monthly', 'Annual', 'Payout tier', 'Region', 'Brands'],
+                rows.map(function (r) { return [esc(r.name), esc(r.zone.monthlyFee), esc(r.zone.annualFee), esc(r.zone.payoutTier), esc(r.zone.region), fmt(r.brands)]; })), 'wide')];
+        },
+        hardware: function (m, p, g) {
+            var t = g && g.admin && g.admin.techStack;
+            if (!t) return noGrid();
+            return Object.keys(t).map(function (k) {
+                var x = t[k];
+                return card((x.icon ? x.icon + ' ' : '') + x.title, '<p class="muted">' + esc(x.details) + '</p>' + list((x.features || []).map(esc)));
+            });
+        },
+        owner: function (m, p, g) {
+            var r = m && m.readiness, i = (m && m.intelligence) || {};
+            return [card('Launch readiness', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' +
+                    list([fmt(r.built) + ' built', fmt(r.in_app) + ' in-app', fmt(r.missing) + ' not built yet', pageLink('ecosystem.html#readiness', 'Open the launch board →')]) : '<p class="muted">Snapshot unavailable.</p>'),
+                card('Owner tools', list([pageLink('dashboard.html', '⚙️ Dashboard'), pageLink('seedwave_admin.html', '🌱 Seedwave™ Admin'),
+                    pageLink('audit-tracker.html', '📈 Audit Tracker'), pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('quick-view.html', '🏁 Quick View')])),
+                card('Estate', list([fmt(i.repos && i.repos.total) + ' repositories', fmt(i.applications && i.applications.applications) + ' applications',
+                    fmt(g && g.admin && g.admin.globalMetrics && g.admin.globalMetrics.totalBrands) + ' brands', fmt(m && m.sectors.length) + ' sectors']))];
+        },
+        ledger: function (m, p, g) {
+            var gr = g && g.admin && g.admin.licenseLedger && g.admin.licenseLedger.growth;
+            if (!gr) return noGrid();
+            var head = ['Tier'].concat(gr.labels);
+            return [card('License growth by tier', table(head, gr.datasets.map(function (d) { return [esc(d.label)].concat(d.data.map(fmt)); })), 'wide'),
+                card('Latest month', bars(gr.datasets.map(function (d) { return d.label; }), gr.datasets.map(function (d) { return d.data[d.data.length - 1]; }))),
+                card('Related', list([pageLink('license-grid.html', '🔐 License Grid'), pageLink('clause-index.html', '📜 FAA Clauses')]))];
+        },
+        nodepacks: function (m, p, g) {
+            if (!g) return noGrid();
+            var rows = sectorRows(g).filter(function (r) { return r.brands; });
+            var html = rows.map(function (r) {
+                var packs = r.data.brands.map(function (b, i) {
+                    var sub = r.data.subNodes[i] || [];
+                    return '<li data-q="' + esc((b + ' ' + sub.join(' ')).toLowerCase()) + '"><b>' + esc(b) + '</b>' + (sub.length ? ' · ' + esc(sub.join(', ')) : '') + '</li>';
+                }).join('');
+                return '<details class="pack"><summary>' + esc(r.name) + ' <span class="badge">' + fmt(r.brands) + ' packs · ' + fmt(r.nodes) + ' nodes</span></summary><ul class="list">' + packs + '</ul></details>';
+            }).join('');
+            setTimeout(function () {
+                var q = document.getElementById('pack-q');
+                if (!q) return;
+                q.addEventListener('input', function () {
+                    var v = q.value.trim().toLowerCase();
+                    document.querySelectorAll('details.pack').forEach(function (d) {
+                        var any = false;
+                        d.querySelectorAll('li').forEach(function (li) { var hit = !v || li.getAttribute('data-q').indexOf(v) !== -1; li.style.display = hit ? '' : 'none'; any = any || hit; });
+                        d.style.display = any ? '' : 'none';
+                        if (v) d.open = any;
+                    });
+                });
+            }, 0);
+            return [card('Node packs · ' + fmt(rows.reduce(function (t, r) { return t + r.brands; }, 0)) + ' brands',
+                '<input id="pack-q" class="search" type="search" placeholder="Search brands and nodes…" aria-label="Search node packs">' + html, 'wide')];
+        },
+        nodestatus: function (m, p, g) {
+            if (!g) return noGrid();
+            var built = {}; (m ? m.sectors : []).forEach(function (s) { built[s.slug] = s.status; });
+            var rows = sectorRows(g).sort(function (x, y) { return y.nodes - x.nodes; });
+            return [card('Node index · ' + fmt(rows.reduce(function (t, r) { return t + r.nodes; }, 0)) + ' sub-nodes', table(['Sector', 'Brands', 'Sub-nodes', 'Sector page'],
+                rows.map(function (r) { var st = built[r.key] || 'missing'; return [esc(r.name), fmt(r.brands), fmt(r.nodes), badge(CLASS[st], LABEL[st])]; })), 'wide')];
+        },
+        pulse: function (m, p) {
+            if (!p) return [card('Signal', '<p class="muted">Pulse snapshot unavailable.</p>')];
+            return [card('Signal sync', '<p class="big">' + led('green') + p.flow.green + ' · ' + led('amber') + p.flow.amber + ' · ' + led('red') + p.flow.red + '</p>' +
+                list(['Pulse snapshot ' + esc(p.generated_at.replace('T', ' ').replace('Z', ' UTC')), m ? 'Ecosystem manifest ' + esc(m.generated_at.replace('T', ' ').replace('Z', ' UTC')) : 'Manifest unavailable']))]
+                .concat(p.stations.map(stationCard));
+        },
+        quick: function (m, p, g) {
+            var r = m && m.readiness, gm = g && g.admin && g.admin.globalMetrics;
+            var tiles = [[r ? (r.built + r.in_app) + ' / ' + r.total : '—', 'launch items reachable'], [m ? m.pages.length : '—', 'pages'],
+                [m ? m.sectors.length : '—', 'sectors'], [gm ? gm.totalBrands : '—', 'brands'], [p ? p.flow.green + p.flow.amber + p.flow.red : '—', 'pulse stations']];
+            return [card('At a glance', '<div class="tiles">' + tiles.map(function (t) { return '<div class="tile"><b>' + (typeof t[0] === 'number' ? fmt(t[0]) : esc(t[0])) + '</b><span>' + esc(t[1]) + '</span></div>'; }).join('') + '</div>', 'wide'),
+                card('Jump to', list([pageLink('ecosystem.html', '🌍 Ecosystem'), pageLink('dashboard.html', '⚙️ Dashboard'), pageLink('seedwave_admin.html', '🌱 Seedwave Admin'),
+                    pageLink('sector-grid.html', '🏙️ Sector Grid'), pageLink('brandmetrics.html', '🔍 Brand Metrics'), pageLink('pulse-monitor.html', '📡 Signal Sync')]))];
+        },
+        layers: function (m, p, g) {
+            if (!g) return noGrid();
+            var ss = (g.admin && g.admin.sovereignScrolls) || {};
+            var rows = sectorRows(g).filter(function (r) { return r.brands; });
+            return [card('Sovereign scrolls', '<p class="big">' + fmt(ss.generated) + ' of ' + fmt(ss.total) + ' generated</p>' +
+                    '<div class="bt big-bt"><span style="width:' + ((ss.generated || 0) * 100 / (ss.total || 1)) + '%"></span></div>'),
+                card('Scroll layers by sector', table(['Sector', 'Brand layer', 'Node layer'], rows.map(function (r) { return [esc(r.name), fmt(r.brands), fmt(r.nodes)]; })), 'wide')];
+        },
+        scrollmap: function (m) {
+            if (!m) return [card('ScrollMap', '<p class="muted">Snapshot unavailable.</p>')];
+            var pages = m.pages.map(function (x) { return pageLink(x.file, x.title); });
+            var groups = m.groups.map(function (gr) {
+                return card(gr.id + ' · ' + gr.name, list(gr.items.map(function (i) { return pageLink(i.page, i.page) + ' ' + badge(CLASS[i.status], LABEL[i.status]); })));
+            });
+            return [card('Pages · ' + m.pages.length, list(pages), 'wide')].concat(groups);
+        },
+        sectorgrid: function (m, p, g) {
+            if (!g) return noGrid();
+            var built = {}; (m ? m.sectors : []).forEach(function (s) { built[s.slug] = s.status; });
+            var rows = sectorRows(g);
+            return [card('Sector grid · ' + rows.length + ' sectors', '<div class="chips">' + rows.map(function (r) {
+                var z = r.zone || {};
+                return '<a class="chip col" href="' + esc(base + 'sectors/' + r.key + '/index.html') + '"><span>' + esc(r.name) + '</span>' +
+                    '<span class="sub">' + fmt(r.brands) + ' brands · ' + fmt(r.nodes) + ' nodes' + (z.payoutTier ? ' · tier ' + esc(z.payoutTier) : '') + (z.region ? ' · ' + esc(z.region) : '') + '</span></a>';
+            }).join('') + '</div>', 'wide')];
+        },
+        signin: function () {
+            return [card('Admin sign-in', '<p class="muted">Admin sign-in opens with the ecosystem launch. No credentials are collected on this page.</p>' +
+                '<a class="cta" href="' + esc(base + 'admin/admin-portal-approval.html') + '">Request admin access</a>')].concat(joinCards());
+        },
+        signup: function () {
+            return [card('Join the ecosystem', '<p class="muted">Sign-up opens with the ecosystem launch. Until then, choose an access tier and request access.</p>' +
+                '<a class="cta" href="' + esc(base + 'admin/admin-portal-approval.html') + '">Choose an access tier</a>')].concat(joinCards());
+        },
         access: function () {
             var tiers = ['👨‍👩‍👧‍👦 Family Access', '📊 Shareholder Access', '🤝 Service Provider', '🪙 Loyalty Access'];
             return tiers.map(function (t) {
@@ -114,14 +272,15 @@
         }
     };
 
-    Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json')]).then(function (res) {
-        var m = res[0], p = res[1];
+    var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid)$/.test(cfg.kind || '');
+    Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2];
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
             (cfg.figure ? '<div class="figure"><b>' + esc(cfg.figure) + '</b><span>Dashboard figure</span></div>' : '') +
             '</div></section>';
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p);
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g).filter(Boolean);
         root.innerHTML = head + '<section><div class="container"><div class="cards">' + cards.join('') + '</div>' +
             '<p class="snapshot">Live snapshot ' + esc(m ? m.generated_at.slice(0, 10) : 'unavailable') + ' · counts only</p></div></section>';
     });
