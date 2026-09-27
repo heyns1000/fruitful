@@ -61,7 +61,7 @@
         }).join('') + '</div>';
     }
     var ALIAS = { 'education': 'education-ip', 'health-hygiene': 'health', 'payroll': 'payroll-mining', 'culture': 'ritual',
-        'design': 'creative', 'finance': 'banking', 'food': 'fsf', 'retail': 'trade' };
+        'design': 'creative', 'finance': 'banking', 'food': 'fsf', 'retail': 'trade', 'packaging-logistics': 'logistics', 'pro-services': 'professional' };
     function dataKey(slug) { return ALIAS[slug] || slug; }
     function param(n) { try { return new URLSearchParams(location.search).get(n); } catch (e) { return null; } }
     function brandHref(key, b) { return base + 'brand.html?s=' + encodeURIComponent(key) + '&b=' + encodeURIComponent(b); }
@@ -172,6 +172,9 @@
             return [card('Portals · ' + portals.length, '<div class="rows">' + rows + '</div>', 'wide'),
                 card('Detail pages · ' + details.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + details.join('') + '</div></details>', 'wide'),
                 card('Sector pages · ' + sectorsP.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + sectorsP.join('') + '</div></details>', 'wide'),
+                card('Concept pages · ' + rowsOf('concept').length, '<details class="pack"><summary>Show all</summary><div class="rows">' + rowsOf('concept').join('') + '</div></details>', 'wide'),
+                m.conceptBacklog && m.conceptBacklog.count ? card('Concept backlog · ' + m.conceptBacklog.count, '<p class="muted">Pages the imported concept pages link to that were never built. They open as "not built yet" in-app; they do not count against launch readiness.</p>' +
+                    '<details class="pack"><summary>Show all</summary><div class="rows">' + m.conceptBacklog.items.map(function (i) { return '<div class="row"><span>' + esc(i.page) + '<span class="sub">linked from ' + esc(i.linked_from.join(', ')) + '</span></span>' + badge('bad', 'Not built yet') + '</div>'; }).join('') + '</div></details>', 'wide') : '',
                 card('Launch groups · ' + m.readiness.total + ' items', '<div class="rows">' + groups + '</div>')];
         },
         logs: function (m, p) {
@@ -436,7 +439,7 @@
                 card('Grid data', list([pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('developer-api.html', '🧬 Data files')])),
                 card('Launch', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' + pageLink('ecosystem.html#readiness', 'Open the launch board →') : '<p class="muted">Snapshot unavailable.</p>')];
         },
-        sector: function (m, p, g, intel, atlas) {
+        sector: function (m, p, g, intel, atlas, lic, concept) {
             if (!g) return noGrid();
             var slug = cfg.sector, key = dataKey(slug), s = g.sectors[key];
             var A = atlas && atlas.sectors && atlas.sectors[key], X = atlas && atlas.extraSectors && atlas.extraSectors[slug];
@@ -480,6 +483,9 @@
                     return [esc(x.n), esc(x.b) + (x.mapped ? ' <span class="sub">(mapped)</span>' : ''), esc(String(x.c || '').replace(/_/g, ' ')), priceOf(x.p)];
                 })), 'wide'));
             }
+            var C = concept && concept.sectors && concept.sectors[key];
+            if (C && C.length) out.push(card('Concept pages · ' + fmt(C.length), '<p class="muted">Hand-built sector concept pages from faa.zone, kept as designed.</p>' +
+                list(C.map(function (c) { return pageLink(c.file, c.title) + ' <span class="sub">' + esc(c.file.split('/').slice(2).join('/')) + '</span>'; })), 'wide'));
             if (A && A.hubs && A.hubs.length) out.push(card('Sector hubs', list(A.hubs.map(function (h) { return h.url ? pageLink(h.url, h.n) : esc(h.n); }))));
             if (A) out.push(card('Sources', list(Object.keys(A.counts.bySource).map(function (k) { return SRC_NAME[k] + ': ' + fmt(A.counts.bySource[k]) + ' brands'; }))));
             out.push(intelCard(intelFor(intel, key), sectorName(g, key)),
@@ -615,11 +621,12 @@
     var NEEDS_INTEL = /^(sector|brand|sectormap)$/.test(cfg.kind || '');
     var NEEDS_ATLAS = /^(sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
     var NEEDS_LIC = cfg.kind === 'licenses';
+    var NEEDS_CONCEPT = cfg.kind === 'sector';
     Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
         NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null), NEEDS_ATLAS ? get('sector-atlas.json') : Promise.resolve(null),
-        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5];
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic).filter(Boolean);
+        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6];
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
