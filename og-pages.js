@@ -60,6 +60,33 @@
             return '<div class="barrow"><span class="bl">' + esc(l) + '</span><span class="bt"><span style="width:' + (data[i] * 100 / max) + '%"></span></span><b>' + fmt(data[i]) + (suffix || '') + '</b></div>';
         }).join('') + '</div>';
     }
+    var ALIAS = { 'education': 'education-ip', 'health-hygiene': 'health', 'payroll': 'payroll-mining', 'culture': 'ritual',
+        'design': 'creative', 'finance': 'banking', 'food': 'fsf', 'retail': 'trade' };
+    function dataKey(slug) { return ALIAS[slug] || slug; }
+    function param(n) { try { return new URLSearchParams(location.search).get(n); } catch (e) { return null; } }
+    function brandHref(key, b) { return base + 'brand.html?s=' + encodeURIComponent(key) + '&b=' + encodeURIComponent(b); }
+    function sectorHref(key) { return base + 'sectors/' + key + '/index.html'; }
+    function intelFor(intel, key) { return intel && intel.sectors && intel.sectors[key]; }
+    function brandIntel(intel, b) { return intel && intel.brands && intel.brands[String(b).replace(/[™®]/g, '').trim().toLowerCase()]; }
+    function intelCard(i, what) {
+        if (!i) return '';
+        return card('Intelligence · ' + what, list([fmt(i.claude_chats) + ' Claude chats', fmt(i.claude_project_files) + ' Claude Project files',
+            fmt(i.claude_artifacts) + ' Claude artifacts', fmt(i.perplexity_records) + ' Perplexity index records', fmt(i.applications) + ' registered applications']) +
+            '<p class="muted">Counts of sources that mention this sector. Content stays private.</p>');
+    }
+    function searchable(inputId, itemSel, groupSel) {
+        setTimeout(function () {
+            var q = document.getElementById(inputId); if (!q) return;
+            q.addEventListener('input', function () {
+                var v = q.value.trim().toLowerCase();
+                document.querySelectorAll(groupSel).forEach(function (g) {
+                    var any = false;
+                    g.querySelectorAll(itemSel).forEach(function (x) { var hit = !v || (x.getAttribute('data-q') || '').indexOf(v) !== -1; x.style.display = hit ? '' : 'none'; any = any || hit; });
+                    g.style.display = any ? '' : 'none';
+                });
+            });
+        }, 0);
+    }
     function noGrid() { return [card('Catalogue', '<p class="muted">Catalogue data unavailable right now.</p>')]; }
     function joinCards() {
         return [card('Where to next', list([pageLink('admin/admin-portal-approval.html', '🔑 Request portal access'),
@@ -122,15 +149,21 @@
         },
         grid: function (m) {
             if (!m) return [card('Grid index', '<p class="muted">Snapshot unavailable.</p>')];
-            var rows = m.pages.map(function (x) {
-                return '<div class="row"><span>' + pageLink(x.file, x.title) + '<span class="sub">' + esc(x.file) + '</span></span>' +
-                    (x.noodle ? badge('ok', 'Pulse') : '') + badge(x.wired ? 'ok' : 'warn', x.wired ? 'In-app' : 'Viewer') + '</div>';
-            }).join('');
+            function rowsOf(kind) {
+                return m.pages.filter(function (x) { return (x.kind || 'portal') === kind; }).map(function (x) {
+                    return '<div class="row"><span>' + pageLink(x.file, x.title) + '<span class="sub">' + esc(x.file) + '</span></span>' +
+                        (x.noodle ? badge('ok', 'Pulse') : '') + badge(x.wired ? 'ok' : 'warn', x.wired ? 'In-app' : 'Viewer') + '</div>';
+                });
+            }
+            var portals = rowsOf('portal'), details = rowsOf('detail'), sectorsP = rowsOf('sector');
+            var rows = portals.join('');
             var groups = m.groups.map(function (g) {
                 var ok = g.items.filter(function (i) { return i.status !== 'missing'; }).length;
                 return '<div class="row"><span><b>' + esc(g.id) + '</b> · ' + esc(g.name) + '</span>' + badge(ok === g.items.length ? 'ok' : 'warn', ok + ' / ' + g.items.length) + '</div>';
             }).join('');
-            return [card('Portal pages · ' + m.pages.length, '<div class="rows">' + rows + '</div>', 'wide'),
+            return [card('Portals · ' + portals.length, '<div class="rows">' + rows + '</div>', 'wide'),
+                card('Detail pages · ' + details.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + details.join('') + '</div></details>', 'wide'),
+                card('Sector pages · ' + sectorsP.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + sectorsP.join('') + '</div></details>', 'wide'),
                 card('Launch groups · ' + m.readiness.total + ' items', '<div class="rows">' + groups + '</div>')];
         },
         logs: function (m, p) {
@@ -188,7 +221,7 @@
             if (!g) return noGrid();
             var rows = sectorRows(g).filter(function (r) { return r.zone; });
             return [card('Distributor tariff index · ' + rows.length + ' sectors', table(['Sector', 'Monthly', 'Annual', 'Payout tier', 'Region', 'Brands'],
-                rows.map(function (r) { return [esc(r.name), esc(r.zone.monthlyFee), esc(r.zone.annualFee), esc(r.zone.payoutTier), esc(r.zone.region), fmt(r.brands)]; })), 'wide')];
+                rows.map(function (r) { return [pageLink('sectors/' + r.key + '/index.html', r.name), esc(r.zone.monthlyFee), esc(r.zone.annualFee), esc(r.zone.payoutTier), esc(r.zone.region), fmt(r.brands)]; })), 'wide')];
         },
         hardware: function (m, p, g) {
             var t = g && g.admin && g.admin.techStack;
@@ -221,7 +254,7 @@
             var html = rows.map(function (r) {
                 var packs = r.data.brands.map(function (b, i) {
                     var sub = r.data.subNodes[i] || [];
-                    return '<li data-q="' + esc((b + ' ' + sub.join(' ')).toLowerCase()) + '"><b>' + esc(b) + '</b>' + (sub.length ? ' · ' + esc(sub.join(', ')) : '') + '</li>';
+                    return '<li data-q="' + esc((b + ' ' + sub.join(' ')).toLowerCase()) + '"><a href="' + esc(brandHref(r.key, b)) + '"><b>' + esc(b) + '</b></a>' + (sub.length ? ' · ' + esc(sub.join(', ')) : '') + '</li>';
                 }).join('');
                 return '<details class="pack"><summary>' + esc(r.name) + ' <span class="badge">' + fmt(r.brands) + ' packs · ' + fmt(r.nodes) + ' nodes</span></summary><ul class="list">' + packs + '</ul></details>';
             }).join('');
@@ -246,7 +279,7 @@
             var built = {}; (m ? m.sectors : []).forEach(function (s) { built[s.slug] = s.status; });
             var rows = sectorRows(g).sort(function (x, y) { return y.nodes - x.nodes; });
             return [card('Node index · ' + fmt(rows.reduce(function (t, r) { return t + r.nodes; }, 0)) + ' sub-nodes', table(['Sector', 'Brands', 'Sub-nodes', 'Sector page'],
-                rows.map(function (r) { var st = built[r.key] || 'missing'; return [esc(r.name), fmt(r.brands), fmt(r.nodes), badge(CLASS[st], LABEL[st])]; })), 'wide')];
+                rows.map(function (r) { return [pageLink('sectors/' + r.key + '/index.html', r.name), fmt(r.brands), fmt(r.nodes), badge('ok', 'Built')]; })), 'wide')];
         },
         pulse: function (m, p) {
             if (!p) return [card('Signal', '<p class="muted">Pulse snapshot unavailable.</p>')];
@@ -268,7 +301,7 @@
             var rows = sectorRows(g).filter(function (r) { return r.brands; });
             return [card('Sovereign scrolls', '<p class="big">' + fmt(ss.generated) + ' of ' + fmt(ss.total) + ' generated</p>' +
                     '<div class="bt big-bt"><span style="width:' + ((ss.generated || 0) * 100 / (ss.total || 1)) + '%"></span></div>'),
-                card('Scroll layers by sector', table(['Sector', 'Brand layer', 'Node layer'], rows.map(function (r) { return [esc(r.name), fmt(r.brands), fmt(r.nodes)]; })), 'wide')];
+                card('Scroll layers by sector', table(['Sector', 'Brand layer', 'Node layer'], rows.map(function (r) { return [pageLink('sectors/' + r.key + '/index.html', r.name), fmt(r.brands), fmt(r.nodes)]; })), 'wide')];
         },
         scrollmap: function (m) {
             if (!m) return [card('ScrollMap', '<p class="muted">Snapshot unavailable.</p>')];
@@ -348,7 +381,7 @@
             var rows = sectorRows(g).filter(function (r) { return r.brands; });
             var html = rows.map(function (r) {
                 return '<details class="pack"><summary>' + esc(r.name) + ' <span class="badge">' + fmt(r.brands) + ' brands</span></summary><div class="chips">' +
-                    r.data.brands.map(function (b) { return '<span class="chip" data-q="' + esc(String(b).toLowerCase()) + '">' + esc(b) + '</span>'; }).join('') + '</div></details>';
+                    r.data.brands.map(function (b) { return '<a class="chip" data-q="' + esc(String(b).toLowerCase()) + '" href="' + esc(brandHref(r.key, b)) + '">' + esc(b) + '</a>'; }).join('') + '</div></details>';
             }).join('');
             setTimeout(function () {
                 var q = document.getElementById('brand-q'); if (!q) return;
@@ -372,6 +405,98 @@
                 card('Build blocks', list([pageLink('developer-api.html', '🧬 Developer API'), pageLink('plotvault.html', '🧩 Modules'), pageLink('faa-hardware.html', '🖥️ Infrastructure')]))];
         },
         legal: function () { return legalCards(cfg.doc); },
+        terminal: function (m, p, g) {
+            var d = cfg.doc || '', out = [];
+            if (d.indexOf('view:') === 0) {
+                var target = d.slice(5);
+                out.push(card('Terminal', '<p class="muted">This terminal opens the full view.</p><a class="cta" href="' + esc(base + target) + '">Open ' + esc(target.replace(/\.html$/, '')) + ' →</a>'));
+            } else if (d === 'flow') {
+                out = out.concat(RENDER.pulse(m, p));
+            } else {
+                var st = station(p, d);
+                out.push(st ? stationCard(st) : card('Terminal', '<p class="muted">Pulse snapshot unavailable.</p>'));
+            }
+            out.push(card('All terminals', list([['vault-master', '🦍 VaultMaster'], ['cube-lattice', '🧱 Cube Lattice'], ['global-view', '🌍 Global View'], ['freight-ops', '🚚 Freight Ops'],
+                ['loop-watch', '♻️ Loop Watch'], ['seedwave', '🌱 Seedwave'], ['distribution', '📦 Distribution'], ['signal', '🔐 Signal'], ['faa-brands', '📦 7038 FAA Brands']]
+                .map(function (t) { return pageLink(t[0] + '.html', t[1]); }))));
+            return out;
+        },
+        adminhub: function (m) {
+            var r = m && m.readiness;
+            return [card('Administration', list([pageLink('seedwave_admin.html', '🌱 Seedwave™ Admin Portal'), pageLink('dashboard.html', '⚙️ Dashboard'), pageLink('faa-owner.html', '🧑‍✈️ FAA Owner'),
+                    pageLink('admin/admin-portal-approval.html', '🔑 Portal Access Approval'), pageLink('audit-tracker.html', '📈 Audit Tracker')])),
+                card('Grid data', list([pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('developer-api.html', '🧬 Data files')])),
+                card('Launch', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' + pageLink('ecosystem.html#readiness', 'Open the launch board →') : '<p class="muted">Snapshot unavailable.</p>')];
+        },
+        sector: function (m, p, g, intel) {
+            if (!g) return noGrid();
+            var slug = cfg.sector, key = dataKey(slug), s = g.sectors[key];
+            if (!s) return [card('Sector', '<p class="muted">This sector is not in the catalogue yet.</p>' + pageLink('sector-grid.html', '🏙️ Sector Grid →'))];
+            var z = (g.zoneIndex || {})[key] || {}, nodes = 0;
+            s.subNodes.forEach(function (x) { nodes += (x && x.length) || 0; });
+            var tiles = [[s.brands.length, 'brands'], [nodes, 'sub-nodes'], [z.monthlyFee || '—', 'monthly'], [z.annualFee || '—', 'annual'], [z.payoutTier || '—', 'payout tier'], [z.region || '—', 'region']];
+            var chips = s.brands.map(function (b, i) {
+                var sub = s.subNodes[i] || [], bi = brandIntel(intel, b);
+                return '<a class="chip col" data-q="' + esc((b + ' ' + sub.join(' ')).toLowerCase()) + '" href="' + esc(brandHref(key, b)) + '"><span>' + esc(b) + '</span>' +
+                    '<span class="sub">' + fmt(sub.length) + ' nodes' + (bi && (bi.claude || bi.perplexity) ? ' · ' + fmt(bi.claude + bi.perplexity) + ' mentions' : '') + '</span></a>';
+            }).join('');
+            searchable('sector-q', '.chip', '.brand-group');
+            var peers = sectorRows(g).filter(function (r) { return r.key !== key && r.zone && z.payoutTier && r.zone.payoutTier === z.payoutTier; });
+            var alias = slug !== key ? '<p class="muted">Also known as <b>' + esc(slug) + '</b>; this is the ' + esc(sectorName(g, key)) + ' sector.</p>' : '';
+            return [card('Sector at a glance', alias + '<div class="tiles">' + tiles.map(function (t) { return '<div class="tile"><b>' + (typeof t[0] === 'number' ? fmt(t[0]) : esc(t[0])) + '</b><span>' + esc(t[1]) + '</span></div>'; }).join('') + '</div>', 'wide'),
+                s.brands.length ? card('Brands · ' + fmt(s.brands.length), '<input id="sector-q" class="search" type="search" placeholder="Search this sector…" aria-label="Search brands in this sector"><div class="chips brand-group">' + chips + '</div>', 'wide')
+                    : card('Brands', '<p class="muted">No brands catalogued in this sector yet.</p>' + pageLink('partner-program.html', '🤝 Bring a brand into this sector →')),
+                intelCard(intelFor(intel, key), sectorName(g, key)),
+                card('Same payout tier' + (z.payoutTier ? ' · ' + z.payoutTier : ''), peers.length ? list(peers.map(function (r) { return pageLink('sectors/' + r.key + '/index.html', r.name); })) : '<p class="muted">No other sectors in this tier.</p>'),
+                card('Navigate', list([pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('sector-grid.html', '🏙️ Sector Grid'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('node-packs.html', '📁 Node Packs'), pageLink('faa-distributor.html', '🤝 Tariffs')]))];
+        },
+        brand: function (m, p, g, intel) {
+            if (!g) return noGrid();
+            var key = dataKey(param('s') || ''), name = param('b') || '', s = g.sectors[key];
+            var idx = s ? s.brands.map(String).indexOf(name) : -1;
+            if (idx < 0) {
+                return [card(name ? 'Brand not found' : 'Choose a brand', '<p class="muted">Pick a brand from the grid.</p>' + list([pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('global_brands.html', '🌍 Global Brands')]))];
+            }
+            document.title = name + ' · ' + sectorName(g, key) + ' · Fruitful™ OmniGrid™';
+            cfg.title = name; cfg.intro = sectorName(g, key) + ' · brand scroll';
+            var sub = s.subNodes[idx] || [], z = (g.zoneIndex || {})[key] || {}, bi = brandIntel(intel, name);
+            var near = s.brands.slice(Math.max(0, idx - 6), idx + 7).filter(function (b) { return String(b) !== name; });
+            return [card('Brand scroll', list(['Sector: ' + pageLink('sectors/' + key + '/index.html', sectorName(g, key)), 'Position ' + fmt(idx + 1) + ' of ' + fmt(s.brands.length) + ' in the sector',
+                    'Payout tier ' + esc(z.payoutTier || '—') + ' · ' + esc(z.region || '—'), 'Licence ' + esc(z.monthlyFee || '—') + ' / month · ' + esc(z.annualFee || '—') + ' / year'])),
+                card('Sub-nodes · ' + fmt(sub.length), sub.length ? '<div class="chips">' + sub.map(function (n) { return '<span class="chip">' + esc(n) + '</span>'; }).join('') + '</div>' : '<p class="muted">No sub-nodes catalogued.</p>', 'wide'),
+                card('Intelligence', bi ? list([fmt(bi.claude) + ' Claude sources mention this brand', fmt(bi.perplexity) + ' Perplexity index records']) : '<p class="muted">No mentions found in the Claude or Perplexity records.</p>'),
+                card('Neighbouring brands', '<div class="chips">' + near.map(function (b) { return '<a class="chip" href="' + esc(brandHref(key, b)) + '">' + esc(b) + '</a>'; }).join('') + '</div>'),
+                card('Take part', list([pageLink('admin/admin-portal-approval.html', '🔑 Request access'), pageLink('partner-program.html', '🤝 Partner Program'), pageLink('licensing.html', '🔐 License tiers')]))];
+        },
+        sectormap: function (m, p, g, intel) {
+            if (!g) return noGrid();
+            var rows = sectorRows(g), tiers = {};
+            rows.forEach(function (r) { var t = (r.zone && r.zone.payoutTier) || 'Unrated'; (tiers[t] = tiers[t] || []).push(r); });
+            var order = Object.keys(tiers).sort(function (a, b) { var o = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'Unrated']; return (o.indexOf(a) + 99) % 99 - (o.indexOf(b) + 99) % 99; });
+            var max = Math.max.apply(null, rows.map(function (r) { return r.brands; }).concat([1]));
+            var cols = order.map(function (t) {
+                return '<div class="tiercol"><h4>Tier ' + esc(t) + ' · ' + tiers[t].length + '</h4>' + tiers[t].sort(function (a, b) { return b.brands - a.brands; }).map(function (r) {
+                    var d = 44 + Math.round(76 * Math.sqrt(r.brands / max)), i = intelFor(intel, r.key);
+                    return '<a class="bubble" href="' + esc(sectorHref(r.key)) + '" title="' + esc(r.name + ' · ' + r.brands + ' brands · ' + r.nodes + ' nodes') + '">' +
+                        '<span class="orb" style="width:' + d + 'px;height:' + d + 'px"></span><span class="bl">' + esc(r.name) + '</span><span class="sub">' + fmt(r.brands) + ' brands · ' + esc((r.zone && r.zone.region) || '') +
+                        (i ? ' · ' + fmt(i.claude_chats) + ' chats' : '') + '</span></a>';
+                }).join('') + '</div>';
+            }).join('');
+            return [card('Sector map · ' + rows.length + ' sectors by payout tier', '<p class="muted">Orb size is the number of catalogued brands. Select a sector to open it.</p><div class="tiermap">' + cols + '</div>', 'wide')];
+        },
+        scrollgrid: function (m, p, g) {
+            if (!g) return noGrid();
+            var rows = sectorRows(g).filter(function (r) { return r.brands; }), total = 0;
+            var html = rows.map(function (r, ri) {
+                total += r.brands;
+                var hue = Math.round(ri * 360 / rows.length);
+                return '<div class="brand-group sg"><div class="sg-h"><a href="' + esc(sectorHref(r.key)) + '">' + esc(r.name) + '</a> <span class="badge">' + fmt(r.brands) + '</span></div><div class="sg-cells">' +
+                    r.data.brands.map(function (b) { return '<a class="cell" data-q="' + esc(String(b).toLowerCase()) + '" style="--h:' + hue + '" href="' + esc(brandHref(r.key, b)) + '" title="' + esc(b) + '"></a>'; }).join('') + '</div></div>';
+            }).join('');
+            searchable('grid-q', '.cell', '.brand-group');
+            return [card('Scroll Grid · ' + fmt(total) + ' brand scrolls', '<p class="muted">Every catalogued brand is one tile, coloured by sector. Select a tile to open its scroll.</p>' +
+                '<input id="grid-q" class="search" type="search" placeholder="Find a brand…" aria-label="Find a brand">' + html, 'wide')];
+        },
         fse: function () {
             var sheet = [['Product ID', 'FRU-CRE-3102'], ['VaultID', 'VAULT-939V'], ['Zone', 'C 2'], ['Security', 'FAA-SEC A+'],
                 ['Active nodes', '1,580'], ['Pulse activity', '43,792 / sec'], ['Latency', '109 ms'], ['Compliance', 'Active & Certified']];
@@ -394,15 +519,17 @@
         }
     };
 
-    var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid|about|partners|brands)$/.test(cfg.kind || '');
-    Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2];
+    var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid|about|partners|brands|sector|brand|sectormap|scrollgrid)$/.test(cfg.kind || '');
+    var NEEDS_INTEL = /^(sector|brand|sectormap)$/.test(cfg.kind || '');
+    Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
+        NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2], intel = res[3];
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
             (cfg.figure ? '<div class="figure"><b>' + esc(cfg.figure) + '</b><span>Dashboard figure</span></div>' : '') +
             '</div></section>';
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g).filter(Boolean);
         root.innerHTML = head + '<section><div class="container"><div class="cards">' + cards.join('') + '</div>' +
             '<p class="snapshot">Live snapshot ' + esc(m ? m.generated_at.slice(0, 10) : 'unavailable') + ' · counts only</p></div></section>';
     });
