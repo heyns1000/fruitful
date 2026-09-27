@@ -27,8 +27,15 @@
         'admin.faa.zone': 'seedwave_admin.html',
         'faa.zone/dashboard.html': 'dashboard.html',
         'faa.zone/legal/index.html': 'legal-privacy.html',
-        '#admin-portal-section': 'seedwave_admin.html'
+        '#admin-portal-section': 'seedwave_admin.html',
+        '/contact.html': 'contact-support.html',
+        '/global-checkout.html': 'checkout.html'
     };
+
+    // Pages that concept pages link to by another name.
+    var PAGE_ALIASES = { 'owner-login.html': 'faa-owner.html', 'hardware-login.html': 'faa-hardware.html',
+        'distributor-login.html': 'faa-distributor.html', 'contact.html': 'contact-support.html', 'global-checkout.html': 'checkout.html' };
+    var CONCEPT = !!(document.currentScript && document.currentScript.getAttribute('data-concept'));
 
     // Sector terminals: local page, or a station from the global snapshot.
     var TERMINALS = {
@@ -123,6 +130,14 @@
     var viewTitle = view.querySelector('.og-title');
     var viewExt = view.querySelector('.og-ext');
 
+    // When a local page is missing, try the page with the same name at the site root (or its alias) before the panel.
+    function fallbackFor(url) {
+        var name = url.split(/[?#]/)[0].split('/').pop();
+        var alt = PAGE_ALIASES[name] || name;
+        var root = new URL('/' + alt, location.href).href;
+        return root === new URL(url, location.href).href ? null : root;
+    }
+
     function missingPanel(url, title) {
         loadData().then(function (data) {
             viewFrame.removeAttribute('src');
@@ -138,14 +153,16 @@
             fetch(url, { method: 'HEAD' }).then(function (r) {
                 if (r.status !== 404 || viewFrame.getAttribute('src') !== url) return;
                 // Clean URLs: "/admin/page" is served as "/admin/page.html" once hosted.
-                if (!/\.[a-z0-9]+([?#]|$)/i.test(url)) {
-                    var alt = url.replace(/([?#].*)?$/, '.html$1');
-                    return fetch(alt, { method: 'HEAD' }).then(function (r2) {
-                        if (viewFrame.getAttribute('src') !== url) return;
-                        if (r2.ok) viewFrame.src = alt; else missingPanel(url, title);
-                    });
-                }
-                missingPanel(url, title);
+                var tries = [];
+                if (!/\.[a-z0-9]+([?#]|$)/i.test(url)) tries.push(url.replace(/([?#].*)?$/, '.html$1'));
+                var fb = fallbackFor(url);
+                if (fb) tries.push(fb);
+                (function next() {
+                    if (viewFrame.getAttribute('src') !== url) return;
+                    var t = tries.shift();
+                    if (!t) { missingPanel(url, title); return; }
+                    fetch(t, { method: 'HEAD' }).then(function (r2) { if (r2.ok) viewFrame.src = t; else next(); }).catch(next);
+                })();
             }).catch(function () {});
         }
         viewTitle.textContent = title || url;
@@ -390,8 +407,19 @@
         window.addEventListener('scroll', function () { card.classList.remove('on'); }, { passive: true });
     }
 
+    function conceptGuard() {
+        var bar = document.createElement('div');
+        bar.setAttribute('role', 'note');
+        bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#111;color:#f5f5f7;font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between';
+        bar.innerHTML = '<span>🧪 <b>Concept preview</b> · forms on this page are not connected yet; nothing you type is sent.</span><a href="/ecosystem.html" style="color:#64a8ff;text-decoration:none;font-weight:600">🌍 Ecosystem</a>';
+        document.body.insertBefore(bar, document.body.firstChild);
+        document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+        document.querySelectorAll('input[type="password"]').forEach(function (i) { i.disabled = true; i.placeholder = 'Not connected in the concept preview'; });
+    }
+
     function init() {
         window.loadTerminal = renderTerminal;
+        if (CONCEPT) conceptGuard();
         if (!IN_FRAME) window.__ogOpenView = openView;
         document.body.appendChild(view);
         document.body.appendChild(card);
