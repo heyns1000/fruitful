@@ -36,7 +36,7 @@
         return card(s.title, '<p class="big">' + led(s.status) + esc(s.headline) + '</p>' +
             list(s.lines.map(esc)));
     }
-    function pageLink(file, text) { return '<a href="' + esc(base + file) + '">' + esc(text || file) + '</a>'; }
+    function pageLink(file, text) { var href = /^([a-z]+:)?\/\//i.test(file) ? file : base + file; return '<a href="' + esc(href) + '">' + esc(text || file) + '</a>'; }
 
     function sectorName(g, key) {
         var sl = (g && g.sectorList) || {};
@@ -87,6 +87,14 @@
             });
         }, 0);
     }
+    var SRC_NAME = { grid: 'FAA.zone catalogue', fpc: 'FruitfulPlanetChange', base44: 'Base44 FRUITFUL' };
+    var SRC_LEGEND = '<b>G</b> FAA.zone catalogue · <b>F</b> FruitfulPlanetChange · <b>B</b> Base44 FRUITFUL';
+    function srcTags(src, long) { return (src || []).map(function (k) { return long ? esc(SRC_NAME[k] || k) : ({ grid: 'G', fpc: 'F', base44: 'B' }[k] || k); }).join(long ? ', ' : ''); }
+    function usd(n) { return n == null || n === '' ? '—' : '$' + Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+    function tile(t) { return '<div class="tile"><b>' + (typeof t[0] === 'number' ? fmt(t[0]) : esc(t[0] == null ? '—' : t[0])) + '</b><span>' + esc(t[1]) + '</span></div>'; }
+    function priceOf(p) { var o = []; if (p && p.ZAR) o.push('R' + Number(p.ZAR).toLocaleString('en-ZA')); if (p && p.USD) o.push(usd(p.USD)); return o.join(' · ') || '—'; }
+    function normName(n) { return String(n || '').replace(/[™®]/g, '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+    function titleOf(k) { return k.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
     function noGrid() { return [card('Catalogue', '<p class="muted">Catalogue data unavailable right now.</p>')]; }
     function joinCards() {
         return [card('Where to next', list([pageLink('admin/admin-portal-approval.html', '🔑 Request portal access'),
@@ -428,49 +436,85 @@
                 card('Grid data', list([pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('developer-api.html', '🧬 Data files')])),
                 card('Launch', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' + pageLink('ecosystem.html#readiness', 'Open the launch board →') : '<p class="muted">Snapshot unavailable.</p>')];
         },
-        sector: function (m, p, g, intel) {
+        sector: function (m, p, g, intel, atlas) {
             if (!g) return noGrid();
             var slug = cfg.sector, key = dataKey(slug), s = g.sectors[key];
-            if (!s) return [card('Sector', '<p class="muted">This sector is not in the catalogue yet.</p>' + pageLink('sector-grid.html', '🏙️ Sector Grid →'))];
-            var z = (g.zoneIndex || {})[key] || {}, nodes = 0;
-            s.subNodes.forEach(function (x) { nodes += (x && x.length) || 0; });
-            var tiles = [[s.brands.length, 'brands'], [nodes, 'sub-nodes'], [z.monthlyFee || '—', 'monthly'], [z.annualFee || '—', 'annual'], [z.payoutTier || '—', 'payout tier'], [z.region || '—', 'region']];
-            var chips = s.brands.map(function (b, i) {
-                var sub = s.subNodes[i] || [], bi = brandIntel(intel, b);
-                return '<a class="chip col" data-q="' + esc((b + ' ' + sub.join(' ')).toLowerCase()) + '" href="' + esc(brandHref(key, b)) + '"><span>' + esc(b) + '</span>' +
-                    '<span class="sub">' + fmt(sub.length) + ' nodes' + (bi && (bi.claude || bi.perplexity) ? ' · ' + fmt(bi.claude + bi.perplexity) + ' mentions' : '') + '</span></a>';
+            var A = atlas && atlas.sectors && atlas.sectors[key], X = atlas && atlas.extraSectors && atlas.extraSectors[slug];
+            if (!s && !A) {
+                if (X) {
+                    return [card('Sector at a glance', '<div class="tiles">' + [[usd(X.monthly), 'per month'], [usd(X.annual), 'per year'], [X.tier, 'plan tier']].map(tile).join('') + '</div>' +
+                            '<p class="muted">Part of the Fruitful Crate Dance ecosystem price book (FruitfulPlanetChange). No brands catalogued in this sector yet.</p>', 'wide'),
+                        card('Take part', list([pageLink('partner-program.html', '🤝 Bring a brand into this sector'), pageLink('sector-map.html', '🗺️ Sector Map')]))];
+                }
+                return [card('Sector', '<p class="muted">This sector is not in the catalogue yet.</p>' + pageLink('sector-grid.html', '🏙️ Sector Grid →'))];
+            }
+            var brands = A ? A.brands : s.brands.map(function (b, i) { return { n: b, s: s.subNodes[i] || [], src: ['grid'] }; });
+            var z = (g.zoneIndex || {})[key] || {}, pr = A && A.pricing, nodes = 0;
+            brands.forEach(function (b) { nodes += (b.s || []).length; });
+            var tiles = [[brands.length, 'brands'], [nodes, 'sub-nodes'], [pr ? usd(pr.monthly) : (z.monthlyFee || '—'), 'per month'], [pr ? usd(pr.annual) : (z.annualFee || '—'), 'per year'],
+                [pr ? pr.tier : '—', 'plan tier'], [z.payoutTier || '—', 'payout tier'], [z.region || '—', 'region']];
+            var chips = brands.map(function (b) {
+                var bi = brandIntel(intel, b.n);
+                return '<a class="chip col" data-q="' + esc((b.n + ' ' + (b.s || []).join(' ') + ' ' + (b.d || '')).toLowerCase()) + '" href="' + esc(brandHref(key, b.n)) + '"><span>' + esc(b.n) + '</span>' +
+                    '<span class="sub">' + fmt((b.s || []).length) + ' nodes · ' + srcTags(b.src) + (bi && (bi.claude || bi.perplexity) ? ' · ' + fmt(bi.claude + bi.perplexity) + ' mentions' : '') + '</span></a>';
             }).join('');
             searchable('sector-q', '.chip', '.brand-group');
             var peers = sectorRows(g).filter(function (r) { return r.key !== key && r.zone && z.payoutTier && r.zone.payoutTier === z.payoutTier; });
             var alias = slug !== key ? '<p class="muted">Also known as <b>' + esc(slug) + '</b>; this is the ' + esc(sectorName(g, key)) + ' sector.</p>' : '';
-            return [card('Sector at a glance', alias + '<div class="tiles">' + tiles.map(function (t) { return '<div class="tile"><b>' + (typeof t[0] === 'number' ? fmt(t[0]) : esc(t[0])) + '</b><span>' + esc(t[1]) + '</span></div>'; }).join('') + '</div>', 'wide'),
-                s.brands.length ? card('Brands · ' + fmt(s.brands.length), '<input id="sector-q" class="search" type="search" placeholder="Search this sector…" aria-label="Search brands in this sector"><div class="chips brand-group">' + chips + '</div>', 'wide')
-                    : card('Brands', '<p class="muted">No brands catalogued in this sector yet.</p>' + pageLink('partner-program.html', '🤝 Bring a brand into this sector →')),
-                intelCard(intelFor(intel, key), sectorName(g, key)),
-                card('Same payout tier' + (z.payoutTier ? ' · ' + z.payoutTier : ''), peers.length ? list(peers.map(function (r) { return pageLink('sectors/' + r.key + '/index.html', r.name); })) : '<p class="muted">No other sectors in this tier.</p>'),
-                card('Navigate', list([pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('sector-grid.html', '🏙️ Sector Grid'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('node-packs.html', '📁 Node Packs'), pageLink('faa-distributor.html', '🤝 Tariffs')]))];
-        },
-        brand: function (m, p, g, intel) {
-            if (!g) return noGrid();
-            var key = dataKey(param('s') || ''), name = param('b') || '', s = g.sectors[key];
-            var idx = s ? s.brands.map(String).indexOf(name) : -1;
-            if (idx < 0) {
-                return [card(name ? 'Brand not found' : 'Choose a brand', '<p class="muted">Pick a brand from the grid.</p>' + list([pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('global_brands.html', '🌍 Global Brands')]))];
+            var out = [card('Sector at a glance', alias + '<div class="tiles">' + tiles.map(tile).join('') + '</div>', 'wide'),
+                brands.length ? card('Brands · ' + fmt(brands.length), '<p class="muted">Sources: ' + SRC_LEGEND + '</p><input id="sector-q" class="search" type="search" placeholder="Search this sector…" aria-label="Search brands in this sector"><div class="chips brand-group">' + chips + '</div>', 'wide')
+                    : card('Brands', '<p class="muted">No brands catalogued in this sector yet.</p>' + pageLink('partner-program.html', '🤝 Bring a brand into this sector →'))];
+            if (pr || z.monthlyFee) out.push(card('Price book', table(['Source', 'Monthly', 'Annual', 'Tier'], [].concat(
+                pr ? [['FruitfulPlanetChange price book', usd(pr.monthly), usd(pr.annual), esc(pr.tier)]] : [],
+                z.monthlyFee ? [['FAA.zone tariff index', esc(z.monthlyFee), esc(z.annualFee || '—'), esc(z.payoutTier || '—')]] : []))));
+            if (A && A.licence) {
+                var L = A.licence;
+                out.push(card('FAA™ brand licences · ' + fmt(L.count), list([
+                    'Categories: ' + Object.keys(L.categories).map(function (c) { return esc(c) + ' (' + fmt(L.categories[c]) + ')'; }).join(', '),
+                    'Tiers: ' + Object.keys(L.tiers).map(function (t) { return esc(t) + ' ' + fmt(L.tiers[t]); }).join(' · '),
+                    'Licence fee ' + usd(L.feeUSD.min) + ' – ' + usd(L.feeUSD.max) + ' (median ' + usd(L.feeUSD.median) + ')']) +
+                    '<p class="muted">From the FAA™ Brand Licensing System, mapped to this sector by licence category.</p>' + pageLink('faa-licenses.html?sector=' + encodeURIComponent(key), 'Open these licences →')));
             }
-            document.title = name + ' · ' + sectorName(g, key) + ' · Fruitful™ OmniGrid™';
-            cfg.title = name; cfg.intro = sectorName(g, key) + ' · brand scroll';
-            var sub = s.subNodes[idx] || [], z = (g.zoneIndex || {})[key] || {}, bi = brandIntel(intel, name);
-            var near = s.brands.slice(Math.max(0, idx - 6), idx + 7).filter(function (b) { return String(b) !== name; });
-            return [card('Brand scroll', list(['Sector: ' + pageLink('sectors/' + key + '/index.html', sectorName(g, key)), 'Position ' + fmt(idx + 1) + ' of ' + fmt(s.brands.length) + ' in the sector',
-                    'Payout tier ' + esc(z.payoutTier || '—') + ' · ' + esc(z.region || '—'), 'Licence ' + esc(z.monthlyFee || '—') + ' / month · ' + esc(z.annualFee || '—') + ' / year'])),
-                card('Sub-nodes · ' + fmt(sub.length), sub.length ? '<div class="chips">' + sub.map(function (n) { return '<span class="chip">' + esc(n) + '</span>'; }).join('') + '</div>' : '<p class="muted">No sub-nodes catalogued.</p>', 'wide'),
-                card('Intelligence', bi ? list([fmt(bi.claude) + ' Claude sources mention this brand', fmt(bi.perplexity) + ' Perplexity index records']) : '<p class="muted">No mentions found in the Claude or Perplexity records.</p>'),
-                card('Neighbouring brands', '<div class="chips">' + near.map(function (b) { return '<a class="chip" href="' + esc(brandHref(key, b)) + '">' + esc(b) + '</a>'; }).join('') + '</div>'),
-                card('Take part', list([pageLink('admin/admin-portal-approval.html', '🔑 Request access'), pageLink('partner-program.html', '🤝 Partner Program'), pageLink('licensing.html', '🔐 License tiers')]))];
+            if (A && A.market && A.market.length) {
+                out.push(card('Marketplace · ' + fmt(A.market.length) + ' products', table(['Product', 'Brand', 'Type', 'Price'], A.market.map(function (x) {
+                    return [esc(x.n), esc(x.b) + (x.mapped ? ' <span class="sub">(mapped)</span>' : ''), esc(String(x.c || '').replace(/_/g, ' ')), priceOf(x.p)];
+                })), 'wide'));
+            }
+            if (A && A.hubs && A.hubs.length) out.push(card('Sector hubs', list(A.hubs.map(function (h) { return h.url ? pageLink(h.url, h.n) : esc(h.n); }))));
+            if (A) out.push(card('Sources', list(Object.keys(A.counts.bySource).map(function (k) { return SRC_NAME[k] + ': ' + fmt(A.counts.bySource[k]) + ' brands'; }))));
+            out.push(intelCard(intelFor(intel, key), sectorName(g, key)),
+                card('Same payout tier' + (z.payoutTier ? ' · ' + z.payoutTier : ''), peers.length ? list(peers.map(function (r) { return pageLink('sectors/' + r.key + '/index.html', r.name); })) : '<p class="muted">No other sectors in this tier.</p>'),
+                card('Navigate', list([pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('faa-licenses.html', '📜 FAA Licences'), pageLink('hubs.html', '🌍 Global Hubs'), pageLink('faa-distributor.html', '🤝 Tariffs')])));
+            return out;
         },
-        sectormap: function (m, p, g, intel) {
+        brand: function (m, p, g, intel, atlas) {
             if (!g) return noGrid();
-            var rows = sectorRows(g), tiers = {};
+            var key = dataKey(param('s') || ''), name = param('b') || '', s = g.sectors[key], A = atlas && atlas.sectors && atlas.sectors[key];
+            var list_ = A ? A.brands : (s ? s.brands.map(function (b, i) { return { n: b, s: s.subNodes[i] || [], src: ['grid'] }; }) : []);
+            var idx = -1, nn = normName(name);
+            list_.forEach(function (b, i) { if (idx < 0 && (b.n === name || normName(b.n) === nn)) idx = i; });
+            if (!name || idx < 0) {
+                return [card(name ? 'Brand not found' : 'Choose a brand', '<p class="muted">Pick a brand from the grid.</p>' + list([pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('global_brands.html', '🌍 Global Brands'), pageLink('faa-licenses.html', '📜 FAA Licences')]))];
+            }
+            var B = list_[idx];
+            document.title = B.n + ' · ' + sectorName(g, key) + ' · Fruitful™ OmniGrid™';
+            cfg.title = B.n; cfg.intro = sectorName(g, key) + ' · brand scroll';
+            var z = (g.zoneIndex || {})[key] || {}, pr = A && A.pricing, bi = brandIntel(intel, B.n), sub = B.s || [];
+            var near = list_.slice(Math.max(0, idx - 6), idx + 7).filter(function (b) { return b !== B; });
+            var market = (A && A.market || []).filter(function (x) { return normName(x.b) === normName(B.n); });
+            var out = [card('Brand scroll', (B.d ? '<p>' + esc(B.d) + '</p>' : '') + list(['Sector: ' + pageLink('sectors/' + key + '/index.html', sectorName(g, key)), 'Position ' + fmt(idx + 1) + ' of ' + fmt(list_.length) + ' in the sector',
+                    'Sector plan ' + (pr ? usd(pr.monthly) + ' / month · ' + usd(pr.annual) + ' / year · ' + esc(pr.tier) : esc(z.monthlyFee || '—') + ' / month'),
+                    'Payout tier ' + esc(z.payoutTier || '—') + ' · ' + esc(z.region || '—'), 'Sources: ' + srcTags(B.src, true)])),
+                card('Sub-nodes · ' + fmt(sub.length), sub.length ? '<div class="chips">' + sub.map(function (n) { return '<span class="chip">' + esc(n) + '</span>'; }).join('') + '</div>' : '<p class="muted">No sub-nodes catalogued.</p>', 'wide')];
+            if (market.length) out.push(card('Marketplace', table(['Product', 'Type', 'Price'], market.map(function (x) { return [esc(x.n), esc(String(x.c || '').replace(/_/g, ' ')), priceOf(x.p)]; })), 'wide'));
+            out.push(card('Intelligence', bi ? list([fmt(bi.claude) + ' Claude sources mention this brand', fmt(bi.perplexity) + ' Perplexity index records']) : '<p class="muted">No mentions found in the Claude or Perplexity records.</p>'),
+                card('Neighbouring brands', '<div class="chips">' + near.map(function (b) { return '<a class="chip" href="' + esc(brandHref(key, b.n)) + '">' + esc(b.n) + '</a>'; }).join('') + '</div>'),
+                card('Take part', list([pageLink('admin/admin-portal-approval.html', '🔑 Request access'), pageLink('partner-program.html', '🤝 Partner Program'), pageLink('faa-licenses.html?sector=' + encodeURIComponent(key), '📜 Licences in this sector')])));
+            return out;
+        },
+        sectormap: function (m, p, g, intel, atlas) {
+            if (!g) return noGrid();
+            var rows = sectorRows(g).map(function (r) { var A = atlas && atlas.sectors && atlas.sectors[r.key]; if (A) { r.brands = A.counts.brands; r.nodes = A.counts.subnodes; } return r; }), tiers = {};
             rows.forEach(function (r) { var t = (r.zone && r.zone.payoutTier) || 'Unrated'; (tiers[t] = tiers[t] || []).push(r); });
             var order = Object.keys(tiers).sort(function (a, b) { var o = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'Unrated']; return (o.indexOf(a) + 99) % 99 - (o.indexOf(b) + 99) % 99; });
             var max = Math.max.apply(null, rows.map(function (r) { return r.brands; }).concat([1]));
@@ -482,20 +526,68 @@
                         (i ? ' · ' + fmt(i.claude_chats) + ' chats' : '') + '</span></a>';
                 }).join('') + '</div>';
             }).join('');
-            return [card('Sector map · ' + rows.length + ' sectors by payout tier', '<p class="muted">Orb size is the number of catalogued brands. Select a sector to open it.</p><div class="tiermap">' + cols + '</div>', 'wide')];
+            var extras = atlas && atlas.extraSectors ? Object.keys(atlas.extraSectors) : [];
+            var out = [card('Sector map · ' + rows.length + ' sectors by payout tier', '<p class="muted">Orb size is the number of catalogued brands across all sources. Select a sector to open it.</p><div class="tiermap">' + cols + '</div>', 'wide')];
+            if (extras.length) out.push(card('Fruitful Crate Dance ecosystem · ' + extras.length, '<div class="chips">' + extras.map(function (k) { return '<a class="chip" href="' + esc(sectorHref(k)) + '">' + esc(titleOf(k)) + ' · ' + usd(atlas.extraSectors[k].monthly) + '/mo</a>'; }).join('') + '</div>', 'wide'));
+            return out;
         },
-        scrollgrid: function (m, p, g) {
+        scrollgrid: function (m, p, g, intel, atlas) {
             if (!g) return noGrid();
-            var rows = sectorRows(g).filter(function (r) { return r.brands; }), total = 0;
+            var rows = sectorRows(g).map(function (r) {
+                var A = atlas && atlas.sectors && atlas.sectors[r.key];
+                r.names = A ? A.brands.map(function (b) { return b.n; }) : r.data.brands.map(String); r.brands = r.names.length; return r;
+            }).filter(function (r) { return r.brands; }), total = 0;
             var html = rows.map(function (r, ri) {
                 total += r.brands;
                 var hue = Math.round(ri * 360 / rows.length);
                 return '<div class="brand-group sg"><div class="sg-h"><a href="' + esc(sectorHref(r.key)) + '">' + esc(r.name) + '</a> <span class="badge">' + fmt(r.brands) + '</span></div><div class="sg-cells">' +
-                    r.data.brands.map(function (b) { return '<a class="cell" data-q="' + esc(String(b).toLowerCase()) + '" style="--h:' + hue + '" href="' + esc(brandHref(r.key, b)) + '" title="' + esc(b) + '"></a>'; }).join('') + '</div></div>';
+                    r.names.map(function (b) { return '<a class="cell" data-q="' + esc(String(b).toLowerCase()) + '" style="--h:' + hue + '" href="' + esc(brandHref(r.key, b)) + '" title="' + esc(b) + '"></a>'; }).join('') + '</div></div>';
             }).join('');
             searchable('grid-q', '.cell', '.brand-group');
-            return [card('Scroll Grid · ' + fmt(total) + ' brand scrolls', '<p class="muted">Every catalogued brand is one tile, coloured by sector. Select a tile to open its scroll.</p>' +
+            return [card('Scroll Grid · ' + fmt(total) + ' brand scrolls', '<p class="muted">Every catalogued brand, from every source, is one tile coloured by sector. Select a tile to open its scroll.</p>' +
                 '<input id="grid-q" class="search" type="search" placeholder="Find a brand…" aria-label="Find a brand">' + html, 'wide')];
+        },
+        licenses: function (m, p, g, intel, atlas, lic) {
+            if (!lic) return [card('FAA™ licences', '<p class="muted">Licence data unavailable right now.</p>')];
+            var F = lic.fields, B = lic.brands, meta = lic.metadata || {};
+            var pre = param('sector') || '';
+            function uniq(i) { var o = {}; B.forEach(function (r) { if (r[i]) o[r[i]] = (o[r[i]] || 0) + 1; }); return Object.keys(o).sort(); }
+            function sel(id, label, vals, cur) { return '<select id="' + id + '" class="search" aria-label="' + esc(label) + '"><option value="">All ' + esc(label) + '</option>' + vals.map(function (v) { return '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join('') + '</select>'; }
+            setTimeout(function () {
+                var q = document.getElementById('lic-q'), t = document.getElementById('lic-tier'), c = document.getElementById('lic-cat'), d = document.getElementById('lic-div'), s = document.getElementById('lic-sec');
+                var body = document.getElementById('lic-body'), more = document.getElementById('lic-more'), count = document.getElementById('lic-count'), shown = 0, rows = [];
+                function row(r) { return '<tr><td>' + esc(r[0]) + '<span class="sub"> ' + esc(r[1]) + '</span></td><td>' + esc(r[2]) + '</td><td>' + esc(r[3]) + '</td><td>' + esc(r[4]) + '</td><td>' + usd(r[5]) + '</td><td>' + fmt(r[6]) + ' ECR</td><td>' + r[7] + '%</td><td>' + (r[8] ? pageLink('sectors/' + r[8] + '/index.html', r[8]) : '—') + '</td></tr>'; }
+                function page() { var next = rows.slice(shown, shown + 200); body.insertAdjacentHTML('beforeend', next.map(row).join('')); shown += next.length; more.style.display = shown < rows.length ? '' : 'none'; }
+                function apply() {
+                    var v = q.value.trim().toLowerCase();
+                    rows = B.filter(function (r) { return (!t.value || r[2] === t.value) && (!c.value || r[3] === c.value) && (!d.value || r[4] === d.value) && (!s.value || r[8] === s.value) && (!v || (String(r[0]) + ' ' + r[1]).toLowerCase().indexOf(v) !== -1); });
+                    body.innerHTML = ''; shown = 0; count.textContent = fmt(rows.length) + ' of ' + fmt(B.length) + ' licences'; page();
+                }
+                [q, t, c, d, s].forEach(function (el) { el.addEventListener(el === q ? 'input' : 'change', apply); });
+                more.addEventListener('click', page);
+                apply();
+            }, 0);
+            var br = meta.breakdown || {};
+            var verified = (lic.verified || []).map(function (v) {
+                return '<details class="pack"><summary>' + esc(v.n) + ' <span class="badge">' + esc(v.t) + '</span> <span class="sub">' + esc(v.g || '') + '</span></summary>' +
+                    list([esc(v.type || ''), 'Master licence: ' + esc(v.master || '—'), 'Monthly: ' + esc(v.monthly || '—'), 'Royalty: ' + esc(v.royalty || '—'), 'OmniDrop kit: ' + esc(v.kit || '—'),
+                        'Region: ' + esc(v.region || '—'), v.phrase ? '<i>' + esc(v.phrase) + '</i>' : '']) + (v.d ? '<p class="muted">' + esc(v.d) + '</p>' : '') + '</details>';
+            }).join('');
+            return [card('FAA™ Brand Licensing System · ' + fmt(B.length) + ' licences', '<div class="tiles">' + [[B.length, 'licensed brands'], [br.sovereign, 'sovereign'], [br.dynastic, 'dynastic'], [br.operational, 'operational'], [br.market, 'market'], [(meta.geographicDivisions || []).length, 'divisions']].map(tile).join('') + '</div>' +
+                    '<p class="muted">Exported ' + esc(String(meta.exportDate || '').slice(0, 10)) + ' from the codenest LicenseVault. Fees in USD and ECR; sector is mapped from the licence category.</p>', 'wide'),
+                card('Directory', '<div class="filters"><input id="lic-q" class="search" type="search" placeholder="Search licences…" aria-label="Search licences">' +
+                    sel('lic-tier', 'tiers', uniq(2)) + sel('lic-cat', 'categories', uniq(3)) + sel('lic-div', 'divisions', uniq(4)) + sel('lic-sec', 'sectors', uniq(8), pre) + '</div>' +
+                    '<p class="muted" id="lic-count"></p><div class="tbl"><table><thead><tr><th>Brand</th><th>Tier</th><th>Category</th><th>Div</th><th>Fee USD</th><th>Fee ECR</th><th>Royalty</th><th>Sector</th></tr></thead><tbody id="lic-body"></tbody></table></div>' +
+                    '<button id="lic-more" class="cta" type="button">Show more</button>', 'wide'),
+                card('Seedwave™ Verified brands · ' + fmt((lic.verified || []).length), '<p class="muted">Premium brands with full licence terms.</p>' + verified, 'wide')];
+        },
+        hubs: function (m, p, g, intel, atlas) {
+            var H = (atlas && atlas.hubs) || [];
+            if (!H.length) return [card('Global hubs', '<p class="muted">Hub data unavailable right now.</p>')];
+            function hubList(k) { return H.filter(function (h) { return h.kind === k; }).map(function (h) { return '<div class="row"><span>' + (h.url ? pageLink(h.url, h.n) : esc(h.n)) + '<span class="sub">' + esc(h.d || '') + '</span></span>' + badge(h.status === 'active' ? 'ok' : 'warn', h.status || '—') + '</div>'; }).join(''); }
+            return [card('Regional hubs · ' + H.filter(function (h) { return h.kind === 'region'; }).length, '<div class="rows">' + hubList('region') + '</div>', 'wide'),
+                card('Platforms and portals · ' + H.filter(function (h) { return h.kind !== 'region'; }).length, '<div class="rows">' + hubList('platform') + '</div>', 'wide'),
+                card('About', '<p class="muted">From the codenest global sector index (52 repositories). Hub sites open in-app and go live with the launch.</p>')];
         },
         fse: function () {
             var sheet = [['Product ID', 'FRU-CRE-3102'], ['VaultID', 'VAULT-939V'], ['Zone', 'C 2'], ['Security', 'FAA-SEC A+'],
@@ -519,12 +611,15 @@
         }
     };
 
-    var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid|about|partners|brands|sector|brand|sectormap|scrollgrid)$/.test(cfg.kind || '');
+    var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid|about|partners|brands|sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
     var NEEDS_INTEL = /^(sector|brand|sectormap)$/.test(cfg.kind || '');
+    var NEEDS_ATLAS = /^(sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
+    var NEEDS_LIC = cfg.kind === 'licenses';
     Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
-        NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2], intel = res[3];
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel).filter(Boolean);
+        NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null), NEEDS_ATLAS ? get('sector-atlas.json') : Promise.resolve(null),
+        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5];
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
