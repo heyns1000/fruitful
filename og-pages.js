@@ -439,6 +439,17 @@
                 card('Grid data', list([pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('developer-api.html', '🧬 Data files')])),
                 card('Launch', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' + pageLink('ecosystem.html#readiness', 'Open the launch board →') : '<p class="muted">Snapshot unavailable.</p>')];
         },
+        backlog: function (m, p, g, intel, atlas, lic, concept, bk) {
+            var path = decodeURIComponent(location.pathname.replace(/^\/+/, ''));
+            var d = bk && bk.pages && bk.pages[path];
+            if (!d) return [card('Not built yet', '<p class="muted">This page has not been built yet.</p>' + pageLink('ecosystem.html', '🌍 Back to the ecosystem'))];
+            cfg.title = d.title; cfg.intro = d.label && d.label !== d.title ? d.label : '';
+            document.title = d.title + ' · Fruitful™ OmniGrid™';
+            var folder = path.split('/')[1] || '';
+            return [card(d.title, d.paragraphs.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(''), 'wide'),
+                card('From', '<p class="muted">Built from the description on the concept page that links here.</p>' + list([pageLink(d.source, '↩ ' + d.source.split('/').slice(1).join('/'))])),
+                card('Sector', list([pageLink('sectors/' + folder + '/index.html', '🏙️ ' + titleOf(folder) + ' sector'), pageLink('grid-index.html', '📊 Grid Index')]))];
+        },
         sector: function (m, p, g, intel, atlas, lic, concept) {
             if (!g) return noGrid();
             var slug = cfg.sector, key = dataKey(slug), s = g.sectors[key];
@@ -622,11 +633,13 @@
     var NEEDS_ATLAS = /^(sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
     var NEEDS_LIC = cfg.kind === 'licenses';
     var NEEDS_CONCEPT = cfg.kind === 'sector';
+    var NEEDS_BACKLOG = cfg.kind === 'backlog';
     Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
         NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null), NEEDS_ATLAS ? get('sector-atlas.json') : Promise.resolve(null),
-        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6];
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept).filter(Boolean);
+        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null),
+        NEEDS_BACKLOG ? get('backlog-pages.json') : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7];
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept, bk).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
