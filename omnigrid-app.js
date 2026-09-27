@@ -21,7 +21,7 @@
     var ROUTES = {
         'faa.zone/omnigrid.html': 'omnigrid.html',
         'faa.zone': 'index.html',
-        'fruitful.faa.zone': 'frontend/index.html',
+        'fruitful.faa.zone': 'ecosystem.html',
         'vaultmesh.faa.zone/index.html': 'checkout.html',
         'baobab.faa.zone': 'baobab.html',
         'admin.faa.zone': 'seedwave_admin.html',
