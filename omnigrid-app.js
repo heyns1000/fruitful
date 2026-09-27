@@ -21,12 +21,12 @@
     var ROUTES = {
         'faa.zone/omnigrid.html': 'omnigrid.html',
         'faa.zone': 'index.html',
-        'fruitful.faa.zone': 'frontend/index.html',
+        'fruitful.faa.zone': 'ecosystem.html',
         'vaultmesh.faa.zone/index.html': 'checkout.html',
         'baobab.faa.zone': 'baobab.html',
         'admin.faa.zone': 'seedwave_admin.html',
         'faa.zone/dashboard.html': 'dashboard.html',
-        'faa.zone/legal/index.html': 'https://faa.zone/legal/index.html',
+        'faa.zone/legal/index.html': 'legal-privacy.html',
         '#admin-portal-section': 'seedwave_admin.html'
     };
 
@@ -191,9 +191,15 @@
         return r;
     }
 
+    // Pages link to sectors as /public/sectors/... in some builds; they are served from /sectors/...
+    function rewrite(href) {
+        var m = href.match(/^\/?public\/(sectors\/.*)$/);
+        return m ? '/' + m[1] : null;
+    }
+
     function resolve(href) {
         if (!href || href === '#') return null;
-        return routeFor(href) || href;
+        return routeFor(href) || rewrite(href) || href;
     }
 
     function labelOf(a) {
@@ -234,7 +240,7 @@
         var a = e.target.closest('a[href]');
         if (!a || view.contains(a) || a.closest('.og-card')) return;
         var href = a.getAttribute('href');
-        var routed = routeFor(href);
+        var routed = routeFor(href) || rewrite(href);
         // Capture phase: explicit routes win over the page's own handlers.
         if (capture) {
             if (routed && route(routed, labelOf(a))) { e.preventDefault(); e.stopPropagation(); }

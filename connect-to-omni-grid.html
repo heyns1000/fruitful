@@ -242,6 +242,8 @@
             .terminal-frame { height: 420px; }
             .item { grid-template-columns: minmax(0, 1fr) auto; }
             .item a.preview { grid-column: 1 / -1; }
+            .minibar { display: none; }
+            details.group summary { flex-wrap: wrap; }
         }
     
         .page-hero { padding: 64px 0 24px; }
@@ -296,6 +298,23 @@
         .tile span { font-size: .8rem; color: var(--muted-text-light); }
         .chip.col { flex-direction: column; align-items: flex-start; }
         .chip .sub { font-weight: 500; font-size: .76rem; color: var(--muted-text-light); }
+        .tiermap { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 14px; }
+        .tiercol h4 { margin: 0 0 10px; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-text-light); }
+        .bubble { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; text-decoration: none; padding: 10px 6px; border-radius: 14px; }
+        .bubble:hover { background: var(--soft-light); }
+        .dark-mode .bubble:hover { background: var(--soft-dark); }
+        .orb { display: block; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7fb8ff, var(--primary-color) 60%, #003e80); box-shadow: 0 6px 18px rgba(0,113,227,.28); animation: orbpulse 4s ease-in-out infinite; }
+        @keyframes orbpulse { 50% { transform: scale(1.05); } }
+        @media (prefers-reduced-motion: reduce) { .orb { animation: none; } }
+        .bubble .bl { font-weight: 700; font-size: .85rem; }
+        .bubble .sub { font-size: .72rem; color: var(--muted-text-light); }
+        .sg { margin-top: 14px; }
+        .sg-h { font-weight: 700; font-size: .9rem; margin-bottom: 6px; }
+        .sg-h a { text-decoration: none; }
+        .sg-cells { display: flex; flex-wrap: wrap; gap: 3px; }
+        .cell { width: 14px; height: 14px; border-radius: 3px; background: hsl(var(--h), 70%, 52%); display: block; }
+        .cell:hover { outline: 2px solid var(--text-color-light); transform: scale(1.4); }
+        .dark-mode .cell:hover { outline-color: var(--text-color-dark); }
         .code { background: var(--soft-light); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: .82rem; }
         .dark-mode .code { background: var(--soft-dark); }
         .card code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; }
@@ -345,7 +364,7 @@
             try { localStorage.setItem('eco-theme', dark ? 'dark' : 'light'); } catch (e) {}
         });
     })();
-    window.OG_PAGE = {kind:"connect",title:"🕸️ Connect to Omni Grid™",figure:null,intro:"Live grid status and the ways to connect.",base:"",doc:null};
+    window.OG_PAGE = {kind:"connect",title:"🕸️ Connect to Omni Grid™",figure:null,intro:"Live grid status and the ways to connect.",base:"",doc:null,sector:null};
     </script>
     <script src="og-pages.js"></script>
     <script src="omnigrid-app.js"></script>
