@@ -61,7 +61,7 @@
         }).join('') + '</div>';
     }
     var ALIAS = { 'education': 'education-ip', 'health-hygiene': 'health', 'payroll': 'payroll-mining', 'culture': 'ritual',
-        'design': 'creative', 'finance': 'banking', 'food': 'fsf', 'retail': 'trade' };
+        'design': 'creative', 'finance': 'banking', 'food': 'fsf', 'retail': 'trade', 'packaging-logistics': 'logistics', 'pro-services': 'professional' };
     function dataKey(slug) { return ALIAS[slug] || slug; }
     function param(n) { try { return new URLSearchParams(location.search).get(n); } catch (e) { return null; } }
     function brandHref(key, b) { return base + 'brand.html?s=' + encodeURIComponent(key) + '&b=' + encodeURIComponent(b); }
@@ -172,6 +172,9 @@
             return [card('Portals · ' + portals.length, '<div class="rows">' + rows + '</div>', 'wide'),
                 card('Detail pages · ' + details.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + details.join('') + '</div></details>', 'wide'),
                 card('Sector pages · ' + sectorsP.length, '<details class="pack"><summary>Show all</summary><div class="rows">' + sectorsP.join('') + '</div></details>', 'wide'),
+                card('Concept pages · ' + rowsOf('concept').length, '<details class="pack"><summary>Show all</summary><div class="rows">' + rowsOf('concept').join('') + '</div></details>', 'wide'),
+                m.conceptBacklog && m.conceptBacklog.count ? card('Concept backlog · ' + m.conceptBacklog.count, '<p class="muted">Pages the imported concept pages link to that were never built. They open as "not built yet" in-app; they do not count against launch readiness.</p>' +
+                    '<details class="pack"><summary>Show all</summary><div class="rows">' + m.conceptBacklog.items.map(function (i) { return '<div class="row"><span>' + esc(i.page) + '<span class="sub">linked from ' + esc(i.linked_from.join(', ')) + '</span></span>' + badge('bad', 'Not built yet') + '</div>'; }).join('') + '</div></details>', 'wide') : '',
                 card('Launch groups · ' + m.readiness.total + ' items', '<div class="rows">' + groups + '</div>')];
         },
         logs: function (m, p) {
@@ -436,7 +439,49 @@
                 card('Grid data', list([pageLink('grid-index.html', '📊 Scroll Grid Index'), pageLink('sector-map.html', '🗺️ Sector Map'), pageLink('scroll-grid.html', '🧱 Scroll Grid'), pageLink('developer-api.html', '🧬 Data files')])),
                 card('Launch', r ? '<p class="big">' + (r.built + r.in_app) + ' of ' + r.total + ' reachable</p>' + pageLink('ecosystem.html#readiness', 'Open the launch board →') : '<p class="muted">Snapshot unavailable.</p>')];
         },
-        sector: function (m, p, g, intel, atlas) {
+        connector: function (m, p, g, intel, atlas, lic, concept, bk, brand) {
+            if (!brand || !brand.guide) return [card('Banimal Connector', '<p class="muted">Brand source unavailable right now.</p>')];
+            var G = brand.guide, L = brand.ledger || {}, B = base + 'brand/';
+            var img = function (f, alt, cls) { return '<img class="' + (cls || 'mark') + '" src="' + esc(B + f) + '" alt="' + esc(alt) + '">'; };
+            var sw = (G.palette || []).map(function (c) {
+                return '<div class="swatch"><span class="chip-c" style="background:' + esc(c.hex) + '"></span><b>' + esc(c.name) + '</b><code>' + esc(c.hex) + '</code><span class="sub">' + esc(c.role) + '</span></div>';
+            }).join('');
+            var r = G.paletteRatio || {};
+            var files = (L.files || []).map(function (f) { return [esc(f.published), esc(f.role), '<code>' + esc(String(f.gitBlobSha).slice(0, 10)) + '</code>', f.pinnedByManifest ? badge('ok', 'Pinned') : badge('warn', 'Verified master')]; });
+            var banimalMarket = 0;
+            if (atlas) Object.keys(atlas.sectors).forEach(function (k) { (atlas.sectors[k].market || []).forEach(function (x) { if (normName(x.b) === 'banimal') banimalMarket++; }); });
+            return [card('One brand source, pulled everywhere',
+                    '<div class="brandfield"><p>The Banimal Connector carries the single Sam Fox™ Core CI Guide Master. Every surface <b>pulls</b> the verified marks and rules from <code>heyns1000/banimal</code>; nothing is redrawn, recoloured or retyped.</p>' +
+                    img('banimal-logo-ink.png', 'Banimal™ · Kind Creatures', 'mark wide-mark') + '<span class="brand-corner">' + img('samfox-icon-verified-ink.png', 'Sam Fox™ fox-head icon', 'mark icon-mark') + '</span></div>', 'wide'),
+                card('Sam Fox™ · the hand, always kept', '<div class="brandfield small">' + img('samfox-icon-verified-ink.png', 'Sam Fox™ fox-head icon (ink)', 'mark icon-mark') + '</div>' +
+                    '<p class="muted">The verified fox-head icon. The "o" in "fox" is this icon, never a typed letter.</p>'),
+                card('Fruitful™ · the ecosystem brand', '<div class="brandfield small">' + img('fruitful-lockup-verified.png', 'Fruitful™ lockup (verified master)', 'mark wide-mark') + '</div>' +
+                    '<div class="brandrow">' + img('fruitful-wordmark-verified.png', 'Fruitful™ wordmark', 'mark mini') + img('fruitful-pear-verified.png', 'Fruitful™ pear icon', 'mark mini') + '</div>' +
+                    '<p class="muted">Verified master marks: pear icon, wordmark and lockup, sticker style, ™ only.</p>'),
+                card('Banimal™ · Kind Creatures', '<div class="brandfield small">' + img('banimal-logo-ink.png', 'Banimal™ logo (ink)', 'mark wide-mark') + '</div>' +
+                    '<div class="brandfield small inkfield">' + img('banimal-logo-white.png', 'Banimal™ logo (white)', 'mark wide-mark') + '</div>' +
+                    '<p class="muted">' + fmt(banimalMarket) + ' Banimal marketplace products in the grid. ' + pageLink('sectors/fashion/index.html', 'Open them →') + '</p>'),
+                card('Verified palette', '<div class="swatches">' + sw + '</div><p class="muted">Ratio across any composition: Cream ' + r.cream + ' · Body ' + r.body + ' · Accent ' + r.accent + ' · Ink ' + r.ink + '. Red is reserved for alerts.</p>', 'wide'),
+                card('Rules that protect the brand', list((G.compliance || []).map(esc).concat(['Placement bottom-right, one script "S" of clear space, on white, cream or ink only.', 'Legal entity line (locked): ' + esc(brand.legalEntity || 'Fruitful Shops (Pty) Ltd') + '.']))),
+                card('Connected surfaces', list(['🧠 Claude Code: the <code>samfox-ci-guide</code> skill (the machine master), installed for every session',
+                    '🧩 WordPress: Banimal Ecosystem Connector 5.1.1 applies the guide to the theme', '☁️ Worker: <code>/api/brand-guide</code>, live with the ecosystem launch',
+                    '🕸️ This grid: marks pulled into <code>brand/</code>, checked against the pinned SHAs'])),
+                card('Build ledger · ' + esc(L.policyId || ''), '<p class="muted">Pulled from ' + esc(L.source || '') + ' @ <code>' + esc(String(L.sourceCommit || '').slice(0, 7)) + '</code> on ' + esc(String(L.pulled_at || '').slice(0, 10)) + '. ' + esc(L.audit || '') + '.</p>' +
+                    table(['Published file', 'Role', 'Git blob', 'Status'], files), 'wide'),
+                card('Legal', '<p class="muted">© ' + new Date().getFullYear() + ' ' + esc(brand.legalEntity || 'Fruitful Shops (Pty) Ltd') + ' · Artwork © Sam Fox™ · All rights reserved. Reproduction beyond the Fruitful project requires commission or licence.</p>')];
+        },
+        backlog: function (m, p, g, intel, atlas, lic, concept, bk) {
+            var path = decodeURIComponent(location.pathname.replace(/^\/+/, ''));
+            var d = bk && bk.pages && bk.pages[path];
+            if (!d) return [card('Not built yet', '<p class="muted">This page has not been built yet.</p>' + pageLink('ecosystem.html', '🌍 Back to the ecosystem'))];
+            cfg.title = d.title; cfg.intro = d.label && d.label !== d.title ? d.label : '';
+            document.title = d.title + ' · Fruitful™ OmniGrid™';
+            var folder = path.split('/')[1] || '';
+            return [card(d.title, d.paragraphs.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(''), 'wide'),
+                card('From', '<p class="muted">Built from the description on the concept page that links here.</p>' + list([pageLink(d.source, '↩ ' + d.source.split('/').slice(1).join('/'))])),
+                card('Sector', list([pageLink('sectors/' + folder + '/index.html', '🏙️ ' + titleOf(folder) + ' sector'), pageLink('grid-index.html', '📊 Grid Index')]))];
+        },
+        sector: function (m, p, g, intel, atlas, lic, concept) {
             if (!g) return noGrid();
             var slug = cfg.sector, key = dataKey(slug), s = g.sectors[key];
             var A = atlas && atlas.sectors && atlas.sectors[key], X = atlas && atlas.extraSectors && atlas.extraSectors[slug];
@@ -476,10 +521,14 @@
                     '<p class="muted">From the FAA™ Brand Licensing System, mapped to this sector by licence category.</p>' + pageLink('faa-licenses.html?sector=' + encodeURIComponent(key), 'Open these licences →')));
             }
             if (A && A.market && A.market.length) {
-                out.push(card('Marketplace · ' + fmt(A.market.length) + ' products', table(['Product', 'Brand', 'Type', 'Price'], A.market.map(function (x) {
+                var hasBanimal = A.market.some(function (x) { return normName(x.b) === 'banimal'; });
+                out.push(card('Marketplace · ' + fmt(A.market.length) + ' products', (hasBanimal ? '<a class="brandfield small" href="' + esc(base + 'banimal-connector.html') + '"><img class="mark wide-mark" src="' + esc(base + 'brand/banimal-logo-ink.png') + '" alt="Banimal™ · Kind Creatures"></a>' : '') + table(['Product', 'Brand', 'Type', 'Price'], A.market.map(function (x) {
                     return [esc(x.n), esc(x.b) + (x.mapped ? ' <span class="sub">(mapped)</span>' : ''), esc(String(x.c || '').replace(/_/g, ' ')), priceOf(x.p)];
                 })), 'wide'));
             }
+            var C = concept && concept.sectors && concept.sectors[key];
+            if (C && C.length) out.push(card('Concept pages · ' + fmt(C.length), '<p class="muted">Hand-built sector concept pages from faa.zone, kept as designed.</p>' +
+                list(C.map(function (c) { return pageLink(c.file, c.title) + ' <span class="sub">' + esc(c.file.split('/').slice(2).join('/')) + '</span>'; })), 'wide'));
             if (A && A.hubs && A.hubs.length) out.push(card('Sector hubs', list(A.hubs.map(function (h) { return h.url ? pageLink(h.url, h.n) : esc(h.n); }))));
             if (A) out.push(card('Sources', list(Object.keys(A.counts.bySource).map(function (k) { return SRC_NAME[k] + ': ' + fmt(A.counts.bySource[k]) + ' brands'; }))));
             out.push(intelCard(intelFor(intel, key), sectorName(g, key)),
@@ -613,13 +662,19 @@
 
     var NEEDS_GRID = /^(brandmetrics|clauses|distributor|hardware|owner|ledger|nodepacks|nodestatus|quick|layers|sectorgrid|about|partners|brands|sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
     var NEEDS_INTEL = /^(sector|brand|sectormap)$/.test(cfg.kind || '');
-    var NEEDS_ATLAS = /^(sector|brand|sectormap|scrollgrid|hubs)$/.test(cfg.kind || '');
+    var NEEDS_ATLAS = /^(sector|brand|sectormap|scrollgrid|hubs|connector)$/.test(cfg.kind || '');
     var NEEDS_LIC = cfg.kind === 'licenses';
+    var NEEDS_CONCEPT = cfg.kind === 'sector';
+    var NEEDS_BACKLOG = cfg.kind === 'backlog';
+    var NEEDS_BRAND = cfg.kind === 'connector' || cfg.kind === 'sector';
     Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
         NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null), NEEDS_ATLAS ? get('sector-atlas.json') : Promise.resolve(null),
-        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5];
-        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic).filter(Boolean);
+        NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null),
+        NEEDS_BACKLOG ? get('backlog-pages.json') : Promise.resolve(null),
+        NEEDS_BRAND ? Promise.all([get('brand/brand-guide.json'), get('brand/brand-ledger.json')]).then(function (x) { return x[0] ? Object.assign({}, x[0], { ledger: x[1] }) : null; }) : Promise.resolve(null)]).then(function (res) {
+        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7], brand = res[8];
+        cfg.__brand = brand;
+        var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept, bk, brand).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
