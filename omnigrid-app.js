@@ -34,8 +34,10 @@
 
     // Pages that concept pages link to by another name.
     var PAGE_ALIASES = { 'owner-login.html': 'faa-owner.html', 'hardware-login.html': 'faa-hardware.html',
-        'distributor-login.html': 'faa-distributor.html', 'contact.html': 'contact-support.html', 'global-checkout.html': 'checkout.html' };
+        'distributor-login.html': 'faa-distributor.html', 'contact.html': 'contact-support.html', 'global-checkout.html': 'checkout.html',
+        'ci-guide.html': 'banimal-connector.html', 'connector-preview.html': 'banimal-connector.html' };
     var CONCEPT = !!(document.currentScript && document.currentScript.getAttribute('data-concept'));
+    var SHOCK = !!(document.currentScript && document.currentScript.getAttribute('data-shock'));
 
     // Sector terminals: local page, or a station from the global snapshot.
     var TERMINALS = {
@@ -417,9 +419,23 @@
         document.querySelectorAll('input[type="password"]').forEach(function (i) { i.disabled = true; i.placeholder = 'Not connected in the concept preview'; });
     }
 
+    // Shock Launch: the sign-up form is not connected yet, so it is replaced by a notice (nothing is collected).
+    function shockGuard() {
+        document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+        var f = document.getElementById('signupForm');
+        if (!f) return;
+        var note = document.createElement('p');
+        note.setAttribute('role', 'note');
+        note.textContent = 'Sign-up opens at launch. Nothing is collected on this page yet.';
+        note.style.cssText = 'font-weight:600;opacity:.85;margin:12px 0';
+        f.style.display = 'none';
+        f.parentNode.insertBefore(note, f);
+    }
+
     function init() {
         window.loadTerminal = renderTerminal;
         if (CONCEPT) conceptGuard();
+        if (SHOCK) shockGuard();
         if (!IN_FRAME) window.__ogOpenView = openView;
         document.body.appendChild(view);
         document.body.appendChild(card);
