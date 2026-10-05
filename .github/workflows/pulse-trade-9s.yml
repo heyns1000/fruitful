@@ -10,6 +10,8 @@ on:
 
 jobs:
   pulse:
+    # Writes pulse.log and pushes: only on its own schedule or a manual run, never on a PR or a push.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
