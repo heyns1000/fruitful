@@ -651,6 +651,34 @@
                     list(['Build Phase', 'Ecosystem Governance Phase', 'Signal Intelligence Phase'])),
                 card('Related', list([pageLink('pulse-monitor.html', '📡 Signal Sync'), pageLink('compliance.html', '🛡️ Compliance'), pageLink('ecosystem.html', '🌍 Global Ecosystem')]))];
         },
+        hat: function () {
+            var H = cfg.__hat || {}, S = H.summary, D = H.letter || { systems: [], files: [], folders: [] }, L = H.L;
+            if (!S) return [card('A–Z Ecosystem Index', '<p class="muted">The index data is not available yet.</p>', 'wide')];
+            var letters = Object.keys(S.letters).sort();
+            var bar = '<div class="hat-bar">' + letters.map(function (k) {
+                var n = S.letters[k]; return '<a class="hat-l' + (k === L ? ' on' : '') + '" href="#' + esc(k) + '" title="' + esc(n.systems + ' systems · ' + n.files + ' files · ' + n.folders + ' folders') + '">' + esc(k) + '</a>';
+            }).join('') + '</div>';
+            var search = '<input id="hat-q" class="hat-q" type="search" placeholder="Find any page, file or folder name you remember…" aria-label="Search the index">' +
+                '<div id="hat-r" class="rows"></div>';
+            var tot = [['Repos', fmt(S.repos.total) + ' (' + fmt(S.repos.heyns1000) + ' heyns1000 + ' + fmt(S.repos['Fruitful-Global-Planet']) + ' Fruitful-Global-Planet)'],
+                ['Systems (pages and apps)', fmt(S.systems) + ' · ' + fmt(S.systems_multi_version) + ' with several versions · ' + fmt(S.versions) + ' versions'],
+                ['File groups', fmt(S.file_groups)], ['Folder names', fmt(S.folders)], ['Commits', fmt(S.commits)],
+                ['Files indexed', S.file_rows ? fmt(S.file_rows) + ' rows · ' + fmt(S.distinct_files) + ' distinct' : 'building'], ['Atom branches', fmt(S.atom_branches)]];
+            var sys = D.systems.map(function (x) {
+                return [esc(x.name), fmt(x.versions), esc(x.repos.slice(0, 3).join(', ') + (x.repos.length > 3 ? ' +' + (x.repos.length - 3) : '')),
+                    esc((x.first || '?') + ' → ' + (x.last || '?')), esc(x.tail.repo + ' / ' + x.tail.path.split('/').slice(-2).join('/')), esc(x.home),
+                    x.branch_url ? pageLink(x.branch_url, x.branch.replace('atoms/', '')) : '—'];
+            });
+            var fl = D.files.slice(0, 60).map(function (x) { return [esc(x.name), esc(x.kind), fmt(x.versions), fmt(x.repo_count), esc((x.first || '?') + ' → ' + (x.last || '?'))]; });
+            var fo = D.folders.slice(0, 40).map(function (x) { return [esc(x.name + '/'), fmt(x.repos), fmt(x.files)]; });
+            var a = S.atlas || {};
+            return [card('A–Z', bar + search, 'wide'),
+                card(esc(L) + ' · systems (' + D.systems.length + ')', sys.length ? table(['System', 'Versions', 'Repos', 'Seen', 'Tail (best version)', 'Proposed home', 'Atom branch'], sys) : '<p class="muted">No systems under ' + esc(L) + '.</p>', 'wide'),
+                card(esc(L) + ' · files (' + D.files.length + (D.files.length >= 200 ? '+' : '') + ')', fl.length ? table(['File', 'Kind', 'Versions', 'Repos', 'Seen'], fl) : '<p class="muted">None.</p>'),
+                card(esc(L) + ' · folders (' + D.folders.length + ')', fo.length ? table(['Folder', 'Repos', 'Files'], fo) : '<p class="muted">None.</p>'),
+                card('Totals', table(['', ''], tot.map(function (r) { return [esc(r[0]), r[1]]; }))),
+                card('Sector atlas refresh', '<p>' + badge(a.status === 'blocked' ? 'warn' : 'ok', a.status || 'unknown') + ' Last run ' + esc(a.last_refresh || '—') + '</p><p class="muted">' + esc(a.reason || '') + '</p>')];
+        },
         access: function () {
             var tiers = ['👨‍👩‍👧‍👦 Family Access', '📊 Shareholder Access', '🤝 Service Provider', '🪙 Loyalty Access'];
             return tiers.map(function (t) {
@@ -667,12 +695,15 @@
     var NEEDS_CONCEPT = cfg.kind === 'sector';
     var NEEDS_BACKLOG = cfg.kind === 'backlog';
     var NEEDS_BRAND = cfg.kind === 'connector' || cfg.kind === 'sector';
+    var HAT_L = (location.hash.replace('#', '') || 'A').toUpperCase().replace(/[^A-Z0-9#-]/g, '') || 'A';
     Promise.all([get('ecosystem-manifest.json'), get('omnigrid-pulse.json'), NEEDS_GRID ? get('grid-data.json') : Promise.resolve(null),
         NEEDS_INTEL ? get('sector-intel.json') : Promise.resolve(null), NEEDS_ATLAS ? get('sector-atlas.json') : Promise.resolve(null),
         NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null),
         NEEDS_BACKLOG ? get('backlog-pages.json') : Promise.resolve(null),
+        cfg.kind === 'hat' ? Promise.all([get('hat/summary.json'), get('hat/letters/' + (HAT_L === '#' ? '0-9' : HAT_L) + '.json')]) : Promise.resolve(null),
         NEEDS_BRAND ? Promise.all([get('brand/brand-guide.json'), get('brand/brand-ledger.json')]).then(function (x) { return x[0] ? Object.assign({}, x[0], { ledger: x[1] }) : null; }) : Promise.resolve(null)]).then(function (res) {
-        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7], brand = res[8];
+        var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7], hatd = res[8], brand = res[9];
+        if (hatd) cfg.__hat = { summary: hatd[0], letter: hatd[1], L: HAT_L };
         cfg.__brand = brand;
         var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept, bk, brand).filter(Boolean);
         var head = '<section class="page-hero"><div class="container">' +
@@ -682,5 +713,23 @@
             '</div></section>';
         root.innerHTML = head + '<section><div class="container"><div class="cards">' + cards.join('') + '</div>' +
             '<p class="snapshot">Live snapshot ' + esc(m ? m.generated_at.slice(0, 10) : 'unavailable') + ' · counts only</p></div></section>';
+        if (cfg.kind === 'hat') hatWire();
     });
+    function hatWire() {
+        var st = document.createElement('style'); st.textContent = '.hat-bar{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}.hat-l{min-width:2.2em;text-align:center;padding:6px 8px;border-radius:10px;border:1px solid var(--border-color-light);text-decoration:none;font-weight:700}.dark-mode .hat-l{border-color:var(--border-color-dark)}.hat-l.on{background:var(--primary-color);color:#fff;border-color:var(--primary-color)}.hat-q{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color-light);font:inherit;background:transparent;color:inherit}.dark-mode .hat-q{border-color:var(--border-color-dark)}'; document.head.appendChild(st);
+        window.addEventListener('hashchange', function () { location.reload(); });
+        var q = document.getElementById('hat-q'), out = document.getElementById('hat-r'), idx = null;
+        if (!q) return;
+        q.addEventListener('input', function () {
+            var v = q.value.trim().toLowerCase();
+            if (v.length < 2) { out.innerHTML = ''; return; }
+            (idx ? Promise.resolve(idx) : get('hat/search.json').then(function (d) { idx = d || []; return idx; })).then(function (d) {
+                var hits = d.filter(function (e) { return e[0].toLowerCase().indexOf(v) !== -1; }).slice(0, 25);
+                out.innerHTML = hits.length ? hits.map(function (e) {
+                    var t = e[1].indexOf('system:') === 0 ? 'title of ' + e[1].slice(7) : e[1];
+                    return '<div class="row"><span><a href="#' + esc(e[2]) + '">' + esc(e[0]) + '</a><span class="sub">' + esc(t) + ' · ' + esc(e[2]) + '</span></span></div>';
+                }).join('') : '<p class="muted">No match.</p>';
+            });
+        });
+    }
 })();
