@@ -3610,6 +3610,20 @@
             }
         });
     </script>
+    <script>
+        // Sector links open their brand snapshot panel (one open at a time).
+        document.addEventListener('click', function (e) {
+            var link = e.target.closest('[data-sector-panel]');
+            if (!link) return;
+            var panel = document.getElementById(link.getAttribute('data-sector-panel'));
+            if (!panel) return;
+            e.preventDefault();
+            document.querySelectorAll('.brand-snapshot').forEach(function (p) { if (p !== panel) p.classList.add('hidden'); });
+            panel.classList.toggle('hidden');
+            document.querySelectorAll('[data-sector-panel]').forEach(function (a) { a.classList.toggle('active', a === link && !panel.classList.contains('hidden')); });
+            if (!panel.classList.contains('hidden')) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
     <script src="omnigrid-app.js"></script>
 </body>
 </html>

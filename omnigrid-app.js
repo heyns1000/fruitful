@@ -280,6 +280,143 @@
     document.addEventListener('click', function (e) { onClick(e, true); }, true);
     document.addEventListener('click', function (e) { onClick(e, false); }, false);
 
+    // ---------- no dead clicks ----------
+    // Any button or action link that does nothing within 350 ms is routed: an exact wiring map
+    // (wiring.json, from the click tests), else the best-matching page by its words, else an
+    // in-app feature panel with related pages. Controls that already work are never touched.
+    var WIRE_URL = new URL('wiring.json', SCRIPT_SRC).href, MAN_URL = new URL('ecosystem-manifest.json', SCRIPT_SRC).href;
+    var SITE_ROOT = new URL('./', SCRIPT_SRC).href, wirePromise = null;
+    var UI_ONLY = /^(|×|x|✕|close.*|cancel|dismiss|menu|toggle.*|.*toggle navigation.*|.*dark mode.*|.*theme.*|.*sound.*|mute|unmute|play|pause|copy.*|back|previous|next|prev|‹|›|«|»|<|>|\d+)$/i;
+    var STOP = ' the and for with from your you our this that into all of to in on by at is be as or now get view open more go see read learn launch run access explore inspect track review manage start show check enter try discover browse click submit create add new download export generate here today free ';
+    function wireData() {
+        if (!wirePromise) wirePromise = Promise.all([
+            fetch(WIRE_URL, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+            fetch(MAN_URL, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+        ]);
+        return wirePromise;
+    }
+    function words(t) {
+        return (t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 2 && STOP.indexOf(' ' + w + ' ') === -1; });
+    }
+    function bestPages(label, man, n) {
+        var q = words(label); if (!q.length || !man) return [];
+        return (man.pages || []).map(function (p) {
+            var hay = words(p.file.replace(/[\/._-]+/g, ' ') + ' ' + p.title), sc = 0;
+            q.forEach(function (w) { hay.forEach(function (h) { if (h === w) sc += 3; else if (h.indexOf(w) === 0 || w.indexOf(h) === 0) sc += 1; }); });
+            return { p: p, sc: sc };
+        }).filter(function (x) { return x.sc >= 3 && x.p.file.toLowerCase() !== PAGE; })
+          .sort(function (a, b) { return b.sc - a.sc; }).slice(0, n || 6);
+    }
+    function featurePanel(label, related) {
+        var dark = isDark(), bg = dark ? '#0d0d0d' : '#f5f5f7', fg = dark ? '#f5f5f7' : '#1d1d1f', card = dark ? '#1c1c1e' : '#fff';
+        var links = related.map(function (p) {
+            return '<li><a href="' + esc(SITE_ROOT + p.file) + '" target="_top" onclick="try{parent.__ogOpenView(this.href,this.textContent);return false}catch(e){}">' + esc(p.title.split(' · ')[0]) + '</a></li>';
+        }).join('');
+        viewFrame.removeAttribute('src');
+        viewFrame.srcdoc = '<!doctype html><meta charset="utf-8"><body style="margin:0;font:16px/1.5 -apple-system,Inter,sans-serif;background:' + bg + ';color:' + fg + '">' +
+            '<div style="max-width:760px;margin:40px auto;padding:0 20px"><div style="background:' + card + ';border-radius:16px;padding:24px">' +
+            '<p style="opacity:.6;margin:0">Feature</p><h2 style="margin:4px 0 12px">' + esc(label) + '</h2>' +
+            '<p>This control is part of <b>' + esc(document.title) + '</b>. Its own screen is on the build list; these pages already cover it:</p>' +
+            (links ? '<ul>' + links + '</ul>' : '<p>' + '<a href="' + esc(SITE_ROOT + 'hat.html') + '" target="_top">Search the A–Z Ecosystem Index</a></p>') +
+            '</div></div></body>';
+        view.classList.add('on'); document.documentElement.style.overflow = 'hidden';
+        viewTitle.textContent = label;
+    }
+    // background DOM change rate (clocks, tickers), sampled in 350 ms buckets
+    // nodes that change on their own (clocks, tickers) are remembered, so their changes never count as a click's effect
+    // (a node counts as noisy once it has changed in 3 different seconds without a click nearby)
+    var SEEN = typeof WeakMap === 'function' ? new WeakMap() : null, NOISY = SEEN && new WeakMap(), lastClick = 0; // node -> {attribute or change type: noisy}
+    try {
+        document.addEventListener('click', function () { lastClick = Date.now(); }, true);
+        new MutationObserver(function (m) {
+            var now = Date.now(), sec = Math.floor(now / 1000);
+            if (!SEEN || now - lastClick < 1500) return;
+            m.forEach(function (x) {
+                var k = x.attributeName || x.type, rs = SEEN.get(x.target) || {}, r = rs[k] || (rs[k] = { s: -1, n: 0 });
+                SEEN.set(x.target, rs);
+                if (r.s !== sec) { r.s = sec; r.n++; if (r.n >= 3) { var nz = NOISY.get(x.target) || {}; nz[k] = 1; NOISY.set(x.target, nz); } }
+            });
+        })
+            .observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+    } catch (e) { }
+    document.addEventListener('pointerdown', function () { wireData(); }, { capture: true, once: true }); // warm the data before the first click lands
+    setTimeout(function () { (window.requestIdleCallback || setTimeout)(function () { wireData(); }); }, 3000);
+    // canvas drawing (charts, confetti) is invisible to the DOM; a canvas that changes after a click is a real effect
+    var thumb = null, ANIM = typeof WeakMap === 'function' ? new WeakMap() : null; // canvas -> last time it changed on its own
+    function canvasPrints() { // 16x16 thumbnail per canvas: cheap enough to take on every click
+        var cs = document.querySelectorAll('canvas'), out = [];
+        if (!cs.length) return out;
+        try { thumb = thumb || document.createElement('canvas'); thumb.width = thumb.height = 16; var tx = thumb.getContext('2d', { willReadFrequently: true }); } catch (e) { return out; }
+        Array.prototype.slice.call(cs, 0, 12).forEach(function (c) {
+            if (c.closest('.og-view') || !c.width || !c.height) return;
+            var v; try { tx.clearRect(0, 0, 16, 16); tx.drawImage(c, 0, 0, 16, 16); v = Array.prototype.join.call(tx.getImageData(0, 0, 16, 16).data, ''); } catch (e) { v = '?'; }
+            out.push([c, v]);
+        });
+        return out;
+    }
+    function canvasMoved(before) { // true when a canvas that is normally still has changed since `before`
+        var now = Date.now(), after = canvasPrints(), moved = false;
+        before.forEach(function (b) {
+            var a = after.filter(function (x) { return x[0] === b[0]; })[0];
+            if (a && a[1] !== b[1] && !(ANIM && now - (ANIM.get(b[0]) || 0) < 4000)) moved = true;
+        });
+        return moved;
+    }
+    var lastPrints = [];
+    setInterval(function () { // learn which canvases animate by themselves (charts, particles)
+        if (!ANIM || Date.now() - lastClick < 1500 || document.hidden) return;
+        var cur = canvasPrints();
+        cur.forEach(function (x) { var p = lastPrints.filter(function (y) { return y[0] === x[0]; })[0]; if (p && p[1] !== x[1]) ANIM.set(x[0], Date.now()); });
+        lastPrints = cur;
+    }, 1000);
+    // what a generic control ("View", "Deploy", "Open") is about: its table row, list item or card heading
+    function contextOf(el) {
+        var row = el.closest('tr');
+        if (row) {
+            var cells = Array.prototype.filter.call(row.cells || [], function (c) { return !c.contains(el) && words(c.textContent).length; });
+            if (cells.length) return cells[0].textContent.replace(/\s+/g, ' ').trim().slice(0, 60);
+        }
+        var box = el.closest('li, article, .card, [class*="card"], section, .content-block');
+        var h = box && box.querySelector('h1, h2, h3, h4, strong');
+        return h && !h.contains(el) ? h.textContent.replace(/\s+/g, ' ').trim().slice(0, 60) : '';
+    }
+    function rescue(el, label) {
+        window.__ogRescued = Date.now(); // lets the click tests tell a rescue from the page's own routing
+        var ctx = contextOf(el), wireLabel = label;
+        if (ctx && words(label).length < 2) label = label + ' · ' + ctx;
+        wireData().then(function (d) {
+            var wire = d[0] || {}, man = d[1];
+            var hit = (wire[PAGE] && (wire[PAGE][label] || wire[PAGE][wireLabel])) || (wire['*'] && (wire['*'][label.toLowerCase()] || wire['*'][wireLabel.toLowerCase()]));
+            if (hit) { route(hit.charAt(0) === '#' || /^([a-z]+:)?\/\//i.test(hit) ? hit : SITE_ROOT + hit, label); return; }
+            var best = bestPages(label, man, 6);
+            // go straight to a page only on a clear, strong match; otherwise show the feature panel with the candidates
+            if (best.length && best[0].sc >= 6 && (best.length === 1 || best[0].sc >= 2 * best[1].sc)) { route(SITE_ROOT + best[0].p.file, label); return; }
+            featurePanel(label, best.map(function (x) { return x.p; }));
+        }).catch(function () { featurePanel(label, []); });
+    }
+    document.addEventListener('click', function (e) {
+        if (e.button !== 0) return; // a cancelled click still counts as dead if nothing happens
+        var el = e.target.closest('button, [role=button], [onclick], a, input[type=button], summary');
+        if (!el || view.contains(el) || el.closest('.og-card')) return;
+        if (el.form || el.closest('form')) { var t = (el.getAttribute('type') || (el.tagName === 'BUTTON' ? 'submit' : '')).toLowerCase(); if (t === 'submit' || t === 'image') return; } // submits belong to the form
+        if (el.tagName === 'A') { var h = (el.getAttribute('href') || '').trim(); if (h && !/^#$|^#!$|^javascript:/i.test(h)) return; }
+        if (el.disabled) return;
+        var label = (el.getAttribute('aria-label') || el.textContent || el.value || el.title || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+        if (UI_ONLY.test(label)) return;
+        if (el.tagName === 'A') e.preventDefault(); // bare '#' link: no jump to top, no fake URL change
+        var changed = 0, href = location.href, wasOpen = view.classList.contains('on');
+        var mo = new MutationObserver(function (m) { m.forEach(function (x) { var nz = NOISY && NOISY.get(x.target); if (!(nz && nz[x.attributeName || x.type])) changed++; }); });
+        var paint0 = canvasPrints();
+        var onScroll = function () { changed++; }; document.addEventListener('scroll', onScroll, true); // scrolling to a section is a real action
+        mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+        setTimeout(function () {
+            mo.disconnect(); document.removeEventListener('scroll', onScroll, true);
+            if (paint0.length && canvasMoved(paint0)) changed++;
+            if (changed || location.href !== href || (!wasOpen && view.classList.contains('on'))) return;
+            rescue(el, label);
+        }, 350);
+    }, false);
+
     // ---------- sector terminals ----------
     function stationPanel(title, station, data, intro) {
         var dark = isDark();

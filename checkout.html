@@ -882,9 +882,10 @@
         // Firebase Initialization
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // No Firebase project is configured for this page: without this guard initializeApp({}) throws and every button on the page goes dead.
+        const app = firebaseConfig.apiKey ? initializeApp(firebaseConfig) : null;
+        const auth = app ? getAuth(app) : null;
+        const db = app ? getFirestore(app) : null;
 
         let currentUserId = 'loading...'; // Variable to hold the authenticated user ID
 
@@ -1310,7 +1311,8 @@
             let exchangeRates = {}; // Store fetched exchange rates globally for this script
 
             // Firebase Authentication State Change Listener
-            onAuthStateChanged(auth, async (user) => {
+            if (!auth) { currentUserId = 'guest'; const uid = document.getElementById('display-user-id'); if (uid) uid.textContent = currentUserId; fetchAllExchangeRates(); }
+            else onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUserId = user.uid;
                 } else {
@@ -1451,7 +1453,7 @@
                             paypalOrderId: 'simulated_paypal_order_id_' + Date.now()
                         };
 
-                        try {
+                        if (db) try {
                             // Using a generic document ID for the checkout instance
                             const checkoutDocRef = doc(db, `artifacts/${appId}/users/${currentUserId}/checkouts`, 'current_checkout_' + Date.now());
                             await setDoc(checkoutDocRef, checkoutData, { merge: true });

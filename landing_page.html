@@ -2234,21 +2234,20 @@
             const closeBtn = announcementBar ? announcementBar.querySelector('.close-btn') : null;
             const header = document.querySelector('header.main-header');
 
-            if (announcementBar && header) {
+            if (announcementBar) {
                 // Check if user has previously dismissed the bar
                 const isDismissed = localStorage.getItem('announcementDismissed');
                 if (isDismissed === 'true') {
                     announcementBar.classList.add('hidden');
-                    header.style.top = '0px'; // Header stays at top if bar is hidden
+                    if (header) header.style.top = '0px'; // Header stays at top if bar is hidden
                 } else {
                     // Update header's top position based on announcement bar height
-                    const barHeight = announcementBar.offsetHeight;
-                    header.style.top = `${barHeight}px`;
+                    if (header) header.style.top = `${announcementBar.offsetHeight}px`;
 
                     if (closeBtn) {
                         closeBtn.addEventListener('click', () => {
                             announcementBar.classList.add('hidden');
-                            header.style.top = '0px'; // Move header up
+                            if (header) header.style.top = '0px'; // Move header up
                             localStorage.setItem('announcementDismissed', 'true'); // Remember dismissal
                         });
                     }
