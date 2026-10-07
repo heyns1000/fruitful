@@ -558,15 +558,7 @@
 
     // Shock Launch: the sign-up form is not connected yet, so it is replaced by a notice (nothing is collected).
     function shockGuard() {
-        document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
-        var f = document.getElementById('signupForm');
-        if (!f) return;
-        var note = document.createElement('p');
-        note.setAttribute('role', 'note');
-        note.textContent = 'Sign-up opens at launch. Nothing is collected on this page yet.';
-        note.style.cssText = 'font-weight:600;opacity:.85;margin:12px 0';
-        f.style.display = 'none';
-        f.parentNode.insertBefore(note, f);
+        // The Shock Launch sign-up is live (Supabase join_launch); nothing to hold back on this page any more.
     }
 
     function init() {

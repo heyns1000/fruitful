@@ -260,26 +260,47 @@
   });
 })();
 
-// ===== Signup form (static demo) =====
+// ===== Signup form: joins the launch list (Supabase join_launch) =====
+// The publishable key is public by design; the function only adds an email and never reads the list back.
 (function () {
   const form = document.getElementById('signupForm');
   const note = document.getElementById('formNote');
   if (!form) return;
-  let submitted = false;
+  const ENDPOINT = 'https://poyxundlvczciihdrkkk.supabase.co/rest/v1/rpc/join_launch';
+  const KEY = 'sb_publishable_22UYaaMV00kuaaDGFlEHcg_X-JV8-RO';
+  const input = form.querySelector('input[type="email"]');
+  const button = form.querySelector('button[type="submit"]');
+  let state = 'default';
 
   function t(key, fallback) {
     return window.foxI18n ? window.foxI18n.t(key) : fallback;
   }
+  function show() {
+    if (state === 'success') note.textContent = t('cta.note.success', "You're on the list. We'll signal the moment the flag goes up.");
+    else if (state === 'error') note.textContent = t('cta.note.error', "That didn't go through. Check your email address and try again.");
+    else if (state === 'sending') note.textContent = t('cta.note.sending', 'Adding you to the list…');
+  }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    submitted = true;
-    note.textContent = t('cta.note.success', "You're on the list. We'll signal the moment the flag goes up.");
+    if (state === 'sending') return;
+    state = 'sending'; show();
+    if (button) button.disabled = true;
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: 'Bearer ' + KEY },
+        body: JSON.stringify({ p_email: input.value.trim(), p_source: 'shock-launch', p_locale: document.documentElement.getAttribute('data-lang') || 'en' })
+      });
+      state = res.ok ? 'success' : 'error';
+      if (res.ok) form.reset();
+    } catch (err) {
+      state = 'error';
+    }
+    if (button) button.disabled = false;
+    show();
   });
 
-  // Keep the success message in the chosen language if it's already showing
-  window.foxI18n &&
-    window.foxI18n.onChange(() => {
-      if (submitted) note.textContent = t('cta.note.success', "You're on the list. We'll signal the moment the flag goes up.");
-    });
+  // Keep the message in the chosen language
+  window.foxI18n && window.foxI18n.onChange(show);
 })();
