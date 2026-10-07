@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruitful | Global Agriculture Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <!-- Leaflet CSS for OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <style>
+        /* Global Agriculture Dashboard Color Palette */
+        :root {
+            --agri-primary-color: #38a169; /* Darker green for primary elements */
+            --agri-secondary-color: #f6ad55; /* Earthy orange for accents */
+            --agri-text-light: #e6ffed; /* Light green-white text */
+            --agri-text-dark: #1f2d3d; /* Very dark blue-gray background */
+            --agri-card-bg: #1a202c; /* Slightly lighter dark for cards */
+            --agri-border-color: #2d3748; /* Subtle dark border */
+            --agri-success-green: #48bb78; /* Brighter green for success */
+            --agri-warning-yellow: #ecc94b; /* Yellow for warnings */
+            --agri-danger-red: #fc8181; /* Red for errors */
+            --agri-info-blue: #63b3ed; /* Blue for info */
+        }
+
+        /* Base Body Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--agri-bg-dark);
+            color: var(--agri-text-light);
+            min-height: 100vh;
+            display: flex;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background-color: var(--agri-card-bg);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--agri-border-color);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .sidebar-header .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--agri-primary-color);
+            line-height: 1;
+        }
+        .sidebar-header .logo-text span {
+            color: var(--agri-secondary-color);
+            font-size: 0.8em;
+            letter-spacing: -0.02em;
+        }
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            color: var(--agri-text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            background-color: transparent;
+        }
+        .nav-list a:hover {
+            background-color: rgba(56, 161, 105, 0.15); /* Primary green with transparency */
+            color: var(--agri-primary-color);
+        }
+        .nav-list a.active {
+            background-color: var(--agri-primary-color);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+        }
+        .nav-list a.active .nav-icon {
+            color: white;
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+            color: var(--agri-secondary-color);
+            transition: color 0.2s ease;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem;
+            background-color: var(--agri-bg-dark);
+            overflow-y: auto;
+        }
+
+        /* General Panel Styling */
+        .panel {
+            background-color: var(--agri-card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--agri-border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .panel h3, .panel h4 {
+            color: var(--agri-secondary-color);
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        .panel h3 { font-size: 1.8rem; }
+        .panel h4 { font-size: 1.4rem; }
+        .panel p {
+            color: var(--agri-text-light);
+            line-height: 1.6;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background-color: var(--agri-card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--agri-border-color);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .metric-card h4 {
+            font-size: 1rem;
+            color: var(--agri-text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .metric-card p {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--agri-primary-color);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        /* Farm Card Grid */
+        .farm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .farm-card {
+            background-color: #1f2937; /* Slightly lighter than card-bg */
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--agri-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .farm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .farm-card h4 {
+            font-size: 1.2rem;
+            color: var(--agri-primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .farm-card p {
+            font-size: 0.9rem;
+            color: var(--agri-text-light);
+            margin-bottom: 0.4rem;
+        }
+        .farm-status {
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+        .status-active { background-color: var(--agri-success-green); color: white; }
+        .status-harvesting { background-color: var(--agri-secondary-color); color: white; }
+        .status-planting { background-color: var(--agri-info-blue); color: white; }
+        .status-inactive { background-color: var(--agri-danger-red); color: white; }
+        .farm-actions button {
+            background-color: var(--agri-secondary-color);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            margin-right: 0.5rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .farm-actions button:hover {
+            background-color: #d99041;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .farm-actions button.secondary {
+            background-color: transparent;
+            color: var(--agri-primary-color);
+            border: 1px solid var(--agri-primary-color);
+        }
+        .farm-actions button.secondary:hover {
+            background-color: rgba(56, 161, 105, 0.15);
+            color: var(--agri-primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Form styling */
+        .form-control {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-control label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--agri-text-light);
+        }
+        .form-control input[type="text"],
+        .form-control input[type="number"],
+        .form-control input[type="email"],
+        .form-control input[type="password"],
+        .form-control select,
+        .form-control textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--agri-border-color);
+            background-color: #2d3748; /* Input background */
+            color: var(--agri-text-light);
+            font-size: 1rem;
+            transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+        .form-control input:focus, .form-control select:focus, .form-control textarea:focus {
+            outline: none;
+            border-color: var(--agri-primary-color);
+            box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.3);
+        }
+        .form-action-button {
+            background-color: var(--agri-success-green);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .form-action-button:hover {
+            background-color: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+        }
+        .form-action-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Charts styling */
+        .chart-container {
+            position: relative;
+            height: 350px; /* Slightly taller charts */
+            background-color: var(--agri-card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--agri-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Ecosystem Map Styling (adapted from CodeNest dashboard) */
+        .copy-square {
+            position: relative;
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            border: 1px solid var(--agri-border-color);
+        }
+        .copy-square .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--agri-primary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s ease;
+        }
+        .copy-square:hover .copy-button {
+            opacity: 1; /* Show on hover */
+        }
+        .copy-square .copy-button:hover {
+            background-color: #38a169;
+        }
+        .copy-square pre.conversation-code-block {
+            background: none;
+            border: none;
+            color: var(--agri-text-light);
+            padding: 0;
+            margin: 0;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            padding-right: 40px;
+        }
+        .toggle-section-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--agri-primary-color);
+            transition: color 0.2s ease;
+        }
+        .toggle-section-btn:hover {
+            color: var(--agri-success-green);
+        }
+        .toggle-section-btn i {
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        .toggle-section-btn i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
+        .repo-content-section {
+            padding-left: 1rem;
+            border-left: 2px solid var(--agri-border-color);
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+        }
+        .repo-content-section .toggle-section-btn {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--agri-text-light);
+        }
+
+
+        /* Utility for hidden views */
+        .view-hidden {
+            display: none;
+        }
+
+        /* Custom Modal */
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content {
+            background-color: var(--agri-card-bg);
+            color: var(--agri-text-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--agri-border-color);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .custom-modal-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--agri-primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 0.5rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal Header/Footer Styling (for Farm Details, Email Draft, Edit Farm) */
+        .template-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: var(--agri-primary-color);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .template-preview-header h3 {
+            margin: 0;
+            color: white; /* Override panel h3 color */
+            font-size: 1.2rem;
+        }
+        .template-preview-header .close-preview-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .template-preview-header .close-preview-btn:hover {
+            color: var(--agri-secondary-color);
+        }
+        .template-preview-body {
+            padding: 1.5rem;
+        }
+        .template-preview-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid var(--agri-border-color);
+            background-color: var(--agri-card-bg);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .template-preview-actions .btn-primary {
+            background-color: var(--agri-primary-color);
+            color: white;
+        }
+        .template-preview-actions .btn-secondary {
+            background-color: var(--agri-border-color);
+            color: var(--agri-text-light);
+        }
+        .template-preview-actions .btn-primary:hover {
+            background-color: var(--agri-success-green);
+        }
+        .template-preview-actions .btn-secondary:hover {
+            background-color: #4a5568;
+        }
+
+        /* Responsive Mobile Layout */
+        @media (max-width: 767px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--agri-border-color);
+                flex-direction: row;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                position: sticky;
+                top: 0;
+                z-index: 40;
+            }
+            .sidebar-header {
+                width: 100%;
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: auto;
+            }
+            .sidebar-header .logo-text {
+                font-size: 1.5rem;
+                letter-spacing: -0.01em;
+            }
+            .sidebar-header .logo-text span {
+                font-size: 0.8em;
+            }
+            .nav-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+            .nav-list a {
+                margin: 0.2rem 0.3rem;
+                padding: 0.5rem 0.6rem;
+                font-size: 0.75rem;
+                gap: 0.5rem;
+                flex-grow: 1;
+                justify-content: center;
+            }
+            .nav-list a .nav-icon {
+                font-size: 0.9rem;
+                margin-right: 0.2rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+            .panel {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .panel h3 { font-size: 1.5rem; margin-bottom: 1rem;}
+            .panel h4 { font-size: 1.2rem; margin-bottom: 0.8rem;}
+            .metric-card p { font-size: 2rem; }
+            .farm-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .farm-actions button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+                margin-right: 0.3rem;
+                margin-top: 0.5rem;
+            }
+            .form-control {
+                margin-bottom: 1rem;
+            }
+            .form-control input, .form-control select, .form-control textarea {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            .form-action-button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo-text">Fruitful™ | <span>AgriDash</span></h2>
+        </div>
+        <nav class="nav-list">
+            <a href="#overview" class="active" data-view="overview">
+                <i class="fas fa-chart-bar nav-icon"></i> Overview
+            </a>
+            <a href="#farm-management" data-view="farm-management">
+                <i class="fas fa-tractor nav-icon"></i> Farm Management
+            </a>
+            <a href="#crop-analytics" data-view="crop-analytics">
+                <i class="fas fa-leaf nav-icon"></i> Crop & Livestock Analytics
+            </a>
+            <a href="#resource-management" data-view="resource-management">
+                <i class="fas fa-water nav-icon"></i> Resource Management
+            </a>
+            <a href="#agriculture-ecosystem" data-view="agriculture-ecosystem">
+                <i class="fas fa-seedling nav-icon"></i> Agri Ecosystem Map
+            </a>
+            <a href="#ai-agriculture" data-view="ai-agriculture">
+                <i class="fas fa-robot nav-icon"></i> AI Agri Assistant
+            </a>
+            <a href="#agri-tools" data-view="agri-tools">
+                <i class="fas fa-tools nav-icon"></i> Agri-Tools & Resources
+            </a>
+              <a href="#maps" data-view="maps">
+                <i class="fas fa-map-marked-alt nav-icon"></i> Maps
+            </a>
+            <a href="#settings" data-view="settings">
+                <i class="fas fa-cog nav-icon"></i> Settings
+            </a>
+        </nav>
+        <div class="mt-auto pt-4 text-center text-sm border-t border-agri-border-color">
+            <p>Logged in as: <span id="currentUserId" class="font-bold text-agri-primary-color">...</span></p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Overview View -->
+        <section id="overview-view" class="view">
+            <div class="panel">
+                <h3>Global Agriculture Dashboard Overview</h3>
+                <p class="mb-4">Monitor key performance indicators across your global agricultural operations.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="metric-card">
+                    <h4>Total Farms Managed</h4>
+                    <p id="totalFarmsCount">0</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Active Crop Areas (Acres)</h4>
+                    <p id="activeCropArea">0</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Forecasted Yield (Tons)</h4>
+                    <p id="forecastedYield">0</p>
+                   </div>
+                   <div class="metric-card md:col-span-full">
+                    <h4>Global Commodity Index (Wheat)</h4>
+                    <p id="commodityPriceIndex">$0.00</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="chart-container">
+                    <canvas id="cropHealthChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="resourceConsumptionChart"></canvas>
+                </div>
+            </div>
+              <div class="panel">
+                <h4>Global Yield Growth Trend</h4>
+                <div class="chart-container">
+                    <canvas id="globalYieldGrowthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Farm Management View -->
+        <section id="farm-management-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Farm & Project Management</h3>
+                <p class="mb-4">Manage your agricultural farms and projects. Add new farms or update existing ones.</p>
+
+                <!-- Add New Farm Form -->
+                <div class="panel mb-6">
+                    <h4 class="text-agri-primary-color">Add New Farm</h4>
+                    <form id="addFarmForm">
+                        <div class="form-control">
+                            <label for="newFarmName">Farm Name</label>
+                            <input type="text" id="newFarmName" placeholder="e.g., Green Valley Farm" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="newFarmLocation">Location</label>
+                            <input type="text" id="newFarmLocation" placeholder="e.g., Gauteng, ZA" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="newFarmCrop">Primary Crop / Livestock</label>
+                            <input type="text" id="newFarmCrop" placeholder="e.g., Wheat, Dairy" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="newFarmSize">Size (Acres)</label>
+                            <input type="number" id="newFarmSize" placeholder="e.g., 500" required min="1">
+                        </div>
+                        <div class="form-control">
+                            <label for="newFarmStatus">Status</label>
+                            <select id="newFarmStatus" required>
+                                <option value="active">Active</option>
+                                <option value="harvesting">Harvesting</option>
+                                <option value="planting">Planting</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="form-action-button">
+                            <i class="fas fa-plus-circle mr-2"></i> Add Farm
+                        </button>
+                    </form>
+                </div>
+
+                <h4 class="text-agri-secondary-color">Your Managed Farms</h4>
+                <div class="flex flex-wrap items-center gap-4 mb-4">
+                    <input type="text" id="farmSearch" placeholder="Search farms..." class="flex-grow p-2 rounded-md bg-gray-700 border border-gray-600 text-white">
+                    <select id="farmFilterStatus" class="p-2 rounded-md bg-gray-700 border border-gray-600 text-white">
+                        <option value="all">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="harvesting">Harvesting</option>
+                        <option value="planting">Planting</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div id="farmList" class="farm-grid">
+                    <!-- Farm cards will be loaded here from Firestore -->
+                    <p id="loadingFarmsMessage" class="text-center text-agri-text-light col-span-full">Loading farms...</p>
+                    <p id="noFarmsMessage" class="text-center text-agri-warning-yellow col-span-full hidden">No farms found. Add one above!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crop & Livestock Analytics View -->
+        <section id="crop-analytics-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Crop & Livestock Analytics</h3>
+                <p class="mb-4">Detailed insights into crop yield, health, and livestock productivity.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="chart-container">
+                        <canvas id="cropYieldTrendChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="livestockHealthChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h4>Top Performing Crops</h4>
+                    <ul id="topCropsList" class="list-disc list-inside text-agri-text-light">
+                        <li>Wheat (Farm A: +15% vs. avg)</li>
+                        <li>Corn (Farm B: +10% vs. avg)</li>
+                        <li>Soybeans (Farm C: Stable)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resource Management View -->
+        <section id="resource-management-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Resource Management & Sustainability</h3>
+                <p class="mb-4">Monitor and optimize water usage, soil nutrients, and energy consumption.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="chart-container">
+                        <canvas id="waterUsageChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="soilNutrientLevelsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h4>Soil & Water Conservation Tips</h4>
+                    <ul class="list-disc list-inside text-agri-text-light">
+                        <li>Implement drip irrigation systems for efficiency.</li>
+                        <li>Regularly test soil pH and nutrient levels.</li>
+                        <li>Practice crop rotation to maintain soil health.</li>
+                        <li>Utilize rainwater harvesting for supplementary irrigation.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agriculture Ecosystem Map View -->
+        <section id="agriculture-ecosystem-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Agriculture Sector Ecosystem Map</h3>
+                <p class="mb-4">Explore the brands and subnodes within the Agriculture sector of the FAA.Zone.</p>
+                <div id="agriSectorContainer" class="max-w-4xl mx-auto bg-agri-card-bg p-6 rounded-lg shadow-2xl text-left">
+                    <h4 class="text-xl font-bold mb-4 text-agri-secondary-color">Agriculture Sector Details:</h4>
+                    <div id="agriSectorDetails" class="space-y-3">
+                        <!-- Agriculture sector details will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Agriculture Assistant View -->
+        <section id="ai-agriculture-view" class="view view-hidden">
+            <div class="panel">
+                <h3>AI Agriculture Assistant</h3>
+                <p class="mb-4">Ask our AI assistant for advice on crop health, yield optimization, pest control, and more.</p>
+                <div class="form-control">
+                    <label for="agriAIPrompt">Your Agriculture Query</label>
+                    <textarea id="agriAIPrompt" rows="6" placeholder="e.g., How can I combat blight in tomatoes? Suggest optimal planting times for corn in a temperate climate. What are common organic pest control methods?" class="w-full p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm"></textarea>
+                </div>
+                <button type="button" id="sendAgriAIPrompt" class="form-action-button">
+                    ✨ Get Agri-AI Advice
+                </button>
+                <p id="agriAIStatus" class="text-xs text-gray-400 mt-1 hidden"></p>
+                <div id="agriAIResponse" class="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white mt-2 hidden" style="white-space: pre-wrap;"></div>
+            </div>
+        </section>
+
+        <!-- Agri-Tools & Resources View (NEW) -->
+        <section id="agri-tools-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Agri-Tools & External Resources</h3>
+                <p class="mb-4">Access a curated list of tools, platforms, and external resources relevant to modern agriculture.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="metric-card text-left">
+                        <h4>Farm Management Software</h4>
+                        <ul class="list-disc list-inside text-agri-text-light text-sm">
+                            <li><a href="https://farmos.org" target="_blank" class="text-agri-primary-color hover:underline">FarmOS</a> - Open-source farm management.</li>
+                            <li><a href="https://www.agrivi.com" target="_blank" class="text-agri-primary-color hover:underline">AgriVi</a> - Smart farm management platform.</li>
+                        </ul>
+                    </div>
+                     <div class="metric-card text-left">
+                        <h4>Weather & Climate Data</h4>
+                        <ul class="list-disc list-inside text-agri-text-light text-sm">
+                            <li><a href="https://agromonitoring.com" target="_blank" class="text-agri-primary-color hover:underline">OpenWeather Agri</a> - Agricultural weather data.</li>
+                            <li><a href="https://climate.ai" target="_blank" class="text-agri-primary-color hover:underline">ClimateAI</a> - Climate risk intelligence.</li>
+                        </ul>
+                    </div>
+                     <div class="metric-card text-left">
+                        <h4>Soil & Water Sensors</h4>
+                        <ul class="list-disc list-inside text-agri-text-light text-sm">
+                            <li><a href="https://www.taranis.com" target="_blank" class="text-agri-primary-color hover:underline">Taranis</a> - Aerial intelligence for crops.</li>
+                            <li><a href="tools.html#soil" target="_blank" class="text-agri-primary-color hover:underline">SoilMetrics Pro</a> - Advanced soil analysis.</li>
+                        </ul>
+                    </div>
+                     <div class="metric-card text-left">
+                        <h4>Marketplace & Trade</h4>
+                        <ul class="list-disc list-inside text-agri-text-light text-sm">
+                            <li><a href="../trade/index.html" target="_blank" class="text-agri-primary-color hover:underline">AgriTrade Hub</a> - Global agricultural commodities.</li>
+                            <li><a href="../fsf/index.html" target="_blank" class="text-agri-primary-color hover:underline">Farm2Table Connect</a> - Direct consumer sales.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Maps View (NEW) -->
+        <section id="maps-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Interactive Agricultural Maps</h3>
+                <p class="mb-4">Visualize farm locations, land usage, and environmental data using interactive maps.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="chart-container flex flex-col justify-center items-center">
+                        <h4 class="text-xl font-semibold text-agri-secondary-color mb-3">Google Maps (Farm Locations)</h4>
+                        <p class="text-agri-text-light text-sm mb-3 text-center">Google Maps needs a browser key restricted to this site. Until one is set, your farms are mapped on OpenStreetMap.</p>
+                        <div id="google-map-container" style="height: 100%; width: 100%; border-radius: 8px; overflow: hidden; background-color: #2d3748;">
+                            <gmp-map center="-25.7479, 28.2293" zoom="8" map-id="AGRI_MAP_ID" class="w-full h-full">
+                            </gmp-map>
+                        </div>
+                           <div class="text-agri-danger-red text-sm mt-4">
+                            <strong>Not connected yet:</strong> add a Maps JavaScript API key restricted to this site's address.
+                        </div>
+                    </div>
+
+                    <div class="chart-container flex flex-col justify-center items-center">
+                        <h4 class="text-xl font-semibold text-agri-secondary-color mb-3">Leaflet.js with OpenStreetMap (Soil Data)</h4>
+                        <p class="text-agri-text-light text-sm mb-3 text-center">Open-source map displaying simulated soil data layers.</p>
+                        <div id="leaflet-map-container" style="height: 100%; width: 100%; border-radius: 8px; overflow: hidden; background-color: #2d3748;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings View (NEW) -->
+        <section id="settings-view" class="view view-hidden">
+            <div class="panel">
+                <h3><i class="fas fa-cog mr-2"></i> AgriDash Settings</h3>
+
+                <!-- Settings Navigation -->
+                <div class="flex border-b border-agri-border-color mb-6 overflow-x-auto whitespace-nowrap">
+                    <button class="settings-tab-btn active px-4 py-2 text-agri-text-light hover:bg-agri-primary-color hover:text-white rounded-md transition-all duration-200" data-settings-tab="profile">Profile</button>
+                    <button class="settings-tab-btn px-4 py-2 text-agri-text-light hover:bg-agri-primary-color hover:text-white rounded-md transition-all duration-200" data-settings-tab="preferences">Farm Preferences</button>
+                    <button class="settings-tab-btn px-4 py-2 text-agri-text-light hover:bg-agri-primary-color hover:text-white rounded-md transition-all duration-200" data-settings-tab="security">Security</button>
+                    <button class="settings-tab-btn px-4 py-2 text-agri-text-light hover:bg-agri-primary-color hover:text-white rounded-md transition-all duration-200" data-settings-tab="domains">Domain & Cloud Services</button>
+                </div>
+
+                <!-- Profile Sub-view -->
+                <div id="settings-profile" class="settings-sub-view">
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color">
+                        <h4>Profile</h4>
+                        <div class="form-control">
+                            <label for="agriDisplayName">Display Name</label>
+                            <input type="text" id="agriDisplayName" value="AgriUser001">
+                        </div>
+
+                        <div class="form-control">
+                            <label for="agriEmail">Email</label>
+                            <input type="email" id="agriEmail" value="agriuser@fruitful.global">
+                        </div>
+
+                        <button class="form-action-button" onclick="window.showCustomModal('Profile Updated!', 'Your profile has been saved.')">Update Profile</button>
+                    </section>
+                </div>
+
+                <!-- Farm Preferences Sub-view -->
+                <div id="settings-preferences" class="settings-sub-view hidden">
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color">
+                        <h4>Farm Preferences</h4>
+                        <div class="form-control">
+                            <label for="agriDefaultRegion">Default Farm Region</label>
+                            <select id="agriDefaultRegion">
+                                <option value="global">Global</option>
+                                <option value="south-africa">South Africa</option>
+                                <option value="usa">USA Midwest</option>
+                                <option value="europe">Europe (EU)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-control">
+                            <label for="agriDataSyncFrequency">Data Sync Frequency</label>
+                            <select id="agriDataSyncFrequency">
+                                <option value="daily">Daily</option>
+                                <option value="hourly">Hourly</option>
+                                <option value="realtime">Real-time (Stream)</option>
+                            </select>
+                        </div>
+
+                        <button class="form-action-button" onclick="window.showCustomModal('Preferences Saved!', 'Your farm preferences have been updated.')">Save Preferences</button>
+                    </section>
+                </div>
+
+                <!-- Security Sub-view -->
+                <div id="settings-security" class="settings-sub-view hidden">
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color">
+                        <h4>Security</h4>
+                        <div class="form-control">
+                            <label for="agriPassword">Change Password</label>
+                            <input type="password" id="agriPassword" placeholder="New Password">
+                        </div>
+
+                        <div class="form-control">
+                            <label for="agriConfirmPassword">Confirm Password</label>
+                            <input type="password" id="agriConfirmPassword" placeholder="Confirm Password">
+                        </div>
+
+                        <button class="form-action-button" onclick="window.showCustomModal('Password Updated!', 'Your password has been changed securely.')">Update Password</button>
+                    </section>
+                </div>
+
+                <!-- Domain & Cloud Services Sub-view -->
+                <div id="settings-domains" class="settings-sub-view hidden">
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color mb-6">
+                        <h4>DNS Zone Management (Cloudflare Integrated)</h4>
+                        <p class="text-agri-text-light text-sm mb-4">Manage your agriculture domain's DNS records (A, CNAME, MX, TXT) with direct Cloudflare integration.</p>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Type</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Name</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Value</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">TTL</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agriDnsRecordsTableBody">
+                                <!-- DNS records will be loaded here -->
+                            </tbody>
+                        </table>
+                        <div class="flex flex-wrap items-center gap-2 mt-4">
+                               <input type="text" id="agriDnsRecordTypeInput" placeholder="DNS Type (e.g., A, CNAME)" class="flex-grow p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-xs max-w-[200px]">
+                            <button class="form-action-button text-sm px-3 py-2 bg-agri-info-blue hover:bg-blue-600" id="explainAgriDnsBtn">
+                                ✨ Explain DNS Type
+                            </button>
+                            <button class="form-action-button text-sm px-3 py-2" onclick="window.showCustomModal('Add DNS Record', 'Add new DNS record functionality coming soon!')">
+                                <i class="fas fa-plus mr-1"></i> Add Record
+                            </button>
+                        </div>
+                        <p id="agriDnsExplainStatus" class="text-xs text-gray-400 mt-1 hidden"></p>
+                        <div id="agriDnsExplanationOutput" class="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white mt-2 hidden" style="white-space: pre-wrap;"></div>
+                    </section>
+
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color mb-6">
+                        <h4>Domain Management (Vercel Integrated for Silent Deployments)</h4>
+                        <p class="text-agri-text-light text-sm mb-4">Manage your agriculture sector domains and add-on domains.</p>
+                        <ul id="agriDomainList" class="list-disc list-inside text-agri-text-light mb-4">
+                            <li><i class="fas fa-check-circle text-agri-success-green mr-2"></i> crop-solutions.com (Primary)</li>
+                            <li><i class="fas fa-check-circle text-agri-success-green mr-2"></i> farmtech.crop-solutions.com (Subdomain)</li>
+                        </ul>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="text" id="agriNewDomainName" placeholder="Add New Domain (e.g., smart-agri.com)" class="flex-grow p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                            <button class="form-action-button text-sm px-3 py-2" onclick="window.showCustomModal('Add Domain', 'Adding domain functionality coming soon!')">
+                                <i class="fas fa-plus mr-1"></i> Add Domain
+                            </button>
+                        </div>
+                           <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <input type="text" id="agriNewAddonDomainName" placeholder="Add Add-on Domain (e.g., research.smart-agri.com)" class="flex-grow p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                            <select id="agriAddonDomainTarget" class="p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                                <option value="">Select Primary Domain</option>
+                                <option value="crop-solutions.com">crop-solutions.com</option>
+                            </select>
+                            <button class="form-action-button text-sm px-3 py-2" onclick="window.showCustomModal('Add Add-on Domain', 'Adding add-on domain functionality coming soon!')">
+                                <i class="fas fa-plus mr-1"></i> Add Add-on
+                            </button>
+                        </div>
+                        <button class="form-action-button mt-4 bg-agri-info-blue hover:bg-blue-600" onclick="window.showCustomModal('Silent Deploy Initiated', 'Initiating silent deployment for domains...')">
+                            <i class="fas fa-cloud-upload-alt mr-1"></i> Deploy Domain Changes
+                        </button>
+                    </section>
+
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color">
+                        <h4>Email Accounts (Powered by Zoho Mail)</h4>
+                        <p class="text-agri-text-light text-sm mb-4">Create and manage email accounts for your agriculture domains.</p>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Email Address</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Status</th>
+                                    <th class="py-2 px-3 border-b border-agri-border-color font-semibold text-agri-secondary-color">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agriEmailAccountsTableBody">
+                                <!-- Email accounts will be loaded here -->
+                            </tbody>
+                        </table>
+                        <div class="flex flex-wrap items-center gap-2 mt-4">
+                            <input type="text" id="agriNewEmailPrefix" placeholder="New email (e.g., support)" class="w-1/3 p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                            <span class="text-agri-text-light">@</span>
+                            <input type="text" id="agriNewEmailDomain" placeholder="yourdomain.com" value="crop-solutions.com" class="w-1/3 p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                            <button class="form-action-button text-sm px-3 py-2" id="createAgriEmailBtn">
+                                <i class="fas fa-plus mr-1"></i> Create Email
+                            </button>
+                        </div>
+                        <p id="agriEmailDraftStatus" class="text-xs text-gray-400 mt-1 hidden"></p>
+                    </section>
+
+                    <section class="panel bg-agri-bg-dark border border-agri-border-color mt-8">
+                        <h4 class="text-agri-secondary-color mb-4">Agriculture Company Infrastructure Setup & Details</h4>
+                        <p class="text-agri-text-light text-sm mb-4">Access the comprehensive setup details for any agriculture company. Select a company below to reveal its granular configurations.</p>
+                        
+                        <div id="agriCompanySelectionGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                            <!-- Agriculture Company selection cards will be rendered here -->
+                        </div>
+
+                        <div id="agriCompanyDetailsOutput" class="panel bg-agri-card-bg border border-agri-border-color hidden">
+                            <!-- Dynamic agriculture company details will be rendered here -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Modal for Alerts -->
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-agri-card-bg text-agri-text-light p-6 rounded-lg shadow-xl text-center max-w-sm custom-modal-content">
+            <p id="customModalMessage"></p>
+            <button onclick="window.hideCustomModal()" class="form-action-button bg-agri-primary-color hover:bg-agri-success-green">Close</button>
+        </div>
+    </div>
+
+    <!-- Farm Details Modal (NEW) -->
+    <div id="farmDetailsModal" class="custom-modal-overlay">
+        <div class="custom-modal-content max-w-2xl w-full h-auto" style="padding: 0; text-align: left;">
+            <div class="template-preview-header bg-agri-primary-color">
+                <h3 id="farmDetailsTitle" class="text-white"></h3>
+                <button class="close-preview-btn" onclick="hideFarmDetailsModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="template-preview-body p-4 bg-agri-card-bg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="farmOverviewDetails">
+                    <!-- Basic farm details will be injected here -->
+                </div>
+                <h4 class="text-xl font-semibold text-agri-secondary-color mt-6 mb-3">Subnode Metrics:</h4>
+                <div id="subnodeMetricsContainer" class="space-y-4">
+                    <!-- Subnode details will be injected here -->
+                </div>
+                <div class="template-preview-actions mt-6">
+                    <button class="form-action-button btn-secondary" onclick="hideFarmDetailsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Farm Modal (NEW) -->
+    <div id="editFarmModal" class="custom-modal-overlay">
+        <div class="custom-modal-content max-w-xl w-full h-auto" style="padding: 0; text-align: left;">
+            <div class="template-preview-header bg-agri-primary-color">
+                <h3 id="editFarmTitle" class="text-white">Edit Farm Details</h3>
+                <button class="close-preview-btn" onclick="window.hideEditFarmModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="template-preview-body p-4 bg-agri-card-bg">
+                <form id="editFarmForm">
+                    <input type="hidden" id="editFarmId">
+                    <div class="form-control">
+                        <label for="editFarmName">Farm Name</label>
+                        <input type="text" id="editFarmName" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editFarmLocation">Location</label>
+                        <input type="text" id="editFarmLocation" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editFarmCrop">Primary Crop / Livestock</label>
+                        <input type="text" id="editFarmCrop" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="editFarmSize">Size (Acres)</label>
+                        <input type="number" id="editFarmSize" placeholder="e.g., 500" required min="1">
+                    </div>
+                    <div class="form-control">
+                        <label for="editFarmStatus">Status</label>
+                        <select id="editFarmStatus" required>
+                            <option value="active">Active</option>
+                            <option value="harvesting">Harvesting</option>
+                            <option value="planting">Planting</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-4">
+                        <button type="submit" class="form-action-button bg-agri-primary-color hover:bg-agri-success-green">
+                            <i class="fas fa-save mr-2"></i> Save Changes
+                        </button>
+                        <button type="button" id="deleteFarmButton" class="form-action-button bg-agri-danger-red hover:bg-red-700">
+                            <i class="fas fa-trash-alt mr-2"></i> Delete Farm
+                        </button>
+                        <button type="button" onclick="window.hideEditFarmModal()" class="form-action-button bg-gray-500 hover:bg-gray-600">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Email Draft Modal (NEW - specifically for agriculture emails) -->
+    <div id="agriEmailDraftModal" class="custom-modal-overlay">
+        <div class="custom-modal-content max-w-xl w-full h-auto">
+            <div class="template-preview-header bg-agri-primary-color">
+                <h3 id="agriEmailDraftTitle" class="text-white">Draft Agriculture Email</h3>
+                <button class="close-preview-btn" onclick="hideAgriEmailDraftModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="template-preview-body text-left bg-agri-card-bg">
+                <p class="text-agri-text-light text-sm mb-2">To: <span id="agriEmailDraftTo"></span></p>
+                <div class="form-control">
+                    <label for="agriEmailPurposeInput" class="text-agri-text-light text-sm mb-1">Purpose of Email</label>
+                    <input type="text" id="agriEmailPurposeInput" placeholder="e.g., New crop planting announcement, Soil test results, Livestock health update" class="w-full p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-sm">
+                </div>
+                <button type="button" id="generateAgriEmailDraftBtn" class="form-action-button text-xs px-3 py-2">
+                    ✨ Generate Draft
+                </button>
+                <p id="agriEmailDraftStatus" class="text-xs text-gray-400 mt-1 hidden"></p>
+                <textarea id="generatedAgriEmailDraftOutput" rows="10" class="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white mt-2" placeholder="Your AI-generated email draft will appear here..." readonly></textarea>
+                <div class="template-preview-actions">
+                    <button class="form-action-button btn-primary" onclick="window.copyGeneratedEmailToClipboard()">Copy to Clipboard</button>
+                    <button class="form-action-button btn-secondary" onclick="hideAgriEmailDraftModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection as fsCollection, query as fsQuery, onSnapshot as fsOnSnapshot, addDoc as fsAddDoc, updateDoc as fsUpdateDoc, deleteDoc as fsDeleteDoc, doc as fsDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc, useFirestore } from "./farm-register.js";
+
+        // --- Firebase Globals ---
+        let app;
+        let db;
+        let auth;
+        let userId = 'anonymous'; // Default to anonymous until authenticated
+        let farmsCollectionRef;
+        let unsubscribeFarms = null; // To store the unsubscribe function for real-time listener
+
+        // Initialize App ID and Firebase Config from global variables
+        // These global variables are provided by the Canvas environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // --- Centralized Data Store for Global Agriculture Dashboard ---
+        const sectorList = {
+            "agriculture": { name: "🌱 Agriculture & Biotech" },
+            "fsf": { name: "🥦 Food, Soil & Farming" },
+            "banking": { name: "🏦 Banking & Finance" },
+            "creative": { name: "🖋️ Creative Tech" },
+            "logistics": { name: "📦 Logistics & Packaging" },
+            "education-ip": { name: "📚 Education & IP" },
+            "fashion": { name: "✂️ Fashion & Identity" },
+            "gaming": { name: "🎮 Gaming & Simulation" },
+            "health": { name: "🧠 Health & Hygiene" },
+            "housing": { name: "🏗️ Housing & Infrastructure" },
+            "justice": { name: "⚖ Justice & Ethics" },
+            "knowledge": { name: "📖 Knowledge & Archives" },
+            "micromesh": { name: "☰ Micro-Mesh Logistics" },
+            "media": { name: "🎬 Motion, Media & Sonic" },
+            "nutrition": { name: "✿ Nutrition & Food Chain" },
+            "ai-logic": { name: "🧠 AI, Logic & Grid" },
+            "packaging": { name: "📦 Packaging & Materials" },
+            "quantum": { name: "✴️ Quantum Protocols" },
+            "ritual": { name: "☯ Ritual & Culture" },
+            "saas": { name: "🔑 SaaS & Licensing" },
+            "trade": { name: "🧺 Trade Systems" },
+            "utilities": { name: "🔋 Utilities & Energy" },
+            "voice": { name: "🎙️ Voice & Audio" },
+            "webless": { name: "📡 Webless Tech & Nodes" },
+            "nft": { name: "🔁 NFT & Ownership" },
+            "education-youth": { name: "🎓 Education & Youth" },
+            "zerowaste": { name: "♻️ Zero Waste" },
+            "professional": { name: "🧾 Professional Services" },
+            "payroll-mining": { name: "🪙 Payroll Mining & Accounting" },
+            "mining": { name: "⛏️ Mining & Resources" },
+            "wildlife": { name: "🦁 Wildlife & Habitat" },
+            "admin-panel": { name: "⚙️ Admin Panel" }
+        };
+
+        const allSectorsData = {
+            "agriculture": {
+                name: "🌱 Agriculture & Biotech",
+                repoName: "agriculture-seedwave-admin",
+                baseUrl: "agriculture.seedwave.faa.zone",
+                brands: [
+                    { name: "CropLink", subnodes: ["CropLink ID™", "CropLink Vault™", "CropLink Field™", "CropLink Yield™"] },
+                    { name: "SoilPulse", subnodes: ["SoilPulse Trace™", "SoilPulse Data™", "SoilPulse Alert™"] },
+                    { name: "FarmFlow", subnodes: ["FarmFlow Connect", "AgriSense", "IrrigaSmart"] },
+                    { name: "AquaFarm", subnodes: ["HydroGen", "FishLoop", "NutriWater"] },
+                    { name: "AgriMesh", subnodes: ["SensorGrid", "DataHarvester", "YieldPredict"] },
+                    { name: "GrowNode", subnodes: ["PlantID", "BioMonitor", "GrowthTrack"] },
+                    { name: "GrainCast", subnodes: ["MarketSignal", "FutureHarvest", "StorageOpt"] },
+                    { name: "SoilBank", subnodes: ["CarbonSeq", "Microbiome", "ErosionGuard"] },
+                    { name: "CropID", subnodes: ["CropID Scanner™", "CropID Trust™"] },
+                    { name: "AgriVault", subnodes: ["AgriVault Lock™", "AgriVault Chain™", "AgriVault Seed™"] },
+                    { name: "PulseHarvest", subnodes: ["PulseHarvest Sync™", "PulseHarvest Drop™", "PulseHarvest Vault™"] },
+                    { name: "MarketSoil", subnodes: ["MarketSoil Rate™", "MarketSoil Feed™", "MarketSoil UI™"] },
+                    { name: "DroneFarm", subnodes: ["DroneFarm View™", "DroneFarm Grid™", "DroneFarm Trace™"] },
+                    { name: "RuralOps", subnodes: ["RuralOps Node™", "RuralOps Pulse™", "RuralOps Chain™"] },
+                    { name: "SeedGrid", subnodes: ["SeedGrid Vault™", "SeedGrid Scan™", "SeedGrid Growth™"] },
+                    { name: "FarmChain", subnodes: ["FarmChain Link™", "FarmChain Claim™", "FarmChain Credit™"] },
+                    { name: "AgriScore", subnodes: ["AgriScore Index™", "AgriScore Node™"] },
+                    { name: "SoilNet", subnodes: ["SoilNet Base™", "SoilNet UI™"] },
+                    { name: "CropDoc", subnodes: ["CropDoc Scan™", "CropDoc Aid™"] },
+                    { name: "TerraVault", subnodes: ["TerraVault Ledger™", "TerraVault View™", "TerraVault Chain™"] },
+                    { name: "AgriID", subnodes: ["AgriID Chain™", "AgriID Badge™", "AgriID Verify™"] },
+                    { name: "SproutFlow", subnodes: ["SproutFlow Loop™", "SproutFlow Track™"] },
+                    { name: "GrainSafe", subnodes: ["GrainSafe Lock™", "GrainSafe Audit™"] },
+                    { name: "FieldSync", subnodes: ["FieldSync Signal™", "FieldSync Grid™"] },
+                    { name: "AgriDepot", subnodes: ["AgriDepot Map™", "AgriDepot Sync™", "AgriDepot Drop™"] },
+                    { name: "DroneCrop", subnodes: ["DroneCrop Watch™", "DroneCrop Sync™"] },
+                    { name: "CropTrace", subnodes: ["CropTrace Root™", "CropTrace Link™"] },
+                    { name: "PulseSoil", subnodes: ["PulseSoil Core™", "PulseSoil Signal™"] },
+                    { name: "SeedRoot", subnodes: ["SeedRoot Tag™", "SeedRoot Layer™"] },
+                    { name: "RuralFlow", subnodes: ["RuralFlow Map™", "RuralFlow Loop™", "RuralFlow Chain™"] },
+                    { name: "MarketGrow", subnodes: ["MarketGrow Pulse™", "MarketGrow Cast™", "MarketGrow Deals™"] },
+                    { name: "AgriRank", subnodes: ["AgriRank Score™", "AgriRank Matrix™"] },
+                    { name: "SoilLogic", subnodes: ["SoilLogic Grid™", "SoilLogic Forecast™"] },
+                    { name: "AgriSync", subnodes: ["AgriSync UI™", "AgriSync Chain™"] },
+                    { name: "NutrientGrid", subnodes: ["NutrientGrid Base™", "NutrientGrid Flux™"] },
+                    { name: "FieldCast", subnodes: ["FieldCast Audio™", "FieldCast Relay™"] },
+                    { name: "CropSource", subnodes: ["CropSource Ledger™", "CropSource ID™"] },
+                    { name: "YieldStack", subnodes: ["YieldStack UI™", "YieldStack Payout™", "YieldStack Index™"] },
+                    { name: "FarmPulse", subnodes: ["FarmPulse Loop™", "FarmPulse Mesh™"] },
+                    { name: "SoilTech", subnodes: ["SoilTech DNA™", "SoilTech Live™"] },
+                    { name: "GreenTrace", subnodes: ["GreenTrace Chain™", "GreenTrace Pulse™"] },
+                    { name: "CropVault", subnodes: ["CropVault Lock™", "CropVault Ledger™", "CropVault Cert™"] },
+                    { name: "AgriCast", subnodes: ["AgriCast Signal™", "AgriCast Feed™"] },
+                    { name: "TerraPulse", subnodes: ["TerraPulse Soil™", "TerraPulse Vault™"] },
+                    { name: "SoilTrace", subnodes: ["SoilTrace ID™", "SoilTrace Certify™"] },
+                    { name: "PulseAg", subnodes: ["CropCyclePulse", "GrowthStageMonitor", "HarvestWindow"] },
+                    { name: "GrowVault", subnodes: ["GrowVault Root™", "GrowVault Share™"] },
+                    { name: "FieldNet", subnodes: ["FieldNet Mesh™", "FieldNet Ping™"] },
+                    { name: "DroneSoil", subnodes: ["DroneSoil View™", "DroneSoil Trace™"] },
+                    { name: "SoilGrid", subnodes: ["SoilGrid X™", "SoilGrid Key™", "SoilGrid Base™"] },
+                    { name: "HarvestLoop", subnodes: ["HarvestLoop Yield™", "HarvestLoop Stack™"] },
+                    { name: "RuralMesh", subnodes: ["RuralMesh Net™", "RuralMesh Pulse™"] },
+                    { name: "FarmFlag", subnodes: ["FarmFlag Cert™", "FarmFlag Signal™"] },
+                    { name: "AgriFlow", subnodes: ["AgriFlow Path™", "AgriFlow Ledger™"] },
+                    { name: "SoilVault", subnodes: ["SoilVault Lock™", "SoilVault View™"] },
+                    { name: "FieldProof", subnodes: ["FieldProof Claim™", "FieldProof Relay™"] },
+                    { name: "DroneTrace", subnodes: ["DroneTrace Tag™", "DroneTrace Vault™"] },
+                    { name: "MarketRoots", subnodes: ["MarketRoots X™", "MarketRoots Grid™"] },
+                    { name: "NutrientPath", subnodes: ["NutrientPath Map™", "NutrientPath Scan™"] },
+                    { name: "CropPulse", subnodes: ["CropPulse Signal™", "CropPulse Ledger™"] },
+                    { name: "AgriPulse", subnodes: ["AgriPulse Loop™", "AgriPulse Ledger™"] },
+                    { name: "EcoSeed", subnodes: ["EcoSeed Vault™", "EcoSeed Sync™"] },
+                    { name: "AgriMetrics", subnodes: ["AgriMetrics Signal™", "AgriMetrics Vault™"] },
+                    { name: "DroneGrid", subnodes: ["DroneGrid Node™", "DroneGrid View™"] },
+                    { name: "GreenNode", subnodes: ["GreenNode Base™", "GreenNode Relay™"] },
+                    { name: "RootVault", subnodes: ["RootVault Claim™", "RootVault Transfer™"] },
+                    { name: "FieldToken", subnodes: ["FieldToken ID™", "FieldToken Pay™"] },
+                    { name: "AgriPlan", subnodes: ["AgriPlan Builder™", "AgriPlan Node™"] },
+                    { name: "SoilYield", subnodes: ["SoilYield Track™", "SoilYield Pulse™"] },
+                    { name: "SeedVault", subnodes: ["SeedVault ID™", "SeedVault Ledger™"] },
+                    { name: "MarketLink", subnodes: ["MarketLink Chain™", "MarketLink Signal™"] },
+                    { name: "CropFlow", subnodes: ["CropFlow Sync™", "CropFlow Vault™"] },
+                    { name: "RuralCast", subnodes: ["RuralCast Net™", "RuralCast Pulse™"] },
+                    { name: "AgriSyncPro", subnodes: ["AgriSyncPro UI™", "AgriSyncPro Lock™"] },
+                    { name: "SoilLine", subnodes: ["SoilLine Scan™", "SoilLine Pulse™"] },
+                    { name: "EcoAgri", subnodes: ["EcoAgri Cert™", "EcoAgri Grid™"] },
+                    { name: "HarvestNode", subnodes: ["HarvestNode Chain™", "HarvestNode Log™"] },
+                    { name: "TerraSoil", subnodes: ["TerraSoil View™", "TerraSoil DNA™"] },
+                    { name: "CropMesh", subnodes: ["CropMesh Grid™", "CropMesh Flow™"] },
+                    { name: "AgriSignal", subnodes: ["AgriSignal Node™", "AgriSignal Loop™"] },
+                    { name: "RuralVault", subnodes: ["RuralVault Lock™", "RuralVault Cert™"] },
+                    { name: "PulseGrow", subnodes: ["PulseGrow Timer™", "PulseGrow Sync™"] },
+                    { name: "MarketSoilX", subnodes: ["MarketSoilX Index™", "MarketSoilX Ledger™"] },
+                    { name: "AgriOmni", subnodes: ["AgriOmni Node™", "AgriOmni Relay™"] }
+                ]
+            },
+            // Other sectors from CodeNest dashboard for consistency in allSectorsData
+            "ai-logic": {
+                name: "🧠 AI, Logic & Grid",
+                repoName: "ai-logic-seedwave-admin",
+                baseUrl: "ai-logic.seedwave.faa.zone",
+                brands: [
+                    { name: "OmniKey", subnodes: ["TraceBeam", "VaultEcho", "QRPath", "MeshID"] },
+                    { name: "SignalPulse", subnodes: ["BeamNode", "VaultTrack", "QRLogic", "SignalDrop"] },
+                ]
+            },
+            "logistics": {
+                name: "📦 Logistics & Packaging",
+                repoName: "logistics-seedwave-admin",
+                baseUrl: "logistics.seedwave.faa.zone",
+                brands: [
+                    { name: "CrateLogic", subnodes: ["RouteOptimize", "FleetTrack", "WarehouseSync"] }
+                ]
+            },
+            "fsf": {
+                name: "🥦 Food, Soil & Farming",
+                repoName: "fsf-seedwave-admin",
+                baseUrl: "fsf.seedwave.faa.zone",
+                brands: [{ name: "FarmFlow", subnodes: ["SoilScan", "WaterNet", "CropMonitor"] }]
+            },
+            "banking": {
+                name: "🏦 Banking & Finance",
+                repoName: "banking-seedwave-admin",
+                baseUrl: "banking.seedwave.faa.zone",
+                brands: [{ name: "CoinFlow", subnodes: ["LedgerTrack", "AssetVault"] }]
+            },
+            "creative": {
+                name: "🖋️ Creative Tech",
+                repoName: "creative-seedwave-admin",
+                baseUrl: "creative.seedwave.faa.zone",
+                brands: [{ name: "PixelFlow", subnodes: ["RenderEngine", "SonicWave", "VisualStory"] }]
+            },
+            "education-ip": {
+                name: "📚 Education & IP",
+                repoName: "education-seedwave-admin",
+                baseUrl: "education-ip.seedwave.faa.zone",
+                brands: [{ name: "EduNest", subnodes: ["CurriculumForge", "LicenseTrack"] }]
+            },
+            "fashion": {
+                name: "✂ Fashion & Identity",
+                repoName: "fashion-seedwave-admin",
+                baseUrl: "fashion.seedwave.faa.zone",
+                brands: [{ name: "StyleFlow", subnodes: ["IdentityMesh", "TrendPulse"] }]
+            },
+            "gaming": {
+                name: "🎮 Gaming & Simulation",
+                repoName: "gaming-seedwave-admin",
+                baseUrl: "gaming.seedwave.faa.zone",
+                brands: [{ name: "GameGrid", subnodes: ["SimEngine", "RenderNode"] }]
+            },
+            "health": {
+                name: "🧠 Health & Hygiene",
+                repoName: "health-seedwave-admin",
+                baseUrl: "health.seedwave.faa.zone",
+                brands: [{ name: "MediVault", subnodes: ["DiagAI", "PatientLink"] }]
+            },
+            "housing": {
+                name: "🏗️ Housing & Infrastructure",
+                repoName: "housing-seedwave-admin",
+                baseUrl: "housing.seedwave.faa.zone",
+                brands: [{ name: "BuildFlow", subnodes: ["SmartGrid", "UrbanMesh"] }]
+            },
+            "justice": {
+                name: "⚖ Justice & Ethics",
+                repoName: "justice-seedwave-admin",
+                baseUrl: "justice.seedwave.faa.zone",
+                brands: [{ name: "EthiLock", subnodes: ["ComplianceScan", "VaultJustice"] }]
+            },
+            "knowledge": {
+                name: "📖 Knowledge & Archives",
+                repoName: "knowledge-seedwave-admin",
+                baseUrl: "knowledge.seedwave.faa.zone",
+                brands: [{ name: "LoreKeeper", subnodes: ["ArchiveSync", "MetaGrid"] }]
+            },
+            "micromesh": {
+                name: "☰ Micro-Mesh Logistics",
+                repoName: "micromesh-seedwave-admin",
+                baseUrl: "micromesh.seedwave.faa.zone",
+                brands: [{ name: "PicoFlow", subnodes: ["NanoTrack", "MicroRoute"] }]
+            },
+            "media": {
+                name: "🎬 Motion, Media & Sonic",
+                repoName: "media-seedwave-admin",
+                baseUrl: "media.seedwave.faa.zone",
+                brands: [{ name: "SoundWave", subnodes: ["VisualSync", "SonicForge"] }]
+            },
+            "nutrition": {
+                name: "✿ Nutrition & Food Chain",
+                repoName: "nutrition-seedwave-admin",
+                baseUrl: "nutrition.seedwave.faa.zone",
+                brands: [{ name: "NutriFlow", subnodes: ["FoodTrace", "YieldOpt"] }]
+            },
+            "packaging": {
+                name: "📦 Packaging & Materials",
+                repoName: "packaging-seedwave-admin",
+                baseUrl: "packaging.seedwave.faa.zone",
+                brands: [{ name: "PackSync", subnodes: ["MaterialTrace", "EcoPack"] }]
+            },
+            "quantum": {
+                name: "✴️ Quantum Protocols",
+                repoName: "quantum-seedwave-admin",
+                baseUrl: "quantum.seedwave.faa.zone",
+                brands: [{ name: "QuantumLock", subnodes: ["EntangleNode", "CipherStream"] }]
+            },
+            "ritual": {
+                name: "☯ Ritual & Culture",
+                repoName: "ritual-seedwave-admin",
+                baseUrl: "ritual.seedwave.faa.zone",
+                brands: [{ name: "CultureMesh", subnodes: ["TraditionVault", "EthnoSync"] }]
+            },
+            "saas": {
+                name: "🔑 SaaS & Licensing",
+                repoName: "saas-seedwave-admin",
+                baseUrl: "saas.seedwave.faa.zone",
+                brands: [{ name: "LicenseKey", subnodes: ["ClaimFlow", "TokenGate"] }]
+            },
+            "trade": {
+                name: "🧺 Trade Systems",
+                repoName: "trade-seedwave-admin",
+                baseUrl: "trade.seedwave.faa.zone",
+                brands: [{ name: "TradeFlow", subnodes: ["MarketSync", "SupplyLink"] }]
+            },
+            "utilities": {
+                name: "🔋 Utilities & Energy",
+                repoName: "utilities-seedwave-admin",
+                baseUrl: "utilities.seedwave.faa.zone",
+                brands: [{ name: "PowerGrid", subnodes: ["EnergyTrack", "DemandSync"] }]
+            },
+            "voice": {
+                name: "🎙️ Voice & Audio",
+                repoName: "voice-seedwave-admin",
+                baseUrl: "voice.seedwave.faa.zone",
+                brands: [{ name: "SonicFlow", subnodes: ["VoiceID", "AudioMesh"] }]
+            },
+            "webless": {
+                name: "📡 Webless Tech & Nodes",
+                repoName: "webless-seedwave-admin",
+                baseUrl: "webless.seedwave.faa.zone",
+                brands: [{ name: "ZeroWeb", subnodes: ["NodeConnect", "MeshPoint"] }]
+            },
+            "nft": {
+                name: "🔁 NFT & Ownership",
+                repoName: "nft-seedwave-admin",
+                baseUrl: "nft.seedwave.faa.zone",
+                brands: [{ name: "TokenVault", subnodes: ["ClaimChain", "ArtFlow"] }]
+            },
+            "education-youth": {
+                name: "🎓 Education & Youth",
+                repoName: "education-youth-seedwave-admin",
+                baseUrl: "education-youth.seedwave.faa.zone",
+                brands: [{ name: "FutureMind", subnodes: ["LearnPath", "SkillNode"] }]
+            },
+            "zerowaste": {
+                name: "♻️ Zero Waste",
+                repoName: "zerowaste-seedwave-admin",
+                baseUrl: "zerowaste.seedwave.faa.zone",
+                brands: [{ name: "EcoCycle", subnodes: ["RecycleTrack", "WasteOpt"] }]
+            },
+            "professional": {
+                name: "🧾 Professional Services",
+                repoName: "professional-seedwave-admin",
+                baseUrl: "professional.seedwave.faa.zone",
+                brands: [{ name: "ProServe", subnodes: ["ConsultFlow", "AdvisoryLink"] }]
+            },
+            "payroll-mining": {
+                name: "🪙 Payroll Mining & Accounting",
+                repoName: "payroll-mining-seedwave-admin",
+                baseUrl: "payroll-mining.seedwave.faa.zone",
+                brands: [{ name: "PayMine", subnodes: ["AccountSync", "LedgerFlow"] }]
+            },
+            "mining": {
+                name: "⛏️ Mining & Resources",
+                repoName: "mining-seedwave-admin",
+                baseUrl: "mining.seedwave.faa.zone",
+                brands: [{ name: "ResourceFlow", subnodes: ["MineTrack", "DrillNode"] }]
+            },
+            "wildlife": {
+                name: "🦁 Wildlife & Habitat",
+                repoName: "wildlife-seedwave-admin",
+                baseUrl: "wildlife.seedwave.faa.zone",
+                brands: [{ name: "HabitatGuard", subnodes: ["EcoTrack", "BioLink"] }]
+            },
+            "admin-panel": {
+                name: "⚙️ Admin Panel",
+                repoName: "admin-panel-seedwave-admin",
+                baseUrl: "admin-panel.seedwave.faa.zone",
+                brands: [{ name: "ControlCore", subnodes: ["MetricsView", "UserManage"] }]
+            }
+        };
+
+        const agriDashboardData = {
+            metrics: {
+                totalFarms: 0, // Will be updated from Firestore
+                activeCropArea: 85000, // in acres (mock)
+                forecastedYield: 250000, // in tons (mock)
+                commodityPrice: 285.75 // simulated price for a commodity (e.g., Wheat per ton)
+            },
+            charts: {
+                cropHealth: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Average Crop Health Score',
+                        data: [75, 80, 82, 85, 88, 86, 89],
+                        borderColor: '#48bb78', // agri-success-green
+                        backgroundColor: 'rgba(72, 187, 120, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                resourceConsumption: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Water Usage (ML)',
+                        data: [120, 150, 180, 130],
+                        backgroundColor: '#63b3ed', // agri-info-blue
+                        borderColor: '#63b3ed',
+                        borderWidth: 1
+                    }, {
+                        label: 'Energy Consumption (MWh)',
+                        data: [80, 90, 75, 85],
+                        backgroundColor: '#f6ad55', // agri-secondary-color
+                        borderColor: '#f6ad55',
+                        borderWidth: 1
+                    }]
+                },
+                globalYieldGrowth: { // NEW chart data
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'Global Agricultural Yield (Million Tons)',
+                        data: [1500, 1550, 1600, 1680, 1750, 1820],
+                        borderColor: '#a8c02c', /* Lighter green */
+                        backgroundColor: 'rgba(168, 192, 44, 0.15)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                cropYieldTrend: {
+                    labels: ['Wheat', 'Corn', 'Soybeans', 'Rice', 'Potatoes'],
+                    datasets: [{
+                        label: 'Average Yield (tons/acre)',
+                        data: [3.5, 5.2, 2.8, 4.1, 7.0],
+                        backgroundColor: [
+                            'rgba(56, 161, 105, 0.8)',
+                            'rgba(246, 173, 85, 0.8)',
+                            'rgba(99, 179, 237, 0.8)',
+                            'rgba(205, 230, 44, 0.8)', // Lighter green-yellow
+                            'rgba(175, 122, 197, 0.8)' // Purple tone
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                livestockHealth: {
+                    labels: ['Cattle', 'Poultry', 'Swine', 'Sheep'],
+                    datasets: [{
+                        label: 'Health Index',
+                        data: [92, 88, 90, 85],
+                        backgroundColor: [
+                            '#48bb78', // agri-success-green
+                            '#f6ad55', // agri-secondary-color
+                            '#63b3ed', // agri-info-blue
+                            '#a0aec0' // gray-400
+                        ],
+                        borderColor: '#1a202c', // card-bg for border
+                        borderWidth: 2
+                    }]
+                },
+                waterUsage: {
+                    labels: ['Farm A', 'Farm B', 'Farm C', 'Farm D'],
+                    datasets: [{
+                        label: 'Monthly Water Usage (ML)',
+                        data: [15, 22, 18, 25],
+                        backgroundColor: '#63b3ed', // agri-info-blue
+                        borderColor: '#3182ce',
+                        borderWidth: 1
+                    }]
+                },
+                soilNutrientLevels: {
+                    labels: ['Nitrogen', 'Phosphorus', 'Potassium', 'Organic Matter'],
+                    datasets: [{
+                        label: 'Average Level (%)',
+                        data: [70, 65, 80, 75],
+                        backgroundColor: 'rgba(120, 70, 0, 0.8)', // custom earthy brown
+                        borderColor: '#c05621', // darker earthy orange
+                        borderWidth: 1
+                    }]
+                }
+            },
+            farmProjects: [], // This will be populated by Firestore
+            farmLoadIndex: 0,
+            farmsPerLoad: 8,
+            settings: { // NEW: Settings data mirroring CodeNest
+                profile: {
+                    displayName: "AgriUser001",
+                    email: "agriuser@fruitful.global"
+                },
+                preferences: {
+                    defaultRegion: "south-africa",
+                    dataSyncFrequency: "daily"
+                },
+                dnsRecords: [
+                    { type: 'A', name: 'farm-dash.com', value: '192.168.1.10', ttl: 'Auto' },
+                    { type: 'CNAME', name: 'www.farm-dash.com', value: '@', ttl: 'Auto' },
+                    { type: 'MX', name: 'mail.farm-dash.com', value: 'mx.agrimail.com (Priority 10)', ttl: 'Auto' },
+                    { type: 'TXT', name: 'farm-dash.com', value: 'v=spf1 include:agrimail.com ~all', ttl: 'Auto' },
+                ],
+                emailAccounts: [
+                    { email: 'admin@crop-solutions.com', status: 'Active' },
+                    { email: 'info@crop-solutions.com', status: 'Active' },
+                    { email: 'support@crop-solutions.com', status: 'Pending' },
+                ],
+                domains: [
+                    { name: 'crop-solutions.com', type: 'Primary' },
+                    { name: 'farmtech.crop-solutions.com', type: 'Subdomain' },
+                    { name: 'agri-analytics.org', type: 'Add-on (Active)' },
+                ],
+                companies: { // Simplified agriculture-focused company data
+                    "terrasustain-agri": {
+                        name: "TerraSustain AgriTech",
+                        sector_key: "agriculture",
+                        details: {
+                            "Location": "Rural Innovation Hub, UK",
+                            "CEO": "John Smith",
+                            "Primary Contact": "info@terrasustain.co.uk",
+                            "Farm Count": "150",
+                            "Average Yield Increase (YOY)": "7%",
+                            "Compliance Certs": "Organic, Fair Trade"
+                        },
+                        products: [
+                            { name: "CropYield Predictor", tier: "Starter Node", price: "85 USD/month", features: ["Basic data sync", "Community support"] },
+                            { name: "SoilHealth Pro", tier: "Pro Grid", price: "217 USD/month", features: ["Advanced features", "Expanded capacity", "Priority support"] },
+                            { name: "Agri-Omni-Sync", tier: "Enterprise Omni-Sync", price: "Custom pricing", features: ["Full VaultMesh access", "Dedicated management", "Custom integrations", "24/7 Premium Support"] }
+                        ]
+                    },
+                    "aquaponic-innovations": {
+                        name: "Aquaponic Innovations",
+                        sector_key: "agriculture",
+                        details: {
+                            "Location": "Coastal Tech Park, CA, USA",
+                            "CEO": "Sarah Chen",
+                            "Primary Contact": "info@aquaponic.com",
+                            "Systems Deployed": "85 large-scale units",
+                            "Water Savings": "90% vs. traditional",
+                            "Key Products": "Leafy Greens, Tilapia"
+                        },
+                        products: [
+                            { name: "HydroPod Lite", tier: "Basic", price: "50 USD/month", features: ["Small scale", "Basic monitoring"] },
+                            { name: "AquaYield Pro", tier: "Advanced", price: "180 USD/month", features: ["Large scale", "Automated feeding", "AI optimization"] }
+                        ]
+                    },
+                    "livestock-guard": {
+                        name: "LivestockGuard Solutions",
+                        sector_key: "agriculture",
+                        details: {
+                            "Location": "Midwest Research Center, USA",
+                            "CEO": "David Lee",
+                            "Primary Contact": "support@livestockguard.com",
+                            "Monitoring Devices": "5000+",
+                            "Disease Detection Accuracy": "98%",
+                            "Supported Livestock": "Cattle, Sheep, Goats"
+                        },
+                        products: [
+                            { name: "HerdTracker Basic", tier: "Entry", price: "30 USD/month", features: ["GPS tracking", "Basic health alerts"] },
+                            { name: "VitalSigns AI", tier: "Premium", price: "120 USD/month", features: ["Predictive health analytics", "Automated alerts", "Integrates with farm systems"] }
+                        ]
+                    }
+                }
+            }
+        };
+
+        // Farms come only from the farm register (Firestore when configured, otherwise this device).
+        // The 50 generated sample farms of the original are listed in FAMILY.md, not shown.
+
+        // --- Utility Functions ---
+
+        /**
+         * Displays a custom modal alert message.
+         * @param {string} title - The title of the modal.
+         * @param {string} message - The message content.
+         * @param {boolean} [autoDismiss=true] - Whether the modal should automatically hide after a delay.
+         */
+        window.showCustomModal = function(title, message, autoDismiss = true) {
+            const modal = document.getElementById('customModal');
+            const modalMessage = modal.querySelector('p');
+            if (modal && modalMessage) {
+                modalMessage.innerHTML = `<strong>${title}</strong><br>${message}`;
+                modal.classList.remove('hidden');
+                modal.classList.add('active'); // Add active for animation
+                if (autoDismiss) {
+                    setTimeout(() => {
+                        window.hideCustomModal();
+                    }, 3000);
+                }
+            }
+        };
+
+        /**
+         * Hides the custom modal alert.
+         */
+        window.hideCustomModal = function() {
+            const modal = document.getElementById('customModal');
+            if (modal) {
+                modal.classList.remove('active'); // Remove active for animation
+                // Use a timeout to ensure the fade-out transition completes before hiding
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300); // Should match CSS transition duration
+            }
+        };
+
+        /**
+         * Shows the farm details modal and populates it with farm data.
+         * @param {object} farmData - The data of the farm to display.
+         */
+        window.showFarmDetailsModal = function(farmData) {
+            const modal = document.getElementById('farmDetailsModal');
+            const titleElement = document.getElementById('farmDetailsTitle');
+            const overviewDetails = document.getElementById('farmOverviewDetails');
+            const subnodeMetricsContainer = document.getElementById('subnodeMetricsContainer');
+
+            if (!modal || !titleElement || !overviewDetails || !subnodeMetricsContainer) {
+                console.error("Farm details modal elements not found.");
+                return;
+            }
+
+            titleElement.textContent = farmData.name;
+            overviewDetails.innerHTML = `
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Location:</strong> ${farmData.location}</div>
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Primary Crop/Livestock:</strong> ${farmData.primaryCrop}</div>
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Size:</strong> ${farmData.size}</div>
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Status:</strong> <span class="farm-status status-${farmData.status}">${farmData.status.toUpperCase()}</span></div>
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Last Report:</strong> ${farmData.lastReport}</div>
+                <div class="bg-agri-bg-dark p-3 rounded-md border border-agri-border-color"><strong>Farm ID:</strong> ${farmData.id}</div>
+            `;
+
+            subnodeMetricsContainer.innerHTML = '';
+            if (farmData.subnodeMetrics && farmData.subnodeMetrics.length > 0) {
+                farmData.subnodeMetrics.forEach(metric => {
+                    const metricCard = document.createElement('div');
+                    metricCard.className = 'bg-agri-bg-dark p-4 rounded-md border border-agri-border-color';
+                    let metricHtml = `<h5 class="text-lg font-semibold text-agri-primary-color mb-2">${metric.type} (${metric.id})</h5>`;
+                    for (const key in metric) {
+                        if (key !== 'type' && key !== 'id') {
+                            metricHtml += `<p class="text-sm text-agri-text-light"><strong>${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> ${metric[key]}</p>`;
+                        }
+                    }
+                    metricCard.innerHTML = metricHtml;
+                    subnodeMetricsContainer.appendChild(metricCard);
+                });
+            } else {
+                subnodeMetricsContainer.innerHTML = '<p class="text-agri-text-light">No detailed subnode metrics available for this farm.</p>';
+            }
+
+            modal.classList.add('active'); // Add active for animation
+        };
+
+        /**
+         * Hides the farm details modal.
+         */
+        window.hideFarmDetailsModal = function() {
+            const modal = document.getElementById('farmDetailsModal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        /**
+         * Shows the edit farm modal and populates it with farm data.
+         * @param {object} farmData - The data of the farm to edit.
+         */
+        window.showEditFarmModal = function(farmData) {
+            const modal = document.getElementById('editFarmModal');
+            if (modal) {
+                document.getElementById('editFarmId').value = farmData.id;
+                document.getElementById('editFarmName').value = farmData.name;
+                document.getElementById('editFarmLocation').value = farmData.location;
+                document.getElementById('editFarmCrop').value = farmData.primaryCrop;
+                document.getElementById('editFarmSize').value = parseInt(farmData.size); // Ensure it's a number
+                document.getElementById('editFarmStatus').value = farmData.status;
+
+                modal.classList.remove('hidden');
+                modal.classList.add('active'); // Add active for animation
+            }
+        };
+
+        /**
+         * Hides the edit farm modal.
+         */
+        window.hideEditFarmModal = function() {
+            const modal = document.getElementById('editFarmModal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        // --- View Management ---
+        let currentChartInstances = {}; // To store Chart.js instances for destruction
+        window.agriDashboardData = agriDashboardData; window.agriCharts = currentChartInstances;
+        window.agriRefresh = () => { updateOverviewMetrics(); const v = document.querySelector('.view:not(.view-hidden)'); if (v) renderViewContent(v.id.replace(/-view$/, '')); };
+        let googleMapScriptLoaded = false;
+        let leafletMapInstance = null; // Store Leaflet map instance
+
+        /**
+         * Shows the specified section and hides others.
+         * @param {string} viewId - The ID of the view to show (e.g., 'overview', 'farm-management').
+         */
+        function showAgricultureView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.main-content .view').forEach(view => {
+                view.classList.add('view-hidden');
+            });
+            // Show the requested view
+            document.getElementById(`${viewId}-view`)?.classList.remove('view-hidden');
+
+            // Update active state in sidebar nav
+            document.querySelectorAll('.sidebar .nav-list a').forEach(link => {
+                if (link.getAttribute('data-view') === viewId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Handle view-specific rendering
+            renderViewContent(viewId);
+        }
+
+        /**
+         * Renders content specific to the active view.
+         * Destroys existing chart instances to prevent rendering issues.
+         * @param {string} viewId - The ID of the currently active view.
+         */
+        function renderViewContent(viewId) {
+            // Destroy existing charts to prevent canvas errors on view change
+            for (const chartId in currentChartInstances) {
+                if (currentChartInstances[chartId]) {
+                    currentChartInstances[chartId].destroy();
+                    currentChartInstances[chartId] = null;
+                }
+            }
+
+            // Destroy Leaflet map if navigating away from maps
+            if (viewId !== 'maps' && leafletMapInstance) {
+                leafletMapInstance.remove();
+                leafletMapInstance = null;
+            }
+
+            if (viewId === 'overview') {
+                updateOverviewMetrics();
+                renderOverviewCharts();
+            } else if (viewId === 'farm-management') {
+                // Farms are now fetched via onSnapshot in initFirebase, so just render when view is active
+                renderFarmProjects();
+            } else if (viewId === 'crop-analytics') {
+                renderCropAnalyticsCharts();
+            } else if (viewId === 'resource-management') {
+                renderResourceManagementCharts();
+            } else if (viewId === 'agriculture-ecosystem') {
+                renderAgricultureEcosystemMap();
+            } else if (viewId === 'ai-agriculture') {
+                // Clear AI input/output when navigating to this section
+                document.getElementById('agriAIPrompt').value = '';
+                document.getElementById('agriAIResponse').textContent = 'Your AI-powered agriculture assistant response will appear here.';
+                document.getElementById('agriAIResponse').classList.remove('hidden');
+                document.getElementById('agriAIStatus').classList.add('hidden');
+            } else if (viewId === 'maps') {
+                initMapsSection();
+            } else if (viewId === 'settings') {
+                loadSettings();
+                showSettingsTab('profile'); // Default to profile tab
+            }
+            // No specific render function needed for 'agri-tools' as it's static HTML content
+        }
+
+        // --- Overview Section Logic ---
+        /**
+         * Updates the numerical metrics displayed on the overview dashboard.
+         */
+        function updateOverviewMetrics() {
+            document.getElementById('totalFarmsCount').textContent = agriDashboardData.metrics.totalFarms.toLocaleString();
+            document.getElementById('activeCropArea').textContent = agriDashboardData.metrics.activeCropArea.toLocaleString();
+            document.getElementById('forecastedYield').textContent = agriDashboardData.metrics.forecastedYield.toLocaleString();
+            document.getElementById('commodityPriceIndex').textContent = `$${agriDashboardData.metrics.commodityPrice.toFixed(2)}`;
+        }
+
+        /**
+         * Renders the Chart.js charts for the overview section.
+         */
+        function renderOverviewCharts() {
+            const cropHealthCtx = document.getElementById('cropHealthChart')?.getContext('2d');
+            if (cropHealthCtx) {
+                currentChartInstances.cropHealthChart = new Chart(cropHealthCtx, {
+                    type: 'line',
+                    data: agriDashboardData.charts.cropHealth,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            x: { ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            y: { beginAtZero: true, ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+            }
+
+            const resourceConsumptionCtx = document.getElementById('resourceConsumptionChart')?.getContext('2d');
+            if (resourceConsumptionCtx) {
+                currentChartInstances.resourceConsumptionChart = new Chart(resourceConsumptionCtx, {
+                    type: 'bar',
+                    data: agriDashboardData.charts.resourceConsumption,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            x: { ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            y: { beginAtZero: true, ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+            }
+
+            const globalYieldGrowthCtx = document.getElementById('globalYieldGrowthChart')?.getContext('2d');
+            if (globalYieldGrowthCtx) {
+                currentChartInstances.globalYieldGrowthChart = new Chart(globalYieldGrowthCtx, {
+                    type: 'line',
+                    data: agriDashboardData.charts.globalYieldGrowth,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            x: { ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            y: { beginAtZero: true, ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Farm Management Logic ---
+        /**
+         * Renders the farm project cards based on current filters and search term.
+         * Data comes from `agriDashboardData.farmProjects` which is updated by Firestore listener.
+         */
+        function renderFarmProjects() {
+            const farmListContainer = document.getElementById('farmList');
+            const loadingMessage = document.getElementById('loadingFarmsMessage');
+            const noFarmsMessage = document.getElementById('noFarmsMessage');
+
+            if (!farmListContainer) return; // Ensure the container exists
+
+            farmListContainer.innerHTML = ''; // Clear existing cards
+            if (loadingMessage) loadingMessage.classList.add('hidden'); // Hide loading message once render is called
+
+            const searchTerm = document.getElementById('farmSearch')?.value.toLowerCase() || '';
+            const filterStatus = document.getElementById('farmFilterStatus')?.value || 'all';
+
+            const filteredFarms = agriDashboardData.farmProjects.filter(farm => {
+                const matchesSearch = farm.name.toLowerCase().includes(searchTerm) || farm.primaryCrop.toLowerCase().includes(searchTerm) || farm.location.toLowerCase().includes(searchTerm);
+                const matchesStatus = filterStatus === 'all' || farm.status === filterStatus;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (filteredFarms.length === 0) {
+                if (noFarmsMessage) noFarmsMessage.classList.remove('hidden');
+            } else {
+                if (noFarmsMessage) noFarmsMessage.classList.add('hidden');
+                filteredFarms.forEach(farm => {
+                    const farmCard = document.createElement('div');
+                    farmCard.className = 'farm-card';
+                    // Stringify the farm object to pass it safely to onclick
+                    const farmDataString = JSON.stringify(farm).replace(/"/g, '&quot;');
+                    farmCard.innerHTML = `
+                        <h4 class="mb-2">${farm.name}</h4>
+                        <p><strong>Location:</strong> ${farm.location}</p>
+                        <p><strong>Primary Crop:</strong> ${farm.primaryCrop}</p>
+                        <p><strong>Size:</strong> ${farm.size} acres</p>
+                        <p><strong>Last Report:</strong> ${farm.lastReport}</p>
+                        <span class="farm-status status-${farm.status}">${farm.status.toUpperCase()}</span>
+                        <div class="farm-actions">
+                            <button onclick="window.showFarmDetailsModal(${farmDataString})" class="bg-agri-primary-color hover:bg-agri-success-green">
+                                <i class="fas fa-eye mr-1"></i> View Details
+                            </button>
+                             <button onclick="window.showEditFarmModal(${farmDataString})" class="bg-agri-secondary-color hover:bg-agri-primary-color">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <button onclick="window.deleteFarmFromFirestore('${farm.id}')" class="bg-agri-danger-red hover:bg-red-700">
+                                <i class="fas fa-trash-alt mr-1"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    farmListContainer.appendChild(farmCard);
+                });
+            }
+        }
+
+        // Event listeners for farm search/filter
+        document.getElementById('farmSearch')?.addEventListener('input', () => renderFarmProjects());
+        document.getElementById('farmFilterStatus')?.addEventListener('change', () => renderFarmProjects());
+
+        // --- Firestore Operations for Farms ---
+
+        /**
+         * Sets up a real-time listener for farm data from Firestore.
+         * Updates `agriDashboardData.farmProjects` and re-renders farm cards.
+         */
+        async function fetchFarmsFromFirestore() {
+            if (!db || !userId || userId === 'anonymous') {
+                console.warn("Firestore or User ID not initialized or user is anonymous. Cannot fetch farms.");
+                const loadingMessage = document.getElementById('loadingFarmsMessage');
+                if (loadingMessage) loadingMessage.textContent = 'Please wait for authentication to load farms...';
+                const noFarmsMessage = document.getElementById('noFarmsMessage');
+                if (noFarmsMessage) noFarmsMessage.classList.add('hidden');
+                agriDashboardData.farmProjects = []; // Clear farms if not authenticated
+                agriDashboardData.metrics.totalFarms = 0;
+                updateOverviewMetrics();
+                return;
+            }
+
+            // Unsubscribe from previous listener if exists
+            if (unsubscribeFarms) {
+                unsubscribeFarms();
+            }
+
+            farmsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/farms`);
+            const q = query(farmsCollectionRef);
+
+            const loadingMessage = document.getElementById('loadingFarmsMessage');
+            if (loadingMessage) loadingMessage.classList.remove('hidden'); // Show loading message initially
+
+            // Listen for real-time updates
+            unsubscribeFarms = onSnapshot(q, (snapshot) => {
+                const farms = [];
+                snapshot.forEach(doc => {
+                    farms.push({ id: doc.id, ...doc.data() });
+                });
+                agriDashboardData.farmProjects = farms;
+                agriDashboardData.metrics.totalFarms = farms.length; // Update total farms metric
+                document.dispatchEvent(new CustomEvent('agri:farms', { detail: farms }));
+                updateOverviewMetrics(); // Update overview metrics whenever farms change
+                renderFarmProjects(); // Re-render the farm list
+                if (loadingMessage) loadingMessage.classList.add('hidden'); // Hide loading message after data arrives
+            }, (error) => {
+                console.error("Error fetching farms from Firestore:", error);
+                window.showCustomModal('Error', `Failed to load farms: ${error.message}`, true);
+                if (loadingMessage) loadingMessage.textContent = 'Error loading farms.';
+            });
+        }
+
+        /**
+         * Adds a new farm to Firestore.
+         * @param {Event} event - The form submission event.
+         */
+        document.getElementById('addFarmForm')?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!farmsCollectionRef || userId === 'anonymous') {
+                window.showCustomModal('Error', 'Please authenticate to add farms.', true);
+                return;
+            }
+
+            // Field units and livestock groups are added with real readings, never invented.
+            const newSubnodeMetrics = [];
+
+            const newFarm = {
+                name: document.getElementById('newFarmName').value,
+                location: document.getElementById('newFarmLocation').value,
+                primaryCrop: document.getElementById('newFarmCrop').value,
+                size: parseInt(document.getElementById('newFarmSize').value),
+                status: document.getElementById('newFarmStatus').value,
+                lastReport: new Date().toLocaleDateString('en-US'),
+                createdAt: new Date().toISOString(),
+                subnodeMetrics: newSubnodeMetrics
+            };
+
+            try {
+                await addDoc(farmsCollectionRef, newFarm);
+                window.showCustomModal('Success', `Farm "${newFarm.name}" added!`, true);
+                document.getElementById('addFarmForm').reset(); // Clear form
+            } catch (error) {
+                console.error("Error adding farm: ", error);
+                window.showCustomModal('Error', `Failed to add farm: ${error.message}`, true);
+            }
+        });
+
+        /**
+         * Handles the submission of the edit farm form.
+         * @param {Event} event - The form submission event.
+         */
+        document.getElementById('editFarmForm')?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const farmId = document.getElementById('editFarmId').value;
+            if (!farmId || !db || userId === 'anonymous') {
+                window.showCustomModal('Error', 'Invalid farm ID or Please authenticate to update farms.', true);
+                return;
+            }
+
+            const updatedFarmData = {
+                name: document.getElementById('editFarmName').value,
+                location: document.getElementById('editFarmLocation').value,
+                primaryCrop: document.getElementById('editFarmCrop').value,
+                size: parseInt(document.getElementById('editFarmSize').value),
+                status: document.getElementById('editFarmStatus').value,
+                lastReport: new Date().toLocaleDateString('en-US'), // Update report date on edit
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                const farmDocRef = doc(db, `artifacts/${appId}/users/${userId}/farms`, farmId);
+                await updateDoc(farmDocRef, updatedFarmData);
+                window.showCustomModal('Success', `Farm "${updatedFarmData.name}" updated!`, true);
+                window.hideEditFarmModal();
+            } catch (error) {
+                console.error("Error updating farm: ", error);
+                window.showCustomModal('Error', `Failed to update farm: ${error.message}`, true);
+            }
+        });
+
+        /**
+         * Deletes a farm from Firestore.
+         * @param {string} farmId - The ID of the farm to delete.
+         */
+        window.deleteFarmFromFirestore = async function(farmId) {
+            // Using a custom modal for confirmation instead of window.confirm
+            const confirmDelete = await new Promise((resolve) => {
+                const confirmModal = document.getElementById('customModal');
+                const modalContent = confirmModal.querySelector('.custom-modal-content');
+                const confirmMessage = confirmModal.querySelector('p');
+                let confirmButtonContainer = modalContent.querySelector('.flex.justify-center.gap-4');
+
+                // Create buttons if they don't exist, or clear existing ones
+                if (!confirmButtonContainer) {
+                    confirmButtonContainer = document.createElement('div');
+                    confirmButtonContainer.className = "mt-4 flex justify-center gap-4";
+                    modalContent.appendChild(confirmButtonContainer);
+                } else {
+                    confirmButtonContainer.innerHTML = ''; // Clear existing buttons
+                }
+
+                const yesButton = document.createElement('button');
+                yesButton.className = "form-action-button bg-agri-danger-red hover:bg-red-700";
+                yesButton.textContent = "Yes, Delete";
+                yesButton.onclick = () => { window.hideCustomModal(); resolve(true); };
+
+                const noButton = document.createElement('button');
+                noButton.className = "form-action-button bg-gray-500 hover:bg-gray-600";
+                noButton.textContent = "Cancel";
+                noButton.onclick = () => { window.hideCustomModal(); resolve(false); };
+
+                confirmButtonContainer.appendChild(yesButton);
+                confirmButtonContainer.appendChild(noButton);
+
+                if (confirmModal && confirmMessage) {
+                    confirmMessage.innerHTML = `<strong>Confirm Deletion</strong><br>Are you sure you want to delete this farm? This action cannot be undone.`;
+                    confirmModal.classList.remove('hidden');
+                    confirmModal.classList.add('active');
+                } else {
+                    resolve(false); // Fallback if modal elements not found
+                }
+            });
+
+            if (!confirmDelete) {
+                return; // User cancelled
+            }
+
+            if (!db || userId === 'anonymous') {
+                window.showCustomModal('Error', 'Please authenticate to delete farms.', true);
+                return;
+            }
+
+            try {
+                const farmDocRef = doc(db, `artifacts/${appId}/users/${userId}/farms`, farmId);
+                await deleteDoc(farmDocRef);
+                window.showCustomModal('Success', 'Farm deleted successfully!', true);
+                window.hideEditFarmModal(); // Hide modal if open after deletion
+            } catch (error) {
+                console.error("Error deleting farm: ", error);
+                window.showCustomModal('Error', `Failed to delete farm: ${error.message}`, true);
+            }
+        };
+
+        // Event listener for delete button in the edit modal
+        document.getElementById('deleteFarmButton')?.addEventListener('click', () => {
+            const farmId = document.getElementById('editFarmId').value;
+            if (farmId) {
+                window.deleteFarmFromFirestore(farmId);
+            } else {
+                window.showCustomModal('Error', 'No farm selected for deletion.', true);
+            }
+        });
+
+        // --- Crop & Livestock Analytics Logic ---
+        /**
+         * Renders the Chart.js charts for the crop and livestock analytics section.
+         */
+        function renderCropAnalyticsCharts() {
+            const cropYieldTrendCtx = document.getElementById('cropYieldTrendChart')?.getContext('2d');
+            if (cropYieldTrendCtx) {
+                currentChartInstances.cropYieldTrendChart = new Chart(cropYieldTrendCtx, {
+                    type: 'doughnut',
+                    data: agriDashboardData.charts.cropYieldTrend,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                    }
+                });
+            }
+
+            const livestockHealthCtx = document.getElementById('livestockHealthChart')?.getContext('2d');
+            if (livestockHealthCtx) {
+                currentChartInstances.livestockHealthChart = new Chart(livestockHealthCtx, {
+                    type: 'bar',
+                    data: agriDashboardData.charts.livestockHealth,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            x: { ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            y: { beginAtZero: true, ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Resource Management Logic ---
+        /**
+         * Renders the Chart.js charts for the resource management section.
+         */
+        function renderResourceManagementCharts() {
+            const waterUsageCtx = document.getElementById('waterUsageChart')?.getContext('2d');
+            if (waterUsageCtx) {
+                currentChartInstances.waterUsageChart = new Chart(waterUsageCtx, {
+                    type: 'line',
+                    data: agriDashboardData.charts.waterUsage,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            x: { ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                            y: { beginAtZero: true, ticks: { color: var_to_css('agri-text-light') }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                        }
+                    }
+                });
+            }
+
+            const soilNutrientLevelsCtx = document.getElementById('soilNutrientLevelsChart')?.getContext('2d');
+            if (soilNutrientLevelsCtx) {
+                currentChartInstances.soilNutrientLevelsChart = new Chart(soilNutrientLevelsCtx, {
+                    type: 'polarArea',
+                    data: agriDashboardData.charts.soilNutrientLevels,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: var_to_css('agri-text-light'), font: { family: 'Inter' } } } },
+                        scales: {
+                            r: {
+                                ticks: { color: var_to_css('agri-text-light') },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Agriculture Ecosystem Map Logic ---
+        /**
+         * Renders the Agriculture Sector Ecosystem Map details.
+         */
+        function renderAgricultureEcosystemMap() {
+            const agriSectorDetailsContainer = document.getElementById('agriSectorDetails');
+            if (!agriSectorDetailsContainer) return;
+            agriSectorDetailsContainer.innerHTML = '';
+
+            const agricultureSector = allSectorsData.agriculture;
+            if (agricultureSector) {
+                const sectorDiv = document.createElement('div');
+                sectorDiv.className = 'space-y-3';
+                sectorDiv.innerHTML = `
+                    <h4 class="text-lg font-semibold text-agri-text-light mb-2">Repository & Base URL:</h4>
+                    <div class="copy-square">
+                        <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                        <pre class="conversation-code-block">${agricultureSector.repoName}/</pre>
+                    </div>
+                    <div class="copy-square mt-2">
+                        <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                        <pre class="conversation-code-block">${agricultureSector.baseUrl}/index</pre>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-agri-text-light mb-2 mt-4">Brands & Subnodes:</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${agricultureSector.brands.map(brand => `
+                            <div class="border border-agri-border-color rounded-md p-3 bg-agri-bg-dark">
+                                <button class="toggle-section-btn flex justify-between items-center w-full text-left p-2 -mx-2 -my-2 rounded-md hover:bg-gray-700 transition-colors duration-200" onclick="window.toggleSection('agri-brand-${brand.name.replace(/ /g, '-')}')">
+                                    <span class="text-agri-text-light font-medium">${brand.name}</span> <span><i class="fas fa-chevron-down"></i></span>
+                                </button>
+                                <div id="agri-brand-${brand.name.replace(/ /g, '-')}" class="repo-content-section hidden mt-2">
+                                    <h5 class="text-agri-primary-color text-base font-semibold mb-2">Subnodes:</h5>
+                                    <ul class="list-disc list-inside ml-4 text-sm text-agri-text-light">
+                                    ${brand.subnodes.map(subnode => `
+                                        <li>
+                                            <div class="copy-square mt-2">
+                                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                                <pre class="conversation-code-block">${agricultureSector.baseUrl}/sectors/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/${encodeURIComponent(subnode.toLowerCase().replace(/ /g, '-'))}/index</pre>
+                                            </div>
+                                        </li>
+                                    `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-agri-text-light mb-2 mt-4">Global Footer Pages (Example):</h4>
+                    <div class="space-y-2">
+                        <div class="copy-square">
+                            <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                            <pre class="conversation-code-block">
+${[
+    '/privacy', '/terms', '/contact', '/copyright', '/developers',
+    '/vaultmesh', '/fruitful', '/faa.zone', '/about', '/accessibility'
+].map(p => `${agricultureSector.baseUrl}${p}`).join('\n')}
+                            </pre>
+                        </div>
+                    </div>
+                `;
+                agriSectorDetailsContainer.appendChild(sectorDiv);
+            } else {
+                agriSectorDetailsContainer.innerHTML = '<p class="text-agri-text-light">Agriculture sector data not found.</p>';
+            }
+        }
+
+        // --- AI Agriculture Assistant Logic ---
+        const GEMINI_API_KEY = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+        const GOOGLE_MAPS_API_KEY = ""; // From previous CodeNest dashboard
+
+        /**
+         * Calls the Gemini API to get an AI-generated response.
+         * @param {string} prompt - The user's query.
+         * @param {string} targetElementId - The ID of the HTML element to display the response.
+         * @param {string} statusElementId - The ID of the HTML element to display the status (e.g., "Generating...").
+         * @param {HTMLElement} buttonElement - The button element that triggered the call.
+         * @param {string} buttonOriginalText - The original text content of the button for restoration.
+         * @returns {Promise<string>|null} - The generated text or null if an error occurred.
+         */
+        window.callGeminiAPI = async function(prompt, targetElementId, statusElementId, buttonElement, buttonOriginalText) {
+            const targetElement = document.getElementById(targetElementId);
+            const statusElement = document.getElementById(statusElementId);
+            
+            if (!targetElement || !statusElement || !buttonElement) {
+                console.error("Missing target, status element, or button element for Gemini API call.");
+                return null;
+            }
+
+            if (!GEMINI_API_KEY) {
+                statusElement.textContent = "AI advice is not connected yet (it needs a server-side key). The live weather, water and soil tools are in Agri Tools.";
+                statusElement.classList.remove('hidden');
+                return null;
+            }
+            statusElement.textContent = "Generating...";
+            statusElement.classList.remove('hidden');
+            targetElement.classList.add('hidden'); // Hide output until ready
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="loading-spinner"></span>`; // Show spinner
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    
+                    targetElement.innerHTML = text;
+                    targetElement.classList.remove('hidden');
+                    statusElement.textContent = "Generation complete!";
+                    return text;
+                } else {
+                    statusElement.textContent = "Error: No content generated by AI.";
+                    console.error("Gemini API returned an unexpected structure or no content:", result);
+                    return null;
+                }
+            } catch (error) {
+                statusElement.textContent = "Error: API call failed.";
+                console.error("Error calling Gemini API:", error);
+                window.showCustomModal('API Error', `Failed to get AI response: ${error.message}. Check console for details.`, true);
+                return null;
+            } finally {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = buttonOriginalText; // Restore original button text
+                setTimeout(() => statusElement.classList.add('hidden'), 3000);
+            }
+        };
+
+        // Event listener for AI Agri Assistant Button
+        document.getElementById('sendAgriAIPrompt')?.addEventListener('click', async (event) => {
+            const agriPromptText = document.getElementById('agriAIPrompt').value.trim();
+            const button = event.currentTarget;
+
+            if (!agriPromptText) {
+                window.showCustomModal('Input Required', 'Please enter your agriculture query.');
+                return;
+            }
+
+            const fullPrompt = `As an expert in sustainable agriculture and farming, provide concise and actionable advice for the following query: "${agriPromptText}"`;
+            await window.callGeminiAPI(fullPrompt, 'agriAIResponse', 'agriAIStatus', button, '✨ Get Agri-AI Advice');
+        });
+
+        // --- Maps Section Logic (NEW) ---
+        // Global callback for Google Maps API. Needs to be global.
+        // This function is invoked by the Google Maps script when it finishes loading.
+        window.initGoogleMaps = function() {
+            // The <gmp-map> custom element handles map rendering declaratively once the API script is loaded.
+            // We just ensure the script is loaded.
+            console.log('Google Maps API script loaded and ready.');
+        };
+
+        /**
+         * Initializes the maps section, loading Google Maps API and Leaflet.js map.
+         */
+        function initMapsSection() {
+            // Load Google Maps script only once if not already loaded
+            if (!googleMapScriptLoaded && GOOGLE_MAPS_API_KEY) {
+                const existingScript = document.getElementById('google-maps-api-script');
+                if (!existingScript) {
+                    const script = document.createElement('script');
+                    script.id = 'google-maps-api-script';
+                    script.async = true;
+                    script.defer = true;
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initGoogleMaps&libraries=maps,marker&v=beta`;
+                    document.head.appendChild(script);
+                    googleMapScriptLoaded = true;
+                } else {
+                    googleMapScriptLoaded = true; // Mark as true if already present
+                }
+            }
+
+            // Initialize Leaflet map
+            if (leafletMapInstance) {
+                leafletMapInstance.remove(); // Remove existing instance if any to prevent duplicates
+                leafletMapInstance = null;
+            }
+            const leafletMapContainer = document.getElementById("leaflet-map-container");
+            if (leafletMapContainer) {
+                // Ensure the container is visible and has dimension before initializing map
+                // If it was hidden by `view-hidden`, its dimensions might be 0.
+                // It gets removed from `view-hidden` before `renderViewContent` is called, so this should be fine.
+                leafletMapInstance = L.map(leafletMapContainer).setView([-25.7479, 28.2293], 10); // Centered around Pretoria, South Africa
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(leafletMapInstance);
+
+                // Your registered farms (located by name through Open-Meteo geocoding) are added by agri-live.js.
+                window.agriLeafletMap = leafletMapInstance;
+                document.dispatchEvent(new CustomEvent('agri:map', { detail: leafletMapInstance }));
+            } else {
+                console.error("Leaflet map container not found.");
+            }
+        }
+
+        // --- Settings View Logic (NEW) ---
+        /**
+         * Loads user profile and preferences into the settings forms.
+         */
+        function loadSettings() {
+            // Profile Tab
+            document.getElementById('agriDisplayName').value = agriDashboardData.settings.profile.displayName;
+            document.getElementById('agriEmail').value = agriDashboardData.settings.profile.email;
+
+            // Preferences Tab
+            document.getElementById('agriDefaultRegion').value = agriDashboardData.settings.preferences.defaultRegion;
+            document.getElementById('agriDataSyncFrequency').value = agriDashboardData.settings.preferences.dataSyncFrequency;
+
+            // Render DNS records, Domains, Email accounts, and Company selection
+            renderAgriDnsRecords();
+            renderAgriDomains();
+            renderAgriEmailAccounts();
+            renderAgriCompanySelection();
+        }
+
+        /**
+         * Controls which settings sub-tab is visible.
+         * @param {string} tabId - The ID of the settings sub-tab to display (e.g., 'profile', 'preferences').
+         */
+        function showSettingsTab(tabId) {
+            // Hide all sub-views
+            document.querySelectorAll('.settings-sub-view').forEach(view => {
+                view.classList.add('hidden');
+            });
+            // Show the selected sub-view
+            document.getElementById(`settings-${tabId}`).classList.remove('hidden');
+
+            // Update active button state
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+                // Remove existing active class styling
+                btn.classList.remove('active');
+                // Ensure all buttons have the base styling before applying active/hover
+                btn.classList.add('px-4', 'py-2', 'text-agri-text-light', 'hover:bg-agri-primary-color', 'hover:text-white', 'rounded-md', 'transition-all', 'duration-200');
+                
+                if (btn.getAttribute('data-settings-tab') === tabId) {
+                    btn.classList.add('active');
+                    // Remove hover styles for the active tab to prevent conflict
+                    btn.classList.remove('text-agri-text-light', 'hover:bg-agri-primary-color', 'hover:text-white'); 
+                }
+            });
+            // Re-render any dynamic content if needed for specific tabs
+            if (tabId === 'domains') {
+                renderAgriDnsRecords();
+                renderAgriDomains();
+                renderAgriEmailAccounts();
+                renderAgriCompanySelection();
+            }
+        }
+        // Making global for direct calls from HTML onclick attributes
+        window.showSettingsTab = showSettingsTab;
+
+        /**
+         * Renders the DNS records table in the settings.
+         */
+        function renderAgriDnsRecords() {
+            const dnsTableBody = document.getElementById('agriDnsRecordsTableBody');
+            if (!dnsTableBody) return;
+            dnsTableBody.innerHTML = '';
+            agriDashboardData.settings.dnsRecords.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-2 px-3 border-b border-agri-border-color font-semibold">${record.type}</td>
+                    <td class="py-2 px-3 border-b border-agri-border-color">${record.name}</td>
+                    <td class="py-2 px-3 border-b border-agri-border-color">${record.value}</td>
+                    <td class="py-2 px-3 border-b border-agri-border-color">${record.ttl}</td>
+                    <td class="py-2 px-3 border-b border-agri-border-color text-right">
+                        <button class="text-agri-info-blue hover:text-blue-400 text-sm mr-2" onclick="window.showCustomModal('Edit DNS', 'Edit functionality for ${record.name} coming soon!')">Edit</button>
+                        <button class="text-agri-danger-red hover:text-red-400 text-sm" onclick="window.showCustomModal('Delete DNS', 'Delete functionality for ${record.name} coming soon!')">Delete</button>
+                    </td>
+                `;
+                dnsTableBody.appendChild(row);
+            });
+        }
+
+        /**
+         * Renders the domain list and populates the add-on domain select in settings.
+         */
+        function renderAgriDomains() {
+            const domainList = document.getElementById('agriDomainList');
+            const addonDomainTargetSelect = document.getElementById('agriAddonDomainTarget');
+            if (!domainList || !addonDomainTargetSelect) return;
+            
+            domainList.innerHTML = ''; // Clear existing
+            addonDomainTargetSelect.innerHTML = '<option value="">Select Primary Domain</option>';
+
+            agriDashboardData.settings.domains.forEach(domain => {
+                const listItem = document.createElement('li');
+                const statusIcon = domain.type.includes('Pending') ? 'fas fa-hourglass-half text-agri-warning-yellow' : 'fas fa-check-circle text-agri-success-green';
+                listItem.innerHTML = `<i class="${statusIcon} mr-2"></i> ${domain.name} (${domain.type})`;
+                domainList.appendChild(listItem);
+
+                // Populate add-on domain select only with primary/active domains
+                if (domain.type.includes('Primary') || domain.type.includes('Active')) {
+                    const option = document.createElement('option');
+                    option.value = domain.name;
+                    option.textContent = domain.name;
+                    addonDomainTargetSelect.appendChild(option);
+                }
+            });
+        }
+
+        /**
+         * Renders the email accounts table in the settings.
+         */
+        function renderAgriEmailAccounts() {
+            const emailAccountsTableBody = document.getElementById('agriEmailAccountsTableBody');
+            if (!emailAccountsTableBody) return;
+            emailAccountsTableBody.innerHTML = '';
+            agriDashboardData.settings.emailAccounts.forEach(account => {
+                const row = document.createElement('tr');
+                const statusClass = account.status === 'Active' ? 'text-agri-success-green' : 'text-agri-warning-yellow';
+                row.innerHTML = `
+                    <td class="py-2 px-3 border-b border-agri-border-color font-semibold">${account.email}</td>
+                    <td class="py-2 px-3 border-b border-agri-border-color"><span class="${statusClass}">${account.status}</span></td>
+                    <td class="py-2 px-3 border-b border-agri-border-color text-right">
+                        <button class="text-agri-info-blue hover:text-blue-400 text-sm mr-2" onclick="window.showCustomModal('Edit Email', 'Edit email ${account.email} functionality coming soon!')">Edit</button>
+                        <button class="text-agri-danger-red hover:text-red-400 text-sm" onclick="window.showCustomModal('Delete Email', 'Delete email ${account.email} functionality coming soon!')">Delete</button>
+                        <button class="form-action-button text-xs px-3 py-2 mt-2 ml-2" onclick="window.openAgriEmailDraftModal('${account.email}')">
+                            ✨ Draft Email
+                        </button>
+                    </td>
+                `;
+                emailAccountsTableBody.appendChild(row);
+            });
+        }
+
+        /**
+         * Renders the company selection cards for the settings panel.
+         */
+        function renderAgriCompanySelection() {
+            const agriCompanySelectionGrid = document.getElementById('agriCompanySelectionGrid');
+            if (agriCompanySelectionGrid) {
+                agriCompanySelectionGrid.innerHTML = ''; // Clear previous selections
+                Object.keys(agriDashboardData.settings.companies).forEach(key => {
+                    const company = agriDashboardData.settings.companies[key];
+                    const card = document.createElement('div');
+                    card.className = 'metric-card p-4 rounded-lg text-center shadow-md cursor-pointer bg-agri-card-bg hover:bg-agri-border-color border border-agri-border-color'; // Adapted styling
+                    card.innerHTML = `
+                        <h4 class="text-lg font-bold text-agri-text-light">${company.name}</h4>
+                        <p class="text-agri-text-light text-xs">Sector: ${sectorList[company.sector_key].name}</p>
+                    `;
+                    card.onclick = () => window.renderAgriCompanyDetails(key);
+                    agriCompanySelectionGrid.appendChild(card);
+                });
+            }
+        }
+
+        /**
+         * Renders detailed information for a selected agriculture company in the settings panel,
+         * including mock product/service offerings with pricing.
+         * @param {string} companyKey - The key of the company to display details for.
+         */
+        window.renderAgriCompanyDetails = function(companyKey) {
+            const company = agriDashboardData.settings.companies[companyKey];
+            const detailsOutput = document.getElementById('agriCompanyDetailsOutput');
+            if (!company || !detailsOutput) return;
+
+            let productsHtml = '';
+            if (company.products && company.products.length > 0) {
+                productsHtml = `
+                    <h5 class="text-xl font-semibold text-agri-primary-color mt-6 mb-3">Product/Service Offerings:</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${company.products.map(product => `
+                            <div class="bg-agri-bg-dark p-4 rounded-md border border-agri-border-color">
+                                <h6 class="text-lg font-bold text-agri-text-light">${product.name} (${product.tier})</h6>
+                                <p class="text-agri-secondary-color font-semibold text-lg">${product.price}</p>
+                                <ul class="list-disc list-inside text-agri-text-light text-sm mt-2">
+                                    ${product.features.map(feature => `<li>${feature}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                productsHtml = `<p class="text-agri-text-light mt-4">No product/service offerings listed for this company.</p>`;
+            }
+
+            detailsOutput.innerHTML = `
+                <h4 class="text-xl font-bold mb-4 text-agri-secondary-color">${company.name} Infrastructure Details</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-agri-text-light">
+                    ${Object.entries(company.details).map(([key, value]) => `
+                        <div class="bg-agri-bg-dark p-4 rounded-md border border-agri-border-color">
+                            <strong class="text-agri-primary-color">${key}:</strong> ${value}
+                        </div>
+                    `).join('')}
+                </div>
+                ${productsHtml}
+                <button class="form-action-button mt-4 bg-agri-danger-red hover:bg-red-600" onclick="window.showCustomModal('Simulation', 'Advanced company management tools coming soon!', true)">
+                    <i class="fas fa-cogs mr-1"></i> Manage Company Infrastructure
+                </button>
+            `;
+            detailsOutput.classList.remove('hidden');
+        };
+
+        // Event listener for DNS Explain button in Settings
+        document.getElementById('explainAgriDnsBtn')?.addEventListener('click', async (event) => {
+            const dnsType = document.getElementById('agriDnsRecordTypeInput').value.trim();
+            const button = event.currentTarget;
+            if (!dnsType) {
+                window.showCustomModal('Input Required', 'Please enter a DNS record type (e.g., A, CNAME, MX) to explain.');
+                return;
+            }
+            const prompt = `Explain what a "${dnsType}" DNS record is, its primary purpose, and a typical use case in the context of managing an agricultural technology company's website or services. Keep the explanation concise and easy to understand for a non-expert.`;
+            await window.callGeminiAPI(prompt, 'agriDnsExplanationOutput', 'agriDnsExplainStatus', button, '✨ Explain DNS Type');
+        });
+
+        // Email Draft Modal for Agriculture (NEW)
+        let currentAgriEmailForDraft = '';
+
+        window.openAgriEmailDraftModal = function(emailAddress) {
+            currentAgriEmailForDraft = emailAddress;
+            const modal = document.getElementById('agriEmailDraftModal');
+            const modalTitle = document.getElementById('agriEmailDraftTitle');
+            const emailDraftTo = document.getElementById('agriEmailDraftTo');
+            const emailPurposeInput = document.getElementById('agriEmailPurposeInput');
+            const generatedEmailDraftOutput = document.getElementById('generatedAgriEmailDraftOutput');
+            const emailDraftStatus = document.getElementById('agriEmailDraftStatus');
+
+            if (modal && modalTitle && emailDraftTo && emailPurposeInput && generatedEmailDraftOutput && emailDraftStatus) {
+                modalTitle.textContent = `Draft Email for ${emailAddress}`;
+                emailDraftTo.textContent = emailAddress;
+                emailPurposeInput.value = ''; // Clear previous input
+                generatedEmailDraftOutput.value = ''; // Clear previous draft
+                emailDraftStatus.classList.add('hidden'); // Hide status
+                
+                modal.classList.add('active');
+            }
+        };
+
+        window.hideAgriEmailDraftModal = function() {
+            document.getElementById('agriEmailDraftModal')?.classList.remove('active');
+            document.getElementById('generatedAgriEmailDraftOutput').value = ''; // Clear output on close
+            currentAgriEmailForDraft = '';
+        };
+
+        // Event listener for Generate Email Draft Button (for Agri Emails)
+        document.getElementById('generateAgriEmailDraftBtn')?.addEventListener('click', async (event) => {
+            const emailPurpose = document.getElementById('agriEmailPurposeInput').value.trim();
+            const button = event.currentTarget;
+            if (!emailPurpose) {
+                window.showCustomModal('Input Required', 'Please enter a purpose for the agriculture-related email.');
+                return;
+            }
+            const prompt = `Draft a professional email (max 200 words) for the purpose of "${emailPurpose}" from the agriculture company email address "${currentAgriEmailForDraft}". Focus on a clear and concise tone relevant to agricultural operations. Provide only the email body.`;
+            await window.callGeminiAPI(prompt, 'generatedAgriEmailDraftOutput', 'agriEmailDraftStatus', button, '✨ Generate Draft');
+        });
+
+        /**
+         * Copies the generated email draft to the clipboard.
+         */
+        window.copyGeneratedEmailToClipboard = function() {
+            const textarea = document.getElementById('generatedAgriEmailDraftOutput');
+            if (textarea) {
+                textarea.select();
+                document.execCommand('copy');
+                window.showCustomModal('Email Copied', 'Email draft copied to clipboard!', true);
+            } else {
+                window.showCustomModal('Copy Failed', 'No email draft to copy.', true);
+            }
+        };
+
+
+        // --- General Utility for Copy to Clipboard (re-used from CodeNest) ---
+        /**
+         * Copies the text content of the next sibling <pre> element to the clipboard.
+         * Shows a custom modal with success or failure message.
+         * @param {HTMLElement} buttonElement - The button element that triggered the copy action.
+         */
+        window.copyToClipboard = function(buttonElement) {
+            const preElement = buttonElement.nextElementSibling;
+            if (preElement && preElement.tagName === 'PRE') {
+                const textToCopy = preElement.textContent.trim();
+                try {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    
+                    window.showCustomModal('Copied!', 'Text copied to clipboard.', true);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    window.showCustomModal('Copy Failed', 'Failed to copy text. Please try manually.', true);
+                }
+            }
+        };
+
+        // Utility for toggling sections (re-used from CodeNest)
+        /**
+         * Toggles the visibility of a section identified by its ID.
+         * Also rotates the chevron icon.
+         * @param {string} id - The ID of the section to toggle.
+         */
+        window.toggleSection = function(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('hidden');
+                const icon = element.previousElementSibling.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                }
+            }
+        };
+
+        // Helper to get CSS variable value
+        /**
+         * Retrieves the computed CSS variable value.
+         * @param {string} variableName - The name of the CSS variable (e.g., 'agri-text-light').
+         * @returns {string} The computed CSS value.
+         */
+        function var_to_css(variableName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(`--${variableName}`).trim();
+        }
+
+        // --- Initial App Setup ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Firebase App
+            if (Object.keys(firebaseConfig).length > 0) {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                useFirestore({ collection: fsCollection, query: fsQuery, onSnapshot: fsOnSnapshot, addDoc: fsAddDoc, updateDoc: fsUpdateDoc, deleteDoc: fsDeleteDoc, doc: fsDoc });
+                auth = getAuth(app);
+
+                // Authenticate user
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                        console.log("Signed in with custom token.");
+                    } else {
+                        await signInAnonymously(auth);
+                        console.log("Signed in anonymously.");
+                    }
+                } catch (error) {
+                    console.error("Firebase Authentication Error:", error);
+                    window.showCustomModal('Authentication Error', `Failed to authenticate: ${error.message}. Please refresh.`, false);
+                }
+
+                // Listen for auth state changes and set userId
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        const currentUserIdElement = document.getElementById('currentUserId');
+                        if (currentUserIdElement) currentUserIdElement.textContent = userId;
+                        console.log("User ID:", userId);
+                        fetchFarmsFromFirestore(); // Fetch farms once authenticated
+                    } else {
+                        userId = 'anonymous';
+                        const currentUserIdElement = document.getElementById('currentUserId');
+                        if (currentUserIdElement) currentUserIdElement.textContent = 'Not Authenticated';
+                        console.log("No user signed in.");
+                        // Clear farms if user logs out or fails to authenticate
+                        if (unsubscribeFarms) {
+                            unsubscribeFarms(); // Unsubscribe from old listener
+                            unsubscribeFarms = null;
+                        }
+                        agriDashboardData.farmProjects = [];
+                        agriDashboardData.metrics.totalFarms = 0;
+                        updateOverviewMetrics();
+                        renderFarmProjects();
+                    }
+                });
+            } else {
+                // No Firebase project here: the farm register keeps farms on this device.
+                db = 'device';
+                userId = 'this-device';
+                const currentUserIdElement = document.getElementById('currentUserId');
+                if (currentUserIdElement) currentUserIdElement.textContent = 'This device (farms are saved in this browser)';
+                fetchFarmsFromFirestore();
+            }
+
+            // Set the initial view to overview
+            showAgricultureView('overview');
+
+            // Apply event listeners for navigation
+            document.querySelectorAll('.sidebar .nav-list a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = e.currentTarget.getAttribute('data-view');
+                    if (viewId) {
+                        showAgricultureView(viewId);
+                    }
+                });
+            });
+
+            // Attach event listeners for settings tab buttons after DOMContentLoaded
+            document.querySelectorAll('.settings-tab-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const tabId = event.target.dataset.settingsTab;
+                    showSettingsTab(tabId);
+                });
+            });
+        });
+    </script>
+    <script src="agri-live.js"></script>
+    <script src="/omnigrid-app.js"></script>
+</body>
+</html>
+
