@@ -701,11 +701,18 @@
         NEEDS_LIC ? get('faa-licenses.json') : Promise.resolve(null), NEEDS_CONCEPT ? get('concept-pages.json') : Promise.resolve(null),
         NEEDS_BACKLOG ? get('backlog-pages.json') : Promise.resolve(null),
         cfg.kind === 'hat' ? Promise.all([get('hat/summary.json'), get('hat/letters/' + (HAT_L === '#' ? '0-9' : HAT_L) + '.json')]) : Promise.resolve(null),
-        NEEDS_BRAND ? Promise.all([get('brand/brand-guide.json'), get('brand/brand-ledger.json')]).then(function (x) { return x[0] ? Object.assign({}, x[0], { ledger: x[1] }) : null; }) : Promise.resolve(null)]).then(function (res) {
+        NEEDS_BRAND ? Promise.all([get('brand/brand-guide.json'), get('brand/brand-ledger.json')]).then(function (x) { return x[0] ? Object.assign({}, x[0], { ledger: x[1] }) : null; }) : Promise.resolve(null),
+        cfg.kind === 'sector' ? get('sector-pulses.json') : Promise.resolve(null)]).then(function (res) {
         var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7], hatd = res[8], brand = res[9];
         if (hatd) cfg.__hat = { summary: hatd[0], letter: hatd[1], L: HAT_L };
         cfg.__brand = brand;
         var cards = (RENDER[cfg.kind] || function () { return []; })(m, p, g, intel, atlas, lic, concept, bk, brand).filter(Boolean);
+        var pulse = res[10] && res[10].sectors && res[10].sectors[cfg.sector];
+        if (pulse) { // the sector family's live pulse, measured by fruitful-superagent/tools/sector_pulse.py
+            cards.unshift(card('Family pulse', '<p class="big">' + led(pulse.status) + esc(pulse.headline) + '</p>' +
+                list([esc(pulse.versions) + ' versions from across the repos consolidated here', esc(pulse.pages) + ' pages in this sector', esc(pulse.tools_live) + ' live tools']) +
+                list((pulse.links || []).map(function (l) { return pageLink(l[0], l[1]); })), 'wide'));
+        }
         var head = '<section class="page-hero"><div class="container">' +
             '<p class="kicker"><a href="' + esc(base + 'dashboard.html') + '">⚙️ Dashboard</a> · <a href="' + esc(base + 'ecosystem.html') + '">🌍 Ecosystem</a></p>' +
             '<h1>' + esc(cfg.title) + '</h1>' + (cfg.intro ? '<p class="tagline">' + esc(cfg.intro) + '</p>' : '') +
