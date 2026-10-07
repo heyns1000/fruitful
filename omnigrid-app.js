@@ -550,7 +550,7 @@
         var bar = document.createElement('div');
         bar.setAttribute('role', 'note');
         bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#111;color:#f5f5f7;font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between';
-        bar.innerHTML = '<span>🧪 <b>Concept preview</b> · forms on this page are not connected yet; nothing you type is sent.</span><a href="/ecosystem.html" style="color:#64a8ff;text-decoration:none;font-weight:600">🌍 Ecosystem</a>';
+        bar.innerHTML = '<span>🧪 <b>Concept preview</b> · forms on this page are not connected yet; nothing you type is sent.</span><a href="' + esc(new URL('ecosystem.html', SCRIPT_SRC).href) + '" style="color:#64a8ff;text-decoration:none;font-weight:600">🌍 Ecosystem</a>';
         document.body.insertBefore(bar, document.body.firstChild);
         document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
         document.querySelectorAll('input[type="password"]').forEach(function (i) { i.disabled = true; i.placeholder = 'Not connected in the concept preview'; });
