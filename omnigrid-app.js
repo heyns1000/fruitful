@@ -327,7 +327,19 @@
     // (a node counts as noisy once it has changed in 3 different seconds without a click nearby)
     var SEEN = typeof WeakMap === 'function' ? new WeakMap() : null, NOISY = SEEN && new WeakMap(), lastClick = 0; // node -> {attribute or change type: noisy}
     try {
-        document.addEventListener('click', function () { lastClick = Date.now(); }, true);
+        // Start watching at the very start of the click (capture phase), before the page's own handlers run,
+        // so a handler that changes the page synchronously is seen as working.
+        document.addEventListener('click', function (e) {
+            lastClick = Date.now();
+            if (e.button !== 0) return;
+            var w = { changed: 0, href: location.href, wasOpen: view.classList.contains('on'), paint0: canvasPrints() };
+            w.mo = new MutationObserver(function (m) { m.forEach(function (x) { var nz = NOISY && NOISY.get(x.target); if (!(nz && nz[x.attributeName || x.type])) w.changed++; }); });
+            w.mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+            w.onScroll = function () { w.changed++; }; // scrolling to a section is a real action
+            document.addEventListener('scroll', w.onScroll, true);
+            setTimeout(function () { w.mo.disconnect(); document.removeEventListener('scroll', w.onScroll, true); }, 400);
+            e.__ogWatch = w;
+        }, true);
         new MutationObserver(function (m) {
             var now = Date.now(), sec = Math.floor(now / 1000);
             if (!SEEN || now - lastClick < 1500) return;
@@ -403,16 +415,12 @@
         if (el.disabled) return;
         var label = (el.getAttribute('aria-label') || el.textContent || el.value || el.title || '').replace(/\s+/g, ' ').trim().slice(0, 80);
         if (UI_ONLY.test(label)) return;
+        var w = e.__ogWatch;
+        if (!w) return;
         if (el.tagName === 'A') e.preventDefault(); // bare '#' link: no jump to top, no fake URL change
-        var changed = 0, href = location.href, wasOpen = view.classList.contains('on');
-        var mo = new MutationObserver(function (m) { m.forEach(function (x) { var nz = NOISY && NOISY.get(x.target); if (!(nz && nz[x.attributeName || x.type])) changed++; }); });
-        var paint0 = canvasPrints();
-        var onScroll = function () { changed++; }; document.addEventListener('scroll', onScroll, true); // scrolling to a section is a real action
-        mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
         setTimeout(function () {
-            mo.disconnect(); document.removeEventListener('scroll', onScroll, true);
-            if (paint0.length && canvasMoved(paint0)) changed++;
-            if (changed || location.href !== href || (!wasOpen && view.classList.contains('on'))) return;
+            if (w.paint0.length && canvasMoved(w.paint0)) w.changed++;
+            if (w.changed || location.href !== w.href || (!w.wasOpen && view.classList.contains('on'))) return;
             rescue(el, label);
         }, 350);
     }, false);
@@ -455,7 +463,11 @@
         });
     }
 
+    // A page's own loadTerminal (e.g. the mining overview's hubs) keeps handling the terminals it defines;
+    // the shared renderer only takes the shared terminal names in TERMINALS.
+    var pageLoadTerminal = (typeof window.loadTerminal === 'function') ? window.loadTerminal : null;
     function renderTerminal(name) {
+        if (!TERMINALS[name] && pageLoadTerminal && pageLoadTerminal !== renderTerminal) return pageLoadTerminal.apply(this, arguments);
         var frame = document.getElementById('vault-frame');
         if (!frame) return;
         var t = TERMINALS[name];
