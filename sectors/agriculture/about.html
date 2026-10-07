@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful™ | About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0D1B2A;
+            color: #E0E1DD;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-card h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .flow-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -1rem;
+            width: 1.5rem;
+            height: 2px;
+            background-color: #415A77;
+        }
+         .flow-line-vertical::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5rem;
+            background-color: #415A77;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-[#E0E1DD]">About <span class="text-[#38A169]">Fruitful™</span></h1>
+            <p class="mt-4 text-lg md:text-xl text-[#778DA9]">Pioneering the future of agriculture through innovation and insight.</p>
+        </header>
+
+        <section id="about-intro" class="my-16 bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#E0E1DD] mb-6 text-center">Our Mission</h2>
+            <p id="mission-statement" class="text-lg text-[#778DA9] leading-relaxed mb-6">
+                At Fruitful™, we believe in cultivating a world where agriculture thrives through intelligence and sustainability. Our mission is to empower farmers, agribusinesses, and agricultural stakeholders with cutting-edge technology, data-driven insights, and a connected ecosystem to optimize operations, enhance yields, and foster environmental stewardship.
+            </p>
+            <p class="text-lg text-[#778DA9] leading-relaxed">
+                We are committed to transforming traditional farming practices into smart, efficient, and resilient systems that can meet the growing global demand for food while preserving our planet's vital resources.
+            </p>
+        </section>
+
+        <section id="our-values" class="my-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9] mb-12 text-center">Our Core Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl text-center">
+                    <p class="text-5xl mb-4">💡</p>
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-2">Innovation</h3>
+                    <p class="text-md text-[#778DA9]">Continuously developing advanced solutions to solve agricultural challenges.</p>
+                </div>
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl text-center">
+                    <p class="text-5xl mb-4">🌍</p>
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-2">Sustainability</h3>
+                    <p class="text-md text-[#778DA9]">Promoting practices that protect the environment and ensure long-term viability.</p>
+                </div>
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl text-center">
+                    <p class="text-5xl mb-4">🤝</p>
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-2">Collaboration</h3>
+                    <p class="text-md text-[#778DA9]">Building strong partnerships across the agricultural ecosystem.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ask-fruitful-ai" class="my-20 bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#E0E1DD] mb-6 text-center">Ask Fruitful™ AI ✨</h2>
+            <p class="text-lg text-[#778DA9] mb-8 text-center">有任何關於 Fruitful™ 的使命、價值觀或願景的問題嗎？請向我們的 AI 助手提問！</p>
+            <div class="w-full max-w-2xl mx-auto bg-[#0D1B2A] p-6 rounded-lg">
+                <p class="text-left text-sm text-[#778DA9] mb-2">您的問題：</p>
+                <textarea id="aboutAIPrompt" rows="4" placeholder="例如：Fruitful™ 在永續發展方面有何承諾？" class="w-full p-2 rounded-md bg-[#415A77] border border-[#778DA9] text-[#E0E1DD] text-sm"></textarea>
+                <button type="button" id="sendAboutAIPrompt" class="mt-4 w-full bg-[#38A169] hover:bg-[#287A4F] text-white font-bold py-3 px-6 rounded-md transition-colors duration-200 text-lg">
+                    ✨ 詢問 Fruitful™ AI
+                </button>
+                <p id="aboutAIStatus" class="text-xs text-[#778DA9] mt-2 hidden text-center"></p>
+                <div id="aboutAIResponse" class="w-full p-4 border border-[#778DA9] rounded-md bg-[#415A77] text-[#E0E1DD] mt-4 hidden text-left" style="white-space: pre-wrap;"></div>
+            </div>
+        </section>
+
+        <section id="explore-dashboard" class="my-20 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9] mb-8">Ready to See Fruitful™ in Action?</h2>
+            <p class="text-lg text-[#415A77] mb-8">Dive into our comprehensive dashboard to explore real-time data, manage your farms, and leverage AI-powered insights.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://agriculture.seedwave.faa.zone/index.html" target="_blank" class="inline-block bg-[#38A169] hover:bg-[#287A4F] text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-colors duration-200 text-xl">
+                    Explore Dashboard ↗
+                </a>
+                <a href="https://agriculture.seedwave.faa.zone/infographic.html" target="_blank" class="inline-block bg-[#F6AD55] hover:bg-[#D99041] text-white font-bold py-4 px-8 rounded-lg shadow-xl transition-colors duration-200 text-xl">
+                    View Infographic 📊
+                </a>
+            </div>
+        </section>
+
+        <footer class="py-8 px-6 md:px-12 text-center bg-[#1B263B] text-[#778DA9] border-t border-[#415A77]">
+            <div class="flex flex-wrap justify-center mb-4 text-sm">
+                <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerCopyright">Copyright</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerVaultMesh">VaultMesh™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerFruitful">Fruitful™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerFAAZone">FAA.Zone™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerAbout">About</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+            </div>
+            <span data-i18n="footerCopyrightText">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+        </footer>
+
+    </div>
+
+    <script>
+        const colorPalette = {
+            background: '#0D1B2A',
+            cardBackground: '#1B263B',
+            border: '#415A77',
+            textPrimary: '#E0E1DD',
+            textSecondary: '#778DA9',
+            accentGreen: '#38A169',
+            accentOrange: '#F6AD55',
+            accentBlue: '#63B3ED',
+        };
+
+        // Chart.js related code (not directly used on this about page, but kept for consistency if needed elsewhere)
+        let currentChartInstances = {};
+
+        function wrapLabel(str) {
+            const words = str.split(' ');
+            if (str.length <= 16) {
+                return str;
+            }
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > 16) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines.filter(line => line.length > 0);
+        }
+
+        const sharedChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: colorPalette.textPrimary,
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: colorPalette.background,
+                    titleColor: colorPalette.textPrimary,
+                    bodyColor: colorPalette.textSecondary,
+                    borderColor: colorPalette.border,
+                    borderWidth: 1,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+        };
+
+        // Dummy data for charts (not used on this page, but kept for reference)
+        const cropHealthData = { labels: [], datasets: [] };
+        const cropYieldData = { labels: [], datasets: [] };
+        const globalYieldData = { labels: [], datasets: [] };
+        const soilNutrientsData = { labels: [], datasets: [] };
+
+        function initializeCharts() {
+            // No charts to initialize on the About Us page.
+        }
+
+        const GEMINI_API_KEY = "";
+
+        window.callGeminiAPI = async function(prompt, targetElementId, statusElementId, buttonElement, originalButtonText) {
+            if (!GEMINI_API_KEY) { const s = document.getElementById(statusElementId); if (s) { s.innerHTML = 'AI advice is not connected yet (it needs a server-side key). Live weather, water and soil data for your farm are in <a href="tools.html" style="text-decoration:underline">Agri Tools</a>.'; s.classList.remove('hidden'); } return null; }
+            const targetElement = document.getElementById(targetElementId);
+            const statusElement = document.getElementById(statusElementId);
+            
+            if (!targetElement || !statusElement || !buttonElement) {
+                console.error("Missing target, status element, or button element for Gemini API call.");
+                return null;
+            }
+
+            statusElement.textContent = "Generating...";
+            statusElement.classList.remove('hidden');
+            targetElement.classList.add('hidden');
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="inline-block border-4 border-t-[#38A169] border-[#778DA9] rounded-full w-5 h-5 animate-spin"></span>`; // 顯示旋轉器
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    
+                    targetElement.innerHTML = text;
+                    targetElement.classList.remove('hidden');
+                    statusElement.textContent = "生成完成！"; // 生成完成
+                    return text;
+                } else {
+                    statusElement.textContent = "錯誤：AI 未生成內容。"; // AI 未生成內容
+                    console.error("Gemini API returned an unexpected structure or no content:", result);
+                    return null;
+                }
+            } catch (error) {
+                statusElement.textContent = "錯誤：API 調用失敗。"; // API 調用失敗
+                console.error("Error calling Gemini API:", error);
+                return null;
+            } finally {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalButtonText;
+                setTimeout(() => statusElement.classList.add('hidden'), 3000);
+            }
+        };
+
+        // New LLM feature for the About Us page
+        document.getElementById('sendAboutAIPrompt')?.addEventListener('click', async (event) => {
+            const userQuestion = document.getElementById('aboutAIPrompt').value.trim();
+            const button = event.currentTarget;
+
+            if (!userQuestion) {
+                alert('請輸入您的問題。'); // 請輸入您的問題。
+                return;
+            }
+
+            const missionStatement = document.getElementById('mission-statement').innerText;
+            const coreValues = Array.from(document.querySelectorAll('#our-values .text-md')).map(el => el.innerText).join(' ');
+
+            const context = `以下是 Fruitful™ 公司的使命和核心價值：\n\n使命：${missionStatement}\n\n核心價值：${coreValues}\n\n請根據以上資訊回答以下問題："${userQuestion}"。如果問題無法從提供的資訊中回答，請禮貌地說明。`;
+
+            await window.callGeminiAPI(context, 'aboutAIResponse', 'aboutAIStatus', button, '✨ 詢問 Fruitful™ AI');
+        });
+
+        // Language data for i18n
+        window.languageData = window.languageData || {
+            en: {
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyright: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyright: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyright: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            ar: {
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyright: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMesh: 'شبكة الكهف™',
+                footerFruitful: 'مثمر™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyrightText: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.'
+            },
+            zh: {
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyright: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMesh: '金库网格™',
+                footerFruitful: '丰硕™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyrightText: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        function updateFooterLanguage(lang) {
+            const footerElements = document.querySelectorAll('footer [data-i18n]');
+            footerElements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (window.languageData[lang] && window.languageData[lang][key]) {
+                    el.innerHTML = window.languageData[lang][key];
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('language') || 'en';
+            updateFooterLanguage(savedLang);
+        });
+    </script>
+
+    <script src="/omnigrid-app.js" data-concept="1"></script>
+</body>
+</html>

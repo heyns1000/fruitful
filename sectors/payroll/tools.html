@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 FAA Payroll OS — Payroll Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .num { font-variant-numeric: tabular-nums; }
+        .tool { scroll-margin-top: 16px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <header class="bg-white shadow">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex flex-wrap justify-between items-center gap-3">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">🧮 FAA Payroll OS — Payroll Tools</h1>
+                <p class="text-sm text-gray-500">South African payroll calculator · Live exchange rates · Time-zone report</p>
+            </div>
+            <nav class="flex flex-wrap gap-2 text-sm font-semibold">
+                <a href="#calculator" class="px-3 py-2 rounded bg-indigo-600 text-white">Payroll calculator</a>
+                <a href="#fx" class="px-3 py-2 rounded bg-blue-600 text-white">FX grid</a>
+                <a href="#zones" class="px-3 py-2 rounded bg-green-600 text-white">Time zones</a>
+                <a href="overview.html" class="px-3 py-2 rounded bg-gray-700 text-white">Payroll OS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-10">
+
+        <!-- 1. Payroll calculator -->
+        <section id="calculator" class="tool bg-white rounded-xl shadow p-6">
+            <h2 class="text-2xl font-bold text-indigo-700">South African payroll calculator</h2>
+            <p class="text-sm text-gray-500 mt-1">2027 tax year (1 March 2026 – 28 February 2027), SARS tables. Regular monthly salary, annual-equivalent method.</p>
+            <form id="calc" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-5" autocomplete="off">
+                <label class="text-sm font-semibold">Monthly gross salary (R)
+                    <input id="gross" type="number" min="0" step="0.01" value="25000" class="mt-1 w-full border rounded px-3 py-2 num" required>
+                </label>
+                <label class="text-sm font-semibold">Retirement fund contribution per month (R)
+                    <input id="retire" type="number" min="0" step="0.01" value="0" class="mt-1 w-full border rounded px-3 py-2 num">
+                </label>
+                <label class="text-sm font-semibold">Employee age
+                    <select id="age" class="mt-1 w-full border rounded px-3 py-2">
+                        <option value="0">Under 65</option>
+                        <option value="65">65 to 74</option>
+                        <option value="75">75 and older</option>
+                    </select>
+                </label>
+                <label class="text-sm font-semibold flex items-end gap-2 pb-2">
+                    <input id="sdl" type="checkbox" checked class="h-4 w-4">
+                    Employer's annual payroll is over R500,000 (pays SDL)
+                </label>
+            </form>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6" id="calcOut"></div>
+            <details class="mt-5 text-sm text-gray-600">
+                <summary class="cursor-pointer font-semibold">How this is calculated</summary>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>PAYE: (gross − retirement contribution, capped at 27.5% and R350,000 a year) × 12, taxed on the SARS 2027 brackets, minus the primary, secondary and tertiary rebates, ÷ 12.</li>
+                    <li>UIF: 1% from the employee and 1% from the employer, on pay up to R17,712 a month (maximum R177.12 each).</li>
+                    <li>SDL: 1% of pay, paid by the employer when its annual payroll is over R500,000.</li>
+                    <li>Not included: medical scheme tax credits, travel allowances, fringe benefits, bonuses and directors' remuneration. Check final payroll against SARS's own tables.</li>
+                </ul>
+            </details>
+        </section>
+
+        <!-- 2. FX grid -->
+        <section id="fx" class="tool bg-white rounded-xl shadow p-6">
+            <div class="flex flex-wrap justify-between items-end gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-blue-700">FX grid: the rand against payroll currencies</h2>
+                    <p class="text-sm text-gray-500 mt-1" id="fxSource">European Central Bank reference rates, loading…</p>
+                </div>
+                <label class="text-sm font-semibold">Amount in rand (R)
+                    <input id="fxAmount" type="number" min="0" step="0.01" value="25000" class="mt-1 border rounded px-3 py-2 num w-44">
+                </label>
+            </div>
+            <div class="overflow-x-auto mt-5">
+                <table class="w-full text-left text-sm">
+                    <thead><tr class="border-b text-gray-500"><th class="py-2 pr-4">Currency</th><th class="py-2 pr-4">1 ZAR =</th><th class="py-2 pr-4">1 unit = ZAR</th><th class="py-2">Your amount</th></tr></thead>
+                    <tbody id="fxRows"><tr><td colspan="4" class="py-3 text-gray-500">Loading rates…</td></tr></tbody>
+                </table>
+            </div>
+            <p class="text-xs text-gray-500 mt-3">The ECB does not publish rates for the Kenyan shilling, Nigerian naira or Botswana pula, so they are not shown.</p>
+        </section>
+
+        <!-- 3. Time zones -->
+        <section id="zones" class="tool bg-white rounded-xl shadow p-6">
+            <div class="flex flex-wrap justify-between items-end gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-green-700">Time-zone report for payroll regions</h2>
+                    <p class="text-sm text-gray-500 mt-1">Local time, offset from Johannesburg and business hours (08:00–17:00), live.</p>
+                </div>
+                <label class="text-sm font-semibold">Payroll cut-off, Johannesburg time
+                    <input id="cutoff" type="time" value="16:00" class="mt-1 border rounded px-3 py-2 num">
+                </label>
+            </div>
+            <div class="overflow-x-auto mt-5">
+                <table class="w-full text-left text-sm">
+                    <thead><tr class="border-b text-gray-500"><th class="py-2 pr-4">Region</th><th class="py-2 pr-4">Local time now</th><th class="py-2 pr-4">vs Johannesburg</th><th class="py-2 pr-4">Business hours</th><th class="py-2">Cut-off there</th></tr></thead>
+                    <tbody id="zoneRows"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        var R = function (n) { return 'R ' + n.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+
+        // ---- 1. SARS 2027 tax year (1 Mar 2026 – 28 Feb 2027) ----
+        var BRACKETS = [ // [upper limit, base tax, rate, lower limit]
+            [245100, 0, 0.18, 0], [383100, 44118, 0.26, 245100], [530200, 79998, 0.31, 383100], [695800, 125599, 0.36, 530200],
+            [887000, 185215, 0.39, 695800], [1878600, 259783, 0.41, 887000], [Infinity, 666339, 0.45, 1878600]];
+        var REBATE = { primary: 17820, secondary: 9765, tertiary: 3249 };
+        var UIF_CEILING = 17712, UIF_RATE = 0.01, SDL_RATE = 0.01;
+
+        function annualTax(taxable, age) {
+            if (taxable <= 0) return 0;
+            var b = BRACKETS.filter(function (x) { return taxable <= x[0]; })[0];
+            var tax = b[1] + (taxable - b[3]) * b[2];
+            var rebate = REBATE.primary + (age >= 65 ? REBATE.secondary : 0) + (age >= 75 ? REBATE.tertiary : 0);
+            return Math.max(0, tax - rebate);
+        }
+        function card(label, value, note, tone) {
+            return '<div class="rounded-lg p-4 ' + (tone || 'bg-gray-50') + '"><div class="text-xs font-semibold text-gray-500 uppercase">' + label +
+                '</div><div class="text-2xl font-extrabold num mt-1">' + value + '</div>' + (note ? '<div class="text-xs text-gray-500 mt-1">' + note + '</div>' : '') + '</div>';
+        }
+        function calc() {
+            var gross = Math.max(0, +document.getElementById('gross').value || 0);
+            var retireIn = Math.max(0, +document.getElementById('retire').value || 0);
+            var age = +document.getElementById('age').value;
+            var retire = Math.min(retireIn, gross * 0.275, 350000 / 12); // deduction limit: 27.5%, R350,000 a year
+            var paye = annualTax((gross - retire) * 12, age) / 12;
+            var uif = Math.min(gross, UIF_CEILING) * UIF_RATE;
+            var sdl = document.getElementById('sdl').checked ? gross * SDL_RATE : 0;
+            var net = gross - paye - uif - retireIn;
+            var cost = gross + uif + sdl;
+            document.getElementById('calcOut').innerHTML =
+                card('PAYE', R(paye), 'Effective ' + (gross ? (paye / gross * 100).toFixed(1) : '0.0') + '% of gross', 'bg-indigo-50') +
+                card('UIF (employee)', R(uif), 'Employer pays the same ' + R(uif)) +
+                card('Net pay', R(net), retireIn ? 'After PAYE, UIF and ' + R(retireIn) + ' retirement' : 'After PAYE and UIF', 'bg-green-50') +
+                card('Cost to employer', R(cost), 'Gross + employer UIF ' + R(uif) + (sdl ? ' + SDL ' + R(sdl) : ' (no SDL)'));
+        }
+        ['gross', 'retire', 'age', 'sdl'].forEach(function (id) { document.getElementById(id).addEventListener('input', calc); });
+        document.getElementById('calc').addEventListener('submit', function (e) { e.preventDefault(); calc(); });
+        calc();
+
+        // ---- 2. FX grid: ECB reference rates via Frankfurter (no key) ----
+        var CUR = { USD: 'US dollar', EUR: 'Euro', GBP: 'British pound', CNY: 'Chinese yuan', INR: 'Indian rupee', JPY: 'Japanese yen',
+            AUD: 'Australian dollar', CAD: 'Canadian dollar', CHF: 'Swiss franc', BRL: 'Brazilian real', AED: 'UAE dirham' };
+        var rates = null, fxDate = '';
+        function fxRender() {
+            var amt = Math.max(0, +document.getElementById('fxAmount').value || 0), body = document.getElementById('fxRows');
+            if (!rates) return;
+            body.innerHTML = Object.keys(CUR).filter(function (c) { return rates[c]; }).map(function (c) {
+                var r = rates[c];
+                return '<tr class="border-b"><td class="py-2 pr-4 font-semibold">' + c + ' · ' + CUR[c] + '</td><td class="py-2 pr-4 num">' + r.toFixed(5) +
+                    '</td><td class="py-2 pr-4 num">' + R(1 / r) + '</td><td class="py-2 num">' + (amt * r).toLocaleString('en-ZA', { style: 'currency', currency: c }) + '</td></tr>';
+            }).join('');
+        }
+        fetch('https://api.frankfurter.dev/v1/latest?base=ZAR&symbols=' + Object.keys(CUR).join(','))
+            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(function (d) { rates = d.rates; fxDate = d.date; document.getElementById('fxSource').textContent = 'European Central Bank reference rates for ' + d.date + ' (published on working days).'; fxRender(); })
+            .catch(function () {
+                document.getElementById('fxSource').textContent = 'Live rates could not be loaded right now.';
+                document.getElementById('fxRows').innerHTML = '<tr><td colspan="4" class="py-3 text-red-600">Rates are unavailable at the moment. Try again shortly.</td></tr>';
+            });
+        document.getElementById('fxAmount').addEventListener('input', fxRender);
+
+        // ---- 3. Time zones (the browser's own time-zone database) ----
+        var ZONES = [['Johannesburg', 'Africa/Johannesburg'], ['Nairobi', 'Africa/Nairobi'], ['Lagos', 'Africa/Lagos'], ['London', 'Europe/London'],
+            ['Dubai', 'Asia/Dubai'], ['Mumbai', 'Asia/Kolkata'], ['Singapore', 'Asia/Singapore'], ['Sydney', 'Australia/Sydney'],
+            ['New York', 'America/New_York'], ['São Paulo', 'America/Sao_Paulo']];
+        function offsetMinutes(tz, at) { // minutes ahead of UTC for that zone at instant `at`
+            var p = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                .formatToParts(at).reduce(function (o, x) { o[x.type] = x.value; return o; }, {});
+            var whole = at.getTime() - at.getUTCSeconds() * 1000 - at.getUTCMilliseconds(); // compare whole minutes only
+            return Math.round((Date.UTC(+p.year, p.month - 1, +p.day, +p.hour, +p.minute) - whole) / 60000);
+        }
+        function fmt(tz, at, opts) { return new Intl.DateTimeFormat('en-ZA', Object.assign({ timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }, opts || {})).format(at); }
+        function zonesRender() {
+            var now = new Date(), jhb = offsetMinutes('Africa/Johannesburg', now);
+            var cut = (document.getElementById('cutoff').value || '16:00').split(':');
+            // the cut-off instant: today at that Johannesburg time
+            var jd = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Johannesburg' }).format(now).split('-');
+            var cutAt = new Date(Date.UTC(+jd[0], jd[1] - 1, +jd[2], +cut[0], +cut[1]) - jhb * 60000);
+            document.getElementById('zoneRows').innerHTML = ZONES.map(function (z) {
+                var off = offsetMinutes(z[1], now), diff = (off - jhb) / 60;
+                var hour = +fmt(z[1], now, { minute: undefined }).slice(0, 2);
+                var open = hour >= 8 && hour < 17;
+                return '<tr class="border-b"><td class="py-2 pr-4 font-semibold">' + z[0] + '</td><td class="py-2 pr-4 num">' + fmt(z[1], now, { weekday: 'short' }) +
+                    '</td><td class="py-2 pr-4 num">' + (diff === 0 ? 'same' : (diff > 0 ? '+' : '') + diff + ' h') +
+                    '</td><td class="py-2 pr-4">' + (open ? '<span class="text-green-700 font-semibold">Open</span>' : '<span class="text-gray-500">Closed</span>') +
+                    '</td><td class="py-2 num">' + fmt(z[1], cutAt, { weekday: 'short' }) + '</td></tr>';
+            }).join('');
+        }
+        document.getElementById('cutoff').addEventListener('input', zonesRender);
+        zonesRender();
+        setInterval(zonesRender, 30000);
+    })();
+    </script>
+    <script src="/omnigrid-app.js"></script>
+</body>
+</html>

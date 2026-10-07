@@ -100,6 +100,8 @@ var TRANSLATIONS = {
     'cta.btn': 'Notify me',
     'cta.note.default': 'Launching soon. Stay wild.',
     'cta.note.success': "You're on the list. We'll signal the moment the flag goes up.",
+    'cta.note.sending': 'Adding you to the list…',
+    'cta.note.error': "That didn't go through. Check your email address and try again.",
 
     'footer.rights': '© 2026 Fruitful Shops (Pty) Ltd. All rights reserved.',
     'footer.tagline': 'Stay wild. The Shock Launch is coming.',
@@ -197,6 +199,8 @@ var TRANSLATIONS = {
     'cta.btn': '通知我',
     'cta.note.default': '即将上线。保持野性。',
     'cta.note.success': '你已加入名单。旗帜升起的那一刻，我们会立即通知你。',
+    'cta.note.sending': '正在将你加入名单…',
+    'cta.note.error': '提交未成功。请检查你的电子邮件地址后重试。',
 
     'footer.rights': '© 2026 Fruitful Shops (Pty) Ltd. 保留所有权利。',
     'footer.tagline': '保持野性。Shock Launch 即将到来。',
@@ -294,6 +298,8 @@ var TRANSLATIONS = {
     'cta.btn': 'Avísame',
     'cta.note.default': 'Lanzamiento próximo. Mantente salvaje.',
     'cta.note.success': 'Ya estás en la lista. Te avisaremos en el momento en que la bandera se ice.',
+    'cta.note.sending': 'Añadiéndote a la lista…',
+    'cta.note.error': 'No se pudo enviar. Revisa tu correo electrónico e inténtalo de nuevo.',
 
     'footer.rights': '© 2026 Fruitful Shops (Pty) Ltd. Todos los derechos reservados.',
     'footer.tagline': 'Mantente salvaje. Shock Launch está por llegar.',

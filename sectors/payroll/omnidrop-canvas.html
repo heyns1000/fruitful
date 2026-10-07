@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen bg-black text-white overflow-x-hidden">
+<head>
+    <meta charset="UTF-8" />
+    <title>FAA.ZONE™ | OmniDrop Canvas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Custom CSS for animations and general styling not covered by Tailwind */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 15s linear infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        /* Ensure Inter font is used */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between items-center p-0 md:p-8">
+
+    <div id="gorilla-glob" class="absolute top-4 right-4 w-10 h-10 md:w-16 md:h-16 rounded-full border-2 border-emerald-400 animate-spin-slow bg-gradient-to-tr from-green-300 via-indigo-300 to-pink-300 shadow-lg z-50 transition-all duration-300"></div>
+
+    <div id="metrics-hud" class="absolute top-4 left-4 bg-white/80 border border-gray-300 rounded-xl shadow px-4 py-2 text-xs md:text-sm z-50 backdrop-blur-md text-gray-800">
+        <div>🧠 Sim Tick: <span id="sim-tick">0</span></div>
+        <div>💸 Payroll Δ: ±150</div>
+        <div>🎁 Bonus Flux: ±50</div>
+        <div>📉 Deductions Δ: ±25</div>
+        <div>⏱ Overtime Δ: ±20</div>
+        <div id="volatility-status" class="text-xs mt-1 font-semibold text-gray-600">Volatility: Stable</div>
+    </div>
+
+    <main class="flex flex-col justify-center items-center flex-grow p-4 md:p-10 w-full max-w-screen-2xl">
+        <div id="breathing-core" class="w-64 h-64 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-green-400 to-indigo-600 animate-pulse shadow-lg transition-all duration-500"></div>
+
+        <h1 class="mt-8 md:mt-10 text-xl md:text-3xl font-mono tracking-widest text-center text-white drop-shadow-lg">
+            FAA.ZONE™ | “This is not a website. It is the breath.”
+        </h1>
+        <p class="text-xs md:text-sm text-gray-400 mt-2 italic text-center">
+            OmniDrop Canvas: Signal Flow Initiated.
+        </p>
+
+        <div class="mt-8 md:mt-12 w-full max-w-xl h-64 md:h-96 overflow-y-auto bg-gray-900 bg-opacity-30 p-4 border border-gray-700 rounded-lg shadow-inner">
+            <ul id="signal-log" class="space-y-2 font-mono text-xs md:text-sm text-green-300">
+                <li>System starting... awaiting first pulse.</li>
+            </ul>
+        </div>
+
+        <div id="dynamic-content-area" class="mt-12 w-full max-w-4xl bg-gray-900/50 rounded-lg p-6 flex justify-center items-center text-center text-gray-300 min-h-[300px]">
+            <p>Ready to load FAA PAYROLL™ Dashboard. Click the button below.</p>
+        </div>
+
+        <button id="load-payroll-button" class="mt-8 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors" onclick="location.href='overview.html'">
+            🚀 Activate FAA PAYROLL™ Dashboard
+        </button>
+
+    </main>
+
+    <footer class="w-full bg-white text-gray-800 py-8 px-4 md:px-12 mt-auto border-t border-gray-200">
+        <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center text-sm md:text-xs lg:text-sm">
+            <div class="mb-6 md:mb-0 md:w-1/3">
+                <div class="text-xl md:text-2xl font-bold mb-2 text-blue-600">FAA.zone <span class="text-gray-800">/ BuildNest™</span></div>
+                <p class="text-gray-600">© 2025 FAA.zone. All systems, symbols, and brand echoes <br> protected by the Omni Present Copyright™.</p>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-8 md:gap-x-12 lg:gap-x-16">
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-2">BuildNest™</h3>
+                    <ul class="space-y-1 text-gray-700">
+                        <li><a href="features.html" class="hover:text-blue-600 transition-colors">Features</a></li>
+                        <li><a href="products-and-service.html" class="hover:text-blue-600 transition-colors">Use Cases</a></li>
+                        <li><a href="payroll-pro.html#pricing" class="hover:text-blue-600 transition-colors">Pricing</a></li>
+                        <li><a href="ai-modules.html" class="hover:text-blue-600 transition-colors">Modules</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-2">FAA.zone</h3>
+                    <ul class="space-y-1 text-gray-700">
+                        <li><a href="../../about-faa.html" class="hover:text-blue-600 transition-colors">About FAA Systems™</a></li>
+                        <li><a href="../../omnigrid.html" class="hover:text-blue-600 transition-colors">Omni Grid™</a></li>
+                        <li><a href="../../baobab-archive.html" class="hover:text-blue-600 transition-colors">Baobab Archive™</a></li>
+                        <li><a href="../../compliance.html" class="hover:text-blue-600 transition-colors">Compliance</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-2">Connect</h3>
+                    <ul class="space-y-1 text-gray-700">
+                        <li><a href="../../contact-support.html" class="hover:text-blue-600 transition-colors">Contact Support</a></li>
+                        <li><a href="../../partner-program.html" class="hover:text-blue-600 transition-colors">Partner Program</a></li>
+                        <li><a href="../../developer-api.html" class="hover:text-blue-600 transition-colors">Developer API</a></li>
+                        <li><a href="../../legal-privacy.html" class="hover:text-blue-600 transition-colors">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for dynamic behavior. Note: External JS files like /js/core.js, /js/signal-emitter.js, and /js/payroll-dashboard-module.js
+         are referenced but not included in this self-contained block. You would need to provide their content if they are essential for functionality. -->
+    <script type="text/babel">
+        // Inline JavaScript for core functionality, signal emission, and payroll dashboard module
+        // This combines the functionality of core.js, signal-emitter.js, and payroll-dashboard-module.js
+        // to make the immersive self-contained.
+
+        // Core functionality (simulates core.js)
+        document.addEventListener('DOMContentLoaded', () => {
+            const simTickElement = document.getElementById('sim-tick');
+            let simTick = 0;
+
+            // Update sim tick every second
+            setInterval(() => {
+                simTick++;
+                if (simTickElement) {
+                    simTickElement.textContent = simTick;
+                }
+            }, 1000);
+        });
+
+        // Signal Emitter functionality (simulates signal-emitter.js)
+        const signalLog = document.getElementById('signal-log');
+
+        function logSignal(message) {
+            if (signalLog) {
+                const listItem = document.createElement('li');
+                listItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                signalLog.appendChild(listItem);
+                // Scroll to the bottom to show the latest signal
+                signalLog.scrollTop = signalLog.scrollHeight;
+            }
+        }
+
+        // Initial log message
+        logSignal('System initialized. Awaiting user activation.');
+
+        // Simulate periodic signals
+        setInterval(() => {
+            const signals = [
+                'Data stream nominal.',
+                'Processing financial algorithms.',
+                'Volatility index stable.',
+                'Quantum payroll calculations in progress.',
+                'OmniDrop protocol active.'
+            ];
+            const randomSignal = signals[Math.floor(Math.random() * signals.length)];
+            logSignal(randomSignal);
+        }, 5000); // Log a new signal every 5 seconds
+
+        // Payroll Dashboard Module (simulates payroll-dashboard-module.js)
+        const PayrollDashboard = () => {
+            // State for payroll data (simulated)
+            const [payrollData, setPayrollData] = React.useState({
+                employees: 120,
+                totalPayroll: 750000,
+                averageSalary: 6250,
+                lastProcessed: '2025-05-26',
+                nextProcessing: '2025-06-10',
+                pendingApprovals: 7,
+                onHold: 2,
+            });
+
+            // Simulate data updates
+            React.useEffect(() => {
+                const interval = setInterval(() => {
+                    setPayrollData(prevData => ({
+                        ...prevData,
+                        totalPayroll: prevData.totalPayroll + (Math.random() * 1000 - 500), // fluctuate payroll
+                        employees: prevData.employees + (Math.random() > 0.7 ? (Math.random() > 0.5 ? 1 : -1) : 0), // small employee changes
+                        pendingApprovals: Math.max(0, prevData.pendingApprovals + (Math.random() > 0.6 ? (Math.random() > 0.5 ? 1 : -1) : 0)),
+                        onHold: Math.max(0, prevData.onHold + (Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0)),
+                    }));
+                }, 3000); // Update every 3 seconds
+
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div className="p-6 bg-gray-800 bg-opacity-70 rounded-lg shadow-xl text-white w-full max-w-3xl mx-auto">
+                    <h2 className="text-2xl md:text-3xl font-bold text-emerald-400 mb-6 text-center">FAA PAYROLL™ Dashboard</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-700 p-4 rounded-lg shadow-md">
+                            <h3 className="text-lg font-semibold text-gray-300 mb-2">Overview</h3>
+                            <p className="text-sm">Total Employees: <span className="font-bold text-blue-300">{Math.round(payrollData.employees)}</span></p>
+                            <p className="text-sm">Total Payroll (Monthly): <span className="font-bold text-green-300">${payrollData.totalPayroll.toFixed(2)}</span></p>
+                            <p className="text-sm">Average Salary: <span className="font-bold text-purple-300">${(payrollData.totalPayroll / payrollData.employees).toFixed(2)}</span></p>
+                        </div>
+                        <div className="bg-gray-700 p-4 rounded-lg shadow-md">
+                            <h3 className="text-lg font-semibold text-gray-300 mb-2">Processing Status</h3>
+                            <p className="text-sm">Last Processed: <span className="font-bold text-yellow-300">{payrollData.lastProcessed}</span></p>
+                            <p className="text-sm">Next Processing: <span className="font-bold text-orange-300">{payrollData.nextProcessing}</span></p>
+                            <p className="text-sm">Pending Approvals: <span className="font-bold text-red-300">{payrollData.pendingApprovals}</span></p>
+                            <p className="text-sm">On Hold: <span className="font-bold text-gray-400">{payrollData.onHold}</span></p>
+                        </div>
+                    </div>
+                    <div className="mt-6 text-center text-sm text-gray-400">
+                        <p>Real-time data synchronization with Omni Grid™ initiated.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const loadPayrollButton = document.getElementById('load-payroll-button');
+        const dynamicContentArea = document.getElementById('dynamic-content-area');
+
+        if (loadPayrollButton && dynamicContentArea) {
+            loadPayrollButton.addEventListener('click', () => {
+                logSignal('Activating FAA PAYROLL™ Dashboard...');
+                // Render the React component into the dynamic content area
+                ReactDOM.render(<PayrollDashboard />, dynamicContentArea);
+                loadPayrollButton.style.display = 'none'; // Hide the button after activation
+            });
+        }
+    </script>
+    <script src="/omnigrid-app.js" data-concept="1"></script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture.Seedwave.FAA.zone™ - Global Agri-Grid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles & Agri-Theme Variables */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f8fafc; /* Tailwind slate-50 */
+            --bg-color-dark: #121212; /* Very dark for deep contrast */
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e1e1e;
+            --border-color-light: #e2e8f0; /* Tailwind slate-200 */
+            --border-color-dark: #334155; /* Tailwind slate-700 */
+            --primary-color: #0071e3; /* Apple Blue */
+            --agri-green: #22c55e; /* Tailwind green-500 */
+            --agri-dark-green: #15803d; /* Tailwind green-700 */
+            --muted-text-light: #64748b; /* Tailwind slate-500 */
+            --muted-text-dark: #94a3b8; /* Tailwind slate-400 */
+            --accent-yellow: #facc15; /* Tailwind yellow-400 */
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Dark mode specific overrides */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        body.dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: var(--shadow-dark);
+        }
+        body.dark-mode .logo-group a { color: var(--text-color-dark); }
+        body.dark-mode .nav-list a { color: var(--muted-text-dark); }
+        body.dark-mode .nav-list a:hover { color: var(--agri-green); }
+        body.dark-mode .cta-button { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+        body.dark-mode .cta-button:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Header (adapted from MineNest) */
+        .main-header {
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+            border-bottom: 1px solid var(--border-color-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .logo-group a { color: var(--text-color-light); text-decoration: none; }
+        .logo-agri { color: var(--agri-green); }
+        .logo-seedwave { color: var(--primary-color); }
+        .logo-faa { color: var(--muted-text-light); font-size: 0.8em; font-weight: 600; }
+
+        .main-nav { display: flex; align-items: center; gap: 1.5rem; }
+        .nav-list { display: flex; list-style: none; margin: 0; padding: 0; gap: 1.25rem; }
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover { color: var(--agri-dark-green); }
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+        .cta-button {
+            display: inline-block; padding: 0.6rem 1.2rem; background-color: var(--agri-green); color: white;
+            text-decoration: none; border-radius: 9999px; font-weight: 600; font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+        }
+        .cta-button:hover { background-color: var(--agri-dark-green); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); }
+        .hamburger-menu { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color-light); }
+
+        /* Hero Section */
+        #hero-agri {
+            background: linear-gradient(135deg, var(--agri-green) 0%, var(--agri-dark-green) 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            margin-bottom: 0;
+        }
+        #hero-agri h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        #hero-agri p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 5rem 1.25rem;
+            margin-bottom: 1.25rem;
+            border-radius: 0.75rem;
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        body.dark-mode section {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+            border-color: var(--border-color-dark);
+        }
+        section:last-of-type { margin-bottom: 0; }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: var(--text-color-light);
+            line-height: 1.2;
+        }
+        body.dark-mode .section-title { color: var(--text-color-dark); }
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--muted-text-light);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+        body.dark-mode .section-subtitle { color: var(--muted-text-dark); }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color-light);
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        body.dark-mode .feature-card { border-color: var(--border-color-dark); }
+        .feature-card:hover {
+            transform: translateY(-0.25rem);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+        body.dark-mode .feature-card:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3); }
+        .feature-card .icon {
+            font-size: 2rem;
+            color: var(--agri-green);
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-bottom: 0.5rem;
+        }
+        body.dark-mode .feature-card h3 { color: var(--text-color-dark); }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+        }
+        body.dark-mode .feature-card p { color: var(--muted-text-dark); }
+
+
+        /* AI Crop Advisor Styles */
+        #ai-crop-advisor {
+            background-color: var(--card-bg-light);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color-light);
+        }
+        body.dark-mode #ai-crop-advisor {
+            background-color: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+            border-color: var(--border-color-dark);
+        }
+        #ai-crop-advisor label {
+            font-weight: 600;
+            color: var(--text-color-light);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        body.dark-mode #ai-crop-advisor label { color: var(--text-color-dark); }
+
+        #ai-crop-advisor input[type="text"],
+        #ai-crop-advisor select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color-light);
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        body.dark-mode #ai-crop-advisor input[type="text"],
+        body.dark-mode #ai-crop-advisor select {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+        }
+        #ai-crop-advisor input[type="text"]:focus,
+        #ai-crop-advisor select:focus {
+            outline: none;
+            border-color: var(--agri-green);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+        #ai-crop-advisor button {
+            background-color: var(--agri-green);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #ai-crop-advisor button:hover {
+            background-color: var(--agri-dark-green);
+            transform: translateY(-2px);
+        }
+        #ai-crop-advisor button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #ai-crop-advisor #advisor-result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            background-color: #ecfdf5; /* Lightest green */
+            color: #065f46; /* Dark green text */
+            font-size: 1rem;
+            line-height: 1.6;
+            min-height: 100px;
+            text-align: left;
+            border: 1px solid #a7f3d0;
+        }
+        body.dark-mode #ai-crop-advisor #advisor-result {
+            background-color: #1e3a2e; /* Darker green */
+            color: #a7f3d0; /* Light green text */
+            border-color: #065f46;
+        }
+        #ai-crop-advisor .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--agri-green);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+
+
+        /* Footer */
+        footer {
+            background-color: var(--card-bg-dark);
+            color: var(--muted-text-dark);
+            padding: 2.5rem 1.25rem;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+        body.dark-mode footer { background-color: var(--bg-color-dark); }
+        footer a {
+            color: var(--agri-green);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover { color: var(--agri-dark-green); text-decoration: underline; }
+        .footer-logo {
+            font-weight: 800;
+            font-size: 1.125rem;
+            color: var(--text-color-dark);
+        }
+        body.dark-mode .footer-logo { color: var(--text-color-light); }
+        .footer-logo .agri { color: var(--agri-green); }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .footer-links div { flex: 1 1 auto; min-width: 120px; text-align: left; }
+        .footer-links h4 { font-weight: 700; margin-bottom: 0.75rem; color: var(--text-color-dark); }
+        body.dark-mode .footer-links h4 { color: var(--text-color-light); }
+        .footer-links ul { list-style: none; padding: 0; margin: 0; }
+        .footer-links ul li { margin-bottom: 0.5rem; }
+        .footer-links ul li a { color: var(--muted-text-dark); font-size: 0.85rem; }
+        body.dark-mode .footer-links ul li a { color: var(--muted-text-light); }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-nav { display: none; }
+            .hamburger-menu { display: block; }
+            .header-content { flex-wrap: wrap; justify-content: center; }
+            .logo-group { width: 100%; justify-content: center; margin-bottom: 1rem; }
+
+            #hero-agri h1 { font-size: 2.5rem; }
+            #hero-agri p { font-size: 1.125rem; }
+            .section-title { font-size: 1.875rem; }
+            .section-subtitle { font-size: 1rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .feature-card { text-align: center; }
+            .footer-links { flex-direction: column; text-align: center; }
+            .footer-links div { text-align: center; }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo-group">
+                <a href="index.html">
+                    <span class="logo-agri">Agri.</span><span class="logo-seedwave">Seedwave™</span>
+                    <span class="logo-faa">.FAA.zone™</span>
+                </a>
+                <button class="hamburger-menu" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#hero-agri">Home</a></li>
+                    <li><a href="#features-agri">Capabilities</a></li>
+                    <li><a href="#ai-crop-advisor">AI Advisor</a></li>
+                    <li><a href="#about-agri">About</a></li>
+                    <li><a href="#contact-agri">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button id="themeToggle" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-3 rounded-full text-sm font-semibold transition duration-300 ease-in-out">
+                        <i class="fas fa-moon hidden dark:inline-block"></i>
+                        <i class="fas fa-sun inline-block dark:hidden"></i>
+                    </button>
+                    <a href="#contact-agri" class="cta-button">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero-agri" class="flex flex-col justify-center items-center">
+            <div class="container">
+                <h1>Cultivate Smarter. Yield More. <br><span>Powered by Seedwave™ Agri-Grid.</span></h1>
+                <p>Leverage advanced AI and FAA.zone™ compliance for optimized agricultural operations, from soil to harvest.</p>
+                <a href="#ai-crop-advisor" class="cta-button">Consult AI Crop Advisor &rarr;</a>
+            </div>
+        </section>
+
+        <!-- Capabilities/Features Section -->
+        <section id="features-agri" class="container">
+            <h2 class="section-title">Core Agri-Grid Capabilities</h2>
+            <p class="section-subtitle">Intelligent tools to transform your farm's efficiency and output.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Precision Crop Monitoring</h3>
+                    <p>Real-time insights on crop health, growth stages, and potential stressors using drone and satellite data integration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-tint"></i></div>
+                    <h3>Smart Irrigation Optimization</h3>
+                    <p>AI-driven water management based on soil moisture, weather forecasts, and crop-specific needs to reduce waste.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-seedling"></i></div>
+                    <h3>Yield Prediction & Planning</h3>
+                    <p>Accurate harvest forecasts and optimized planting schedules powered by historical data and predictive models.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-bug"></i></div>
+                    <h3>Pest & Disease Detection</h3>
+                    <p>Early warning systems using AI image recognition to identify and mitigate threats to your crops swiftly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-sun"></i></div>
+                    <h3>Climate Resilience Planning</h3>
+                    <p>Tailored advice and strategies to adapt farming practices to changing climate conditions and extreme weather events.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fas fa-chart-bar"></i></div>
+                    <h3>Compliance & Reporting</h3>
+                    <p>Automated generation of regulatory reports and adherence checks for agricultural standards within FAA.zone™.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Crop Advisor Section -->
+        <section id="ai-crop-advisor" class="container">
+            <h2 class="section-title">✨ AI Crop Advisor</h2>
+            <p class="section-subtitle">Get instant, AI-powered advice tailored to your specific farming conditions.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <label for="cropType" class="mb-2">Crop Type:</label>
+                    <input type="text" id="cropType" placeholder="e.g., Corn, Wheat, Tomatoes" class="w-full">
+                </div>
+                <div>
+                    <label for="soilType" class="mb-2">Soil Type:</label>
+                    <select id="soilType" class="w-full">
+                        <option value="">Select Soil Type</option>
+                        <option value="Loam">Loam</option>
+                        <option value="Clay">Clay</option>
+                        <option value="Sand">Sand</option>
+                        <option value="Silt">Silt</option>
+                        <option value="Chalk">Chalk</option>
+                        <option value="Peat">Peat</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="climate" class="mb-2">Climate:</label>
+                    <select id="climate" class="w-full">
+                        <option value="">Select Climate</option>
+                        <option value="Temperate">Temperate</option>
+                        <option value="Tropical">Tropical</option>
+                        <option value="Arid">Arid (Dry)</option>
+                        <option value="Continental">Continental</option>
+                        <option value="Mediterranean">Mediterranean</option>
+                        <option value="Polar">Polar</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="getAdviceBtn" class="w-full">
+                <i class="fas fa-robot mr-2"></i> Get Personalized Advice
+            </button>
+
+            <div id="advisor-result" class="mt-8">
+                Your AI-powered crop advice will appear here.
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about-agri" class="container">
+            <h2 class="section-title">About Agri.Seedwave™</h2>
+            <p class="section-subtitle">Pioneering sustainable and efficient agriculture through technology.</p>
+            <div class="text-center md:text-left text-base leading-relaxed text-muted-text-light">
+                <p class="mb-4">Agri.Seedwave™ is the agricultural arm of the FAA.zone™ ecosystem, dedicated to bringing cutting-edge data management, AI, and compliance tools to the farming industry. We believe in empowering farmers with the intelligence needed to tackle modern agricultural challenges, from climate change and resource scarcity to market fluctuations.</p>
+                <p>Our platform integrates seamlessly with existing farm infrastructure, providing actionable insights for everything from planting and irrigation to pest management and harvest optimization. We ensure that your operations are not only productive but also compliant with global agricultural standards and FAA regulations related to data integrity and aerial technology (e.g., drones).</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact-agri" class="container">
+            <h2 class="section-title">Connect With Our Agri-Experts</h2>
+            <p class="section-subtitle">Ready to transform your farm? Reach out to us for a personalized consultation.</p>
+            <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md border border-border-color-light">
+                <form class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-text-color-light">Name</label>
+                        <input type="text" id="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-agri-green focus:border-agri-green">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-text-color-light">Email</label>
+                        <input type="email" id="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-agri-green focus:border-agri-green">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-text-color-light">Message</label>
+                        <textarea id="message" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-agri-green focus:border-agri-green"></textarea>
+                    </div>
+                    <button type="submit" class="w-full cta-button">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <span class="agri">Agri.</span><span class="seedwave">Seedwave™</span>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>Agri.Seedwave™</h4>
+                    <ul>
+                        <li><a href="#features-agri">Capabilities</a></li>
+                        <li><a href="#ai-crop-advisor">AI Advisor</a></li>
+                        <li><a href="#about-agri">About Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>FAA.zone™ Ecosystem</h4>
+                    <ul>
+                        <li><a href="../../omnigrid.html">Omni Grid™</a></li>
+                        <li><a href="../../compliance.html">Compliance Center</a></li>
+                        <li><a href="../../audit-tracker.html">Data Integrity</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#contact-agri">Support</a></li>
+                        <li><a href="../../hubs.html">Partnerships</a></li>
+                        <li><a href="../../contact-support.html">Careers</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="mt-8 text-xs">&copy; 2025 Agri.Seedwave™. All Rights Reserved. An FAA.zone™ Ecosystem Project.</p>
+        </div>
+    </footer>
+
+    <script>
+        // API Keys (assuming these are shared across FAA.zone projects)
+        const apiKeysData = [
+            { service: "PayPal (SDK)", key: "", locations: ["Various checkout scrolls"] },
+            { service: "PayPal (Hosted Button)", key: "", context: "(Starter Package)", locations: ["HotStack™", "Various landing pages"] },
+            { service: "PayPal (Hosted Button)", key: "", context: "(Pro Package)", locations: ["HotStack™", "Larger brand sites"] },
+            { service: "PayPal (Hosted Button)", key: "", context: "(Enterprise Package)", locations: ["HotStack™", "Enterprise solutions"] },
+            { service: "PayPal (Hosted Button)", key: "", context: "(Banimal Loop Plan - Placeholder)", locations: ["Banimal Loop Plan site"] },
+            { service: "Google Maps", key: "", locations: ["Location-based microsites"] },
+            { service: "Spotify (Access Token)", key: "", locations: ["Music/media scrolls"] },
+            { service: "Gemini AI", key: "", locations: ["AI-powered insights scrolls", "Baobab Terminal"] },
+            { service: "Xero (Client ID)", key: "", locations: ["Accounting/payroll integration scrolls"] },
+            { service: "Xero (Client Secret)", key: "", locations: ["Accounting/payroll integration scrolls"] },
+            { service: "Xero (Redirect URI)", key: "", locations: ["Xero OAuth setup"] },
+            { service: "Xero (Webhook Key)", key: "", locations: ["Xero webhook configurations"] }
+        ];
+
+        // Extract Gemini API Key
+        const GEMINI_API_KEY_OBJECT = apiKeysData.find(item => item.service === "Gemini AI");
+        const GEMINI_API_KEY = GEMINI_API_KEY_OBJECT ? GEMINI_API_KEY_OBJECT.key : "";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                body.classList.toggle('light-mode');
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // AI Crop Advisor Functionality
+            const cropTypeInput = document.getElementById('cropType');
+            const soilTypeSelect = document.getElementById('soilType');
+            const climateSelect = document.getElementById('climate');
+            const getAdviceBtn = document.getElementById('getAdviceBtn');
+            const advisorResultDiv = document.getElementById('advisor-result');
+
+            getAdviceBtn.addEventListener('click', async () => {
+                const cropType = cropTypeInput.value.trim();
+                const soilType = soilTypeSelect.value;
+                const climate = climateSelect.value;
+
+                if (!cropType || !soilType || !climate) {
+                    advisorResultDiv.innerHTML = `<p style="color: #ef4444;">Please fill in all fields to get personalized advice.</p>`;
+                    advisorResultDiv.classList.add('error-state');
+                    return;
+                }
+                advisorResultDiv.classList.remove('error-state');
+
+                if (!GEMINI_API_KEY) {
+                    advisorResultDiv.innerHTML = `<p style="color: #ef4444;">AI advice is not connected yet (it needs a server-side key). For live weather, water need and soil data for your farm, open <a href=\"tools.html\" style=\"text-decoration:underline\">Agri Tools</a>.</p>`;
+                    advisorResultDiv.classList.add('error-state');
+                    console.error("Gemini API Key is missing.");
+                    return;
+                }
+
+                advisorResultDiv.innerHTML = `<div class="loading-spinner"></div> <p class="loading-text">Generating personalized advice for your ${cropType} crop...</p>`;
+                getAdviceBtn.disabled = true;
+
+                try {
+                    let chatHistory = [];
+                    const prompt = `As an AI Crop Advisor for Agri.Seedwave.FAA.zone, provide concise and actionable advice for growing "${cropType}" in "${soilType}" soil under a "${climate}" climate. Include essential tips for planting, care, potential challenges (e.g., pests, diseases, weather), and yield optimization. Focus on practical insights relevant to a farmer. Keep the advice under 200 words.`;
+
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = GEMINI_API_KEY;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorData.error?.message || 'Unknown error'}`);
+                    }
+
+                    const result = await response.json();
+                    let generatedAdvice = "AI could not generate advice. Please try again or refine your query.";
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        generatedAdvice = result.candidates[0].content.parts[0].text;
+                    } else {
+                        console.warn("Gemini API response structure unexpected for AI Crop Advisor:", result);
+                    }
+                    advisorResultDiv.innerHTML = `<p>${generatedAdvice}</p>`;
+
+                } catch (error) {
+                    console.error("Error generating AI crop advice:", error);
+                    advisorResultDiv.innerHTML = `<p style="color: #ef4444;">Error: ${error.message}</p>`;
+                    advisorResultDiv.classList.add('error-state');
+                } finally {
+                    getAdviceBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+
+    <script src="/omnigrid-app.js" data-concept="1"></script>
+</body>
+</html>

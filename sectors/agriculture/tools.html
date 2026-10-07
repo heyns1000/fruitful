@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Agriculture &amp; Biotech — Agri Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .num { font-variant-numeric: tabular-nums; }
+        .tool { scroll-margin-top: 16px; }
+        th, td { padding: 6px 8px; text-align: left; }
+        tbody tr:nth-child(odd) { background: #f0fdf4; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <header class="bg-white shadow">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex flex-wrap justify-between items-center gap-3">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-green-700">🌱 Agriculture &amp; Biotech — Agri Tools</h1>
+                <p class="text-sm text-gray-500">Live weather and crop water need · Topsoil at any point · Country farm indicators. Public data, no sign-in.</p>
+            </div>
+            <nav class="flex flex-wrap gap-2 text-sm font-semibold">
+                <a href="#water" class="px-3 py-2 rounded bg-green-700 text-white">Crop water</a>
+                <a href="#soil" class="px-3 py-2 rounded bg-amber-700 text-white">Topsoil</a>
+                <a href="#country" class="px-3 py-2 rounded bg-blue-700 text-white">Country data</a>
+                <a href="dashboard.html" class="px-3 py-2 rounded bg-gray-700 text-white">Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-8">
+        <section class="bg-white rounded-xl shadow p-5">
+            <label class="block text-sm font-semibold mb-1" for="place">Farm location (town or area)</label>
+            <div class="flex flex-wrap gap-2">
+                <input id="place" class="border rounded px-3 py-2 flex-1 min-w-[200px]" value="Bethlehem" placeholder="e.g. Bethlehem, Ceres, Polokwane">
+                <select id="country" class="border rounded px-3 py-2">
+                    <option value="ZA" selected>South Africa</option><option value="">Any country</option><option value="NA">Namibia</option><option value="BW">Botswana</option>
+                    <option value="ZW">Zimbabwe</option><option value="KE">Kenya</option><option value="NG">Nigeria</option><option value="US">United States</option>
+                    <option value="GB">United Kingdom</option><option value="IN">India</option><option value="BR">Brazil</option><option value="AU">Australia</option>
+                </select>
+                <button id="find" class="px-4 py-2 rounded bg-green-700 text-white font-semibold">Find</button>
+            </div>
+            <p id="where" class="text-sm text-gray-600 mt-2"></p>
+        </section>
+
+        <section id="water" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-green-700 mb-1">Crop water need, next 7 days</h2>
+            <p class="text-sm text-gray-500 mb-4">FAO-56 method: crop need = reference evapotranspiration (ET₀) × crop coefficient (Kc). Rain that falls offsets it. ET₀ and rain forecast from Open-Meteo.</p>
+            <div class="grid sm:grid-cols-4 gap-3 mb-4">
+                <label class="text-sm">Crop and stage
+                    <select id="crop" class="border rounded px-2 py-2 w-full"></select></label>
+                <label class="text-sm">Area (hectares)
+                    <input id="ha" type="number" min="0" step="0.1" value="10" class="border rounded px-2 py-2 w-full num"></label>
+                <label class="text-sm">Effective rain (share counted)
+                    <select id="eff" class="border rounded px-2 py-2 w-full"><option value="0.8" selected>80% (typical)</option><option value="0.6">60% (sandy or sloped)</option><option value="1">100%</option></select></label>
+                <label class="text-sm">Irrigation efficiency
+                    <select id="irr" class="border rounded px-2 py-2 w-full"><option value="0.9">Drip 90%</option><option value="0.75" selected>Pivot / sprinkler 75%</option><option value="0.6">Flood / furrow 60%</option></select></label>
+            </div>
+            <div class="overflow-x-auto"><table class="w-full text-sm num">
+                <thead class="bg-green-700 text-white"><tr><th>Day</th><th>ET₀ (mm)</th><th>Kc</th><th>Crop need (mm)</th><th>Rain (mm)</th><th>Net irrigation (mm)</th><th>Water to apply (m³)</th></tr></thead>
+                <tbody id="waterRows"><tr><td colspan="7">Enter a location and press Find.</td></tr></tbody>
+                <tfoot id="waterTotal" class="font-bold"></tfoot>
+            </table></div>
+            <p class="text-xs text-gray-500 mt-2">Kc values: FAO Irrigation and Drainage Paper 56, Table 12. 1 mm over 1 hectare = 10 m³.</p>
+        </section>
+
+        <section id="soil" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-amber-700 mb-1">Topsoil at this location</h2>
+            <p class="text-sm text-gray-500 mb-4">Modelled soil properties (ISRIC SoilGrids 250 m). A guide for planning, not a replacement for a lab soil test.</p>
+            <div class="overflow-x-auto"><table class="w-full text-sm num">
+                <thead class="bg-amber-700 text-white"><tr><th>Property</th><th>0–5 cm</th><th>5–15 cm</th><th>15–30 cm</th><th>Unit</th></tr></thead>
+                <tbody id="soilRows"><tr><td colspan="5">Enter a location and press Find.</td></tr></tbody>
+            </table></div>
+            <p id="soilNote" class="text-xs text-gray-500 mt-2"></p>
+        </section>
+
+        <section id="country" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-blue-700 mb-1">Country farm indicators</h2>
+            <p class="text-sm text-gray-500 mb-4">Latest reported value for each indicator (World Bank, sourced from FAO and ILO).</p>
+            <select id="wbCountry" class="border rounded px-3 py-2 mb-3">
+                <option value="ZAF" selected>South Africa</option><option value="NAM">Namibia</option><option value="BWA">Botswana</option><option value="ZWE">Zimbabwe</option>
+                <option value="KEN">Kenya</option><option value="NGA">Nigeria</option><option value="USA">United States</option><option value="GBR">United Kingdom</option>
+                <option value="IND">India</option><option value="BRA">Brazil</option><option value="AUS">Australia</option><option value="WLD">World</option>
+            </select>
+            <div class="overflow-x-auto"><table class="w-full text-sm num">
+                <thead class="bg-blue-700 text-white"><tr><th>Indicator</th><th>Value</th><th>Year</th></tr></thead>
+                <tbody id="wbRows"></tbody>
+            </table></div>
+        </section>
+
+        <p class="text-xs text-gray-500">Sources: <a class="underline" href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0) ·
+            <a class="underline" href="https://soilgrids.org" target="_blank" rel="noopener">ISRIC SoilGrids</a> (CC BY 4.0) ·
+            <a class="underline" href="https://data.worldbank.org" target="_blank" rel="noopener">World Bank Open Data</a> (CC BY 4.0).
+            Part of the <a class="underline" href="index.html">🌱 Agriculture &amp; Biotech</a> family.</p>
+    </main>
+
+    <script>
+    // FAO-56 Table 12 single crop coefficients (Kc ini / mid / end) for common southern African crops
+    const KC = {
+        'Maize (grain)': [0.3, 1.2, 0.35], 'Wheat (spring)': [0.3, 1.15, 0.25], 'Soybeans': [0.4, 1.15, 0.5], 'Sunflower': [0.35, 1.1, 0.35],
+        'Sorghum (grain)': [0.3, 1.0, 0.55], 'Potatoes': [0.5, 1.15, 0.75], 'Tomatoes': [0.6, 1.15, 0.8], 'Cabbage': [0.7, 1.05, 0.95],
+        'Citrus (70% canopy, no ground cover)': [0.7, 0.65, 0.7], 'Grapes (table, raisin)': [0.3, 0.85, 0.45], 'Sugarcane': [0.4, 1.25, 0.75],
+        'Lucerne (alfalfa, averaged)': [0.4, 0.95, 0.9], 'Groundnuts': [0.4, 1.15, 0.6], 'Dry beans': [0.4, 1.15, 0.35]
+    };
+    const STAGES = [['initial', 0], ['mid-season', 1], ['late season', 2]];
+    const cropSel = document.getElementById('crop');
+    Object.entries(KC).forEach(([c, k]) => STAGES.forEach(([s, i]) => {
+        const o = document.createElement('option'); o.value = k[i]; o.textContent = c + ', ' + s + ' (Kc ' + k[i] + ')';
+        if (c === 'Maize (grain)' && i === 1) o.selected = true;
+        cropSel.appendChild(o);
+    }));
+    const $ = id => document.getElementById(id);
+    const fmt = (v, d = 1) => v == null || isNaN(v) ? '–' : Number(v).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d });
+    let spot = null, forecast = null;
+
+    async function json(url) { const r = await fetch(url); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+
+    async function find() {
+        const name = $('place').value.trim();
+        if (!name) { $('where').textContent = 'Type a town or area first.'; return; }
+        $('where').textContent = 'Looking up ' + name + '…';
+        try {
+            const cc = $('country').value;
+            const g = await json('https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(name) + (cc ? '&countryCode=' + cc : ''));
+            if (!g.results || !g.results.length) { $('where').textContent = 'No place called "' + name + '" found' + (cc ? ' in that country' : '') + '.'; return; }
+            spot = g.results[0];
+            $('where').textContent = [spot.name, spot.admin1, spot.country].filter(Boolean).join(', ') + ' · ' + spot.latitude.toFixed(3) + ', ' + spot.longitude.toFixed(3) + ' · ' + (spot.elevation != null ? spot.elevation + ' m' : '');
+            try { localStorage.setItem('fruitful.agri.tools.place', JSON.stringify({ place: name, country: cc })); } catch (e) {}
+            loadWater(); loadSoil();
+        } catch (e) { $('where').textContent = 'Location lookup failed (' + e.message + '). Check the connection and try again.'; }
+    }
+
+    async function loadWater() {
+        $('waterRows').innerHTML = '<tr><td colspan="7">Loading forecast…</td></tr>'; $('waterTotal').innerHTML = '';
+        try {
+            forecast = await json('https://api.open-meteo.com/v1/forecast?daily=et0_fao_evapotranspiration,precipitation_sum&forecast_days=7&timezone=auto&latitude=' + spot.latitude + '&longitude=' + spot.longitude);
+            drawWater();
+        } catch (e) { $('waterRows').innerHTML = '<tr><td colspan="7">Forecast unavailable right now (' + e.message + ').</td></tr>'; }
+    }
+    function drawWater() {
+        if (!forecast) return;
+        const kc = parseFloat(cropSel.value), ha = parseFloat($('ha').value) || 0, eff = parseFloat($('eff').value), irr = parseFloat($('irr').value);
+        let tN = 0, tR = 0, tNet = 0, tM3 = 0, tE = 0;
+        $('waterRows').innerHTML = forecast.daily.time.map((t, i) => {
+            const et0 = forecast.daily.et0_fao_evapotranspiration[i] || 0, rain = forecast.daily.precipitation_sum[i] || 0;
+            const need = et0 * kc, net = Math.max(0, need - rain * eff), m3 = net / irr * ha * 10;
+            tE += et0; tN += need; tR += rain; tNet += net; tM3 += m3;
+            return '<tr><td>' + new Date(t + 'T12:00').toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }) + '</td><td>' + fmt(et0) + '</td><td>' + kc + '</td><td>' + fmt(need) + '</td><td>' + fmt(rain) + '</td><td>' + fmt(net) + '</td><td>' + fmt(m3, 0) + '</td></tr>';
+        }).join('');
+        $('waterTotal').innerHTML = '<tr><td>7 days</td><td>' + fmt(tE) + '</td><td></td><td>' + fmt(tN) + '</td><td>' + fmt(tR) + '</td><td>' + fmt(tNet) + '</td><td>' + fmt(tM3, 0) + ' m³ (' + fmt(tM3 / 1000, 2) + ' ML)</td></tr>';
+    }
+
+    async function loadSoil() {
+        $('soilRows').innerHTML = '<tr><td colspan="5">Loading SoilGrids…</td></tr>'; $('soilNote').textContent = '';
+        try {
+            const props = ['phh2o', 'soc', 'nitrogen', 'clay', 'sand', 'silt', 'cec', 'bdod'];
+            // a town centre is built-up land with no soil values; then the nearest farmland around it (about 3-4 km out) is used
+            let r, shifted = false;
+            for (const [dy, dx] of [[0, 0], [0.03, 0], [-0.03, 0], [0, 0.03], [0, -0.03], [0.03, 0.03], [-0.03, -0.03], [0.03, -0.03], [-0.03, 0.03]]) {
+                r = await json('https://rest.isric.org/soilgrids/v2.0/properties/query?value=mean&depth=0-5cm&depth=5-15cm&depth=15-30cm&' + props.map(p => 'property=' + p).join('&') + '&lon=' + (spot.longitude + dx) + '&lat=' + (spot.latitude + dy));
+                if (r.properties.layers.some(l => l.depths[0].values.mean != null)) { shifted = !!(dx || dy); if (shifted) $('soilNote').textContent = 'The town centre is built-up, so these values are for the nearest farmland, about 3–4 km away (' + (spot.latitude + dy).toFixed(3) + ', ' + (spot.longitude + dx).toFixed(3) + ').'; break; }
+            }
+            const NAMES = { phh2o: 'pH (water)', soc: 'Soil organic carbon', nitrogen: 'Total nitrogen', clay: 'Clay', sand: 'Sand', silt: 'Silt', cec: 'Cation exchange capacity', bdod: 'Bulk density' };
+            const rows = props.map(p => r.properties.layers.find(l => l.name === p)).filter(Boolean).map(l => {
+                const f = l.unit_measure.d_factor, vals = l.depths.map(d => d.values.mean == null ? null : d.values.mean / f);
+                return '<tr><td>' + NAMES[l.name] + '</td>' + vals.map(v => '<td>' + fmt(v, 2) + '</td>').join('') + '<td>' + l.unit_measure.target_units + '</td></tr>';
+            });
+            $('soilRows').innerHTML = rows.length && r.properties.layers.some(l => l.depths[0].values.mean != null) ? rows.join('')
+                : '<tr><td colspan="5">No soil data for this point (water, rock or built-up area).</td></tr>';
+        } catch (e) { $('soilRows').innerHTML = '<tr><td colspan="5">SoilGrids did not answer (' + e.message + '). It is sometimes busy; try again in a minute.</td></tr>'; }
+    }
+
+    const WB = [['AG.LND.AGRI.ZS', 'Agricultural land (% of land area)', 1], ['AG.LND.ARBL.ZS', 'Arable land (% of land area)', 1],
+        ['AG.LND.IRIG.AG.ZS', 'Irrigated land (% of agricultural land)', 1], ['AG.YLD.CREL.KG', 'Cereal yield (kg per hectare)', 0],
+        ['AG.PRD.CREL.MT', 'Cereal production (tonnes)', 0], ['AG.CON.FERT.ZS', 'Fertilizer use (kg per hectare of arable land)', 1],
+        ['NV.AGR.TOTL.ZS', 'Agriculture, forestry and fishing (% of GDP)', 1], ['SL.AGR.EMPL.ZS', 'Employment in agriculture (% of jobs)', 1],
+        ['ER.H2O.FWAG.ZS', 'Water withdrawn for agriculture (% of total)', 1], ['AG.PRD.FOOD.XD', 'Food production index (2014-2016 = 100)', 1]];
+    async function loadCountry() {
+        const c = $('wbCountry').value;
+        $('wbRows').innerHTML = '<tr><td colspan="3">Loading World Bank data…</td></tr>';
+        const rows = await Promise.all(WB.map(async ([id, name, d]) => {
+            try {
+                const r = await json('https://api.worldbank.org/v2/country/' + c + '/indicator/' + id + '?format=json&mrnev=1');
+                const v = r[1] && r[1][0];
+                return '<tr><td>' + name + '</td><td>' + (v ? fmt(v.value, d) : 'not reported') + '</td><td>' + (v ? v.date : '') + '</td></tr>';
+            } catch (e) { return '<tr><td>' + name + '</td><td>unavailable</td><td></td></tr>'; }
+        }));
+        $('wbRows').innerHTML = rows.join('');
+    }
+
+    $('find').addEventListener('click', find);
+    $('place').addEventListener('keydown', e => { if (e.key === 'Enter') find(); });
+    ['crop', 'ha', 'eff', 'irr'].forEach(id => $(id).addEventListener('input', drawWater));
+    $('wbCountry').addEventListener('change', loadCountry);
+    try { const s = JSON.parse(localStorage.getItem('fruitful.agri.tools.place') || 'null'); if (s) { $('place').value = s.place; $('country').value = s.country; } } catch (e) {}
+    find(); loadCountry();
+    </script>
+    <script src="/omnigrid-app.js"></script>
+</body>
+</html>

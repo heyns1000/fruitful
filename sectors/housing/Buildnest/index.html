@@ -966,10 +966,11 @@
             // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
+                    const id = this.getAttribute('href').slice(1);
+                    const target = id && document.getElementById(id);
+                    if (!target) return; // bare "#": leave it to the app router
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    target.scrollIntoView({ behavior: 'smooth' });
                 });
             });
         });

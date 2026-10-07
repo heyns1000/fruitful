@@ -634,7 +634,7 @@
             <a href="/sectors/mining/index.html#treaty" class="transition-colors duration-200">Treaty</a>
             <a href="/sectors/mining/index.html#vaultmesh" class="transition-colors duration-200">VaultMesh</a>
             <a href="/sectors/mining/index.html#about" class="transition-colors duration-200">About</a>
-            <a href="/sectors/mining/MineNest/NestTrack/auth.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200">Sign Up</a>
+            <a href="../../signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200">Sign Up</a>
         </nav>
     </header>
 
@@ -649,13 +649,13 @@
                 Powering the future of mining and resource management with intelligent protocols and secure data flows.
             </p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="/sectors/mining/MineNest/NestTrack/dashboard.html" class="cta-button">
+                <a href="heartbeat_dashboard.html" class="cta-button">
                     Explore MineNest™ Dashboard
                 </a>
-                <a href="/sectors/mining/MineNest/NestTrack/auth.html" class="cta-button">
+                <a href="../../admin-login.html" class="cta-button">
                     MineNest™ Login
                 </a>
-                <a href="/sectors/mining/MineNest/NestTrack/contact.html" class="cta-button">
+                <a href="../../contact-support.html" class="cta-button">
                     Contact Mining Support
                 </a>
             </div>
@@ -747,7 +747,7 @@
             <div class="w-full h-[800px] border-4 rounded-xl shadow-2xl overflow-hidden">
                 <iframe
                     id="vault-frame"
-                    src="/sectors/mining/MineNest/NestTrack/dashboard.html"
+                    src="heartbeat_dashboard.html"
                     class="w-full h-full rounded-xl"
                     frameborder="0"
                     title="MineNest Core Node Terminal"
@@ -757,18 +757,18 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/index.html', this)" class="terminal-btn p-6">🏠 Homepage</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/dashboard.html', this)" class="terminal-btn p-6">📦 Dashboard</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/pricing.html', this)" class="terminal-btn p-6">💳 Pricing</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/products.html', this)" class="terminal-btn p-6">🛒 Products</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/about.html', this)" class="terminal-btn p-6">📘 About</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/features.html', this)" class="terminal-btn p-6">🧠 Features</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/contact.html', this)" class="terminal-btn p-6">☎ Contact</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/licensing.html', this)" class="terminal-btn p-6">🪙 Licensing</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/terms.html', this)" class="terminal-btn p-6">📑 Terms</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/clauses.html', this)" class="terminal-btn p-6">📜 Clauses</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/auth.html', this)" class="terminal-btn p-6">🔓 Auth/Login</button>
-            <button onclick="loadTerminal('/sectors/mining/MineNest/NestTrack/metrics.html', this)" class="terminal-btn p-6">📈 Metrics</button>
+            <button onclick="loadTerminal('index.html', this)" class="terminal-btn p-6">🏠 Homepage</button>
+            <button onclick="loadTerminal('heartbeat_dashboard.html', this)" class="terminal-btn p-6">📦 Dashboard</button>
+            <button onclick="loadTerminal('hub:pricing', this)" class="terminal-btn p-6">💳 Pricing</button>
+            <button onclick="loadTerminal('hub:products', this)" class="terminal-btn p-6">🛒 Products</button>
+            <button onclick="loadTerminal('quick-view.html', this)" class="terminal-btn p-6">📘 About</button>
+            <button onclick="loadTerminal('hub:features', this)" class="terminal-btn p-6">🧠 Features</button>
+            <button onclick="loadTerminal('../../contact-support.html', this)" class="terminal-btn p-6">☎ Contact</button>
+            <button onclick="loadTerminal('licensing.html', this)" class="terminal-btn p-6">🪙 Licensing</button>
+            <button onclick="loadTerminal('../../terms-of-service.html', this)" class="terminal-btn p-6">📑 Terms</button>
+            <button onclick="loadTerminal('tokenized-clauses.html', this)" class="terminal-btn p-6">📜 Clauses</button>
+            <button onclick="loadTerminal('../../admin-login.html', this)" class="terminal-btn p-6">🔓 Auth/Login</button>
+            <button onclick="loadTerminal('node-reports.html', this)" class="terminal-btn p-6">📈 Metrics</button>
         </div>
     </section>
 
@@ -941,7 +941,7 @@
             <p class="text-xl mb-10">
                 Join the FAA™ Mining & Resources community today and start your journey towards enhanced efficiency, secure data, and sustainable growth.
             </p>
-            <a href="/sectors/mining/MineNest/NestTrack/auth.html" class="cta-button">
+            <a href="../../signup.html" class="cta-button">
                 Get Started with MineNest™
             </a>
         </div>
@@ -955,7 +955,25 @@
         // Function to load terminal content into the iframe
         function loadTerminal(url, clickedButton) {
             const vaultFrame = document.getElementById('vault-frame');
-            vaultFrame.src = url;
+            // NestTrack's own pages were never built (MineNest exists only as React components in
+            // FruitfulPlanetChange), so pricing, products and features open a hub of the real mining brand pages.
+            const HUBS = {
+                pricing: ['Mining pricing', [['mineforge-pricing.html', 'MineForge™ Pricing'], ['minerva-pricing.html', 'Minerva™ Pricing'], ['orexcel-pricing.html', 'OreXcel™ Pricing'], ['digium-pricing.html', 'Digium™ Pricing'], ['mineralvision-pricing.html', 'MineralVision™ Pricing'], ['autoborn-pricing.html', 'AutoBorn™ Pricing']]],
+                products: ['Mining products', [['mineforge-dashboard.html', 'MineForge™'], ['minerva-dashboard.html', 'Minerva™'], ['orexcel-dashboard.html', 'OreXcel™'], ['digium-dashboard.html', 'Digium™'], ['mineralvision-dashboard.html', 'MineralVision™'], ['autoborn-dashboard.html', 'AutoBorn™'], ['sovereign-dashboard.html', 'Sovereign dashboard']]],
+                features: ['Mining features', [['mineforge-pulse.html', 'MineForge™ pulse'], ['minerva-pulse.html', 'Minerva™ pulse'], ['orexcel-pulse.html', 'OreXcel™ pulse'], ['digium-pulse.html', 'Digium™ pulse'], ['mineralvision-pulse.html', 'MineralVision™ pulse'], ['node-reports.html', 'Node reports'], ['glup-ethics.html', 'GLUP ethics']]]
+            };
+            if (url.indexOf('hub:') === 0) {
+                const hub = HUBS[url.slice(4)];
+                const base = location.href.replace(/[^/]*([?#].*)?$/, '');
+                vaultFrame.removeAttribute('src');
+                vaultFrame.srcdoc = '<!doctype html><meta charset="utf-8"><body style="margin:0;padding:32px;font:16px/1.5 Inter,system-ui,sans-serif;background:#f8fafc;color:#0f172a">' +
+                    '<h2 style="margin:0 0 16px">' + hub[0] + '</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">' +
+                    hub[1].map(function (l) { return '<a href="' + base + l[0] + '" style="display:block;padding:16px;border-radius:12px;background:#fff;border:1px solid #e2e8f0;color:#1d4ed8;font-weight:600;text-decoration:none">' + l[1] + ' →</a>'; }).join('') +
+                    '</div></body>';
+            } else {
+                vaultFrame.removeAttribute('srcdoc');
+                vaultFrame.src = url;
+            }
             // Remove ring from all buttons and add to the clicked one
             document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring', 'ring-blue-500'));
             if (clickedButton) {
