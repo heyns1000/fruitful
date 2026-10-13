@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makers' Gallery · Fruitful™ OmniGrid™</title>
+    <meta name="description" content="The real work of the ecosystem: Sam Fox™ illustrations, Banimal™ items, Grand Machadlela's paintings and Margaret's handmade Fruitful Kids pieces.">
+    <link rel="stylesheet" href="brand/samfox-ci.css">
+    <style>
+        :root { color-scheme: light dark; }
+        * { box-sizing: border-box; }
+        body { margin: 0; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        header.main-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color-light); }
+        .bar { display: flex; align-items: center; gap: 12px; height: 60px; }
+        .logo-fruitful { font-size: 1.3rem; font-weight: 700; text-decoration: none; color: inherit; }
+        .bar nav { margin-left: auto; display: flex; gap: 4px; overflow-x: auto; }
+        .bar nav a { text-decoration: none; color: var(--muted-text-light); font-size: .9rem; padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
+        .bar nav a:hover { background: var(--soft-light); color: var(--text-color-light); }
+        .hero { padding: 56px 0 28px; }
+        .kicker { margin: 0 0 8px; font-size: .78rem; font-weight: 600; text-transform: uppercase; }
+        h1 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; }
+        .lead { margin: 0; max-width: 680px; font-size: 1.08rem; color: var(--muted-text-light); }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 0; }
+        .chip { border: 1px solid var(--border-color-light); background: var(--card-bg-light); color: inherit; border-radius: 999px; padding: 8px 14px; font: 600 .88rem var(--sf-display); cursor: pointer; text-decoration: none; }
+        .chip b { color: var(--primary-color); margin-left: 4px; }
+        section.set { padding: 40px 0 8px; border-top: 1px solid var(--border-color-light); }
+        .set-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 18px; }
+        .set-head h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); }
+        .set-head p { margin: 0; color: var(--muted-text-light); max-width: 640px; font-size: .95rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+        .tile { all: unset; cursor: zoom-in; display: flex; flex-direction: column; background: var(--card-bg-light); border-radius: 16px; overflow: hidden;
+                box-shadow: 0 1px 0 var(--sf-ink-line), 0 10px 26px -20px rgba(35,31,32,.55); transition: transform .18s ease, box-shadow .18s ease; }
+        .tile:hover, .tile:focus-visible { transform: translateY(-3px); box-shadow: 0 1px 0 var(--sf-ink-line), 0 18px 34px -20px rgba(35,31,32,.6); }
+        .tile:focus-visible { outline: 2px solid var(--sf-teal); outline-offset: 2px; }
+        .ph { aspect-ratio: 1 / 1; background: var(--sf-white); display: grid; place-items: center; overflow: hidden; }
+        .ph img { width: 100%; height: 100%; object-fit: contain; }
+        .set[data-fill] .ph img { object-fit: cover; }
+        .cap { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; }
+        .cap b { font: 600 .92rem/1.3 var(--sf-display); }
+        .cap span { font-size: .8rem; color: var(--muted-text-light); }
+        .cap .price { color: var(--primary-color); font-weight: 600; }
+        .lb { position: fixed; inset: 0; z-index: 10002; background: rgba(35,31,32,.92); display: grid; place-items: center; padding: 16px; }
+        .lb[hidden] { display: none; }
+        .lb figure { margin: 0; max-width: min(1000px, 100%); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .lb img { max-width: 100%; max-height: 78vh; border-radius: 12px; background: #fff; }
+        .lb figcaption { color: var(--sf-cream); text-align: center; font-size: .95rem; }
+        .lb figcaption small { display: block; opacity: .7; margin-top: 2px; }
+        .lb button { position: fixed; border: 0; background: rgba(251,244,228,.14); color: var(--sf-cream); width: 44px; height: 44px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; }
+        .lb .x { top: 16px; right: 16px; } .lb .p { left: 16px; top: 50%; } .lb .n { right: 16px; top: 50%; }
+        .note { margin: 40px 0; padding: 18px 20px; border-radius: 16px; background: var(--soft-light); font-size: .9rem; color: var(--muted-text-light); }
+        .dark-mode .note { background: var(--soft-dark); }
+        .dark-mode .tile, .dark-mode .chip { background: var(--card-bg-dark); }
+        @media (max-width: 520px) { .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } .bar nav { display: none; } }
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="wrap bar">
+        <a class="logo-fruitful" href="ecosystem.html">Fruitful™</a>
+        <nav aria-label="Main">
+            <a href="ecosystem.html">Ecosystem</a>
+            <a href="checkout.html">Shop</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="contact-support.html">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="hero">
+        <p class="kicker">Makers' Gallery</p>
+        <h1>The real work behind Fruitful™</h1>
+        <p class="lead">Every picture here is a real piece by a real maker: Sam Fox™'s illustrations, the Banimal™ range, Grand Machadlela's paintings and Margaret's handmade Fruitful Kids clothes. Nothing on this page is a placeholder or AI art.</p>
+        <div class="chips" id="chips"></div>
+    </div>
+    <div id="sets"><p class="lead">Loading the gallery…</p></div>
+    <p class="note" id="note"></p>
+</main>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Artwork">
+    <button class="x" id="lbx" aria-label="Close">✕</button>
+    <button class="p" id="lbp" aria-label="Previous">‹</button>
+    <button class="n" id="lbn" aria-label="Next">›</button>
+    <figure><img id="lbimg" alt=""><figcaption id="lbcap"></figcaption></figure>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var zar = function (n) { return 'R ' + Number(n).toLocaleString('en-ZA', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); };
+    var FILL = { 'grand-paintings': 1, 'banimal-prints': 1, 'samfox-originals': 1 };
+    var all = [], cur = 0, last = null;
+    var lb = document.getElementById('lb'), img = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+
+    function by(it) { return it.artist || (it.maker ? 'handmade by ' + it.maker : 'Banimal™'); }
+    function meta(it) {
+        var m = [by(it)];
+        if (it.medium) m.push(it.medium);
+        if (it.colour) m.push(it.colour);
+        if (it.sizes) m.push(it.sizes);
+        return m.join(' · ');
+    }
+    function show(i) {
+        cur = (i + all.length) % all.length; var it = all[cur];
+        img.src = it.file; img.alt = it.title + ', ' + by(it);
+        cap.innerHTML = '<b>' + esc(it.title) + '</b><small>' + esc(meta(it)) + (it.priceZAR ? ' · ' + zar(it.priceZAR) : '') + '</small>';
+    }
+    function open(i) { last = document.activeElement; show(i); lb.hidden = false; document.getElementById('lbx').focus(); }
+    function close() { lb.hidden = true; if (last) last.focus(); }
+    document.getElementById('lbx').onclick = close;
+    document.getElementById('lbp').onclick = function () { show(cur - 1); };
+    document.getElementById('lbn').onclick = function () { show(cur + 1); };
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+    addEventListener('keydown', function (e) {
+        if (lb.hidden) return;
+        if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1);
+    });
+
+    fetch('gallery/gallery.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (g) {
+        var html = '', chips = '';
+        g.sets.forEach(function (s) {
+            var its = g.items.filter(function (i) { return i.set === s.id; });
+            if (!its.length) return;
+            chips += '<a class="chip" href="#' + s.id + '">' + esc(s.title) + '<b>' + its.length + '</b></a>';
+            html += '<section class="set" id="' + s.id + '"' + (FILL[s.id] ? ' data-fill' : '') + '><div class="set-head"><h2>' + esc(s.title) + '</h2><p>' + esc(s.credit) + '</p></div><div class="grid">';
+            its.forEach(function (it) {
+                var i = all.length; all.push(it);
+                html += '<button class="tile" type="button" data-i="' + i + '"><span class="ph"><img loading="lazy" decoding="async" src="' + esc(it.file) + '" alt="' + esc(it.title + ', ' + by(it)) + '"></span>' +
+                    '<span class="cap"><b>' + esc(it.title) + '</b><span>' + esc(meta(it)) + '</span>' + (it.priceZAR ? '<span class="price">' + zar(it.priceZAR) + '</span>' : '') + '</span></button>';
+            });
+            html += '</div></section>';
+        });
+        document.getElementById('chips').innerHTML = chips;
+        document.getElementById('sets').innerHTML = html;
+        document.querySelectorAll('.tile').forEach(function (t) { t.addEventListener('click', function () { open(+t.dataset.i); }); });
+        document.getElementById('note').textContent = g.items.length + ' pieces. ' + g.rule + ' Updated ' + g.generated_at.slice(0, 10) + '.';
+        if (location.hash) { var el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }
+    }).catch(function () {
+        document.getElementById('sets').innerHTML = '<p class="lead">The gallery could not be loaded right now.</p>';
+    });
+})();
+</script>
+<script src="omnigrid-app.js"></script>
+</body>
+</html>
