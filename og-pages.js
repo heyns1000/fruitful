@@ -424,7 +424,7 @@
                     '<label>Email<input name="email" type="email" required maxlength="200" autocomplete="email" ' + inp + '></label>' +
                     '<label>Topic<select name="topic" ' + inp + '><option>General question</option><option>Sales and licensing</option><option>Orders and delivery</option><option>Partnerships</option><option>Technical support</option><option>Press</option></select></label>' +
                     '<label>Message<textarea name="message" required minlength="5" maxlength="4000" rows="6" ' + inp + '></textarea></label>' +
-                    '<button type="submit" style="padding:12px 22px;border:0;border-radius:999px;background:#0071e3;color:#fff;font-weight:600;cursor:pointer">Send message</button>' +
+                    '<button type="submit" class="cf-send" style="padding:12px 22px;border:0;border-radius:999px;background:#231F20;color:#FBF4E4;font-weight:600;cursor:pointer">Send message</button>' +
                     '<p id="contact-note" class="muted" role="status" style="margin-top:10px"></p></form>', 'wide'),
                 card('Access requests', '<p class="muted">For portal access tiers (Family, Shareholder, Service Provider, Loyalty):</p>' + pageLink('admin/admin-portal-approval.html', '🔑 Portal Access Approval →')),
                 card('Shop and orders', list([pageLink('checkout.html', '🛒 Checkout'), pageLink('banimal-connector.html', '🦊 Banimal™')]))];
@@ -790,7 +790,7 @@
         if (cfg.kind === 'hat') hatWire();
     });
     function hatWire() {
-        var st = document.createElement('style'); st.textContent = '.hat-bar{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}.hat-l{min-width:2.2em;text-align:center;padding:6px 8px;border-radius:10px;border:1px solid var(--border-color-light);text-decoration:none;font-weight:700}.dark-mode .hat-l{border-color:var(--border-color-dark)}.hat-l.on{background:var(--primary-color);color:#fff;border-color:var(--primary-color)}.hat-q{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color-light);font:inherit;background:transparent;color:inherit}.dark-mode .hat-q{border-color:var(--border-color-dark)}'; document.head.appendChild(st);
+        var st = document.createElement('style'); st.textContent = '.hat-bar{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}.hat-l{min-width:2.2em;text-align:center;padding:6px 8px;border-radius:10px;border:1px solid var(--border-color-light);text-decoration:none;font-weight:700}.dark-mode .hat-l{border-color:var(--border-color-dark)}.hat-l.on{background:var(--primary-color);color:var(--bg-color-light);border-color:var(--primary-color)}.hat-q{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color-light);font:inherit;background:transparent;color:inherit}.dark-mode .hat-q{border-color:var(--border-color-dark)}'; document.head.appendChild(st);
         window.addEventListener('hashchange', function () { location.reload(); });
         var q = document.getElementById('hat-q'), out = document.getElementById('hat-r'), idx = null;
         if (!q) return;

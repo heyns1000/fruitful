@@ -159,26 +159,60 @@
         'box-shadow:0 12px 32px rgba(0,0,0,.18);opacity:0;transform:translateY(-4px);',
         'transition:opacity .15s ease,transform .15s ease;pointer-events:none}',
         '.og-card.on{opacity:1;transform:none;pointer-events:auto}',
-        '.og-card{background:#fff;color:#1d1d1f;border:1px solid rgba(0,0,0,.08)}',
-        '.og-card.dark{background:#1c1c1e;color:#f5f5f7;border-color:rgba(255,255,255,.12)}',
+        '.og-card{background:#fff;color:#231F20;border:1px solid rgba(35,31,32,.12)}',
+        '.og-card.dark{background:#231F20;color:#FBF4E4;border-color:rgba(251,244,228,.18)}',
         '.og-card h4{margin:0 0 2px;font-size:12px;font-weight:600;letter-spacing:.02em;opacity:.7}',
         '.og-card .og-head{font-size:15px;font-weight:600;margin:0 0 8px;display:flex;gap:8px;align-items:baseline}',
         '.og-card .og-led{flex:none;width:8px;height:8px;border-radius:50%;transform:translateY(-1px)}',
         '.og-card ul{margin:0 0 8px;padding-left:16px}.og-card li{margin:1px 0}',
         '.og-card .og-foot{display:flex;justify-content:space-between;font-size:11px;opacity:.65}',
-        '.og-card a{color:#0071e3;text-decoration:none;font-weight:600}',
-        '.og-card.dark a{color:#64a8ff}',
+        '.og-card a{color:#577D60;text-decoration:none;font-weight:600}',
+        '.og-card.dark a{color:#A7DACB}',
         '.og-view{position:fixed;inset:0;z-index:10001;display:none;flex-direction:column;background:rgba(0,0,0,.55)}',
         '.og-view.on{display:flex}',
-        '.og-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#111;color:#f5f5f7;',
+        '.og-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#231F20;color:#FBF4E4;',
         'font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}',
         '.og-bar .og-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}',
-        '.og-bar button,.og-bar a{background:#2c2c2e;color:#f5f5f7;border:0;border-radius:8px;padding:6px 12px;',
+        '.og-bar button,.og-bar a{background:rgba(251,244,228,.12);color:#FBF4E4;border:0;border-radius:8px;padding:6px 12px;',
         'font:inherit;cursor:pointer;text-decoration:none;white-space:nowrap}',
-        '.og-view iframe{flex:1;width:100%;border:0;background:#fff}',
+        '.og-view iframe{flex:1;width:100%;border:0;background:#FBF4E4}',
         '@media (max-width:600px){.og-bar .og-ext-label{display:none}}'
     ].join('');
     document.head.appendChild(css);
+
+    // ---------- Sam Fox™ CI master (Banimal Connector) ----------
+    // brand/samfox-ci.css is the one visual source of truth; it loads after the page's own styles so its tokens win.
+    // The OmniGrid pulse noodle is the owner's original: the colours it draws with are read now and pinned on the rope,
+    // so the CI tokens never reach its markup, CSS or animation.
+    var BRAND = new URL('brand/', SCRIPT_SRC).href;
+    (function () {
+        if (document.querySelector('link[data-sf-ci]')) return;
+        var rope = document.querySelector('.pulse-grid-noodle-rope'), pin = '';
+        if (rope) {
+            var cs = getComputedStyle(rope);
+            ['--primary-color', '--secondary-color', '--muted-text-light', '--muted-text-dark'].forEach(function (k) {
+                var v = cs.getPropertyValue(k).trim(); if (v) pin += k + ':' + v + ';';
+            });
+        }
+        if (pin) { var keep = document.createElement('style'); keep.setAttribute('data-noodle-keep', ''); keep.textContent = '.pulse-grid-noodle-rope{' + pin + '}'; }
+        var font = document.createElement('link');
+        font.rel = 'stylesheet'; font.href = 'https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&display=swap';
+        var ci = document.createElement('link');
+        ci.rel = 'stylesheet'; ci.href = BRAND + 'samfox-ci.css'; ci.setAttribute('data-sf-ci', '');
+        document.head.appendChild(font); document.head.appendChild(ci);
+        if (keep) document.head.appendChild(keep);
+    })();
+    // the canonical governance strip and bottom-right identity field: the pinned ink marks on cream, unchanged
+    function governance() {
+        if (window.top !== window || document.querySelector('.sf-governance') || !document.body) return;
+        var g = document.createElement('div');
+        g.className = 'sf-governance'; g.setAttribute('role', 'contentinfo'); g.setAttribute('aria-label', 'Brand and legal');
+        g.innerHTML = '<div class="sf-row"><span class="sf-legal"><b>Fruitful™</b> · Banimal™ · Sam Fox™ · a Fruitful Shops (Pty) Ltd ecosystem</span>' +
+            '<span class="sf-id"><img src="' + BRAND + 'banimal-logo-ink.png" alt="Banimal™" width="56" height="28">' +
+            '<img class="sf-icon" src="' + BRAND + 'samfox-icon-verified-ink.png" alt="Sam Fox™" width="30" height="30"></span></div>';
+        document.body.appendChild(g);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', governance); else governance();
 
     // ---------- in-app viewer ----------
     var view = document.createElement('div');
@@ -373,11 +407,12 @@
     // A control with no screen of its own: a styled header naming it, chips for the pages that already cover it,
     // and the best of those pages shown inline below (chips switch it; "Open page" gives it the whole viewer).
     var FP_CSS = [
-        ':root{--bg:#f5f5f7;--card:#fff;--fg:#1d1d1f;--muted:#6e6e73;--line:#e8e8ed;--chip:#fff;--chip-on:#0071e3;--accent:#0071e3}',
-        '.dark{--bg:#111113;--card:#1c1c1e;--fg:#f5f5f7;--muted:#a0a0a5;--line:#3a3a3e;--chip:#2a2a2e;--chip-on:#0a84ff;--accent:#64a8ff}',
+        ':root{--bg:#FBF4E4;--card:#fff;--fg:#231F20;--muted:rgba(35,31,32,.66);--line:rgba(35,31,32,.13);--chip:#fff;--chip-on:#577D60;--accent:#577D60}',
+        '.dark{--bg:#231F20;--card:#2f2a2b;--fg:#FBF4E4;--muted:rgba(251,244,228,.68);--line:rgba(251,244,228,.18);--chip:#2f2a2b;--chip-on:#1E9F97;--accent:#A7DACB}',
         '*{box-sizing:border-box}html,body{height:100%}',
         'body{margin:0;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);',
-        'font:15px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}',
+        'font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}',
+        'h1{font-family:Jost,Futura,"Century Gothic",-apple-system,sans-serif}',
         '.fp{flex:none;padding:16px 16px 12px}',
         '.fp-card{max-width:1100px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px;',
         'box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}',
@@ -545,7 +580,7 @@
     // ---------- sector terminals ----------
     function stationPanel(title, station, data, intro) {
         var dark = isDark();
-        var bg = dark ? '#0d0d0d' : '#f5f5f7', fg = dark ? '#f5f5f7' : '#1d1d1f', card = dark ? '#1c1c1e' : '#fff';
+        var bg = dark ? '#231F20' : '#FBF4E4', fg = dark ? '#FBF4E4' : '#231F20', card = dark ? '#2f2a2b' : '#fff';
         var body;
         if (!data) {
             body = '<p>Global snapshot unavailable right now.</p>';
@@ -678,8 +713,8 @@
     function conceptGuard() {
         var bar = document.createElement('div');
         bar.setAttribute('role', 'note');
-        bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#111;color:#f5f5f7;font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between';
-        bar.innerHTML = '<span>🧪 <b>Concept preview</b> · forms on this page are not connected yet; nothing you type is sent.</span><a href="' + esc(new URL('ecosystem.html', SCRIPT_SRC).href) + '" style="color:#64a8ff;text-decoration:none;font-weight:600">🌍 Ecosystem</a>';
+        bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#231F20;color:#FBF4E4;font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:8px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between';
+        bar.innerHTML = '<span>🧪 <b>Concept preview</b> · forms on this page are not connected yet; nothing you type is sent.</span><a href="' + esc(new URL('ecosystem.html', SCRIPT_SRC).href) + '" style="color:#A7DACB;text-decoration:none;font-weight:600">🌍 Ecosystem</a>';
         document.body.insertBefore(bar, document.body.firstChild);
         document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
         document.querySelectorAll('input[type="password"]').forEach(function (i) { i.disabled = true; i.placeholder = 'Not connected in the concept preview'; });
