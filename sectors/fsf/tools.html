@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥦 Food, Soil &amp; Farming — FSF Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .num { font-variant-numeric: tabular-nums; }
+        .tool { scroll-margin-top: 16px; }
+        th, td { padding: 6px 8px; text-align: left; vertical-align: top; }
+        tbody tr:nth-child(odd) { background: #f7fee7; }
+        .bad { color: #b91c1c; font-weight: 600; }
+        .ok { color: #15803d; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <header class="bg-white shadow">
+        <div class="max-w-6xl mx-auto px-4 py-5 flex flex-wrap justify-between items-center gap-3">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-lime-700">🥦 Food, Soil &amp; Farming — FSF Tools</h1>
+                <p class="text-sm text-gray-500">Crop rotation · Harvest &amp; yield log · Soil fit for crops. Uses the farm register shared with 🌱 Agriculture.</p>
+            </div>
+            <nav class="flex flex-wrap gap-2 text-sm font-semibold">
+                <a href="#rotation" class="px-3 py-2 rounded bg-lime-700 text-white">Rotation</a>
+                <a href="#harvest" class="px-3 py-2 rounded bg-amber-700 text-white">Harvest log</a>
+                <a href="#soil-fit" class="px-3 py-2 rounded bg-yellow-800 text-white">Soil fit</a>
+                <a href="dashboard.html" class="px-3 py-2 rounded bg-gray-700 text-white">FSF Dashboard</a>
+                <a href="../agriculture/dashboard.html" class="px-3 py-2 rounded bg-green-700 text-white">🌱 Farm register</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 space-y-8">
+        <p id="farmsNote" class="text-sm text-gray-600"></p>
+
+        <section id="rotation" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-lime-700 mb-1">Crop rotation planner</h2>
+            <p class="text-sm text-gray-500 mb-4">Pick the crops you want to grow. Each field gets a four-season plan that moves the crop families round, so no field carries the same family two seasons running, legumes come before the hungry cereals, and potatoes and tomatoes come back only once in four seasons.</p>
+            <div class="grid sm:grid-cols-3 gap-3 mb-3">
+                <label class="text-sm">Fields (one per line, or taken from your farms)
+                    <textarea id="fields" rows="4" class="border rounded px-2 py-2 w-full" placeholder="North block&#10;River camp&#10;Pivot 1"></textarea></label>
+                <div class="text-sm sm:col-span-2">Crops to grow
+                    <div id="cropPick" class="grid grid-cols-2 sm:grid-cols-3 gap-1 mt-1"></div></div>
+            </div>
+            <button id="plan" class="px-4 py-2 rounded bg-lime-700 text-white font-semibold">Make the plan</button>
+            <div class="overflow-x-auto mt-4"><table class="w-full text-sm"><thead class="bg-lime-700 text-white" id="rotHead"></thead><tbody id="rotRows"></tbody></table></div>
+            <p class="text-xs text-gray-500 mt-2">Rotation rules are general agronomy guidance (crop-family break, legume before cereal, three-season break for Solanaceae). Check local advice for disease pressure on your farm.</p>
+        </section>
+
+        <section id="harvest" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-amber-700 mb-1">Harvest &amp; yield log</h2>
+            <p class="text-sm text-gray-500 mb-4">Record each harvest. Yield per hectare is worked out for you. Saved in this browser; download it as CSV any time.</p>
+            <form id="hForm" class="grid sm:grid-cols-6 gap-2 mb-3 text-sm">
+                <input id="hDate" type="date" required class="border rounded px-2 py-2">
+                <input id="hFarm" list="farmList" placeholder="Farm or field" required class="border rounded px-2 py-2">
+                <input id="hCrop" placeholder="Crop" required class="border rounded px-2 py-2">
+                <input id="hQty" type="number" min="0" step="any" placeholder="Quantity" required class="border rounded px-2 py-2 num">
+                <select id="hUnit" class="border rounded px-2 py-2"><option value="t">tonnes</option><option value="kg">kg</option></select>
+                <input id="hHa" type="number" min="0" step="any" placeholder="Area (ha)" class="border rounded px-2 py-2 num">
+                <button class="px-4 py-2 rounded bg-amber-700 text-white font-semibold sm:col-span-1">Add</button>
+                <datalist id="farmList"></datalist>
+            </form>
+            <div class="overflow-x-auto"><table class="w-full text-sm num">
+                <thead class="bg-amber-700 text-white"><tr><th>Date</th><th>Farm / field</th><th>Crop</th><th>Harvest</th><th>Area</th><th>Yield</th><th></th></tr></thead>
+                <tbody id="hRows"></tbody><tfoot id="hTotal" class="font-bold"></tfoot>
+            </table></div>
+            <button id="hCsv" class="mt-3 px-3 py-2 rounded bg-gray-700 text-white text-sm">Download CSV</button>
+        </section>
+
+        <section id="soil-fit" class="tool bg-white rounded-xl shadow p-5">
+            <h2 class="text-xl font-bold text-yellow-800 mb-1">Soil fit for crops</h2>
+            <p class="text-sm text-gray-500 mb-4">Topsoil pH, organic carbon and texture at a farm (ISRIC SoilGrids), checked against the pH range each crop prefers.</p>
+            <div class="flex flex-wrap gap-2 mb-3">
+                <select id="sFarm" class="border rounded px-3 py-2"></select>
+                <input id="sPlace" class="border rounded px-3 py-2 flex-1 min-w-[180px]" placeholder="…or a town, e.g. Ceres, ZA">
+                <button id="sGo" class="px-4 py-2 rounded bg-yellow-800 text-white font-semibold">Check soil</button>
+            </div>
+            <p id="sWhere" class="text-sm text-gray-600 mb-2"></p>
+            <div class="overflow-x-auto"><table class="w-full text-sm num">
+                <thead class="bg-yellow-800 text-white"><tr><th>Crop</th><th>Preferred pH</th><th>Your topsoil pH</th><th>Fit</th><th>What to do</th></tr></thead>
+                <tbody id="sRows"></tbody>
+            </table></div>
+            <p class="text-xs text-gray-500 mt-2">pH ranges: general extension guidance (pH in water). SoilGrids is modelled at 250 m; confirm with a lab soil test before liming or acidifying.</p>
+        </section>
+
+        <p class="text-xs text-gray-500">Sources: <a class="underline" href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0) ·
+            <a class="underline" href="https://soilgrids.org" target="_blank" rel="noopener">ISRIC SoilGrids</a> (CC BY 4.0). Part of the
+            <a class="underline" href="index.html">🥦 Food, Soil &amp; Farming</a> family; water need per crop is in <a class="underline" href="../agriculture/tools.html#water">🌱 Agri Tools</a>.</p>
+    </main>
+
+    <script src="../shared/land.js"></script>
+    <script>
+    const L = window.FruitfulLand, $ = id => document.getElementById(id);
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const farms = L.farms();
+    $('farmsNote').innerHTML = farms.length ? farms.length + ' farm' + (farms.length > 1 ? 's' : '') + ' in the shared register: ' + farms.map(f => esc(f.name)).join(', ') + '.'
+        : 'No farms in the shared register yet. <a class="underline" href="../agriculture/dashboard.html">Add your farms</a> once and every farming tool uses them.';
+    $('farmList').innerHTML = farms.map(f => '<option value="' + esc(f.name) + '">').join('');
+
+    // ---------- rotation ----------
+    // family, and its place in the cycle: 0 legume (fixes N) -> 1 cereal (uses N) -> 2 root/fruit -> 3 other / break crop
+    const CROPS = {
+        'Soybeans': ['Legume', 0], 'Dry beans': ['Legume', 0], 'Groundnuts': ['Legume', 0], 'Peas': ['Legume', 0], 'Lucerne': ['Legume', 0],
+        'Maize': ['Cereal (grass)', 1], 'Wheat': ['Cereal (grass)', 1], 'Sorghum': ['Cereal (grass)', 1], 'Oats': ['Cereal (grass)', 1],
+        'Potatoes': ['Nightshade', 2], 'Tomatoes': ['Nightshade', 2], 'Peppers': ['Nightshade', 2],
+        'Cabbage': ['Brassica', 3], 'Canola': ['Brassica', 3], 'Sunflower': ['Daisy', 3], 'Pumpkin': ['Cucurbit', 3], 'Onions': ['Allium', 2]
+    };
+    $('cropPick').innerHTML = Object.keys(CROPS).map((c, i) => '<label class="flex gap-1 items-center"><input type="checkbox" value="' + c + '"' + (['Soybeans', 'Maize', 'Potatoes', 'Cabbage'].includes(c) ? ' checked' : '') + '> ' + c + ' <span class="text-gray-400 text-xs">' + CROPS[c][0] + '</span></label>').join('');
+    $('fields').value = farms.length ? farms.map(f => f.name).join('\n') : 'Field 1\nField 2\nField 3\nField 4';
+    $('plan').addEventListener('click', () => {
+        const picked = [...document.querySelectorAll('#cropPick input:checked')].map(i => i.value);
+        const fields = $('fields').value.split('\n').map(s => s.trim()).filter(Boolean);
+        if (!picked.length || !fields.length) { $('rotRows').innerHTML = '<tr><td>Pick at least one crop and one field.</td></tr>'; return; }
+        const slots = [0, 1, 2, 3].map(g => picked.filter(c => CROPS[c][1] === g));
+        const cycle = slots.map((s, g) => s.length ? s : null).filter(Boolean);   // groups that have crops, in cycle order
+        const seasons = ['Season 1', 'Season 2', 'Season 3', 'Season 4'];
+        $('rotHead').innerHTML = '<tr><th>Field</th>' + seasons.map(s => '<th>' + s + '</th>').join('') + '</tr>';
+        $('rotRows').innerHTML = fields.map((f, fi) => '<tr><td><b>' + esc(f) + '</b></td>' + seasons.map((s, si) => {
+            const group = cycle[(fi + si) % cycle.length];
+            const crop = group[Math.floor((fi + si) / cycle.length) % group.length];
+            return '<td>' + crop + '<br><span class="text-xs text-gray-500">' + CROPS[crop][0] + '</span></td>';
+        }).join('') + '</tr>').join('') +
+        (cycle.length < 3 ? '<tr><td colspan="5" class="bad">Only ' + cycle.length + ' crop famil' + (cycle.length === 1 ? 'y' : 'ies') + ' picked: the same family returns within ' + cycle.length + ' season' + (cycle.length > 1 ? 's' : '') + '. Add a legume or a break crop for a proper rotation.</td></tr>' : '');
+    });
+    $('plan').click();
+
+    // ---------- harvest log ----------
+    const HKEY = 'fruitful.fsf.harvests';
+    const logs = () => L.store(HKEY) || [];
+    $('hDate').value = new Date().toLocaleDateString('en-CA'); // local date, YYYY-MM-DD
+    function drawLog() {
+        const all = logs();
+        let t = 0, ha = 0;
+        $('hRows').innerHTML = all.length ? all.map((h, i) => {
+            const tons = h.unit === 'kg' ? h.qty / 1000 : +h.qty; t += tons; ha += +h.ha || 0;
+            return '<tr><td>' + esc(h.date) + '</td><td>' + esc(h.farm) + '</td><td>' + esc(h.crop) + '</td><td>' + (+h.qty).toLocaleString() + ' ' + h.unit + '</td><td>' + (h.ha ? h.ha + ' ha' : '–') + '</td><td>' + (h.ha ? (tons / h.ha).toFixed(2) + ' t/ha' : '–') + '</td><td><button data-del="' + i + '" class="text-red-700 underline">delete</button></td></tr>';
+        }).join('') : '<tr><td colspan="7">No harvests logged yet.</td></tr>';
+        $('hTotal').innerHTML = all.length ? '<tr><td colspan="3">Total</td><td>' + t.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' t</td><td>' + (ha || '–') + (ha ? ' ha' : '') + '</td><td>' + (ha ? (t / ha).toFixed(2) + ' t/ha' : '') + '</td><td></td></tr>' : '';
+    }
+    $('hForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const all = logs();
+        all.unshift({ date: $('hDate').value, farm: $('hFarm').value.trim(), crop: $('hCrop').value.trim(), qty: +$('hQty').value, unit: $('hUnit').value, ha: +$('hHa').value || 0 });
+        L.store(HKEY, all); $('hQty').value = ''; drawLog();
+    });
+    $('hRows').addEventListener('click', e => {
+        const b = e.target.closest('[data-del]'); if (!b) return;
+        const all = logs(); all.splice(+b.dataset.del, 1); L.store(HKEY, all); drawLog();
+    });
+    $('hCsv').addEventListener('click', () => {
+        const rows = [['date', 'farm', 'crop', 'quantity', 'unit', 'area_ha', 'yield_t_per_ha']].concat(logs().map(h => {
+            const tons = h.unit === 'kg' ? h.qty / 1000 : h.qty; return [h.date, h.farm, h.crop, h.qty, h.unit, h.ha || '', h.ha ? (tons / h.ha).toFixed(3) : ''];
+        }));
+        const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'fsf-harvest-log.csv'; a.click();
+    });
+    drawLog();
+
+    // ---------- soil fit ----------
+    const PH = { 'Maize': [5.8, 7.0], 'Wheat': [6.0, 7.5], 'Soybeans': [6.0, 7.0], 'Sunflower': [6.0, 7.5], 'Sorghum': [5.5, 7.5], 'Dry beans': [6.0, 7.0],
+        'Groundnuts': [5.5, 7.0], 'Potatoes': [5.0, 6.5], 'Tomatoes': [6.0, 6.8], 'Cabbage': [6.0, 7.5], 'Lucerne': [6.5, 7.5], 'Citrus': [6.0, 7.5],
+        'Grapes': [5.5, 7.0], 'Sugarcane': [5.5, 7.5], 'Blueberries': [4.5, 5.5] };
+    $('sFarm').innerHTML = (farms.length ? farms.map(f => '<option value="' + esc(f.location) + '">' + esc(f.name) + ' (' + esc(f.location) + ')</option>').join('') : '') + '<option value="">Type a place →</option>';
+    $('sGo').addEventListener('click', async () => {
+        const name = $('sPlace').value.trim() || $('sFarm').value;
+        if (!name) { $('sWhere').textContent = 'Choose a farm or type a place.'; return; }
+        $('sWhere').textContent = 'Locating ' + name + '…'; $('sRows').innerHTML = '';
+        try {
+            const g = await L.locate(name);
+            if (!g) { $('sWhere').textContent = 'No place called "' + name + '" found.'; return; }
+            $('sWhere').textContent = 'Reading SoilGrids at ' + g.place + '…';
+            const s = await L.soil(g.latitude, g.longitude, ['phh2o', 'soc', 'clay', 'sand', 'silt'], ['0-5cm', '5-15cm', '15-30cm']);
+            if (!s) { $('sWhere').textContent = 'No soil values around ' + g.place + '.'; return; }
+            const ph = (s.values.phh2o['0-5cm'] + s.values.phh2o['5-15cm'] + s.values.phh2o['15-30cm']) / 3;
+            const v = k => s.values[k]['0-5cm'];
+            $('sWhere').innerHTML = '<b>' + esc(g.place) + '</b>' + (s.shifted ? ' (nearest farmland, about 3 km from the centre)' : '') + ': pH ' + ph.toFixed(1) + ' (0–30 cm), organic carbon ' + v('soc').toFixed(1) +
+                ' g/kg, clay ' + v('clay').toFixed(0) + '%, sand ' + v('sand').toFixed(0) + '%, silt ' + v('silt').toFixed(0) + '%.';
+            $('sRows').innerHTML = Object.entries(PH).map(([c, [lo, hi]]) => {
+                const fit = ph < lo ? 'too acid' : ph > hi ? 'too alkaline' : 'good';
+                const todo = ph < lo ? 'lime to raise pH by about ' + (lo - ph).toFixed(1) + ' (lab test first)' : ph > hi ? 'acidifying fertiliser or sulphur; choose tolerant cultivars' : 'no pH correction needed';
+                return '<tr><td>' + c + '</td><td>' + lo + '–' + hi + '</td><td>' + ph.toFixed(1) + '</td><td class="' + (fit === 'good' ? 'ok' : 'bad') + '">' + fit + '</td><td>' + todo + '</td></tr>';
+            }).join('');
+        } catch (e) { $('sWhere').textContent = 'Soil data unavailable right now (' + e.message + '). Try again in a minute.'; }
+    });
+    if (farms.length) $('sGo').click();
+    </script>
+    <script src="/omnigrid-app.js"></script>
+</body>
+</html>

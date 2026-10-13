@@ -35,7 +35,18 @@
     // Pages that concept pages link to by another name.
     var PAGE_ALIASES = { 'owner-login.html': 'faa-owner.html', 'hardware-login.html': 'faa-hardware.html',
         'distributor-login.html': 'faa-distributor.html', 'contact.html': 'contact-support.html', 'global-checkout.html': 'checkout.html',
-        'ci-guide.html': 'banimal-connector.html', 'connector-preview.html': 'banimal-connector.html' };
+        'ci-guide.html': 'banimal-connector.html', 'connector-preview.html': 'banimal-connector.html',
+        // faa.zone and portal.faa.zone are offline (Vercel paused, portal host not answering); their pages live here
+        'payroll.html': 'sectors/payroll/overview.html', 'contact-us.html': 'contact-support.html', 'contact': 'contact-support.html',
+        'support.html': 'contact-support.html', 'about-us.html': 'about-faa.html', 'securesign.html': 'compliance.html',
+        'hiring-homepage.html': 'contact-support.html', 'vault-access.html': 'vault-master.html', 'treaty.html': 'treaty-grid.html' };
+    // Our own domains are served by this app: a link to faa.zone/x opens /x here (with the aliases and fallbacks above).
+    function ownSite(url) {
+        var m = String(url).match(/^(?:https?:)?\/\/(?:www\.|portal\.)?faa\.zone(\/[^#]*)?(#.*)?$/i);
+        if (!m) return null;
+        var p = m[1] || '/';
+        return (p === '/' ? '/index.html' : p) + (m[2] || '');
+    }
     var CONCEPT = !!(document.currentScript && document.currentScript.getAttribute('data-concept'));
     var SHOCK = !!(document.currentScript && document.currentScript.getAttribute('data-shock'));
 
@@ -149,6 +160,7 @@
     }
 
     function openView(url, title, push) {
+        url = ownSite(url) || url;
         viewFrame.removeAttribute('srcdoc');
         viewFrame.src = url;
         if (!/^([a-z]+:)?\/\//i.test(url)) {
@@ -218,6 +230,7 @@
 
     function resolve(href) {
         if (!href || href === '#') return null;
+        href = ownSite(href) || href;
         return routeFor(href) || rewrite(href) || href;
     }
 
