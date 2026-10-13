@@ -399,9 +399,35 @@
                     pageLink('developer-api.html', '🧬 Developer API'), pageLink('contact-support.html', '🆘 Contact Support')]))].concat(p ? p.stations.map(stationCard) : []);
         },
         contact: function () {
-            return [card('Contact', '<p class="muted">Reach the FAA.zone™ team through the official contact and support pages.</p>' +
-                    list([pageLink('https://faa.zone/contact-us.html', '✉️ Contact us'), pageLink('https://faa.zone/support.html', '🆘 Support')])),
-                card('Access requests', '<p class="muted">For portal access tiers (Family, Shareholder, Service Provider, Loyalty):</p>' + pageLink('admin/admin-portal-approval.html', '🔑 Portal Access Approval →'))];
+            // The form sends to the Supabase function contact_message (insert-only; it never reads messages back).
+            setTimeout(function () {
+                var f = document.getElementById('contact-form'), note = document.getElementById('contact-note');
+                if (!f || f.dataset.wired) return;
+                f.dataset.wired = '1';
+                f.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var b = f.querySelector('button'), v = function (n) { return (f.elements[n].value || '').trim(); };
+                    b.disabled = true; note.textContent = 'Sending…';
+                    fetch('https://poyxundlvczciihdrkkk.supabase.co/rest/v1/rpc/contact_message', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', apikey: 'sb_publishable_22UYaaMV00kuaaDGFlEHcg_X-JV8-RO', Authorization: 'Bearer sb_publishable_22UYaaMV00kuaaDGFlEHcg_X-JV8-RO' },
+                        body: JSON.stringify({ p_name: v('name'), p_email: v('email'), p_topic: v('topic'), p_message: v('message'), p_page: location.pathname })
+                    }).then(function (r) {
+                        if (r.ok) { f.reset(); note.textContent = 'Thank you. Your message has reached the FAA.zone™ team.'; }
+                        else note.textContent = r.status === 404 ? 'Messages cannot be received yet: the inbox is being switched on. Please try again soon.' : 'That did not go through. Check your email address and try again.';
+                    }).catch(function () { note.textContent = 'No connection. Please try again.'; }).then(function () { b.disabled = false; });
+                });
+            }, 0);
+            var inp = 'style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color-light);font:inherit;background:transparent;color:inherit;margin:4px 0 12px"';
+            return [card('Send us a message', '<form id="contact-form">' +
+                    '<label>Your name<input name="name" required maxlength="120" autocomplete="name" ' + inp + '></label>' +
+                    '<label>Email<input name="email" type="email" required maxlength="200" autocomplete="email" ' + inp + '></label>' +
+                    '<label>Topic<select name="topic" ' + inp + '><option>General question</option><option>Sales and licensing</option><option>Orders and delivery</option><option>Partnerships</option><option>Technical support</option><option>Press</option></select></label>' +
+                    '<label>Message<textarea name="message" required minlength="5" maxlength="4000" rows="6" ' + inp + '></textarea></label>' +
+                    '<button type="submit" style="padding:12px 22px;border:0;border-radius:999px;background:#0071e3;color:#fff;font-weight:600;cursor:pointer">Send message</button>' +
+                    '<p id="contact-note" class="muted" role="status" style="margin-top:10px"></p></form>', 'wide'),
+                card('Access requests', '<p class="muted">For portal access tiers (Family, Shareholder, Service Provider, Loyalty):</p>' + pageLink('admin/admin-portal-approval.html', '🔑 Portal Access Approval →')),
+                card('Shop and orders', list([pageLink('checkout.html', '🛒 Checkout'), pageLink('banimal-connector.html', '🦊 Banimal™')]))];
         },
         devapi: function (m, p, g) {
             var eps = [
