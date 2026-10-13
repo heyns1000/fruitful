@@ -103,7 +103,7 @@
 
     var THIRD = ['Google Fonts and gstatic (typefaces)', 'jsDelivr, cdnjs and the Tailwind CDN (page libraries)',
         'PayPal (payments on the checkout page only)', 'Google Generative Language / Gemini (terminal chat, only when you use it)',
-        'ExchangeRate-API (currency conversion on pages that show prices)', 'placehold.co (placeholder images)'];
+        'ExchangeRate-API (currency conversion on pages that show prices)'];
     function legalCards(doc) {
         var draft = card('Draft · pending review', '<p class="muted">This page describes how the site works today. It is a draft awaiting review by the owner and legal counsel, and is not yet a binding agreement.</p>');
         var D = {
