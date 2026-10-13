@@ -39,13 +39,62 @@
         // faa.zone and portal.faa.zone are offline (Vercel paused, portal host not answering); their pages live here
         'payroll.html': 'sectors/payroll/overview.html', 'contact-us.html': 'contact-support.html', 'contact': 'contact-support.html',
         'support.html': 'contact-support.html', 'about-us.html': 'about-faa.html', 'securesign.html': 'compliance.html',
-        'hiring-homepage.html': 'contact-support.html', 'vault-access.html': 'vault-master.html', 'treaty.html': 'treaty-grid.html' };
-    // Our own domains are served by this app: a link to faa.zone/x opens /x here (with the aliases and fallbacks above).
+        'hiring-homepage.html': 'contact-support.html', 'vault-access.html': 'vault-master.html', 'treaty.html': 'treaty-grid.html',
+        // footer.global.repo.seedwave.faa.zone, faa.faa.zone and seedwave.faa.zone pages
+        'privacy.html': 'privacy-policy.html', 'terms.html': 'terms-of-service.html', 'copyright.html': 'legal-privacy.html',
+        'accessibility.html': 'legal-privacy.html', 'developers.html': 'developer-api.html', 'vaultmesh.html': 'checkout.html',
+        'fruitful.html': 'ecosystem.html', 'faa.zone.html': 'index.html', 'about.html': 'about-faa.html',
+        'saas.html': 'sectors/saas/index.html', 'features.html': 'explore.html', 'admin_panel_xero.html': 'seedwave_admin.html' };
+
+    // ---------- the owner's own domains live in this app ----------
+    // All of them are offline by design (Vercel paused), so every link to one opens the matching page here.
+    // Root-relative to where this app is served, so the 404 fallback below can check them.
+    var SITE_PATH = (function () { try { return new URL('./', SCRIPT_SRC).pathname; } catch (e) { return '/'; } })();
+    // Sector folders under sectors/ (a Seedwave sector subdomain X.seedwave.faa.zone opens sectors/X/).
+    var SECTORS = ' agriculture ai-logic ai-logic-grid analytics banking community content-creation creative culture dance-movement design ' +
+        'education education-ip education-youth event-management fashion finance financial food fsf gaming health health-hygiene housing ' +
+        'justice knowledge logistics marketing media micromesh mining music-sound nft nutrition packaging packaging-logistics payroll ' +
+        'payroll-mining pro-services professional quantum retail ritual saas sponsorship talent-development trade utilities voice webless wildlife zerowaste ';
+    var SECTOR_ALIAS = { 'media-sonic': 'music-sound', 'interns': 'talent-development' };
+    // Hosts shown by one page here, whatever path the link carries.
+    var PAGE_HOSTS = {
+        'banimal.co.za': 'banimal-connector.html', 'samfox.faa.zone': 'banimal-connector.html',
+        'baobab.faa.zone': 'baobab.html', 'admin.faa.zone': 'seedwave_admin.html',
+        'admin-panel.seedwave.faa.zone': 'seedwave_admin.html', 'portal.seedwave.faa.zone': 'seedwave.html',
+        'index.menu.seedwave.faa.zone': 'sector-grid.html', 'menu.seedwave.faa.zone': 'sector-grid.html',
+        'scrollmap.faa.zone': 'scrollmap.html', 'careers.faa.zone': 'contact-support.html',
+        'api.faa.zone': 'developer-api.html', 'vault.faa.zone': 'vault-master.html',
+        'fruitfulcratedance.com': 'sectors/dance-movement/index.html', 'noodle.juice': 'omnigrid.html',
+        'home.fruitful.faa.zone': 'index.html', 'banimal-global-loop.vercel.app': 'banimal-connector.html'
+    };
+    // Hosts whose paths map one-to-one onto this app (faa.zone/x -> /x); the value is the page for the bare host.
+    var PATH_HOSTS = {
+        'faa.zone': 'index.html', 'portal.faa.zone': 'index.html', 'faa.faa.zone': 'index.html',
+        'fruitful.faa.zone': 'ecosystem.html', 'seedwave.faa.zone': 'seedwave.html',
+        'footer.global.repo.seedwave.faa.zone': 'index.html', 'vaultmesh.faa.zone': 'checkout.html'
+    };
+    // The owner's own Vercel projects (brand-named), e.g. banimal-global-loop.vercel.app.
+    var OWN_VERCEL = /^(fruitful|banimal|seedwave|faa|samfox|omnigrid|baobab|codenest|cornexconnect|hotstack|vaultmesh|blockbox|noodle)[a-z0-9-]*\.vercel\.app$/;
+    function ownHost(host) {
+        return /(^|\.)faa\.zone$/.test(host) || host === 'banimal.co.za' || host === 'fruitfulcratedance.com' ||
+            host === 'noodle.juice' || OWN_VERCEL.test(host);
+    }
     function ownSite(url) {
-        var m = String(url).match(/^(?:https?:)?\/\/(?:www\.|portal\.)?faa\.zone(\/[^#]*)?(#.*)?$/i);
+        var m = String(url).match(/^(?:https?:)?\/\/([^\/?#:]+)(?::\d+)?([^?#]*)(\?[^#]*)?(#.*)?$/i);
         if (!m) return null;
-        var p = m[1] || '/';
-        return (p === '/' ? '/index.html' : p) + (m[2] || '');
+        var host = m[1].toLowerCase().replace(/^www\./, '');
+        if (!ownHost(host)) return null;
+        var p = m[2].replace(/^\/+/, ''), q = m[3] || '', h = m[4] || '', page;
+        var routed = ROUTES[(host + '/' + p).replace(/\/+$/, '')];
+        if (routed) return SITE_PATH + routed + h;
+        if (PAGE_HOSTS[host]) return SITE_PATH + PAGE_HOSTS[host] + h;
+        var sec = host.match(/^([a-z0-9-]+)\.seedwave\.faa\.zone$/);
+        var slug = sec && (SECTOR_ALIAS[sec[1]] || sec[1]);
+        if (slug && SECTORS.indexOf(' ' + slug + ' ') !== -1) return SITE_PATH + 'sectors/' + slug + '/' + (p || 'index.html') + q + h;
+        if (PATH_HOSTS[host] !== undefined) page = p || PATH_HOSTS[host];
+        // Any other owned host (regional hubs such as kenya.faa.zone, hub repos): the Global Hubs page, or its path here.
+        else page = p || 'hubs.html';
+        return SITE_PATH + page + (p ? q : '') + h;
     }
     var CONCEPT = !!(document.currentScript && document.currentScript.getAttribute('data-concept'));
     var SHOCK = !!(document.currentScript && document.currentScript.getAttribute('data-shock'));
@@ -147,7 +196,7 @@
     function fallbackFor(url) {
         var name = url.split(/[?#]/)[0].split('/').pop();
         var alt = PAGE_ALIASES[name] || name;
-        var root = new URL('/' + alt, location.href).href;
+        var root = new URL(SITE_PATH + alt, location.href).href;
         return root === new URL(url, location.href).href ? null : root;
     }
 
@@ -219,7 +268,8 @@
         if (!r) return null;
         if (href.charAt(0) === '#' && document.querySelector(href)) return null;
         if (r.toLowerCase() === PAGE) return '#top';
-        return r;
+        // routes name pages at the app root; pages in sub-folders (sectors/...) must not resolve them relative to themselves
+        return r.charAt(0) === '#' ? r : SITE_PATH + r.replace(/^\//, '');
     }
 
     // Pages link to sectors as /public/sectors/... in some builds; they are served from /sectors/...
@@ -320,20 +370,74 @@
         }).filter(function (x) { return x.sc >= 3 && x.p.file.toLowerCase() !== PAGE; })
           .sort(function (a, b) { return b.sc - a.sc; }).slice(0, n || 6);
     }
+    // A control with no screen of its own: a styled header naming it, chips for the pages that already cover it,
+    // and the best of those pages shown inline below (chips switch it; "Open page" gives it the whole viewer).
+    var FP_CSS = [
+        ':root{--bg:#f5f5f7;--card:#fff;--fg:#1d1d1f;--muted:#6e6e73;--line:#e8e8ed;--chip:#fff;--chip-on:#0071e3;--accent:#0071e3}',
+        '.dark{--bg:#111113;--card:#1c1c1e;--fg:#f5f5f7;--muted:#a0a0a5;--line:#3a3a3e;--chip:#2a2a2e;--chip-on:#0a84ff;--accent:#64a8ff}',
+        '*{box-sizing:border-box}html,body{height:100%}',
+        'body{margin:0;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);',
+        'font:15px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}',
+        '.fp{flex:none;padding:16px 16px 12px}',
+        '.fp-card{max-width:1100px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px;',
+        'box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}',
+        '.k{margin:0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}',
+        '.k b{color:var(--fg);text-transform:none;letter-spacing:0}',
+        'h1{margin:4px 0 6px;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-.01em;overflow-wrap:anywhere}',
+        '.lead{margin:0 0 12px;color:var(--muted);font-size:14px}',
+        '.row{display:flex;gap:10px;align-items:center}',
+        '.chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:8px}',
+        '.chip{appearance:none;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:999px;',
+        'padding:7px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;',
+        'transition:background .15s,border-color .15s,color .15s}',
+        '.chip:hover{border-color:var(--chip-on)}.chip.on{background:var(--chip-on);border-color:var(--chip-on);color:#fff}',
+        '.chip:focus-visible,.cta:focus-visible{outline:2px solid var(--accent);outline-offset:2px}',
+        '.cta{flex:none;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 16px;background:var(--accent);color:#fff;',
+        'text-decoration:none;font-size:13px;font-weight:700;white-space:nowrap}',
+        '.dark .cta{color:#111}',
+        '.pv{flex:1;min-height:0;padding:0 16px 16px;display:flex}',
+        '.pv iframe{flex:1;width:100%;max-width:1100px;margin:0 auto;border:1px solid var(--line);border-radius:16px;background:#fff}',
+        '.empty{flex:1;display:flex;align-items:flex-start;justify-content:center}',
+        // phone: a compact header (one-line kicker, no lead, chips scroll sideways) so the page below keeps the screen
+        '@media (max-width:600px){.fp{padding:10px 12px}.fp-card{padding:12px 14px;border-radius:14px}',
+        '.k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}h1{font-size:17px;margin:2px 0 10px}.fp .lead{display:none}',
+        '.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}',
+        '.chip{flex:none;max-width:70vw}.cta{padding:7px 12px}.pv{padding:0}.pv iframe{border-radius:0;border-width:1px 0 0}.empty .lead{display:block}}'
+    ].join('');
     function featurePanel(label, related) {
-        var dark = isDark(), bg = dark ? '#0d0d0d' : '#f5f5f7', fg = dark ? '#f5f5f7' : '#1d1d1f', card = dark ? '#1c1c1e' : '#fff';
-        var links = related.map(function (p) {
-            return '<li><a href="' + esc(SITE_ROOT + p.file) + '" target="_top" onclick="try{parent.__ogOpenView(this.href,this.textContent);return false}catch(e){}">' + esc(p.title.split(' · ')[0]) + '</a></li>';
-        }).join('');
+        // Pages whose manifest title is just their file name are empty stubs: show real pages first, stubs only if nothing else.
+        var stub = function (p) { return !p.title || p.title === p.file || /\.html?$/i.test(p.title); };
+        var real = related.filter(function (p) { return !stub(p); });
+        var pages = (real.length ? real : related).slice(0, 6).map(function (p) {
+            var t = stub(p) ? p.file.split('/').pop().replace(/\.html?$/i, '').replace(/[-_]+/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }) : String(p.title).split(' · ')[0];
+            return { url: SITE_ROOT + p.file, title: t };
+        });
+        var from = String(document.title || '').split(' · ')[0];
+        var head = '<header class="fp"><div class="fp-card"><p class="k">Feature · from <b>' + esc(from) + '</b></p><h1>' + esc(label) + '</h1>';
+        var html;
+        if (pages.length) {
+            html = head + '<p class="lead">Its own screen is on the build list. ' + (pages.length > 1 ? 'These pages already cover it; the closest one is open below.' : 'This page already covers it:') + '</p>' +
+                '<div class="row"><div class="chips" role="tablist">' + pages.map(function (p, i) {
+                    return '<button type="button" role="tab" class="chip' + (i ? '' : ' on') + '" aria-selected="' + (i ? 'false' : 'true') + '" data-src="' + esc(p.url) + '" title="' + esc(p.title) + '">' + esc(p.title) + '</button>';
+                }).join('') + '</div><a class="cta" id="full" href="' + esc(pages[0].url) + '" target="_top">Open page ↗</a></div></div></header>' +
+                '<main class="pv"><iframe id="pv" title="' + esc(pages[0].title) + '" src="' + esc(pages[0].url) + '"></iframe></main>' +
+                '<script>(function(){var pv=document.getElementById("pv"),full=document.getElementById("full"),cur=' + JSON.stringify(pages[0].title).replace(/</g, '\\u003c') + ';' +
+                'document.querySelectorAll(".chip").forEach(function(c){c.addEventListener("click",function(){' +
+                'document.querySelectorAll(".chip").forEach(function(x){x.classList.toggle("on",x===c);x.setAttribute("aria-selected",x===c)});' +
+                'pv.src=c.getAttribute("data-src");pv.title=cur=c.textContent;full.href=c.getAttribute("data-src")})});' +
+                'full.addEventListener("click",function(e){try{parent.__ogOpenView(full.href,cur);e.preventDefault()}catch(x){}})})()<\/script>';
+        } else {
+            var hat = SITE_ROOT + 'hat.html';
+            html = '<main class="empty">' + head.replace('<header class="fp">', '<div class="fp" style="width:100%">') +
+                '<p class="lead">Its own screen is on the build list. Find the pages that cover it in the A–Z Ecosystem Index.</p>' +
+                '<div class="row"><a class="cta" href="' + esc(hat) + '" target="_top" onclick="try{parent.__ogOpenView(this.href,\'A–Z Ecosystem Index\');return false}catch(e){}">Search the A–Z Ecosystem Index →</a></div></div></div></main>';
+        }
         viewFrame.removeAttribute('src');
-        viewFrame.srcdoc = '<!doctype html><meta charset="utf-8"><body style="margin:0;font:16px/1.5 -apple-system,Inter,sans-serif;background:' + bg + ';color:' + fg + '">' +
-            '<div style="max-width:760px;margin:40px auto;padding:0 20px"><div style="background:' + card + ';border-radius:16px;padding:24px">' +
-            '<p style="opacity:.6;margin:0">Feature</p><h2 style="margin:4px 0 12px">' + esc(label) + '</h2>' +
-            '<p>This control is part of <b>' + esc(document.title) + '</b>. Its own screen is on the build list; these pages already cover it:</p>' +
-            (links ? '<ul>' + links + '</ul>' : '<p>' + '<a href="' + esc(SITE_ROOT + 'hat.html') + '" target="_top">Search the A–Z Ecosystem Index</a></p>') +
-            '</div></div></body>';
-        view.classList.add('on'); document.documentElement.style.overflow = 'hidden';
+        viewFrame.srcdoc = '<!doctype html><html lang="en"' + (isDark() ? ' class="dark"' : '') + '><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(label) + '</title><style>' + FP_CSS + '</style></head><body>' + html + '</body></html>';
         viewTitle.textContent = label;
+        viewExt.href = pages.length ? pages[0].url : SITE_ROOT + 'hat.html';
+        view.classList.add('on'); document.documentElement.style.overflow = 'hidden';
     }
     // background DOM change rate (clocks, tickers), sampled in 350 ms buckets
     // nodes that change on their own (clocks, tickers) are remembered, so their changes never count as a click's effect
