@@ -134,6 +134,19 @@
         return [draft].concat(D[doc] || []);
     }
 
+    var GD = null;
+    // Dashboard figures measured from global-data.json (they were fixed text before)
+    var FIGURE = {
+        audits: function (d) { return fmt(d.audits.length) + ' audits'; },
+        logs: function (d) { return fmt(d.syncCount60d) + ' commits in 60 days'; },
+        zones: function (d) { return (d.app.sectors || d.grid.sectors) + ' sectors'; },
+        grid: function (d) { return fmt(d.app.pages) + ' pages'; },
+        ledger: function (d) { return fmt(d.licensing.brands) + ' licensable brands'; },
+        clauses: function (d) { return d.licensing.royaltyRates.length + ' royalty bands'; },
+        brandmetrics: function (d) { return fmt(d.grid.brands) + ' core brands'; }
+    };
+    function usd(v) { return '$' + Math.round(v).toLocaleString(); }
+
     var RENDER = {
         deployments: function (m, p) {
             var pages = m ? m.pages : [];
@@ -143,12 +156,16 @@
                 card('Release packages', list(['Fruitful WordPress Core 1.1.0: built and verified', 'Banimal Ecosystem Connector 5.1.1: built and verified']))];
         },
         audits: function (m, p) {
-            return [card('Audits completed · 26 Sep 2026', list([
-                'Live-key scan across every repository',
-                'Public / private visibility review of every repository',
-                'Banimal read-only release audit (5-state evidence model)',
-                'Database access-policy review',
-                'Claude Project consolidation check (nothing reduced)'])),
+            var runs = GD ? GD.audits : [];
+            return [card('Audits run · ' + fmt(runs.length), runs.length ? table(['Date', 'Audit', 'Record'], runs.map(function (a) { return [esc(a.date), esc(a.title), '<span class="sub">' + esc(a.file) + '</span>']; })) :
+                    list(['Live-key scan across every repository', 'Public / private visibility review of every repository', 'Banimal read-only release audit (5-state evidence model)',
+                        'Database access-policy review', 'Claude Project consolidation check (nothing reduced)']), 'wide'),
+                GD ? card('Estate measured', list([fmt(GD.estate.repos) + ' repositories (' + Object.keys(GD.estate.byOrg).map(function (k) { return GD.estate.byOrg[k] + ' ' + esc(k); }).join(', ') + ')',
+                    fmt(GD.estate.commits) + ' commits on ' + fmt(GD.estate.branches) + ' branches', fmt(GD.intakes.systems.systems) + ' systems, ' + fmt(GD.intakes.systems.versions) + ' page versions',
+                    'Replit: ' + fmt(GD.intakes.replit.apps) + ' apps · Claude: ' + fmt(GD.intakes.claude.conversations) + ' chats, ' + fmt(GD.intakes.claude.artifacts) + ' artifacts',
+                    'Google Drive: ' + fmt(GD.intakes.drive.files_seen) + ' files seen, ' + fmt(GD.intakes.drive.zips) + ' zips',
+                    GD.intakes.faazone && GD.intakes.faazone.file_versions ? 'faa.zone: ' + fmt(GD.intakes.faazone.file_versions) + ' file versions on ' + fmt(GD.intakes.faazone.refs) + ' refs' : 'faa.zone cross-audit: running',
+                    'Measured ' + esc(GD.generated_at.replace('T', ' ').replace('Z', ' UTC'))])) : '',
                 stationCard(station(p, 'guardian')),
                 card('Intelligence intakes', m && m.intelligence ? list([
                     'Claude: ' + fmt(m.intelligence.claude && m.intelligence.claude.chats) + ' chats indexed',
@@ -184,7 +201,12 @@
             var snaps = [];
             if (m) snaps.push('Ecosystem manifest · ' + esc(m.generated_at.replace('T', ' ').replace('Z', ' UTC')));
             if (p) snaps.push('Pulse snapshot · ' + esc(p.generated_at.replace('T', ' ').replace('Z', ' UTC')));
-            return [card('Sync events', '<div class="timeline">' + (ev || '<p class="muted">No events.</p>') + '</div>', 'wide'),
+            if (GD) snaps.unshift('Estate measured · ' + esc(GD.generated_at.replace('T', ' ').replace('Z', ' UTC')));
+            var days = GD ? GD.syncPerDay.slice(-14) : [];
+            return [GD ? card('Commits synced across the estate · last 60 days · ' + fmt(GD.syncCount60d), table(['When', 'Repository', 'Change'],
+                    GD.syncLog.slice(0, 120).map(function (x) { return [esc(x.date), esc(x.repo), esc(x.subject)]; })), 'wide') : '',
+                days.length ? card('Commits per day · last 14 days', bars(days.map(function (d) { return d[0].slice(5); }), days.map(function (d) { return d[1]; }))) : '',
+                card('Milestones', '<div class="timeline">' + (ev || '<p class="muted">No events.</p>') + '</div>', 'wide'),
                 card('Latest syncs', list(snaps.length ? snaps : ['Snapshot unavailable']))];
         },
         licenses: function (m) {
@@ -213,13 +235,20 @@
         brandmetrics: function (m, p, g) {
             if (!g) return noGrid();
             var a = g.admin || {}, gm = a.globalMetrics || {}, bd = a.brandDistribution;
+            if (GD) { gm = { totalBrands: GD.licensing.brands, coreBrands: GD.grid.brands, totalNodes: GD.grid.subnodes, totalPages: GD.app.pages };
+                bd = { labels: GD.licensing.categories.map(function (c) { return c[0]; }), data: GD.licensing.categories.map(function (c) { return c[1]; }) }; }
             var rows = sectorRows(g).filter(function (r) { return r.brands; }).sort(function (x, y) { return y.brands - x.brands; });
             return [card('Global brand metrics', list(['<b>' + fmt(gm.totalBrands) + '</b> total brands', '<b>' + fmt(gm.coreBrands) + '</b> core brands',
                     '<b>' + fmt(gm.totalNodes) + '</b> nodes', '<b>' + fmt(gm.totalPages) + '</b> pages'])),
-                bd ? card('Brand distribution', bars(bd.labels, bd.data)) : '',
+                bd ? card(GD ? 'Licensable brands by category · top ' + bd.labels.length + ' of ' + GD.licensing.categoryCount : 'Brand distribution', bars(bd.labels, bd.data)) : '',
                 card('Catalogued brands by sector · ' + fmt(rows.reduce(function (t, r) { return t + r.brands; }, 0)), bars(rows.map(function (r) { return r.name; }), rows.map(function (r) { return r.brands; })), 'wide')];
         },
         clauses: function (m, p, g) {
+            if (GD && GD.licensing && GD.licensing.royaltyRates.length) {
+                var R = GD.licensing.royaltyRates, tot = R.reduce(function (t, r) { return t + r[1]; }, 0);
+                return [card('FAA™ royalty clauses · ' + fmt(tot) + ' licensed brands', bars(R.map(function (r) { return r[0] + '–' + r[0] + '.99%'; }), R.map(function (r) { return r[1]; })), 'wide'),
+                    card('Clause register', table(['Royalty band', 'Brands bound', 'Share'], R.map(function (r) { return [r[0] + '.00–' + r[0] + '.99%', fmt(r[1]), Math.round(r[1] * 100 / tot) + '%']; })), 'wide')];
+            }
             var c = g && g.admin && g.admin.licenseLedger && g.admin.licenseLedger.clauses;
             if (!c) return noGrid();
             var total = c.data.reduce(function (t, x) { return t + x; }, 0);
@@ -252,6 +281,15 @@
                     fmt(g && g.admin && g.admin.globalMetrics && g.admin.globalMetrics.totalBrands) + ' brands', fmt(m && m.sectors.length) + ' sectors']))];
         },
         ledger: function (m, p, g) {
+            if (GD && GD.licensing && GD.licensing.brands) {
+                var L = GD.licensing;
+                return [card('FAA™ licence ledger · ' + fmt(L.brands) + ' licensable brands', table(['Tier', 'Brands', 'Master fees (USD)', 'Master fees (ECR)', 'Royalty (avg · range)'],
+                        L.tiers.map(function (t) { return [esc(t.tier), fmt(t.brands), usd(t.feeUSD), fmt(t.feeECR) + ' ECR', t.royaltyAvg + '% · ' + t.royaltyMin + '–' + t.royaltyMax + '%']; })), 'wide'),
+                    card('Brands by tier', bars(L.tiers.map(function (t) { return t.tier; }), L.tiers.map(function (t) { return t.brands; }))),
+                    card('Brands by division', bars(L.divisions.map(function (d) { return 'Division ' + d[0]; }), L.divisions.map(function (d) { return d[1]; }))),
+                    card('Licence sales', '<p class="muted">' + esc(L.salesNote) + '</p>'),
+                    card('Source', '<p class="muted">' + esc(L.source || '') + '</p>' + list([pageLink('faa-licenses.html', '🔐 FAA™ Licences'), pageLink('clause-index.html', '📜 FAA Clauses')]))];
+            }
             var gr = g && g.admin && g.admin.licenseLedger && g.admin.licenseLedger.growth;
             if (!gr) return noGrid();
             var head = ['Tier'].concat(gr.labels);
@@ -309,8 +347,9 @@
         layers: function (m, p, g) {
             if (!g) return noGrid();
             var ss = (g.admin && g.admin.sovereignScrolls) || {};
+            if (GD && GD.licensing) { var sv = GD.licensing.tiers.filter(function (t) { return /sovereign/i.test(t.tier); })[0]; ss = { generated: sv ? sv.brands : 0, total: GD.licensing.brands }; }
             var rows = sectorRows(g).filter(function (r) { return r.brands; });
-            return [card('Sovereign scrolls', '<p class="big">' + fmt(ss.generated) + ' of ' + fmt(ss.total) + ' generated</p>' +
+            return [card('Sovereign scrolls', '<p class="big">' + fmt(ss.generated) + ' of ' + fmt(ss.total) + (GD ? ' licensable brands are sovereign tier</p>' : ' generated</p>') +
                     '<div class="bt big-bt"><span style="width:' + ((ss.generated || 0) * 100 / (ss.total || 1)) + '%"></span></div>'),
                 card('Scroll layers by sector', table(['Sector', 'Brand layer', 'Node layer'], rows.map(function (r) { return [pageLink('sectors/' + r.key + '/index.html', r.name), fmt(r.brands), fmt(r.nodes)]; })), 'wide')];
         },
@@ -702,7 +741,9 @@
         NEEDS_BACKLOG ? get('backlog-pages.json') : Promise.resolve(null),
         cfg.kind === 'hat' ? Promise.all([get('hat/summary.json'), get('hat/letters/' + (HAT_L === '#' ? '0-9' : HAT_L) + '.json')]) : Promise.resolve(null),
         NEEDS_BRAND ? Promise.all([get('brand/brand-guide.json'), get('brand/brand-ledger.json')]).then(function (x) { return x[0] ? Object.assign({}, x[0], { ledger: x[1] }) : null; }) : Promise.resolve(null),
-        cfg.kind === 'sector' ? get('sector-pulses.json') : Promise.resolve(null)]).then(function (res) {
+        cfg.kind === 'sector' ? get('sector-pulses.json') : Promise.resolve(null), get('global-data.json')]).then(function (res) {
+        GD = res[11]; // measured estate data (fruitful-superagent tools/build_global_data.py)
+        if (GD && FIGURE[cfg.kind]) cfg.figure = FIGURE[cfg.kind](GD);
         var m = res[0], p = res[1], g = res[2], intel = res[3], atlas = res[4], lic = res[5], concept = res[6], bk = res[7], hatd = res[8], brand = res[9];
         if (hatd) cfg.__hat = { summary: hatd[0], letter: hatd[1], L: HAT_L };
         cfg.__brand = brand;
