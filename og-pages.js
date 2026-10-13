@@ -404,6 +404,12 @@
                 var f = document.getElementById('contact-form'), note = document.getElementById('contact-note');
                 if (!f || f.dataset.wired) return;
                 f.dataset.wired = '1';
+                // a piece asked for from fruitful.store arrives as ?topic=Order: <title> (<code>)
+                var ask = new URLSearchParams(location.search).get('topic');
+                if (ask && /^Order: /.test(ask)) {
+                    f.elements.topic.value = 'Orders and delivery';
+                    f.elements.message.value = 'I would like to buy: ' + ask.slice(7).slice(0, 300) + '\n\nDelivery town: \nQuantity / size: ';
+                }
                 f.addEventListener('submit', function (e) {
                     e.preventDefault();
                     var b = f.querySelector('button'), v = function (n) { return (f.elements[n].value || '').trim(); };

@@ -22,6 +22,7 @@
         'faa.zone/omnigrid.html': 'omnigrid.html',
         'faa.zone': 'index.html',
         'fruitful.faa.zone': 'ecosystem.html',
+        'fruitful.store': 'store.html', 'www.fruitful.store': 'store.html',
         'vaultmesh.faa.zone/index.html': 'checkout.html',
         'baobab.faa.zone': 'baobab.html',
         'admin.faa.zone': 'seedwave_admin.html',
@@ -65,7 +66,8 @@
         'scrollmap.faa.zone': 'scrollmap.html', 'careers.faa.zone': 'contact-support.html',
         'api.faa.zone': 'developer-api.html', 'vault.faa.zone': 'vault-master.html',
         'fruitfulcratedance.com': 'sectors/dance-movement/index.html', 'noodle.juice': 'omnigrid.html',
-        'home.fruitful.faa.zone': 'index.html', 'banimal-global-loop.vercel.app': 'banimal-connector.html'
+        'home.fruitful.faa.zone': 'index.html', 'banimal-global-loop.vercel.app': 'banimal-connector.html',
+        'fruitful.store': 'store.html', 'www.fruitful.store': 'store.html'
     };
     // Hosts whose paths map one-to-one onto this app (faa.zone/x -> /x); the value is the page for the bare host.
     var PATH_HOSTS = {
@@ -76,7 +78,7 @@
     // The owner's own Vercel projects (brand-named), e.g. banimal-global-loop.vercel.app.
     var OWN_VERCEL = /^(fruitful|banimal|seedwave|faa|samfox|omnigrid|baobab|codenest|cornexconnect|hotstack|vaultmesh|blockbox|noodle)[a-z0-9-]*\.vercel\.app$/;
     function ownHost(host) {
-        return /(^|\.)faa\.zone$/.test(host) || host === 'banimal.co.za' || host === 'fruitfulcratedance.com' ||
+        return /(^|\.)faa\.zone$/.test(host) || host === 'banimal.co.za' || host === 'fruitfulcratedance.com' || /(^|\.)fruitful\.store$/.test(host) ||
             host === 'noodle.juice' || OWN_VERCEL.test(host);
     }
     function ownSite(url) {
@@ -213,6 +215,31 @@
         document.body.appendChild(g);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', governance); else governance();
+
+    // ---------- the dock on every page: back to the Shock Launch, and fruitful.store ----------
+    var HOME = new URL('welcome/shock-launch-v5/index.html', SCRIPT_SRC).href, STORE = new URL('store.html', SCRIPT_SRC).href;
+    function dock() {
+        if (window.top !== window || document.querySelector('.sf-dock') || !document.body) return;
+        var here = location.pathname.replace(/\/+$/, '');
+        var onHome = here.indexOf('/welcome/shock-launch') !== -1, onStore = /\/store\.html$/.test(here);
+        var st = document.createElement('style');
+        st.textContent = '.sf-dock{position:fixed;left:16px;bottom:16px;z-index:9990;display:flex;gap:8px;font:600 13px/1 Jost,Futura,-apple-system,"Segoe UI",sans-serif}' +
+            '.sf-dock a{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 4px;border-radius:999px;text-decoration:none;' +
+            'background:#231F20;color:#FBF4E4;box-shadow:0 6px 18px -8px rgba(35,31,32,.6);border:1px solid rgba(251,244,228,.16);transition:transform .15s}' +
+            '.sf-dock a:hover{transform:translateY(-2px)}.sf-dock a:focus-visible{outline:2px solid #1E9F97;outline-offset:2px}' +
+            '.sf-dock img{width:32px;height:32px;border-radius:50%;object-fit:cover;display:block}' +
+            '.sf-dock .sf-store{background:#FBF4E4;color:#231F20;border-color:rgba(35,31,32,.16);padding-left:12px}' +
+            '.sf-dock .sf-store b{color:#577D60}' +
+            '@media (max-width:520px){.sf-dock{left:10px;bottom:10px}.sf-dock .sf-t{display:none}.sf-dock a{padding-right:4px}.sf-dock .sf-store{padding:0 12px}}' +
+            '@media print{.sf-dock{display:none}}';
+        document.head.appendChild(st);
+        var d = document.createElement('nav');
+        d.className = 'sf-dock'; d.setAttribute('aria-label', 'Shock Launch and store');
+        d.innerHTML = (onHome ? '' : '<a class="sf-back" href="' + HOME + '" title="Back to the Shock Launch"><img src="' + BRAND + 'shock-launch-icon.jpg" alt="" width="32" height="32"><span class="sf-t">Shock Launch</span></a>') +
+            (onStore ? '' : '<a class="sf-store" href="' + STORE + '" title="fruitful.store: shop the makers"><span aria-hidden="true">🛒</span><span>fruitful<b>.store</b></span></a>');
+        if (d.children.length) document.body.appendChild(d);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dock); else dock();
 
     // ---------- in-app viewer ----------
     var view = document.createElement('div');
