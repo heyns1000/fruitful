@@ -36,10 +36,10 @@
     // Pages that concept pages link to by another name.
     var PAGE_ALIASES = { 'owner-login.html': 'faa-owner.html', 'hardware-login.html': 'faa-hardware.html',
         'distributor-login.html': 'faa-distributor.html', 'contact.html': 'contact-support.html', 'global-checkout.html': 'checkout.html',
-        'ci-guide.html': 'banimal-connector.html', 'connector-preview.html': 'banimal-connector.html',
+        'ci-guide.html': 'banimal-connector.html', 'securesign_portal.html': 'securesign/index.html', 'connector-preview.html': 'banimal-connector.html',
         // faa.zone and portal.faa.zone are offline (Vercel paused, portal host not answering); their pages live here
         'payroll.html': 'sectors/payroll/overview.html', 'contact-us.html': 'contact-support.html', 'contact': 'contact-support.html',
-        'support.html': 'contact-support.html', 'about-us.html': 'about-faa.html', 'securesign.html': 'compliance.html',
+        'support.html': 'contact-support.html', 'about-us.html': 'about-faa.html', 'securesign.html': 'securesign/index.html',
         'hiring-homepage.html': 'contact-support.html', 'vault-access.html': 'vault-master.html', 'treaty.html': 'treaty-grid.html',
         // footer.global.repo.seedwave.faa.zone, faa.faa.zone and seedwave.faa.zone pages
         'privacy.html': 'privacy-policy.html', 'terms.html': 'terms-of-service.html', 'copyright.html': 'legal-privacy.html',

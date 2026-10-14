@@ -203,7 +203,8 @@
             if (p) snaps.push('Pulse snapshot · ' + esc(p.generated_at.replace('T', ' ').replace('Z', ' UTC')));
             if (GD) snaps.unshift('Estate measured · ' + esc(GD.generated_at.replace('T', ' ').replace('Z', ' UTC')));
             var days = GD ? GD.syncPerDay.slice(-14) : [];
-            return [GD ? card('Commits synced across the estate · last 60 days · ' + fmt(GD.syncCount60d), table(['When', 'Repository', 'Change'],
+            return ['<div class="card wide ecs-live" id="ecs-live"><h3>📡 Live signal · pulses every 9 seconds</h3><p class="muted">Starting the pulse…</p></div>',
+                GD ? card('Commits synced across the estate · last 60 days · ' + fmt(GD.syncCount60d), table(['When', 'Repository', 'Change'],
                     GD.syncLog.slice(0, 120).map(function (x) { return [esc(x.date), esc(x.repo), esc(x.subject)]; })), 'wide') : '',
                 days.length ? card('Commits per day · last 14 days', bars(days.map(function (d) { return d[0].slice(5); }), days.map(function (d) { return d[1]; }))) : '',
                 card('Milestones', '<div class="timeline">' + (ev || '<p class="muted">No events.</p>') + '</div>', 'wide'),
@@ -709,18 +710,59 @@
                 card('Platforms and portals · ' + H.filter(function (h) { return h.kind !== 'region'; }).length, '<div class="rows">' + hubList('platform') + '</div>', 'wide'),
                 card('About', '<p class="muted">From the codenest global sector index (52 repositories). Hub sites open in-app and go live with the launch.</p>')];
         },
-        fse: function () {
+        fse: function (m) {
+            // The global read-me. Product sheet: as published in the FAA Actuary Mastery™ Final Loop Directive (13 Feb 2026).
+            // Every other figure is measured (global-data.json from fruitful-superagent; gallery.json; live counts filled in after render).
+            var D = GD || null, E = D ? D.estate : null, L = D ? D.licensing : null, G = D ? D.grid : null;
+            function tile(v, l, id) { return '<div class="fse-tile"><b' + (id ? ' id="' + id + '"' : '') + '>' + v + '</b><span>' + esc(l) + '</span></div>'; }
             var sheet = [['Product ID', 'FRU-CRE-3102'], ['VaultID', 'VAULT-939V'], ['Zone', 'C 2'], ['Security', 'FAA-SEC A+'],
                 ['Active nodes', '1,580'], ['Pulse activity', '43,792 / sec'], ['Latency', '109 ms'], ['Compliance', 'Active & Certified']];
-            return [card('The behavioural nervous system of the ecosystem',
-                    '<p class="muted">Not a feature product: a <b>Human Volatility Dampener™</b> embedded inside VaultMesh™. Without it, governance becomes mechanical; with it, governance becomes adaptive.</p>', 'wide'),
-                card('Product sheet', table(['Field', 'Value'], sheet.map(function (r) { return [esc(r[0]), esc(r[1])]; })) +
-                    '<p class="muted">Figures as published in the FAA Actuary Mastery™ Final Loop Directive (13 Feb 2026).</p>'),
-                card('What it governs', list(['Trust Velocity', 'Conflict Containment', 'Authenticity Stability', 'Relational Risk'])),
-                card('Strategic position', list(['ContractCast™ governs agreements', 'Heat Map governs capital', 'REI governs entropy', '<b>Fruitful Social Engin™ governs the human signal</b>'])),
-                card('The final loop', '<p class="big">Code → Governance → Human Signal</p>' +
-                    list(['Build Phase', 'Ecosystem Governance Phase', 'Signal Intelligence Phase'])),
-                card('Related', list([pageLink('pulse-monitor.html', '📡 Signal Sync'), pageLink('compliance.html', '🛡️ Compliance'), pageLink('ecosystem.html', '🌍 Global Ecosystem')]))];
+            var tiers = L ? L.tiers.map(function (x) { return [esc(x.tier.charAt(0).toUpperCase() + x.tier.slice(1)), fmt(x.brands), x.royaltyMin + '–' + x.royaltyMax + '%']; }) : [];
+            var weeks = D ? D.syncPerDay.slice(-14) : [];
+            var fams = D ? Object.keys(D.families).map(function (k) { var f = D.families[k]; return '<div class="row"><span>' + esc(f.name) + '<span class="sub">' + esc(f.headline || '') + '</span></span>' + badge(f.status === 'green' ? 'ok' : 'warn', f.status) + '</div>'; }).join('') : '';
+            return [
+                '<div class="card wide fse-hero"><p class="fse-kicker">Read me first · Fruitful™ Global Ecosystem</p>' +
+                    '<h2 class="fse-h">If you don’t like the fruits you are growing, change the seed™</h2>' +
+                    '<p>Fruitful™ is one ecosystem for makers, brands and sectors: a single app where every portal, sector terminal, licence and product opens in place. ' +
+                    'It is built by Fruitful Shops (Pty) Ltd in South Africa, around real work by real makers, and every number on this page is either measured from the source or labelled with where it was published.</p>' +
+                    '<p>The <b>Fruitful Social Engin™ (FSE)</b> is its behavioural nervous system: not a feature product, but a <b>Human Volatility Dampener™</b> embedded inside VaultMesh™. ' +
+                    'Without it, governance becomes mechanical; with it, governance becomes adaptive.</p>' +
+                    '<div class="fse-loop" aria-label="The final loop"><span>Code</span><i>→</i><span>Governance</span><i>→</i><span>Human Signal</span></div></div>',
+                card('The ecosystem today, measured', '<div class="fse-tiles">' +
+                    tile(E ? fmt(E.repos) : '—', 'repositories' + (E ? ' (' + fmt(E.byOrg.heyns1000) + ' heyns1000 · ' + fmt(E.byOrg['Fruitful-Global-Planet']) + ' Fruitful-Global-Planet)' : '')) +
+                    tile(E ? fmt(E.commits) : '—', 'commits on ' + (E ? fmt(E.branches) : '—') + ' branches') +
+                    tile(D ? fmt(D.syncCount60d) : '—', 'commits in the last 60 days') +
+                    tile(L ? fmt(L.brands) : '—', 'licensable brands in the FAA™ catalogue') +
+                    tile(G ? fmt(G.sectors) : '—', 'sectors on the OmniGrid™, ' + (G ? fmt(G.brands) : '—') + ' core brands') +
+                    tile(G ? fmt(G.subnodes) : '—', 'sub-nodes under those brands') +
+                    tile(D ? fmt(D.app.pages) : '—', 'pages in this app') +
+                    tile('…', 'real pieces by our makers', 'fse-pieces') +
+                    tile('…', 'items for sale on fruitful.store', 'fse-store') +
+                    '</div><p class="muted">Measured ' + esc(D ? D.generated_at.replace('T', ' ').replace('Z', ' UTC') : '—') + ' across every repository, read-only. No sample or random numbers.</p>', 'wide'),
+                card('FSE product sheet', table(['Field', 'Value'], sheet.map(function (r) { return [esc(r[0]), '<b>' + esc(r[1]) + '</b>']; })) +
+                    '<p class="muted">As published in the FAA Actuary Mastery™ Final Loop Directive (13 Feb 2026). These are the directive’s figures, not live telemetry.</p>'),
+                card('What the FSE governs', '<div class="fse-chips"><span>Trust Velocity</span><span>Conflict Containment</span><span>Authenticity Stability</span><span>Relational Risk</span></div>' +
+                    '<p class="muted">The four human signals the directive assigns to the FSE.</p>'),
+                card('Strategic position', table(['System', 'Governs'], [['ContractCast™', 'agreements'], ['Heat Map', 'capital'], ['REI', 'entropy'], ['<b>Fruitful Social Engin™</b>', '<b>the human signal</b>']]), 'wide'),
+                card('The final loop, phase by phase', '<ol class="fse-steps">' +
+                    '<li><b>Build Phase</b><span>' + (E ? fmt(E.repos) + ' repositories and ' + fmt(D.app.pages) + ' pages brought into one app' : 'The estate brought into one app') + '.</span></li>' +
+                    '<li><b>Ecosystem Governance Phase</b><span>' + (L ? fmt(L.brands) + ' brands under licence terms in ' + L.tiers.length + ' tiers' : 'Brands under licence terms') + '; Treaty Grid and compliance pages live.</span></li>' +
+                    '<li><b>Signal Intelligence Phase</b><span>The human signal: makers, trust and conflict read by the FSE inside VaultMesh™.</span></li></ol>', 'wide'),
+                card('How the pieces fit', '<div class="rows">' +
+                    '<div class="row"><span><b>Fruitful™</b><span class="sub">The ecosystem brand and this app</span></span>' + pageLink('ecosystem.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>FAA.zone™</b><span class="sub">The scrolls, licensing and legal layer' + (L ? ' · ' + fmt(L.brands) + ' licensable brands' : '') + '</span></span>' + pageLink('scroll-homepage.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>Seedwave™</b><span class="sub">The sector network and admin portal' + (G ? ' · ' + fmt(G.sectors) + ' sectors' : '') + '</span></span>' + pageLink('dashboard.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>OmniGrid™</b><span class="sub">The grid that joins every page; the pulse noodle shows it breathing</span></span>' + pageLink('omnigrid.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>VaultMesh™</b><span class="sub">Checkout and the vault the FSE lives in</span></span>' + pageLink('checkout.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>Banimal™ · Sam Fox™</b><span class="sub">The hand behind the brand, and the products it draws</span></span>' + pageLink('gallery.html', 'Open') + '</div>' +
+                    '<div class="row"><span><b>The makers</b><span class="sub">Sam Fox™, Grand Machadlela, Margaret and the Banimal™ range</span></span>' + pageLink('store.html', 'Shop') + '</div>' +
+                    '</div>', 'wide'),
+                L ? card('Licensing tiers', table(['Tier', 'Brands', 'Royalty'], tiers) + '<p class="muted">From the FAA™ brand licensing catalogue.</p>') : '',
+                weeks.length ? card('Build activity, last 14 active days', bars(weeks.map(function (w) { return w[0].slice(5); }), weeks.map(function (w) { return w[1]; }), '')) : '',
+                fams ? card('Sector families rebuilt so far', '<div class="rows">' + fams + '</div>') : '',
+                card('Start here', list([pageLink('welcome/shock-launch-v5/index.html', '🚩 The Shock Launch'), pageLink('ecosystem.html', '🌍 The Global Ecosystem'), pageLink('hat.html', '🗂️ A–Z Ecosystem Index'),
+                    pageLink('gallery.html', '🎨 Makers’ Gallery'), pageLink('store.html', '🛒 fruitful.store'), pageLink('pulse-monitor.html', '📡 Signal Sync'), pageLink('compliance.html', '🛡️ Compliance'), pageLink('contact-support.html', '✉️ Contact')]))
+            ];
         },
         hat: function () {
             var H = cfg.__hat || {}, S = H.summary, D = H.letter || { systems: [], files: [], folders: [] }, L = H.L;
@@ -794,7 +836,109 @@
         root.innerHTML = head + '<section><div class="container"><div class="cards">' + cards.join('') + '</div>' +
             '<p class="snapshot">Live snapshot ' + esc(m ? m.generated_at.slice(0, 10) : 'unavailable') + ' · counts only</p></div></section>';
         if (cfg.kind === 'hat') hatWire();
+        if (cfg.kind === 'fse') fseWire();
+        if (cfg.kind === 'logs') logsWire(m, p);
     });
+    // Ecosync Logs: a 9-second pulse. Every beat re-reads the estate, pulse and manifest feeds (a newer snapshot
+    // re-renders the page) and the public GitHub activity of heyns1000 and Fruitful-Global-Planet. GitHub is read
+    // with ETags (unchanged answers cost nothing) and slows itself down when the free hourly allowance runs low.
+    function logsWire(m0, p0) {
+        var st = document.createElement('style');
+        st.textContent = '.ecs-live{border-left:4px solid var(--sf-teal,#1E9F97)!important}.ecs-head{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:0 0 12px}' +
+            '.ecs-beat{width:12px;height:12px;border-radius:50%;background:var(--sf-teal,#1E9F97);box-shadow:0 0 0 0 rgba(30,159,151,.6)}.ecs-beat.on{animation:ecsPulse 1.2s ease-out}' +
+            '@keyframes ecsPulse{0%{box-shadow:0 0 0 0 rgba(30,159,151,.6)}100%{box-shadow:0 0 0 14px rgba(30,159,151,0)}}' +
+            '.ecs-meta{font-size:.85rem;color:var(--muted-text-light)}.dark-mode .ecs-meta{color:var(--muted-text-dark)}' +
+            '.ecs-row{display:grid;grid-template-columns:9.5em 1fr;gap:4px 14px;padding:8px 0;border-top:1px solid var(--border-color-light)}.dark-mode .ecs-row{border-top-color:var(--border-color-dark)}' +
+            '.ecs-row.new{background:color-mix(in srgb,var(--sf-mint,#A7DACB) 30%,transparent);border-radius:8px;padding-left:8px}' +
+            '.ecs-row time{font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted-text-light)}.dark-mode .ecs-row time{color:var(--muted-text-dark)}' +
+            '.ecs-row b{font-weight:600}.ecs-row span{display:block;font-size:.88rem}@media(prefers-reduced-motion:reduce){.ecs-beat.on{animation:none}}';
+        document.head.appendChild(st);
+        var box = document.getElementById('ecs-live'); if (!box) return;
+        var stamps = { gd: GD && GD.generated_at, p: p0 && p0.generated_at, m: m0 && m0.generated_at };
+        var feeds = { 'users/heyns1000': { etag: null, events: [] }, 'users/Fruitful-Global-Planet': { etag: null, events: [] } };
+        var seen = {}, first = true, beats = 0, ghEvery = 7, ghTurn = 0, remaining = null, lastGh = 'not read yet', newIds = {};
+        function describe(e) {
+            var pl = e.payload || {}, t = e.type.replace('Event', '');
+            if (e.type === 'PushEvent') { var n = pl.size || (pl.commits || []).length;
+                return (n ? n + ' commit(s) pushed to ' : 'Push to ') + String(pl.ref || '').replace('refs/heads/', '') + ((pl.commits && pl.commits[0]) ? ': ' + pl.commits[pl.commits.length - 1].message.split('\n')[0] : ''); }
+            if (e.type === 'PullRequestEvent') return (pl.action || '') + ' pull request #' + (pl.number || '') + (pl.pull_request ? ': ' + pl.pull_request.title : '');
+            if (e.type === 'CreateEvent' || e.type === 'DeleteEvent') return t.toLowerCase() + ' ' + (pl.ref_type || '') + ' ' + (pl.ref || '');
+            if (e.type === 'IssuesEvent') return (pl.action || '') + ' issue' + (pl.issue ? ': ' + pl.issue.title : '');
+            return t;
+        }
+        function readGh(path) {
+            var f = feeds[path], h = { 'Accept': 'application/vnd.github+json' };
+            if (f.etag) h['If-None-Match'] = f.etag;
+            return fetch('https://api.github.com/' + path + '/events/public?per_page=30', { headers: h, cache: 'no-store' }).then(function (r) {
+                var rem = r.headers.get('X-RateLimit-Remaining'); if (rem != null) remaining = +rem;
+                if (r.status === 304) return;
+                if (!r.ok) throw new Error(r.status);
+                f.etag = r.headers.get('ETag');
+                return r.json().then(function (j) { f.events = j || []; });
+            });
+        }
+        function draw() {
+            var all = [];
+            Object.keys(feeds).forEach(function (k) { all = all.concat(feeds[k].events); });
+            var uniq = {}; all = all.filter(function (e) { if (uniq[e.id]) return false; uniq[e.id] = 1; return true; })
+                .sort(function (a, b) { return a.created_at < b.created_at ? 1 : -1; }).slice(0, 25);
+            all.forEach(function (e) { if (!seen[e.id]) { if (!first) newIds[e.id] = Date.now(); seen[e.id] = 1; } });
+            var rows = all.map(function (e) {
+                var isNew = newIds[e.id] && Date.now() - newIds[e.id] < 60000;
+                return '<div class="ecs-row' + (isNew ? ' new' : '') + '"><time>' + esc(e.created_at.replace('T', ' ').slice(0, 16)) + '</time><div><b>' + esc(e.repo.name) + '</b><span>' + esc(describe(e)) + '</span></div></div>';
+            }).join('');
+            box.innerHTML = '<h3>📡 Live signal · pulses every 9 seconds</h3>' +
+                '<div class="ecs-head"><i class="ecs-beat on" aria-hidden="true"></i><span class="ecs-meta">Beat ' + fmt(beats) + ' · ' + esc(new Date().toLocaleTimeString('en-ZA')) +
+                ' · GitHub ' + esc(lastGh) + (remaining != null ? ' · ' + remaining + ' reads left this hour' : '') + '</span>' +
+                pageLink('signal.html', '📡 Open Signal Sync') + '</div>' +
+                (rows || '<p class="muted">No public GitHub activity in the latest feed. Private repositories are not shown here.</p>') +
+                '<p class="muted">Public events from GitHub for heyns1000 and Fruitful-Global-Planet; the estate snapshot below is re-checked on every beat and the page refreshes itself when a newer one is published.</p>';
+            first = false;
+        }
+        function beat() {
+            beats++;
+            var checks = [get('global-data.json'), get('omnigrid-pulse.json'), get('ecosystem-manifest.json')];
+            Promise.all(checks).then(function (r) {
+                var changed = (r[0] && r[0].generated_at !== stamps.gd) || (r[1] && r[1].generated_at !== stamps.p) || (r[2] && r[2].generated_at !== stamps.m);
+                if (changed && beats > 1) { location.reload(); return; }
+            });
+            // first beat reads both feeds; after that one feed per ~minute, alternating (stays under GitHub's 60 reads/hour)
+            var keys = Object.keys(feeds), pick = beats === 1 ? keys : [keys[ghTurn++ % keys.length]];
+            var gh = (beats === 1 || (beats - 1) % ghEvery === 0) ? Promise.all(pick.map(function (k) {
+                return readGh(k).then(function () { return null; }).catch(function (e) { return k.split('/')[1] + ' ' + e.message; });
+            })).then(function (errs) {
+                errs = errs.filter(Boolean);
+                lastGh = 'read ' + new Date().toLocaleTimeString('en-ZA') + (errs.length ? ' (' + errs.join(', ') + ' unavailable)' : '');
+                ghEvery = remaining != null && remaining < 8 ? 40 : 7; // ~1 min normally, ~6 min when the hourly allowance is nearly used
+            }).catch(function (e) { lastGh = 'unavailable (' + e.message + ')'; ghEvery = 7; }) : Promise.resolve();
+            gh.then(draw);
+        }
+        beat();
+        setInterval(beat, 9000);
+    }
+    function fseWire() {
+        var st = document.createElement('style');
+        st.textContent = '.fse-hero{background:var(--sf-ink,#231F20)!important;color:var(--sf-cream,#FBF4E4)!important;border:0!important;padding:34px 30px!important}' +
+            '.fse-hero p{color:rgba(251,244,228,.82);max-width:72ch}.fse-hero b{color:var(--sf-cream,#FBF4E4)}' +
+            '.fse-kicker{font:600 .75rem/1 Jost,Futura,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--sf-mint,#A7DACB)!important;margin:0 0 12px}' +
+            '.fse-h{font:700 clamp(1.5rem,3.4vw,2.3rem)/1.12 Jost,Futura,sans-serif;margin:0 0 16px;color:var(--sf-cream,#FBF4E4)}' +
+            '.fse-loop{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px}.fse-loop span{font:600 .95rem Jost,Futura,sans-serif;padding:8px 16px;border-radius:999px;background:rgba(251,244,228,.1);border:1px solid rgba(251,244,228,.22)}.fse-loop i{font-style:normal;color:var(--sf-coral,#F16B6E);font-weight:700}' +
+            '.fse-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin:6px 0 10px}' +
+            '.fse-tile{background:var(--soft-light);border-radius:14px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:4px}.dark-mode .fse-tile{background:var(--soft-dark)}' +
+            '.fse-tile b{font:700 1.7rem/1 Jost,Futura,sans-serif;color:var(--primary-color);font-variant-numeric:tabular-nums}.fse-tile span{font-size:.82rem;color:var(--muted-text-light)}.dark-mode .fse-tile span{color:var(--muted-text-dark)}' +
+            '.fse-chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.fse-chips span{font:600 .9rem Jost,Futura,sans-serif;padding:8px 14px;border-radius:999px;background:var(--sf-mint,#A7DACB);color:var(--sf-ink,#231F20)}' +
+            '.fse-steps{counter-reset:s;list-style:none;padding:0;margin:6px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}' +
+            '.fse-steps li{counter-increment:s;border:1px solid var(--border-color-light);border-radius:14px;padding:16px 16px 14px 56px;position:relative}.dark-mode .fse-steps li{border-color:var(--border-color-dark)}' +
+            '.fse-steps li:before{content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--sf-ink,#231F20);color:var(--sf-cream,#FBF4E4);display:grid;place-items:center;font:700 .9rem Jost,sans-serif}' +
+            '.fse-steps b{display:block;font:600 1rem Jost,Futura,sans-serif;margin-bottom:4px}.fse-steps span{font-size:.88rem;color:var(--muted-text-light)}.dark-mode .fse-steps span{color:var(--muted-text-dark)}';
+        document.head.appendChild(st);
+        get('gallery/gallery.json').then(function (g) {
+            if (!g) return;
+            var a = document.getElementById('fse-pieces'), b = document.getElementById('fse-store');
+            if (a) a.textContent = fmt(g.items.length);
+            if (b) b.textContent = fmt(g.items.filter(function (i) { return i.priceZAR; }).length);
+        });
+    }
     function hatWire() {
         var st = document.createElement('style'); st.textContent = '.hat-bar{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}.hat-l{min-width:2.2em;text-align:center;padding:6px 8px;border-radius:10px;border:1px solid var(--border-color-light);text-decoration:none;font-weight:700}.dark-mode .hat-l{border-color:var(--border-color-dark)}.hat-l.on{background:var(--primary-color);color:var(--bg-color-light);border-color:var(--primary-color)}.hat-q{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border-color-light);font:inherit;background:transparent;color:inherit}.dark-mode .hat-q{border-color:var(--border-color-dark)}'; document.head.appendChild(st);
         window.addEventListener('hashchange', function () { location.reload(); });
