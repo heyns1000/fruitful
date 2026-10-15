@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌳 Deforestation Rates Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Deforestation Rates Dashboard</h2>
+                <p class="text-gray-600 mt-1">Real-time insights into forest loss and conservation efforts across 200 countries.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html" class="active">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html">Global Health</a>
+            <a href="land_degradation_dashboard.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Forest Cover Change -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Forest Cover Change (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-line"></canvas>
+                </div>
+            </div>
+
+            <!-- Graph 2: Top 10 Countries by Deforestation Rate (Annual Average) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Top 10 Countries by Deforestation Rate</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-bar"></canvas>
+                </div>
+            </div>
+            <!-- Graph 3: Reforestation Efforts vs. Deforestation (Global) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Reforestation vs. Deforestation Trends</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-reforestation-line"></canvas>
+                </div>
+            </div>
+            <!-- Graph 4: Drivers of Deforestation (Global % Breakdown) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Primary Drivers of Forest Loss</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-pie-drivers"></canvas>
+                </div>
+            </div>
+            <!-- Graph 5: Forest Fire Incidences by Continent -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Forest Fire Incidences by Continent</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-fire-bar"></canvas>
+                </div>
+            </div>
+            <!-- Graph 6: Protected Forest Areas (Global Percentage) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Protected Forest Areas</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="df-protected-doughnut"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // This globalData will contain random data for all countries and ALL thematic areas.
+    // I am including a sample here, but for the actual files, this array will be very long.
+    // For your live deployment, you would typically generate or load this data.
+    { name: "Nigeria", continent: "Africa", deforestationRate: 1.5, forestCover: 30, reforestationRate: 0.2, fireIncidents: 10, protectedForest: 15, plasticWaste: 500, recyclingRate: 10, threatenedSpecies: 80, poachingIncidents: 120, renewableEnergy: 15, energyEfficiency: 0.5, resourceConsumption: 10, circularEconomyScore: 20, povertyRate: 25, gdpGrowth: 3.5, disasterRiskIndex: 7.2, communityPreparedness: 40, waterStress: 80, cleanWaterAccess: 60, aqi: 120, pm25: 45, lifeExpectancy: 60, healthSpending: 4, soilHealth: 0.3, landDegradation: 30  },
+    { name: "USA", continent: "North America", deforestationRate: 0.2, forestCover: 33, reforestationRate: 0.3, fireIncidents: 40, protectedForest: 22, plasticWaste: 1500, recyclingRate: 30, threatenedSpecies: 50, poachingIncidents: 20, renewableEnergy: 40, energyEfficiency: 0.9, resourceConsumption: 20, circularEconomyScore: 70, povertyRate: 10, gdpGrowth: 2.1, disasterRiskIndex: 4.5, communityPreparedness: 80, waterStress: 30, cleanWaterAccess: 95, aqi: 50, pm25: 12, lifeExpectancy: 78, healthSpending: 10, soilHealth: 0.7, landDegradation: 10 },
+    { name: "Brazil", continent: "South America", deforestationRate: 1.8, forestCover: 60, reforestationRate: 0.3, fireIncidents: 30, protectedForest: 20, plasticWaste: 900, recyclingRate: 20, threatenedSpecies: 150, poachingIncidents: 80, renewableEnergy: 60, energyEfficiency: 0.7, resourceConsumption: 15, circularEconomyScore: 50, povertyRate: 15, gdpGrowth: 1.8, disasterRiskIndex: 6.8, communityPreparedness: 60, waterStress: 60, cleanWaterAccess: 85, aqi: 90, pm25: 25, lifeExpectancy: 75, healthSpending: 6, soilHealth: 0.5, landDegradation: 25 },
+    // Adding more sample data to ensure all continents have some representation for filtering
+    { name: "Germany", continent: "Europe", deforestationRate: 0.05, forestCover: 32, reforestationRate: 0.5, fireIncidents: 5, protectedForest: 28, plasticWaste: 700, recyclingRate: 45, threatenedSpecies: 10, poachingIncidents: 2, renewableEnergy: 70, energyEfficiency: 0.95, resourceConsumption: 8, circularEconomyScore: 85, povertyRate: 5, gdpGrowth: 1.0, disasterRiskIndex: 2.1, communityPreparedness: 90, waterStress: 10, cleanWaterAccess: 99, aqi: 30, pm25: 7, lifeExpectancy: 81, healthSpending: 9, soilHealth: 0.8, landDegradation: 2 },
+    { name: "China", continent: "Asia", deforestationRate: 0.8, forestCover: 22, reforestationRate: 0.8, fireIncidents: 25, protectedForest: 18, plasticWaste: 2500, recyclingRate: 25, threatenedSpecies: 180, poachingIncidents: 50, renewableEnergy: 55, energyEfficiency: 0.8, resourceConsumption: 18, circularEconomyScore: 60, povertyRate: 12, gdpGrowth: 5.0, disasterRiskIndex: 7.8, communityPreparedness: 70, waterStress: 70, cleanWaterAccess: 90, aqi: 150, pm25: 60, lifeExpectancy: 77, healthSpending: 5, soilHealth: 0.4, landDegradation: 35 },
+    { name: "Australia", continent: "Oceania", deforestationRate: 0.1, forestCover: 19, reforestationRate: 0.1, fireIncidents: 50, protectedForest: 10, plasticWaste: 800, recyclingRate: 28, threatenedSpecies: 60, poachingIncidents: 5, renewableEnergy: 30, energyEfficiency: 0.85, resourceConsumption: 22, circularEconomyScore: 65, povertyRate: 8, gdpGrowth: 2.5, disasterRiskIndex: 5.5, communityPreparedness: 75, waterStress: 40, cleanWaterAccess: 98, aqi: 40, pm25: 10, lifeExpectancy: 83, healthSpending: 9.5, soilHealth: 0.6, landDegradation: 15 }
+];
+
+let currentFilter = "All"; // Initialize filter for this page
+const chartInstances = {}; // Store chart instances for this page
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize filter dropdown change listener
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('df-line', 'line', getForestCoverData);
+    createChart('df-bar', 'bar', getDeforestationRateData);
+    createChart('df-reforestation-line', 'line', getReforestationData);
+    createChart('df-pie-drivers', 'doughnut', getDeforestationDriversData);
+    createChart('df-fire-bar', 'bar', getForestFireData);
+    createChart('df-protected-doughnut', 'doughnut', getProtectedForestData);
+
+    // Initial chart update based on default filter
+    updateCharts();
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    // Initialize chart with empty data initially. Data will be populated by updateCharts()
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    // For each chart on this page, update its data
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        // Manually map config to dataFn for this page
+        let config;
+        if (id === 'df-line') config = { dataFn: getForestCoverData };
+        else if (id === 'df-bar') config = { dataFn: getDeforestationRateData };
+        else if (id === 'df-reforestation-line') config = { dataFn: getReforestationData };
+        else if (id === 'df-pie-drivers') config = { dataFn: getDeforestationDriversData };
+        else if (id === 'df-fire-bar') config = { dataFn: getForestFireData };
+        else if (id === 'df-protected-doughnut') config = { dataFn: getProtectedForestData };
+
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+function getForestCoverData(data) {
+    const labels = currentFilter === 'All' ? continents : data.map(d => d.name);
+    const datasetData = currentFilter === 'All' ? 
+        continents.map(c => {
+            const continentCountries = data.filter(d => d.continent === c);
+            return continentCountries.length > 0 ? continentCountries.reduce((sum, item) => sum + item.forestCover, 0) / continentCountries.length : 0;
+        }) :
+        data.map(d => d.forestCover);
+
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Forest Cover (%)',
+            data: datasetData,
+            borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getDeforestationRateData(data) {
+    const sortedData = [...data].sort((a, b) => b.deforestationRate - a.deforestationRate).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Annual Deforestation Rate (%)',
+            data: sortedData.map(d => d.deforestationRate),
+            backgroundColor: '#EF4444', borderRadius: 4
+        }]
+    };
+}
+
+function getReforestationData(data) {
+    const labels = currentFilter === 'All' ? continents : data.map(d => d.name);
+    const datasetData = currentFilter === 'All' ? 
+        continents.map(c => {
+            const continentCountries = data.filter(d => d.continent === c);
+            return continentCountries.length > 0 ? continentCountries.reduce((sum, item) => sum + item.reforestationRate, 0) / continentCountries.length : 0;
+        }) :
+        data.map(d => d.reforestationRate);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Reforestation Rate (%)',
+            data: datasetData,
+            borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getDeforestationDriversData(data) {
+    // Simulate static drivers for simplicity, or aggregate from data if more granular data existed
+    // For this specific chart, the data doesn't change based on continent filter, as it represents global proportions
+    return {
+        labels: ['Agriculture', 'Logging', 'Mining', 'Urbanization', 'Other'],
+        datasets: [{
+            data: [40, 25, 15, 10, 10], // Static global percentages
+            backgroundColor: ['#FBBF24', '#EF4444', '#F97316', '#A855F7', '#64748B'],
+        }]
+    };
+}
+
+function getForestFireData(data) {
+    const continentCounts = continents.reduce((acc, c) => {
+        acc[c] = data.filter(d => d.continent === c).reduce((sum, item) => sum + item.fireIncidents, 0);
+        return acc;
+    }, {});
+    const labels = Object.keys(continentCounts).filter(c => currentFilter === 'All' || continentCounts[c] > 0);
+    const chartData = labels.map(c => continentCounts[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Major Fire Incidents',
+            data: chartData,
+            backgroundColor: ['#F97316', '#EF4444', '#FBBF24', '#D946EF', '#CA8A04', '#78716C'],
+            borderRadius: 4
+        }]
+    };
+}
+
+function getProtectedForestData(data) {
+    // This chart calculates a percentage of protected forest relative to total forest cover within the filtered data
+    const totalForestInFilteredData = data.reduce((sum, item) => sum + item.forestCover, 0);
+    const totalProtectedInFilteredData = data.reduce((sum, item) => sum + item.protectedForest, 0);
+    
+    const percentageProtected = totalForestInFilteredData > 0 ? 
+                                (totalProtectedInFilteredData / totalForestInFilteredData * 100).toFixed(1) : 0;
+    const percentageUnprotected = (100 - percentageProtected).toFixed(1);
+
+    return {
+        labels: ['Protected Forest Areas (%)', 'Unprotected Forest Areas (%)'],
+        datasets: [{
+            data: [percentageProtected, percentageUnprotected],
+            backgroundColor: ['#22C55E', '#D1D5DB'],
+        }]
+    };
+}
+</script>
+</body>
+</html>
