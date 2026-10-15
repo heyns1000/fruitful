@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoopPay™ Sovereign Payment & SSO Portal</title>
+    <!-- PayPal SDK script -->
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --brand-gold: #facc15;
+            --brand-purple: #a855f7;
+            --bg-darkest: #020617;
+            --bg-dark: #0f172a;
+            --bg-med: #1e293b;
+            --text-light: #f8fafc;
+            --text-med: #94a3b8;
+            --accent-sky: #38bdf8;
+            --primary-color: var(--brand-purple);
+            --border-color-dark: #334155;
+            --text-color-light-mode: #1d1d1f;
+            --bg-color-light-mode: #f5f5f7;
+            --card-bg-light-mode: #ffffff;
+            --border-color-light-mode: #e8e8ed;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: var(--bg-darkest);
+            color: var(--text-light);
+        }
+        body.light-mode {
+            background-color: var(--bg-color-light-mode);
+            color: var(--text-color-light-mode);
+        }
+        .font-space-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .top-header {
+            padding: 0.5rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .dark-mode .top-header {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border-color-dark);
+        }
+        .light-mode .top-header {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid var(--border-color-light-mode);
+        }
+        .header-logo a {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        .dark-mode .header-logo a { color: var(--text-light); }
+        .light-mode .header-logo a { color: var(--text-color-light-mode); }
+        .header-logo span {
+            color: var(--brand-purple);
+        }
+        .theme-controls button, .theme-controls select {
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+        }
+        .dark-mode .theme-controls button, .dark-mode .theme-controls select {
+            background-color: var(--bg-med);
+            border: 1px solid var(--border-color-dark);
+            color: var(--text-med);
+        }
+        .light-mode .theme-controls button, .light-mode .theme-controls select {
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            color: #495057;
+        }
+        .theme-controls button.active {
+            background-color: var(--brand-purple);
+            color: white;
+            border-color: var(--brand-purple);
+        }
+        .section-padding { padding: 80px 20px; }
+        .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 50px; color: var(--accent-sky); }
+        
+        .hero-section {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--brand-purple) 0%, #4c1d95 100%);
+            color: white;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+        .hero-section h1 { font-family: 'Space Grotesk', sans-serif; font-size: 4rem; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
+        .hero-section p { font-size: 1.5rem; max-width: 900px; margin: 0 auto 40px; line-height: 1.5; color: rgba(255, 255, 255, 0.9); }
+        
+        .info-card { padding: 30px; border-radius: 12px; text-align: left; }
+        .dark-mode .info-card { background-color: var(--bg-med); border: 1px solid var(--border-color-dark); }
+        .light-mode .info-card { background-color: var(--card-bg-light-mode); border: 1px solid var(--border-color-light-mode); }
+        .info-card .icon { font-size: 2.5rem; color: var(--brand-purple); margin-bottom: 15px; }
+        .info-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+        .dark-mode .info-card p { color: var(--text-med); }
+        .light-mode .info-card p { color: #6e6e73; }
+
+        .pricing-card { padding: 40px; border-radius: 16px; display: flex; flex-direction: column; }
+        .dark-mode .pricing-card { background-color: var(--bg-med); border: 1px solid var(--border-color-dark); }
+        .light-mode .pricing-card { background-color: var(--card-bg-light-mode); border: 1px solid var(--border-color-light-mode); }
+        .pricing-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; text-align: center; }
+        .pricing-card .price { font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 800; text-align: center; margin: 15px 0; color: var(--brand-gold); }
+        
+        .gemini-section { padding: 2rem; border-radius: 1rem; }
+        .dark-mode .gemini-section { background-color: var(--bg-med); }
+        .light-mode .gemini-section { background-color: var(--card-bg-light-mode); }
+        .gemini-section input, .gemini-section textarea { border-color: var(--border-color-dark); color: var(--text-light); }
+        .dark-mode .gemini-section input, .dark-mode .gemini-section textarea { background-color: var(--bg-dark); }
+        .light-mode .gemini-section input, .light-mode .gemini-section textarea { background-color: #e9ecef; color: var(--text-color-light-mode); }
+        .gemini-section button { background-color: var(--brand-purple); }
+        .gemini-section button:hover { background-color: #7e22ce; }
+        .gemini-result { border: 1px dashed var(--border-color-dark); min-height: 150px; padding: 1rem; border-radius: 0.5rem; }
+        .dark-mode .gemini-result { background-color: var(--bg-dark); }
+        .light-mode .gemini-result { background-color: #e9ecef; }
+    </style>
+</head>
+<body class="dark-mode">
+    <header class="top-header">
+        <div class="container flex justify-between items-center">
+            <div class="header-logo">
+                <a href="#">LoopPay™ <span>Sovereign Portal</span></a>
+            </div>
+            <div class="controls-container flex items-center gap-4">
+                <div class="theme-controls">
+                    <button id="theme-day-btn" class="px-4 py-2">☀️</button>
+                    <button id="theme-night-btn" class="px-4 py-2 active">🌙</button>
+                </div>
+                <div class="language-control">
+                    <select id="languageSwitcher" class="theme-controls p-2 rounded-full"></select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 data-lang-key="internal_page_title">LoopPay™ Sovereign Payment & SSO Portal</h1>
+                <p data-lang-key="internal_page_description">Your central hub for secure access to the LoopPay™ ecosystem, vendor management, and streamlined payout information.</p>
+            </div>
+        </section>
+        
+        <section class="section-padding">
+            <div class="container">
+                <h2 data-lang-key="sso_title" class="section-title">🔐 LoopPay™ Core Functions</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="info-card">
+                        <i class="fas fa-project-diagram icon"></i>
+                        <h3 data-lang-key="sso1_title">Decentralized Payout Mesh</h3>
+                        <p data-lang-key="sso1_desc">Utilizes PulseTrade™ for 9-second payout cycles, ensuring vendors and contractors are paid with unparalleled speed and transparency.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-file-signature icon"></i>
+                        <h3 data-lang-key="sso2_title">Immutable Scroll Contracts</h3>
+                        <p data-lang-key="sso2_desc">Every transaction is anchored to a sovereign legal scroll via ClaimRoot™, providing an unbreakable chain of ownership and payment proof.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-globe-africa icon"></i>
+                        <h3 data-lang-key="sso3_title">Regional Compliance</h3>
+                        <p data-lang-key="sso3_desc">DivLock™ technology ensures all transactions automatically adhere to regional and international financial regulations, mitigating risk.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding gemini-section">
+            <div class="container max-w-3xl mx-auto">
+                <h2 data-lang-key="internal_gemini_title" class="section-title">Ask the LoopPay™ AI Assistant</h2>
+                <p data-lang-key="internal_gemini_desc" class="text-center -mt-8 mb-6 text-text-med">Query the system about LoopPay™ functionalities, integration protocols, or security best practices.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="internal-gemini-input" class="w-full p-3 rounded-lg text-lg" placeholder="e.g., How does PulseTrade™ work?">
+                    <button id="internal-gemini-button" class="text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        <span>✨ Get Info</span>
+                    </button>
+                </div>
+                <div id="internal-gemini-result" class="mt-6 gemini-result">
+                    <p id="internal-gemini-result-text" class="text-lg text-text-med">Your answer will appear here...</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="looppay-pricing" class="section-padding">
+             <div class="container">
+                 <h2 data-lang-key="pricing_title" class="section-title">💳 LoopPay™ License Pricing</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div class="pricing-card">
+                         <h3>LoopPay™ Core License</h3>
+                         <p class="price">$6,500 <span class="text-lg font-medium">USD</span></p>
+                         <p class="text-text-med text-center mb-4">One-time fee for a perpetual sovereign license.</p>
+                         <div id="paypal-button-container-starter"></div>
+                     </div>
+                     <div class="pricing-card">
+                         <h3>LoopPay™ Pro Grid</h3>
+                         <p class="price">$230 <span class="text-lg font-medium">USD /mo</span></p>
+                         <p class="text-text-med text-center mb-4">Includes advanced analytics and priority support.</p>
+                         <div id="paypal-button-container-pro"></div>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+        <section id="currency-converter-section" class="section-padding">
+            <div class="container max-w-3xl mx-auto">
+                <h2 data-lang-key="currency_converter_title" class="section-title">💱 Global Currency Converter</h2>
+                <p data-lang-key="currency_converter_desc" class="text-center -mt-8 mb-6 text-text-med">Convert amounts for international payouts using real-time exchange rates.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
+                    <div class="sm:col-span-2">
+                         <label for="amount-input" class="text-sm font-medium">Amount</label>
+                         <input type="number" id="amount-input" placeholder="1.00" value="1" class="w-full p-3 rounded-lg text-lg mt-1 currency-converter">
+                    </div>
+                    <div>
+                        <label for="from-currency-select" class="text-sm font-medium">From</label>
+                        <select id="from-currency-select" class="w-full p-3 rounded-lg text-lg mt-1 currency-converter"></select>
+                    </div>
+                     <div class="flex items-end justify-center pb-2">
+                        <i class="fas fa-exchange-alt text-2xl text-accent-sky"></i>
+                    </div>
+                     <div>
+                        <label for="to-currency-select" class="text-sm font-medium">To</label>
+                        <select id="to-currency-select" class="w-full p-3 rounded-lg text-lg mt-1 currency-converter"></select>
+                    </div>
+                </div>
+                <button id="convert-button" class="action-button bg-accent-sky text-white w-full justify-center mt-4">Convert</button>
+                <div id="currency-converter-result" class="mt-6 p-6 rounded-lg bg-bg-dark border border-border-color-dark text-center text-xl font-bold">
+                    <p id="converted-result-text">Converted amount will appear here...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="py-8 px-6 text-center text-text-med border-t border-border-color-dark">
+        <p>© 2025 LoopPay™ by FAA Treaty System™. All Rights Reserved.</p>
+        <p class="text-xs">Powered by Lion's Seedwave 🦁 glyphs + Vault API.</p>
+    </footer>
+
+    <script type="module">
+        // --- TRANSLATIONS & CONFIG ---
+        const translations = {
+            en: { "lang_name": "English", "internal_page_title": "LoopPay™ Sovereign Payment & SSO Portal", "internal_page_description": "Your central hub for secure access to the LoopPay™ ecosystem, vendor management, and streamlined payout information.", "sso_title": "🔐 LoopPay™ Core Functions", "sso1_title": "Decentralized Payout Mesh", "sso1_desc": "Utilizes PulseTrade™ for 9-second payout cycles, ensuring vendors and contractors are paid with unparalleled speed and transparency.", "sso2_title": "Immutable Scroll Contracts", "sso2_desc": "Every transaction is anchored to a sovereign legal scroll via ClaimRoot™, providing an unbreakable chain of ownership and payment proof.", "sso3_title": "Regional Compliance", "sso3_desc": "DivLock™ technology ensures all transactions automatically adhere to regional and international financial regulations, mitigating risk.", "internal_gemini_title": "Ask the LoopPay™ AI Assistant", "internal_gemini_desc": "Query the system about LoopPay™ functionalities, integration protocols, or security best practices.", "currency_converter_title": "💱 Global Currency Converter", "currency_converter_desc": "Convert amounts for international payouts using real-time exchange rates." },
+            af: { "lang_name": "Afrikaans", "internal_page_title": "LoopPay™ Soewereine Betaling & SSO Portaal", "internal_page_description": "Jou sentrale spilpunt vir veilige toegang tot die LoopPay™-ekosisteem, verskafferbestuur en vaartbelynde uitbetalingsinligting.", "sso_title": "🔐 LoopPay™ Kernfunksies", "sso1_title": "Gedesentraliseerde Uitbetalingsnetwerk", "sso1_desc": "Gebruik PulseTrade™ vir 9-sekonde-uitbetalingsiklusse, wat verseker dat verskaffers en kontrakteurs met ongeëwenaarde spoed en deursigtigheid betaal word.", "sso2_title": "Onveranderlike Rolkontrakte", "sso2_desc": "Elke transaksie word geanker aan 'n soewereine wettige rol via ClaimRoot™, wat 'n onbreekbare ketting van eienaarskap en betalingsbewys bied.", "sso3_title": "Streeksnakoming", "sso3_desc": "DivLock™-tegnologie verseker dat alle transaksies outomaties aan streeks- en internasionale finansiële regulasies voldoen, wat risiko verminder.", "internal_gemini_title": "Vra die LoopPay™ KI-assistent", "internal_gemini_desc": "Doen navraag oor LoopPay™-funksies, integrasieprotokolle of sekuriteits beste praktyke.", "currency_converter_title": "💱 Wêreldwye Valuta-omskakelaar", "currency_converter_desc": "Skakel bedrae om vir internasionale uitbetalings deur intydse wisselkoerse te gebruik." },
+            zu: { "lang_name": "isiZulu", "internal_page_title": "I-LoopPay™ Iphothali Yokukhokha Okuzimele & ne-SSO", "internal_page_description": "Isikhungo sakho esiyinhloko sokufinyelela okuphephile ohlelweni lwe-LoopPay™, ukuphathwa kwabathengisi, kanye nolwazi lokukhokha oluhlelekile.", "sso_title": "🔐 Imisebenzi Eyinhloko ye-LoopPay™", "sso1_title": "Inethiwekhi Yokukhokha Ehlakazekile", "sso1_desc": "Isebenzisa i-PulseTrade™ emijikelezweni yokukhokha yemizuzwana engu-9, iqinisekisa ukuthi abathengisi nosonkontileka bakhokhelwa ngesivinini esingenakuqhathaniswa nangokungafihli.", "sso2_title": "Izinkontileka Zemiqulu Ezingenakuguqulwa", "sso2_desc": "Konke okwenziwayo kuxhunywe emqulwini wezomthetho ozimele nge-ClaimRoot™, kunikeza ubufakazi bobunikazi obungenakwephulwa nobufakazi bokukhokha.", "sso3_title": "Ukuthobela Kwezifunda", "sso3_desc": "Ubuchwepheshe be-DivLock™ buqinisekisa ukuthi konke okwenziwayo kuthobela ngokuzenzakalelayo imithetho yezezimali yesifunda neyamazwe omhlaba, kunciphisa ubungozi.", "internal_gemini_title": "Buza Umsizi we-AI we-LoopPay™", "internal_gemini_desc": "Buza uhlelo mayelana nokusebenza kwe-LoopPay™, izivumelwano zokuhlanganisa, noma izindlela ezingcono kakhulu zokuphepha.", "currency_converter_title": "💱 Isiguquli Semali Yomhlaba Wonke", "currency_converter_desc": "Guqula amanani okukhokha kwamazwe omhlaba usebenzisa amanani okushintshanisa esikhathi sangempela." },
+            xh: { "lang_name": "isiXhosa", "internal_page_title": "I-LoopPay™ Iphothali yeNtlawulo yeSovereign kunye ne-SSO", "internal_page_description": "Iziko lakho eliphambili lokufikelela ngokukhuselekileyo kwi-ecosystem ye-LoopPay™, ulawulo lwabathengisi, kunye nolwazi olulungelelanisiweyo lwentlawulo.", "sso_title": "🔐 Imisebenzi Engundoqo ye-LoopPay™", "sso1_title": "INethiwekhi yeNtlawulo eSasaziweyo", "sso1_desc": "Isebenzisa i-PulseTrade™ kwimijikelo yentlawulo yemizuzwana eyi-9, iqinisekisa ukuba abathengisi kunye neekontraki bahlawulwa ngesantya esingenakuthelekiswa nanto kunye nokungafihli.", "sso2_title": "Iikhontrakthi ezingenakuguqulwa zeScroll", "sso2_desc": "Yonke intengiselwano iqhotyoshelwe kwiskroli somthetho esizimeleyo nge-ClaimRoot™, ibonelela ngokhuseleko olungenakwaphulwa lobunini kunye nobungqina bentlawulo.", "sso3_title": "Ukuthotyelwa kweNgingqi", "sso3_desc": "Itekhnoloji ye-DivLock™ iqinisekisa ukuba zonke iintengiselwano zithobela ngokuzenzekelayo imimiselo yezemali yengingqi neyehlabathi, inciphisa umngcipheko.", "internal_gemini_title": "Buza uMncedisi we-AI we-LoopPay™", "internal_gemini_desc": "Buza inkqubo malunga nokusebenza kwe-LoopPay™, iiprothokholi zokudibanisa, okanye ezona ndlela zilungileyo zokhuseleko.", "currency_converter_title": "💱 Isiguquli seMali seHlabathi", "currency_converter_desc": "Guqula imali yentlawulo zamazwe ngamazwe usebenzisa amaxabiso otshintshiselwano ngexesha lokwenyani." },
+        };
+        const CURRENCY_API_KEY = '40015d117bc7fff9495dcf28';
+        const BASE_CURRENCY_API_URL = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}`;
+        let exchangeRates = {};
+
+        // --- DOM ELEMENTS ---
+        const internalGeminiButton = document.getElementById('internal-gemini-button');
+        const internalGeminiInput = document.getElementById('internal-gemini-input');
+        const internalGeminiResultText = document.getElementById('internal-gemini-result-text');
+        const amountInput = document.getElementById('amount-input');
+        const fromCurrencySelect = document.getElementById('from-currency-select');
+        const toCurrencySelect = document.getElementById('to-currency-select');
+        const convertButton = document.getElementById('convert-button');
+        const convertedResultText = document.getElementById('currency-converter-result');
+        const languageSwitcher = document.getElementById('languageSwitcher');
+        const themeDayBtn = document.getElementById('theme-day-btn');
+        const themeNightBtn = document.getElementById('theme-night-btn');
+
+        // --- FUNCTIONS ---
+        const setLanguage = (lang) => {
+            if (!translations[lang]) lang = 'en';
+            document.documentElement.lang = lang;
+            localStorage.setItem('selectedLanguage', lang);
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                const translatedText = translations[lang][key] || translations.en[key];
+                if (translatedText) {
+                    if (el.placeholder) el.placeholder = translatedText;
+                    else el.innerHTML = translatedText;
+                }
+            });
+        };
+
+        async function populateCurrencies() {
+            try {
+                const response = await fetch(`${BASE_CURRENCY_API_URL}/codes`);
+                const data = await response.json();
+                if (data.result === 'success') {
+                    data.supported_codes.forEach(([code, name]) => {
+                        [fromCurrencySelect, toCurrencySelect].forEach(select => {
+                            const option = new Option(`${code} - ${name}`, code);
+                            select.add(option.cloneNode(true));
+                        });
+                    });
+                    fromCurrencySelect.value = 'USD';
+                    toCurrencySelect.value = 'ZAR';
+                }
+            } catch (error) {
+                console.error("Error fetching currencies:", error);
+            }
+        }
+
+        async function convertCurrency() {
+            const amount = parseFloat(amountInput.value);
+            if (isNaN(amount) || amount <= 0) {
+                convertedResultText.textContent = "Please enter a valid amount.";
+                return;
+            }
+            convertedResultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            try {
+                const response = await fetch(`${BASE_CURRENCY_API_URL}/pair/${fromCurrencySelect.value}/${toCurrencySelect.value}/${amount}`);
+                const data = await response.json();
+                if (data.result === 'success') {
+                    convertedResultText.textContent = `${amount} ${fromCurrencySelect.value} = ${data.conversion_result.toFixed(2)} ${toCurrencySelect.value}`;
+                } else {
+                    convertedResultText.textContent = 'Conversion failed.';
+                }
+            } catch (error) {
+                convertedResultText.textContent = 'Error during conversion.';
+            }
+        }
+
+        async function callGeminiApi(prompt, resultElement, buttonElement) {
+            const apiKey = ""; // Provided by environment
+            resultElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            buttonElement.disabled = true;
+            try {
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    resultElement.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    resultElement.textContent = 'Sorry, I could not generate an answer.';
+                }
+            } catch (error) {
+                resultElement.textContent = 'Error connecting to the AI.';
+            } finally {
+                buttonElement.disabled = false;
+            }
+        }
+
+        function setTheme(theme) {
+            document.body.classList.toggle('light-mode', theme === 'light');
+            document.body.classList.toggle('dark-mode', theme === 'dark');
+            themeDayBtn.classList.toggle('active', theme === 'light');
+            themeNightBtn.classList.toggle('active', theme === 'dark');
+            localStorage.setItem('themeMode', theme);
+        }
+
+        // --- EVENT LISTENERS ---
+        internalGeminiButton.addEventListener('click', () => {
+            const query = internalGeminiInput.value.trim();
+            if (!query) return;
+            const prompt = `As an AI assistant for LoopPay™, a sovereign payout system, answer this query: "${query}". Keep it professional and concise.`;
+            callGeminiApi(prompt, internalGeminiResultText, internalGeminiButton);
+        });
+
+        convertButton.addEventListener('click', convertCurrency);
+        themeDayBtn.addEventListener('click', () => setTheme('light'));
+        themeNightBtn.addEventListener('click', () => setTheme('dark'));
+        languageSwitcher.addEventListener('change', (e) => setLanguage(e.target.value));
+
+        // --- INITIALIZATION ---
+        Object.keys(translations).forEach(lang => {
+            const option = new Option(translations[lang]['lang_name'], lang);
+            languageSwitcher.add(option);
+        });
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        languageSwitcher.value = savedLang;
+        setLanguage(savedLang);
+
+        const savedTheme = localStorage.getItem('themeMode') || 'dark';
+        setTheme(savedTheme);
+
+        populateCurrencies();
+
+        // PayPal Buttons
+        if (typeof paypal !== 'undefined' && paypal.HostedButtons) {
+            try {
+                paypal.HostedButtons({ hostedButtonId: "9KZH38XFK3TX2" }).render("#paypal-button-container-starter");
+                paypal.HostedButtons({ hostedButtonId: "FNGGP5UJ9VYHQ" }).render("#paypal-button-container-pro");
+            } catch (error) {
+                console.error("PayPal button rendering error:", error);
+            }
+        }
+
+    </script>
+</body>
+</html>

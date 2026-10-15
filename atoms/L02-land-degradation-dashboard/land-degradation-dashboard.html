@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Land Degradation Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Land Degradation & Soil Health Dashboard</h2>
+                <p class="text-gray-600 mt-1">Monitoring desertification, soil erosion, and land restoration efforts worldwide.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html">Global Health</a>
+            <a href="land_degradation_dashboard.html" class="active">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Land Degradation Trends -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Land Degradation Extent (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks the overall increase in degraded land areas globally, impacting agriculture and ecosystems.
+                </p>
+            </div>
+
+            <!-- Graph 2: Desertification Risk Areas -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Desertification Risk by Continent</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-desertification-risk"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Identifies regions most vulnerable to desertification, critical for intervention.
+                </p>
+            </div>
+
+            <!-- Graph 3: Soil Organic Carbon (SOC) Levels -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Soil Organic Carbon Levels (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-soc-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Monitors soil health and its capacity to store carbon, essential for climate and food security.
+                </p>
+            </div>
+
+            <!-- Graph 4: Land Restoration Project Success Rates -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Land Restoration Success Rates (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-restoration-pie"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Evaluates the effectiveness of efforts to rehabilitate degraded lands and ecosystems.
+                </p>
+            </div>
+
+            <!-- Graph 5: Impact of Climate Change on Land Health -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Climate Change Impact on Land Health (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-climate-impact-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Correlates climatic shifts with observed land degradation, emphasizing urgency of climate action.
+                </p>
+            </div>
+
+            <!-- Graph 6: AI for Precision Agriculture & Soil Monitoring -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">AI in Precision Agriculture Impact (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ld-ai-precision-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Shows how AI technologies optimize farming practices to improve soil health and productivity.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-8 px-6 bg-gray-900 text-center text-sm text-gray-400">
+        <p>&copy; 2025 Heyns Schoeman ™. All rights reserved.</p>
+        <p class="mt-2">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+        <p class="mt-1">Water the Seed™ | Baobab™ Security | AI-Powered Global Expansion</p>
+    </footer>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // Sample data for land degradation metrics
+    { name: "Nigeria", continent: "Africa", landDegradationPercentage: 35, desertificationRisk: 70, socLevels: 1.2, restorationSuccessRate: 40, droughtFrequency: 8, droughtIntensity: 0.7, yieldIncreaseAI: 10, fertilizerReductionAI: 15 },
+    { name: "USA", continent: "North America", landDegradationPercentage: 10, desertificationRisk: 20, socLevels: 2.5, restorationSuccessRate: 80, droughtFrequency: 3, droughtIntensity: 0.3, yieldIncreaseAI: 25, fertilizerReductionAI: 30 },
+    { name: "Brazil", continent: "South America", landDegradationPercentage: 25, desertificationRisk: 50, socLevels: 1.8, restorationSuccessRate: 60, droughtFrequency: 6, droughtIntensity: 0.6, yieldIncreaseAI: 18, fertilizerReductionAI: 22 },
+    { name: "Germany", continent: "Europe", landDegradationPercentage: 5, desertificationRisk: 10, socLevels: 3.0, restorationSuccessRate: 90, droughtFrequency: 1, droughtIntensity: 0.1, yieldIncreaseAI: 30, fertilizerReductionAI: 35 },
+    { name: "China", continent: "Asia", landDegradationPercentage: 30, desertificationRisk: 60, socLevels: 1.5, restorationSuccessRate: 50, droughtFrequency: 10, droughtIntensity: 0.8, yieldIncreaseAI: 15, fertilizerReductionAI: 20 },
+    { name: "Australia", continent: "Oceania", landDegradationPercentage: 18, desertificationRisk: 40, socLevels: 2.0, restorationSuccessRate: 70, droughtFrequency: 5, droughtIntensity: 0.5, yieldIncreaseAI: 22, fertilizerReductionAI: 28 }
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('ld-line', 'line', getLandDegradationData);
+    createChart('ld-desertification-risk', 'bar', getDesertificationRiskData);
+    createChart('ld-soc-bar', 'bar', getSoilOrganicCarbonData);
+    createChart('ld-restoration-pie', 'doughnut', getLandRestorationSuccessData);
+    createChart('ld-climate-impact-line', 'line', getClimateChangeImpactData);
+    createChart('ld-ai-precision-bar', 'bar', getAIPrecisionAgricultureData);
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        let config;
+        if (id === 'ld-line') config = { dataFn: getLandDegradationData };
+        else if (id === 'ld-desertification-risk') config = { dataFn: getDesertificationRiskData };
+        else if (id === 'ld-soc-bar') config = { dataFn: getSoilOrganicCarbonData };
+        else if (id === 'ld-restoration-pie') config = { dataFn: getLandRestorationSuccessData };
+        else if (id === 'ld-climate-impact-line') config = { dataFn: getClimateChangeImpactData };
+        else if (id === 'ld-ai-precision-bar') config = { dataFn: getAIPrecisionAgricultureData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+
+function getLandDegradationData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.landDegradationPercentage * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Land Degraded (%)',
+            data: datasetData,
+            borderColor: '#CA8A04', backgroundColor: 'rgba(202, 138, 4, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getDesertificationRiskData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.desertificationRisk, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Desertification Risk Index (0-100)',
+            data: chartData,
+            backgroundColor: '#F97316', borderRadius: 4
+        }]
+    };
+}
+
+function getSoilOrganicCarbonData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.socLevels, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Avg. Soil Organic Carbon (SOC) Levels (%)',
+            data: chartData,
+            backgroundColor: '#10B981', borderRadius: 4
+        }]
+    };
+}
+
+function getLandRestorationSuccessData(data) {
+    const successRates = { 'High (>70%)': 0, 'Medium (40-70%)': 0, 'Low (<40%)': 0 };
+    data.forEach(d => {
+        if (d.restorationSuccessRate > 70) successRates['High (>70%)']++;
+        else if (d.restorationSuccessRate >= 40) successRates['Medium (40-70%)']++;
+        else successRates['Low (<40%)']++;
+    });
+    return {
+        labels: Object.keys(successRates),
+        datasets: [{
+            data: Object.values(successRates),
+            backgroundColor: ['#22C55E', '#FBBF24', '#EF4444'],
+        }]
+    };
+}
+
+function getClimateChangeImpactData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const droughtFreqData = years.map(() => {
+        return data.reduce((sum, item) => sum + item.droughtFrequency, 0) / data.length;
+    });
+    const droughtIntensityData = years.map(() => {
+        return data.reduce((sum, item) => sum + item.droughtIntensity, 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [
+            {
+                label: 'Avg. Drought Frequency',
+                data: droughtFreqData,
+                borderColor: '#F97316', backgroundColor: 'rgba(249, 115, 22, 0.1)', fill: false, tension: 0.4
+            },
+            {
+                label: 'Avg. Drought Intensity (0-1)',
+                data: droughtIntensityData,
+                borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: false, tension: 0.4
+            }
+        ]
+    };
+}
+
+function getAIPrecisionAgricultureData(data) {
+    const labels = currentFilter === 'All' ? continents : data.map(d => d.name);
+    const yieldIncreaseData = currentFilter === 'All' ? 
+        continents.map(c => data.filter(d => d.continent === c).reduce((sum, item) => sum + item.yieldIncreaseAI, 0) / data.filter(d => d.continent === c).length || 0) :
+        data.map(d => d.yieldIncreaseAI);
+    const fertilizerReductionData = currentFilter === 'All' ? 
+        continents.map(c => data.filter(d => d.continent === c).reduce((sum, item) => sum + item.fertilizerReductionAI, 0) / data.filter(d => d.continent === c).length || 0) :
+        data.map(d => d.fertilizerReductionAI);
+
+    return {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Yield Increase with AI (%)',
+                data: yieldIncreaseData,
+                backgroundColor: '#3B82F6', borderRadius: 4
+            },
+            {
+                label: 'Fertilizer Reduction with AI (%)',
+                data: fertilizerReductionData,
+                backgroundColor: '#10B981', borderRadius: 4
+            }
+        ]
+    };
+}
+</script>
+</body>
+</html

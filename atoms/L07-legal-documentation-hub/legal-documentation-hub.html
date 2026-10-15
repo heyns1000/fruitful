@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Legal & Documentation Hub</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .featured-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        .featured-button:hover {
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+        .featured-button:active {
+            transform: scale(0.98);
+        }
+        .featured-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transition: all 0.7s ease-out;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+        .featured-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            justify-content: flex-start;
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+        .main-container-style {
+            background-color: #ffffff;
+            border-top: 8px solid #4f46e5;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+        }
+        .top-fruitful-header {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 1024px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-right: 0.5rem;
+        }
+        .faazone-header h1 {
+            font-size: 1.75rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        .faazone-header span {
+            font-size: 2.5rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header span {
+                font-size: 3rem;
+            }
+        }
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .document-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa;
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2.5rem;
+            color: #4f46e5;
+        }
+        @media (min-width: 640px) {
+            .document-item .icon {
+                font-size: 2.5rem;
+            }
+        }
+        .document-item-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content h3 {
+                font-size: 1.125rem;
+            }
+        }
+        .document-item-content p {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content p {
+                font-size: 0.95rem;
+            }
+        }
+        .document-item-content a {
+            color: #4f46e5;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .document-item-content a:hover {
+            text-decoration: underline;
+        }
+        .document-item-content a svg {
+            margin-left: 0.25rem;
+        }
+        .custom-footer {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+        @media (min-width: 768px) {
+            .custom-footer {
+                padding-left: 5rem;
+                padding-right: 5rem;
+            }
+        }
+        .banimal-footer-content {
+            max-width: 48rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .banimal-footer-content h1 {
+            font-size: 2rem;
+            line-height: 1.25;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 768px) {
+            .banimal-footer-content h1 {
+                font-size: 2.25rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .banimal-footer-content h1 {
+                font-size: 3rem;
+            }
+        }
+        .banimal-footer-content .text-blue-400 {
+            color: #60a5fa;
+        }
+        .banimal-footer-content p {
+            font-size: 1rem;
+            line-height: 1.625;
+            color: #d1d5db;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .banimal-footer-content p {
+                font-size: 1.125rem;
+            }
+        }
+        .cta-button {
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition-property: background-color;
+            transition-duration: 0.2s;
+            text-decoration: none;
+        }
+        .cta-button:hover {
+            background-color: #2563eb;
+        }
+        .cta-button .ml-2 {
+            margin-left: 0.5rem;
+        }
+        .copyright {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 2rem;
+        }
+        .copyright a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        .copyright a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col min-h-[80vh]">
+        <div class="flex-grow">
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-4xl font-extrabold text-slate-800 mb-4 tracking-tight">
+                FAA.ZONE™ <span class="text-indigo-600">Legal & Documentation Hub</span>
+            </h2>
+            <p class="text-lg text-slate-700 mb-8 leading-relaxed">
+                Access essential legal documents, setup guides, and critical information for the FAA.ZONE™ ecosystem.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <a href="#add-new-repo-section" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 text-center flex-1">
+                    Add New Repository
+                </a>
+                <a href="#add-new-legal-doc-section" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-200 text-center flex-1">
+                    Add New Legal Document
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                <div class="document-item">
+                    <div class="icon">⚖</div>
+                    <div class="document-item-content">
+                        <h3>Justice & Ethics Division Services</h3>
+                        <p>Explore our legal and ethical compliance solutions, including LawLedger™ and EthicShield™ brands, with tools like Case Tracker and Compliance Bot. Learn about service tiers and global legal regions.</p>
+                        <a href="justice_ethics_services.html" target="_blank">
+                            View Services
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📝</div>
+                    <div class="document-item-content">
+                        <h3>FAA™ Ecosystem Development Minutes</h3>
+                        <p>Comprehensive meeting minutes detailing the development and integration of the FAA™ Ecosystem, including project vision, interactive SPAs, and policy documentation.</p>
+                        <a href="ecosystem-minutes-restyled.html" target="_blank">
+                            View Minutes
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🌱</div>
+                    <div class="document-item-content">
+                        <h3>Agriculture & Biotech PayPal Integration Manual</h3>
+                        <p>Comprehensive guide for PayPal integration within the AgroChain™ framework, covering product offerings and payment processing.</p>
+                        <a href="agriculture-biotech_paypal.html" target="_blank">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🦊</div>
+                    <div class="document-item-content">
+                        <h3>Foxed Has Mobiles™ Global Launch & Dev Manual</h3>
+                        <p>Minutes of meeting and development guide for the Foxed Has Mobiles™ project, including visual identities and technical specifications.</p>
+                        <a href="foxed_got_mobiles_setup.html" target="_blank">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🐑</div>
+                    <div class="document-item-content">
+                        <h3>Sheep Document: Concentric Borders & Noodle Mountain</h3>
+                        <p>An artistic and technical exploration of concentric borders, Noodle Mountain concepts, and the integration of dynamic visual elements.</p>
+                        <a href="sheep.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🌐</div>
+                    <div class="document-item-content">
+                        <h3>Global Brands Setup</h3>
+                        <p>Detailed instructions for setting up and configuring new global brands within the Seedwave™ framework.</p>
+                        <a href="global_brands_setup.html" target="_blank">
+                            View Setup Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🎶</div>
+                    <div class="document-item-content">
+                        <h3>Spotify Integration Setup and Training Manual</h3>
+                        <p>Comprehensive manual for setting up and understanding the Spotify integration within Seedwave™, including OAuth 2.0 security considerations.</p>
+                        <a href="spotify_intergration.html" target="_blank">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🎧</div>
+                    <div class="document-item-content">
+                        <h3>Fruitful.Music™ Launch Concept - Integrated Manual & App</h3>
+                        <p>An interactive demonstration and manual showcasing the Fruitful.Music™ platform's design, features, and integration of music with aura concepts.</p>
+                        <a href="fruitful_music_spotify.html" target="_blank">
+                            View App & Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📚</div>
+                    <div class="document-item-content">
+                        <h3>Fruitful™ & Seedwave™ Deployment Manual</h3>
+                        <p>Comprehensive guide detailing the design philosophy, visual specifications, Git workflow, file structure, and Node packing strategies for the Fruitful™ & Seedwave™ Global Portal.</p>
+                        <a href="fruitful_seedwave_deployment_manual.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📊</div>
+                    <div class="document-item-content">
+                        <h3>Xero Integration Setup Minutes</h3>
+                        <p>Detailed setup and troubleshooting for Xero OAuth 2.0 integration with the Seedwave Admin Panel.</p>
+                        <a href="xero_integration_minutes.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📊</div>
+                    <div class="document-item-content">
+                        <h3>FAA Wildlife Dashboard - Project Minutes</h3>
+                        <p>An interactive documentation of the FAA Wildlife Dashboard project, chronicling its development from initial assets to the final SPA.</p>
+                        <a href="wildlife.html" target="_blank">
+                            View Minutes
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🔥</div>
+                    <div class="document-item-content">
+                        <h3>Firebase Core Setup Minutes</h3>
+                        <p>Minutes documenting the foundational Firebase project setup: Authentication, Cloud Firestore, and Google Analytics.</p>
+                        <a href="firebase_core_minutes.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🚀</div>
+                    <div class="document-item-content">
+                        <h3>Firebase Scalable Admin Panel (7000 Sites)</h3>
+                        <p>Comprehensive guide for setting up scalable Firebase Authentication, Firestore, and Hosting for a large-scale (7000 sites) admin panel.</p>
+                        <a href="firebase_scale_7000_minutes.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📜</div>
+                    <div class="document-item-content">
+                        <h3>Fruitful™ Holdings NDA</h3>
+                        <p>Standard Non-Disclosure Agreement for collaborations with Fruitful™ Holdings.</p>
+                        <a href="fruitful_holdings_nda.pdf" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">✍️</div>
+                    <div class="document-item-content">
+                        <h3>Secure Sign Application</h3>
+                        <p>Portal for securely submitting comprehensive NDA applications with Atom-Level Verification™ Protocols.</p>
+                        <a href="securesign.html">
+                            Access Portal
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">💳</div>
+                    <div class="document-item-content">
+                        <h3>PayPal Subscriptions Setup Manual</h3>
+                        <p>Detailed guide for configuring and deploying PayPal subscription payments within the FAA.ZONE™ Admin Portal.</p>
+                        <a href="paypal_setup.html">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">⚙️</div>
+                    <div class="document-item-content">
+                        <h3>FAA™ Seedwave Admin Portal Setup Manual</h3>
+                        <p>Comprehensive blueprint for setting up the central Seedwave Admin Portal, detailing serverless architecture and Zoho OAuth integration.</p>
+                        <a href="seedwave.html">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📖</div>
+                    <div class="document-item-content">
+                        <h3>NDA SecureSign Portal Setup Manual (Page 1)</h3>
+                        <p>Guide for installing and configuring the local Node.js server for the SecureSign NDA portal.</p>
+                        <a href="setup.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📄</div>
+                    <div class="document-item-content">
+                        <h3>Setup Guide (Page 2)</h3>
+                        <p>Part 2 of the comprehensive setup instructions for FAA.ZONE systems. (Placeholder)</p>
+                        <a href="setup2.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📃</div>
+                    <div class="document-item-content">
+                        <h3>Setup Guide (Page 3)</h3>
+                        <p>Part 3 of the comprehensive setup instructions for FAA.ZONE systems. (Placeholder)</p>
+                        <a href="setup3.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📜</div>
+                    <div class="document-item-content">
+                        <h3>Setup Guide (Page 4)</h3>
+                        <p>Part 4 of the comprehensive setup instructions for FAA.ZONE systems. (Placeholder)</p>
+                        <a href="setup4.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📑</div>
+                    <div class="document-item-content">
+                        <h3>Setup Guide (Page 5)</h3>
+                        <p>Part 5 of the comprehensive setup instructions for FAA.ZONE systems. (Placeholder)</p>
+                        <a href="setup5.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🇺🇸</div>
+                    <div class="document-item-content">
+                        <h3>USA Information</h3>
+                        <p>General information pertinent to USA operations and legalities within the FAA.ZONE™ ecosystem.</p>
+                        <a href="usa.html">
+                            View Info
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🗺️</div>
+                    <div class="document-item-content">
+                        <h3>Setup USA Guide</h3>
+                        <p>Specific setup instructions and guidelines for USA-based FAA.ZONE™ operations. (Placeholder)</p>
+                        <a href="setupusa.html">
+                            View Guide
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🌳</div>
+                    <div class="document-item-content">
+                        <h3>Baobab Security Network™ Business Package README</h3>
+                        <p>Overview of The Baobab Security Network™ Business Package, including conceptual model and usage instructions.</p>
+                        <a href="baobab.html">
+                            View README
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">💰</div>
+                    <div class="document-item-content">
+                        <h3>King Price™ Pricing & Plans</h3>
+                        <p>Information regarding King Price insurance pricing and various plans offered by the FAA.ZONE™ partner.</p>
+                        <a href="pricing.html">
+                            View Plans
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📊</div>
+                    <div class="document-item-content">
+                        <h3>Index Transdata</h3>
+                        <p>A reference document for data transformation and indexing within the FAA.ZONE™ Transdata framework. (Placeholder)</p>
+                        <a href="index_transdata.html">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📝</div>
+                    <div class="document-item-content">
+                        <h3>FAA.ZONE™ Minutes of Meeting</h3>
+                        <p>Official minutes of key FAA.ZONE™ meetings, detailing discussions and decisions.</p>
+                        <a href="faa_zone_minutes_of_meeting.html" target="_blank">
+                            View Minutes
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">📘</div>
+                    <div class="document-item-content">
+                        <h3>General Operational Manual</h3>
+                        <p>General operational and technical manual for FAA.ZONE™ systems.</p>
+                        <a href="manual.html" target="_blank">
+                            View Manual
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🤝</div>
+                    <div class="document-item-content">
+                        <h3>Omnigrid & Pulsetrade Merger Meeting Minutes</h3>
+                        <p>Minutes of the meeting regarding the Omnigrid and Pulsetrade merger discussions.</p>
+                        <a href="omnigrid_pulsetrade_merge_meeting.html" target="_blank">
+                            View Minutes
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">💳</div>
+                    <div class="document-item-content">
+                        <h3>PayPal General Documentation</h3>
+                        <p>General documentation for PayPal integration within FAA.ZONE™ systems.</p>
+                        <a href="paypal.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🏛️</div>
+                    <div class="document-item-content">
+                        <h3>Sector Ritual AncestorTag Heritage Portal Meeting</h3>
+                        <p>Minutes of the meeting for the Sector Ritual AncestorTag Heritage Portal project.</p>
+                        <a href="sector_ritual_ancestortag_heritage_portal_meeting.html" target="_blank">
+                            View Minutes
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">🔐</div>
+                    <div class="document-item-content">
+                        <h3>SecureSign Portal Documentation</h3>
+                        <p>Comprehensive documentation for the SecureSign Portal, covering its features and usage.</p>
+                        <a href="securesign_portal.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="document-item">
+                    <div class="icon">💻</div>
+                    <div class="document-item-content">
+                        <h3>WeThinkCode Documentation</h3>
+                        <p>Documentation related to the WeThinkCode partnership and initiatives within FAA.ZONE™.</p>
+                        <a href="wethinkcode.html" target="_blank">
+                            View Document
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="custom-footer">
+            <div class="banimal-footer-content">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-white mb-2">
+                    Banimal™: <br>
+                    <span class="text-blue-400">🐑Kind Creatures. Global Impact.</span>
+                </h1>
+                <p class="text-base md:text-lg text-gray-300 leading-relaxed mb-6">
+                    Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.
+                </p>
+                <a href="global_brands.html" class="cta-button bg-blue-600 text-white font-semibold py-3 px-6 rounded-full inline-flex items-center justify-center hover:bg-blue-700 transition-colors duration-200">
+                    Explore Banimal's World <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            <p class="copyright text-sm text-gray-500 mt-8">&copy; 👟2025 Banimal™. All rights reserved.</p>
+            <p class="copyright text-sm text-gray-500">A proud initiative of <a href="https://fruitful.faa.zone/" target="_blank" class="text-blue-400 hover:underline">Fruitful™ Treaty System™</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // No specific JS for this page beyond basic linking.
+        // The wildlife dashboard content and its scripts are now in a separate file (wildlife.html)
+        // and will be loaded when the user clicks on its link.
+    </script>
+</body>
+</html>
+

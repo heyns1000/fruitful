@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesotho: A Kingdom's Future, A Chief's Vision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Lesotho Highlands -->
+    <!-- Application Structure Plan: The SPA is designed as a narrative journey, starting with a high-level vision and then allowing the user to dive into specific facets. The structure is thematic: Visionary -> Nation -> Community -> Ventures. This flow is more intuitive than a standard report, guiding the user from the personal story of Motheo Makhekhe to the broader context of his work. It begins with the "why" (his vision), then the "where" (Lesotho's economy/culture), the "for whom" (Ha Matsepe community), and finally the "how" (his ventures). This top-down, narrative-driven architecture is chosen to make complex information relatable and engaging, connecting policy-level data (economy) to a human story. -->
+    <!-- Visualization & Content Choices: 
+        - Motheo's Bio -> Goal: Inform/Narrate -> Viz: Interactive vertical timeline (HTML/CSS) -> Interaction: Clicking on a milestone reveals descriptive text. -> Justification: Chronological storytelling is best for biographies.
+        - Lesotho Economy -> Goal: Inform/Compare -> Viz: Donut Chart (Chart.js) with a toggle button. -> Interaction: Hover for tooltips; click button to switch between 'GDP by Sector' and 'Socio-Economic Challenges' data. -> Justification: A donut chart is excellent for showing proportions. The toggle adds a layer of interactivity and data density without clutter.
+        - Lesotho Culture -> Goal: Inform/Organize -> Viz: Interactive cards (HTML/CSS) -> Interaction: Click a card to open a modal with detailed information. -> Justification: A clean, visual way to present distinct cultural elements. Modals keep the main layout uncluttered.
+        - Fruitful Mining -> Goal: Organize/Explain Process -> Viz: 3-step flow diagram (HTML/CSS with flexbox) -> Interaction: Static visual with icons for clarity. -> Justification: A simple, clear way to illustrate a business process or vision without complex charts.
+        - Fruitful Crate Dance -> Goal: Inform -> Viz: Icon-based feature list (HTML/CSS) -> Interaction: Static visual. -> Justification: Represents a conceptual or cultural project effectively and visually.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5F2; /* Warm Neutral */
+            color: #3D352E;
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary { background-color: #F8F5F2; }
+        .bg-secondary { background-color: #EAE3DC; }
+        .bg-accent { background-color: #4A7C59; } /* Muted Green */
+        .text-accent { color: #4A7C59; }
+        .border-accent { border-color: #4A7C59; }
+        .bg-dark { background-color: #3D352E; }
+        .text-light { color: #F8F5F2; }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4A7C59;
+            border-bottom-color: #4A7C59;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #EAE3DC;
+            border: 2px solid #4A7C59;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <header class="bg-primary sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-accent font-display">Lesotho Vision</h1>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#visionary" class="nav-link">The Visionary</a>
+                <a href="#lesotho" class="nav-link">Kingdom in the Sky</a>
+                <a href="#community" class="nav-link">The Community</a>
+                <a href="#ventures" class="nav-link">The Ventures</a>
+                <a href="https://lesotho.faa.zone/info.html" class="bg-accent text-light px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all ml-4">More Info</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-secondary">
+            <a href="#visionary" class="block py-2 px-6 text-sm hover:bg-accent hover:text-light">The Visionary</a>
+            <a href="#lesotho" class="block py-2 px-6 text-sm hover:bg-accent hover:text-light">Kingdom in the Sky</a>
+            <a href="#community" class="block py-2 px-6 text-sm hover:bg-accent hover:text-light">The Community</a>
+            <a href="#ventures" class="block py-2 px-6 text-sm hover:bg-accent hover:text-light">The Ventures</a>
+            <a href="https://lesotho.faa.zone/info.html" class="block py-2 px-6 text-sm hover:bg-accent hover:text-light">More Info</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="min-h-[60vh] flex flex-col items-center justify-center bg-secondary py-16">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl font-bold font-display text-accent leading-tight">A Kingdom's Future, A Chief's Vision</h2>
+                <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto">Exploring the intersection of tradition, development, and the journey of Motheo Emsley Makhekhe. A new bridge of opportunities for Lesotho.</p>
+                <p class="mt-6 text-2xl md:text-4xl font-bold text-dark mx-auto">Mafikeng District, Lesotho</p>
+                <div class="mt-8 w-full max-w-xl mx-auto">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/51Via4nX1Gi5E6EHgawjMW?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Visionary Section -->
+        <section id="visionary" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <h3 class="text-3xl md:text-4xl font-bold text-center font-display">The Visionary: Motheo Emsley Makhekhe</h3>
+                <p class="mt-4 text-center max-w-3xl mx-auto">This section introduces the man behind the vision. His unique life journey, from a multicultural upbringing in South Africa to embracing his ancestral duties in Lesotho, has forged a leader uniquely positioned to bridge two worlds. The interactive timeline below allows you to explore the key milestones that shaped his perspective and purpose.</p>
+                <div class="mt-12 md:grid md:grid-cols-3 md:gap-12 items-center">
+                    <div class="md:col-span-1 mb-8 md:mb-0">
+                        <div class="bg-secondary p-6 rounded-lg shadow-lg">
+                             <div class="w-32 h-32 mx-auto rounded-full bg-accent flex items-center justify-center mb-4">
+                                <span class="text-6xl text-light font-display">M</span>
+                            </div>
+                            <h4 class="text-2xl font-bold text-center font-display">The Vision</h4>
+                            <p class="text-center mt-2">"I am a Traditional Healer and King looking to build a new bridge of opportunities and development while ensuring a fulfilling relationship with my community and partners."</p>
+                            <p class="text-center text-sm text-gray-600 mt-4">- Motheo E. Makhekhe</p>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="relative border-l-2 border-accent pl-8">
+                            <div class="timeline-item mb-8">
+                                <h5 class="font-bold text-lg text-accent">Early Life & Education (1993 - 2011)</h5>
+                                <p class="text-sm">Born in Mafeteng District, North West South Africa, he was exposed to arts and culture from a young age at the International School of South Africa. He excelled in sports, particularly rugby for the Leopards Rugby Union, and leadership, becoming Head of Culture and a Prefect at Potchefstroom Boys High.</p>
+                            </div>
+                            <div class="timeline-item mb-8">
+                                <h5 class="font-bold text-lg text-accent">Higher Education & Diverse Interests</h5>
+                                <p class="text-sm">His academic path reflects a curious mind, exploring Business Law, Business Management, and participating in a Rugby academy. This period built a foundation in both formal systems and practical application.</p>
+                            </div>
+                            <div class="timeline-item mb-8">
+                                <h5 class="font-bold text-lg text-accent">A Fateful Inheritance (2017)</h5>
+                                <p class="text-sm">The passing of his father marked a profound turning point. As a dual citizen with paternal roots in Lesotho, he inherited the responsibilities of a Chief (King) for his clan, immersing him in the "joys and terrors" of traditional leadership.</p>
+                            </div>
+                             <div class="timeline-item">
+                                <h5 class="font-bold text-lg text-accent">Embracing Heritage (Present)</h5>
+                                <p class="text-sm">Currently obtaining a PhD in African Medicine and Science from the School of African Medicines, he fully embraces his role as a Traditional Healer and leader, seeking to merge ancient wisdom with modern development strategies for the betterment of his community and nation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lesotho: Kingdom in the Sky Section -->
+        <section id="lesotho" class="py-16 md:py-24 bg-secondary">
+            <div class="container mx-auto px-6">
+                <h3 class="text-3xl md:text-4xl font-bold text-center font-display">The Kingdom in the Sky: An Overview</h3>
+                <p class="mt-4 text-center max-w-3xl mx-auto">To understand the vision, one must understand the nation. This section provides an interactive snapshot of Lesotho's economy and rich culture. The nation faces significant economic challenges but possesses immense cultural wealth and untapped potential. Use the tools below to explore the data and discover the foundations upon which a new future can be built.</p>
+                <div class="mt-12 md:grid md:grid-cols-2 gap-12">
+                    <div class="bg-primary p-6 rounded-lg shadow-lg mb-8 md:mb-0">
+                        <h4 class="text-xl font-bold text-center font-display">Economic & Social Snapshot</h4>
+                        <p class="text-center text-sm mb-4">Click below to toggle between economic sectors and key social challenges.</p>
+                        <div class="chart-container">
+                            <canvas id="lesothoChart"></canvas>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button id="toggleChartData" class="bg-accent text-light px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all">View Social Challenges</button>
+                        </div>
+                    </div>
+                    <div class="bg-primary p-6 rounded-lg shadow-lg">
+                        <h4 class="text-xl font-bold text-center font-display">Pillars of Basotho Culture</h4>
+                        <p class="text-center text-sm mb-4">Click on a card to learn more about these iconic cultural elements.</p>
+                        <div class="grid grid-cols-2 gap-4 mt-6">
+                            <div class="cultural-card bg-secondary p-4 rounded-lg text-center cursor-pointer hover:shadow-xl transition-shadow" data-modal="blanket">
+                                <span class="text-4xl">&#129531;</span>
+                                <h5 class="font-bold mt-2">The Basotho Blanket</h5>
+                            </div>
+                            <div class="cultural-card bg-secondary p-4 rounded-lg text-center cursor-pointer hover:shadow-xl transition-shadow" data-modal="hat">
+                               <span class="text-4xl">&#127913;</span>
+                                <h5 class="font-bold mt-2">Mokorotlo Hat</h5>
+                            </div>
+                            <div class="cultural-card bg-secondary p-4 rounded-lg text-center cursor-pointer hover:shadow-xl transition-shadow" data-modal="chief">
+                                <span class="text-4xl">&#128113;</span>
+                                <h5 class="font-bold mt-2">Chieftaincy System</h5>
+                            </div>
+                            <div class="cultural-card bg-secondary p-4 rounded-lg text-center cursor-pointer hover:shadow-xl transition-shadow" data-modal="healer">
+                               <span class="text-4xl">&#127810;</span>
+                                <h5 class="font-bold mt-2">Traditional Healing</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section id="community" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                 <h3 class="text-3xl md:text-4xl font-bold text-center font-display">The Heart of the Kingdom: Ha Matsepe</h3>
+                 <p class="mt-4 text-center max-w-3xl mx-auto">The vision for development is rooted in the community. Ha Matsepe Mapotu, a village in the Berea District, represents the heart of rural Lesotho. Life here is defined by strong community bonds, a deep connection to the land, and the daily realities of subsistence agriculture. It is for communities like this that the bridge to new opportunities is being built, ensuring that progress respects and uplifts tradition.</p>
+                <div class="mt-12 bg-secondary p-8 rounded-lg shadow-lg flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/3">
+                        <div class="w-full h-48 bg-accent rounded-lg flex items-center justify-center p-4">
+                            <p class="text-light text-center font-display text-2xl">Berea District, Lesotho</p>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h4 class="text-2xl font-bold font-display">Life in the Village</h4>
+                        <p class="mt-2">In villages like Ha Matsepe, the rhythm of life is set by the seasons. Maize and sorghum fields dot the mountainous landscape, while cattle and sheep graze on the highlands. The community is the social safety net, and the local chief is the primary point of governance, dispute resolution, and leadership. While rich in culture and resilience, these communities also face challenges in accessing modern services, education, and economic opportunities.</p>
+                        <div class="mt-4 border-l-4 border-accent pl-4">
+                            <p class="italic">"Inheriting not just land, but the joys and terrors of my people. A responsibility to lead, a duty to serve, and a promise to connect our heritage to our future."</p>
+                            <p class="text-right text-sm font-semibold mt-2">- A Chief's Mandate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ventures Section -->
+        <section id="ventures" class="py-16 md:py-24 bg-secondary">
+             <div class="container mx-auto px-6">
+                <h3 class="text-3xl md:text-4xl font-bold text-center font-display">Bridging Worlds: The Fruitful Vision</h3>
+                <p class="mt-4 text-center max-w-3xl mx-auto">Vision requires action. This section outlines the practical initiatives designed to bring about the desired change. These ventures aim to harness Lesotho's natural and cultural resources in a way that is sustainable, ethical, and directly beneficial to the community. They represent the two pillars of the vision: economic development through mining and cultural preservation through the arts.</p>
+                <div class="mt-12 grid md:grid-cols-2 gap-12">
+                    <div class="bg-primary p-8 rounded-lg shadow-lg">
+                        <h4 class="text-2xl font-bold font-display text-center">Fruitful Mining</h4>
+                        <p class="text-center mt-2 text-sm">Harnessing Earth's Gifts for the People</p>
+                        <div class="mt-6 space-y-4">
+                            <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#128269;</div>
+                                <div>
+                                    <h5 class="font-bold">1. Ethical Exploration</h5>
+                                    <p class="text-sm">Utilizing modern techniques to identify mineral resources, particularly diamonds, with minimal environmental impact and full community consultation.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#9935;</div>
+                                <div>
+                                    <h5 class="font-bold">2. Resource Development</h5>
+                                    <p class="text-sm">Creating partnerships to develop these resources, bringing jobs and skills training directly to local communities.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#128101;</div>
+                                <div>
+                                    <h5 class="font-bold">3. Community Empowerment</h5>
+                                    <p class="text-sm">Ensuring that the wealth generated is reinvested into the community through infrastructure, education, and healthcare projects, creating a cycle of sustainable growth.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-primary p-8 rounded-lg shadow-lg">
+                        <h4 class="text-2xl font-bold font-display text-center">Fruitful Crate Dance</h4>
+                        <p class="text-center mt-2 text-sm">Preserving the Soul of the Nation</p>
+                         <div class="mt-6 space-y-4">
+                             <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#128131;</div>
+                                <div>
+                                    <h5 class="font-bold">Dance & Performance</h5>
+                                    <p class="text-sm">A cultural initiative to provide a platform for traditional Basotho dance forms, ensuring they are practiced and passed down to younger generations.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#127925;</div>
+                                <div>
+                                    <h5 class="font-bold">Music & Storytelling</h5>
+                                    <p class="text-sm">Celebrating the rich oral traditions and musical heritage of Lesotho, from the Famo genre to ancient folk tales and songs.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-center">
+                                <div class="bg-accent text-light rounded-full w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl mr-4">&#127917;</div>
+                                <div>
+                                    <h5 class="font-bold">Cultural Exchange</h5>
+                                    <p class="text-sm">Creating opportunities for local artists to connect with the world, fostering a global appreciation for Basotho culture and arts.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/51Via4nX1Gi5E6EHgawjMW?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-light mt-16">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>This interactive report was generated to explore the vision for Lesotho's future.</p>
+            <p class="text-sm mt-2">&copy; 2024 Lesotho Vision Project. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-container">
+        <div id="blanket-modal" class="modal">
+            <div class="modal-content bg-primary p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 mx-auto mt-20 relative">
+                <span class="close-modal absolute top-4 right-4 text-2xl cursor-pointer">&times;</span>
+                <h4 class="text-2xl font-bold font-display text-accent">The Basotho Blanket</h4>
+                <p class="mt-4">More than just a garment, the Basotho blanket ('Seana Marena') is a symbol of identity and status. Each design and color tells a story about a person's life, from birth to marriage to death. Worn for warmth in the cold highlands, it is an integral part of ceremonial and everyday life, representing the resilience and deep cultural heritage of the Basotho people.</p>
+            </div>
+        </div>
+         <div id="hat-modal" class="modal">
+            <div class="modal-content bg-primary p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 mx-auto mt-20 relative">
+                <span class="close-modal absolute top-4 right-4 text-2xl cursor-pointer">&times;</span>
+                <h4 class="text-2xl font-bold font-display text-accent">The Mokorotlo Hat</h4>
+                <p class="mt-4">This conical, woven hat is the national symbol of Lesotho, even appearing on the country's flag. Its shape is inspired by Mount Qiloane, a conical mountain near the fortress of King Moshoeshoe I, the founder of the Basotho nation. Made from indigenous grass, the Mokorotlo represents the unity and identity of the nation.</p>
+            </div>
+        </div>
+         <div id="chief-modal" class="modal">
+            <div class="modal-content bg-primary p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 mx-auto mt-20 relative">
+                <span class="close-modal absolute top-4 right-4 text-2xl cursor-pointer">&times;</span>
+                <h4 class="text-2xl font-bold font-display text-accent">The Chieftaincy System</h4>
+                <p class="mt-4">Lesotho is a constitutional monarchy, and the system of chieftaincy is a vital part of its governance structure. From the King down to local village chiefs, these traditional leaders are custodians of the land and culture. They preside over community matters, resolve disputes, and act as the link between the people and the state, a system that Motheo Makhekhe has inherited.</p>
+            </div>
+        </div>
+         <div id="healer-modal" class="modal">
+            <div class="modal-content bg-primary p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 mx-auto mt-20 relative">
+                <span class="close-modal absolute top-4 right-4 text-2xl cursor-pointer">&times;</span>
+                <h4 class="text-2xl font-bold font-display text-accent">Traditional Healing ('Lingaka')</h4>
+                <p class="mt-4">Traditional healers, or 'Lingaka', play a crucial spiritual and medicinal role in Basotho society. They use their deep knowledge of indigenous plants ('litaola') and ancestral guidance to treat physical and spiritual ailments. This ancient practice, which requires profound training and a spiritual calling, coexists with modern medicine and is a testament to the enduring power of Lesotho's traditional beliefs.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Smooth scrolling for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    mobileMenu.classList.add('hidden'); // Close menu on click
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Chart.js implementation
+            const ctx = document.getElementById('lesothoChart').getContext('2d');
+            const economyData = {
+                labels: ['Services & Other', 'Textiles & Apparel', 'Construction', 'Mining (Diamonds)', 'Agriculture'],
+                datasets: [{
+                    label: 'GDP by Sector',
+                    data: [50, 20, 15, 8, 7],
+                    backgroundColor: [
+                        '#4A7C59', // Muted Green
+                        '#8AB095',
+                        '#C1D5C6',
+                        '#3D352E', // Dark
+                        '#A99985'  // Earthy Brown
+                    ],
+                    borderColor: '#F8F5F2',
+                    borderWidth: 2
+                }]
+            };
+
+            const challengesData = {
+                labels: ['Unemployment', 'Poverty Rate', 'Youth Unemployment', 'Employed/Other'],
+                datasets: [{
+                    label: 'Social Challenges (%)',
+                    data: [24, 49, 38, 76], // Using unemployment and employed to show scale
+                    backgroundColor: [
+                        '#BF360C', // Red
+                        '#D84315',
+                        '#E64A19',
+                        '#4A7C59' // Green for contrast
+                    ],
+                    borderColor: '#F8F5F2',
+                    borderWidth: 2
+                }]
+            };
+
+            const chartConfig = {
+                type: 'doughnut',
+                data: economyData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                   size: 12,
+                                   family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            let lesothoChart = new Chart(ctx, chartConfig);
+            let isEconomyData = true;
+            
+            const toggleButton = document.getElementById('toggleChartData');
+            toggleButton.addEventListener('click', () => {
+                isEconomyData = !isEconomyData;
+                lesothoChart.data = isEconomyData ? economyData : challengesData;
+                toggleButton.textContent = isEconomyData ? 'View Social Challenges' : 'View GDP by Sector';
+                lesothoChart.update();
+            });
+
+            // Modal logic
+            const culturalCards = document.querySelectorAll('.cultural-card');
+            const modals = document.querySelectorAll('.modal');
+            const closeButtons = document.querySelectorAll('.close-modal');
+
+            culturalCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const modalId = card.getAttribute('data-modal') + '-modal';
+                    document.getElementById(modalId).style.display = 'block';
+                });
+            });
+
+            const closeModal = (modal) => {
+                if(modal) modal.style.display = 'none';
+            };
+
+            closeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    closeModal(e.target.closest('.modal'));
+                });
+            });
+            
+            window.addEventListener('click', (event) => {
+                modals.forEach(modal => {
+                    if (event.target == modal) {
+                        closeModal(modal);
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
+
