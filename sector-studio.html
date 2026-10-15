@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sector Studio · Fruitful™ OmniGrid™</title>
+    <meta name="description" content="Every sector, core brand and subnode of the Fruitful™ ecosystem, with the twelve brand views from the page generator, built live from real data only.">
+    <link rel="stylesheet" href="brand/samfox-ci.css">
+    <style>
+        :root { color-scheme: light dark; }
+        * { box-sizing: border-box; }
+        body { margin: 0; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px 80px; }
+        header.main-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color-light); }
+        .bar { display: flex; align-items: center; gap: 12px; height: 60px; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        .logo-fruitful { font-size: 1.3rem; font-weight: 700; text-decoration: none; color: inherit; }
+        .bar nav { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+        .bar nav a, .cur button { text-decoration: none; color: var(--muted-text-light); font-size: .9rem; padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
+        .cur { display: flex; background: var(--soft-light); border-radius: 9px; padding: 3px; }
+        .cur button { border: 0; background: none; cursor: pointer; font: 600 .78rem/1 ui-monospace, monospace; }
+        .cur button[aria-pressed="true"] { background: var(--sf-ink); color: var(--sf-cream); }
+        .crumbs { font-size: .85rem; color: var(--muted-text-light); margin: 22px 0 6px; }
+        .crumbs a { color: inherit; }
+        h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; }
+        .lead { margin: 0 0 18px; max-width: 760px; color: var(--muted-text-light); }
+        .tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px; }
+        .tools input { flex: 1; min-width: 220px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-color-light); background: var(--card-bg-light); color: inherit; font-size: .95rem; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 10px 0 22px; }
+        .stat { background: var(--card-bg-light); border-radius: 14px; padding: 14px 16px; box-shadow: 0 1px 0 var(--sf-ink-line); }
+        .stat b { display: block; font: 700 1.5rem/1.1 var(--sf-display); }
+        .stat span { font-size: .8rem; color: var(--muted-text-light); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+        .card { display: block; text-decoration: none; color: inherit; background: var(--card-bg-light); border-radius: 16px; padding: 16px; box-shadow: 0 1px 0 var(--sf-ink-line), 0 10px 26px -20px rgba(35,31,32,.5); transition: transform .15s; }
+        .card:hover, .card:focus-visible { transform: translateY(-2px); }
+        .card h3 { margin: 4px 0 6px; font: 600 1.02rem/1.25 var(--sf-display); }
+        .card p { margin: 0; font-size: .85rem; color: var(--muted-text-light); }
+        .em { font-size: 1.6rem; }
+        .tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border-color-light); margin: 6px 0 18px; }
+        .tabs a { padding: 9px 12px; text-decoration: none; color: var(--muted-text-light); font-size: .9rem; border-bottom: 2px solid transparent; }
+        .tabs a[aria-current="page"] { color: var(--primary-color); border-color: var(--primary-color); font-weight: 600; }
+        .panel { background: var(--card-bg-light); border-radius: 16px; padding: 20px; box-shadow: 0 1px 0 var(--sf-ink-line); }
+        table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+        th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color-light); vertical-align: top; }
+        th { font-weight: 600; color: var(--muted-text-light); width: 34%; }
+        .pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: .75rem; font-weight: 600; background: var(--soft-light); }
+        .pill.real { background: rgba(87,125,96,.18); color: var(--sf-sage); }
+        .pill.est { background: rgba(185,95,86,.16); color: var(--sf-dustyrose); }
+        .pill.none { background: rgba(35,31,32,.08); }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { padding: 7px 12px; border-radius: 999px; background: var(--soft-light); font-size: .85rem; }
+        .muted { color: var(--muted-text-light); font-size: .85rem; }
+        .more { margin: 16px 0; text-align: center; }
+        .btn { display: inline-block; padding: 9px 16px; border-radius: 999px; border: 0; cursor: pointer; background: var(--sf-ink); color: var(--sf-cream); font: 600 .9rem var(--sf-display); text-decoration: none; }
+        .dark-mode .card, .dark-mode .stat, .dark-mode .panel { background: var(--card-bg-dark); }
+        @media (max-width: 560px) { .bar nav a.hide-sm { display: none; } th { width: 42%; } }
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="bar">
+        <a class="logo-fruitful" href="ecosystem.html">Fruitful™</a>
+        <nav aria-label="Main">
+            <a class="hide-sm" href="ecosystem.html">Ecosystem</a>
+            <a class="hide-sm" href="sector-studio.html">Sector Studio</a>
+            <a class="hide-sm" href="atoms.html">Atom pages</a>
+            <div class="cur" role="group" aria-label="Currency">
+                <button type="button" data-cur="USD">USD</button><button type="button" data-cur="ZAR">ZAR</button>
+            </div>
+        </nav>
+    </div>
+</header>
+<main class="wrap" id="app"><p class="lead" style="margin-top:40px">Loading the ecosystem…</p></main>
+
+<script>
+(function () {
+    'use strict';
+    // Twelve brand views, the same page types html-page-generator.py emits, filled from real data only.
+    var VIEWS = [['index', 'Overview'], ['dashboard', 'Dashboard'], ['products', 'Products'], ['pricing', 'Pricing'], ['about', 'About'],
+                 ['features', 'Features'], ['contact', 'Contact'], ['licensing', 'Licensing'], ['terms', 'Terms'], ['clauses', 'Clauses'],
+                 ['auth', 'Access'], ['metrics', 'Metrics']];
+    var RATE = 18, KEY = 'fruitful_currency', PAGE = 60;
+    var app = document.getElementById('app'), DATA = null, ATOMS = [];
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var slug = function (s) { return String(s).toLowerCase().replace(/[™®]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
+    var cur = function () { try { return localStorage.getItem(KEY) || 'USD'; } catch (e) { return 'USD'; } };
+    var money = function (usd) {
+        if (usd == null || isNaN(usd)) return '<span class="muted">Not yet recorded</span>';
+        var c = cur(), v = Math.round(c === 'ZAR' ? usd * RATE : usd);
+        return (c === 'ZAR' ? 'R ' : '$') + v.toLocaleString('en-US');
+    };
+    var nf = function (n) { return Number(n || 0).toLocaleString('en-US'); };
+    function provenance(src) {
+        if (!src) return '<span class="pill none">source not recorded</span>';
+        if (src === 'needs-pricing') return '<span class="pill none">needs pricing</span>';
+        if (/^estimated/.test(src)) return '<span class="pill est">estimated · ' + esc(src) + '</span>';
+        return '<span class="pill real">sourced · ' + esc(src) + '</span>';
+    }
+    function q() { var p = new URLSearchParams(location.search); return { s: p.get('sector'), b: p.get('brand'), v: p.get('view') || 'index', f: p.get('q') || '' }; }
+    function go(params) {
+        var p = new URLSearchParams();
+        Object.keys(params).forEach(function (k) { if (params[k]) p.set(k, params[k]); });
+        history.pushState(null, '', 'sector-studio.html' + (p.toString() ? '?' + p : '')); render();
+    }
+    function link(params, label, cls) {
+        var p = new URLSearchParams(); Object.keys(params).forEach(function (k) { if (params[k]) p.set(k, params[k]); });
+        return '<a class="' + (cls || '') + '" href="sector-studio.html?' + p + '" data-nav>' + label + '</a>';
+    }
+    function relatedAtoms(words) {
+        var w = words.map(function (x) { return x.toLowerCase(); }).filter(function (x) { return x.length > 3; });
+        return ATOMS.filter(function (a) { var t = (a.title + ' ' + a.id).toLowerCase(); return w.some(function (x) { return t.indexOf(x) >= 0; }); }).slice(0, 12);
+    }
+    function atomList(list) {
+        if (!list.length) return '<p class="muted">No harvested page matches yet.</p>';
+        return '<div class="grid">' + list.map(function (a) {
+            return '<a class="card" href="' + esc(a.href) + '"><h3>' + esc(a.title) + '</h3><p>' + esc(a.id) + ' · ' + a.versions + ' version(s)' +
+                (a.mock_signals ? ' · <span class="pill est">needs real data</span>' : '') + '</p></a>';
+        }).join('') + '</div>';
+    }
+
+    // ---------- views ----------
+    function home(f) {
+        var secs = DATA.sectors.filter(function (s) { return !f || (s.name + ' ' + s.key).toLowerCase().indexOf(f.toLowerCase()) >= 0; });
+        var real = DATA.sectors.filter(function (s) { return /real/.test(s.sectorFeeSource || ''); }).length;
+        app.innerHTML = '<p class="crumbs">Ecosystem</p><h1>Sector Studio</h1>' +
+            '<p class="lead">Every sector, core brand and subnode of the Fruitful™ ecosystem. Each brand opens the twelve views the page generator makes, built live from <code>data/ecosystem.json</code>. Nothing is invented: where a value has not been sourced yet, the page says so.</p>' +
+            '<div class="stats"><div class="stat"><b>' + nf(DATA.sectorCount) + '</b><span>sectors</span></div><div class="stat"><b>' + nf(DATA.totalBrands) + '</b><span>core brands</span></div>' +
+            '<div class="stat"><b>' + nf(DATA.totalSubnodes) + '</b><span>subnodes</span></div><div class="stat"><b>' + real + ' / ' + DATA.sectors.length + '</b><span>sectors with a sourced fee</span></div>' +
+            '<div class="stat"><b>' + nf(ATOMS.length) + '</b><span>harvested atom pages</span></div></div>' +
+            '<div class="tools"><input type="search" id="find" placeholder="Search sectors…" value="' + esc(f) + '" aria-label="Search sectors"></div>' +
+            '<div class="grid">' + secs.map(function (s) {
+                return '<a class="card" href="sector-studio.html?sector=' + encodeURIComponent(s.key) + '" data-nav><span class="em" aria-hidden="true">' + esc(s.emoji || '') +
+                    '</span><h3>' + esc(s.name) + '</h3><p>' + nf(s.brands.length) + ' brands · ' + nf(s.subnodeCount) + ' subnodes<br>' +
+                    (s.sectorMonthlyFee != null ? money(s.sectorMonthlyFee) + '/mo sector access' : 'sector fee not yet sourced') + '</p></a>';
+            }).join('') + '</div>';
+        var inp = document.getElementById('find'); inp.addEventListener('input', function () { history.replaceState(null, '', 'sector-studio.html' + (inp.value ? '?q=' + encodeURIComponent(inp.value) : '')); home(inp.value); var i = document.getElementById('find'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); });
+    }
+
+    function sector(s, f, shown) {
+        shown = shown || PAGE;
+        var caps = (DATA.sectorCapabilities || {})[s.key] || [];
+        var brands = s.brands.filter(function (b) { return !f || (b.name + ' ' + (b.subNodes || []).join(' ')).toLowerCase().indexOf(f.toLowerCase()) >= 0; });
+        var priced = s.brands.filter(function (b) { var m = b.metadata || {}; return m.priceSource && !/^estimated|needs-pricing/.test(m.priceSource); }).length;
+        app.innerHTML = '<p class="crumbs">' + link({}, 'Sector Studio') + ' › ' + esc(s.name) + '</p><h1>' + esc(s.emoji || '') + ' ' + esc(s.name) + '</h1>' +
+            '<div class="stats"><div class="stat"><b>' + nf(s.brands.length) + '</b><span>core brands</span></div><div class="stat"><b>' + nf(s.subnodeCount) + '</b><span>subnodes</span></div>' +
+            '<div class="stat"><b>' + (s.sectorMonthlyFee != null ? money(s.sectorMonthlyFee) : '—') + '</b><span>sector access / month</span></div>' +
+            '<div class="stat"><b>' + nf(priced) + '</b><span>brands with a sourced price</span></div></div>' +
+            '<div class="panel" style="margin-bottom:18px"><table>' +
+            '<tr><th>Region</th><td>' + esc(s.sectorRegion || 'Not yet recorded') + '</td></tr><tr><th>Payout tier</th><td>' + esc(s.sectorPayoutTier || 'Not yet recorded') + '</td></tr>' +
+            '<tr><th>Vault</th><td>' + esc(s.vaultID || 'Not yet recorded') + '</td></tr><tr><th>Layer</th><td>' + esc(s.layer || 'Not yet recorded') + '</td></tr>' +
+            '<tr><th>Sector fee source</th><td>' + provenance(s.sectorFeeSource) + '</td></tr>' +
+            (caps.length ? '<tr><th>Capabilities</th><td><div class="chips">' + caps.map(function (c) { return '<span class="chip">' + esc(c) + '</span>'; }).join('') + '</div></td></tr>' : '') +
+            '</table></div>' +
+            '<div class="tools"><input type="search" id="find" placeholder="Search ' + nf(s.brands.length) + ' brands and their subnodes…" value="' + esc(f) + '" aria-label="Search brands"></div>' +
+            '<div class="grid">' + brands.slice(0, shown).map(function (b) {
+                var m = b.metadata || {};
+                return '<a class="card" href="sector-studio.html?sector=' + encodeURIComponent(s.key) + '&brand=' + encodeURIComponent(b.name) + '" data-nav><h3>' + esc(b.name) +
+                    '</h3><p>' + (b.subNodes || []).length + ' subnodes · master licence ' + money(b.price) + '<br>' + provenance(m.priceSource) + '</p></a>';
+            }).join('') + '</div>' +
+            (brands.length > shown ? '<div class="more"><button class="btn" id="more">Show more (' + nf(brands.length - shown) + ' left)</button></div>' : '') +
+            '<h2 style="margin-top:34px">Harvested pages for this sector</h2>' + atomList(relatedAtoms(s.name.split(/[^A-Za-z]+/).concat([s.key])));
+        var inp = document.getElementById('find');
+        inp.addEventListener('input', function () { sector(s, inp.value); var i = document.getElementById('find'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); });
+        var mb = document.getElementById('more'); if (mb) mb.addEventListener('click', function () { sector(s, inp.value, shown + PAGE); });
+    }
+
+    function brand(s, b, v) {
+        var m = b.metadata || {}, subs = b.subNodes || [], caps = (DATA.sectorCapabilities || {})[s.key] || [];
+        var tabs = '<nav class="tabs" aria-label="Brand views">' + VIEWS.map(function (x) {
+            return '<a href="sector-studio.html?sector=' + encodeURIComponent(s.key) + '&brand=' + encodeURIComponent(b.name) + '&view=' + x[0] + '" data-nav' + (x[0] === v ? ' aria-current="page"' : '') + '>' + x[1] + '</a>';
+        }).join('') + '</nav>';
+        var row = function (k, val) { return '<tr><th>' + k + '</th><td>' + val + '</td></tr>'; };
+        var body = '';
+        switch (v) {
+            case 'dashboard':
+                body = '<div class="stats"><div class="stat"><b>' + subs.length + '</b><span>subnodes</span></div><div class="stat"><b>' + money(b.price) + '</b><span>master licence</span></div>' +
+                    '<div class="stat"><b>' + (b.royaltyPct != null ? b.royaltyPct + '%' : '—') + '</b><span>royalty</span></div><div class="stat"><b>' + esc(b.tier || '—') + '</b><span>tier</span></div>' +
+                    '<div class="stat"><b>' + (b.sectorMonthlyFee != null ? money(b.sectorMonthlyFee) : '—') + '</b><span>sector access / month</span></div></div>'; break;
+            case 'products':
+                body = subs.length ? '<div class="grid">' + subs.map(function (n) { return '<div class="card"><h3>' + esc(n) + '</h3><p>Subnode of ' + esc(b.name) + ' · included in the master licence</p></div>'; }).join('') + '</div>'
+                    : '<p class="muted">No subnodes recorded for this brand yet.</p>'; break;
+            case 'pricing':
+                body = '<table>' + row('Master licence (one-time)', money(b.price)) + row('Price source', provenance(m.priceSource)) +
+                    row('Monthly tiers', b.monthlyTiers ? '<pre style="margin:0;white-space:pre-wrap">' + esc(JSON.stringify(b.monthlyTiers, null, 1)) + '</pre>' : '<span class="muted">Not yet sourced for this brand</span>') +
+                    row('Sector access', (b.sectorMonthlyFee != null ? money(b.sectorMonthlyFee) + ' / month · ' + money(b.sectorAnnualFee) + ' / year' : 'Not yet recorded')) +
+                    row('Monthly pricing source', provenance(b.monthlyPricingSource)) + '</table><p class="muted" style="margin-top:12px">' + esc((DATA.pricingModel || {}).masterLicense || '') + '</p>'; break;
+            case 'about':
+                body = '<table>' + row('Brand', esc(b.name)) + row('Sector', esc(s.emoji + ' ' + s.name)) + row('Region', esc(s.sectorRegion || 'Not yet recorded')) +
+                    row('Vault / layer', esc((s.vaultID || '—') + ' · ' + (s.layer || '—'))) + row('Added from', esc(m.addedFrom || 'Not recorded')) +
+                    row('Sector mapping', esc(m.sectorMappingConfidence || 'Not recorded')) + '</table>'; break;
+            case 'features':
+                body = (caps.length ? '<h3>Sector capabilities</h3><div class="chips">' + caps.map(function (c) { return '<span class="chip">' + esc(c) + '</span>'; }).join('') + '</div>' : '') +
+                    '<h3 style="margin-top:18px">Subnodes</h3><div class="chips">' + (subs.map(function (n) { return '<span class="chip">' + esc(n) + '</span>'; }).join('') || '<span class="muted">None recorded</span>') + '</div>'; break;
+            case 'contact':
+                body = '<p>Licensing and activation questions for ' + esc(b.name) + ' go through the Fruitful™ contact desk.</p><p><a class="btn" href="contact-support.html?topic=' +
+                    encodeURIComponent('Licence: ' + b.name + ' (' + s.name + ')') + '">Ask about ' + esc(b.name) + '</a></p>'; break;
+            case 'licensing':
+                body = '<table>' + row('Licence model', esc((DATA.pricingModel || {}).masterLicense || '')) + row('Tier', esc(b.tier || 'Not recorded')) +
+                    row('Royalty', b.royaltyPct != null ? b.royaltyPct + '%' : 'Not recorded') + row('Covers', subs.length + ' subnodes under one VaultMesh™ identity') +
+                    row('Source licence', 'Fruitful Proprietary Source License (FPSL) · © Fruitful Shops (Pty) Ltd') + '</table>'; break;
+            case 'terms':
+                body = '<p>Use of ' + esc(b.name) + ' and its subnodes is governed by the Fruitful Proprietary Source License (FPSL) and the master-licence terms of the Fruitful™ ecosystem. No right is granted by viewing this page.</p>' +
+                    '<p class="muted">Governing law: Republic of South Africa · courts of Gauteng.</p>'; break;
+            case 'clauses':
+                body = '<ol><li>No rights are granted by default; use requires written authorisation.</li><li>No redistribution, sublicensing or competing use without permission.</li>' +
+                    '<li>Licence, copyright and attribution notices may not be removed.</li><li>The work is provided as is, without warranty.</li><li>Liability is limited to the extent permitted by law.</li>' +
+                    '<li>South African law applies; disputes go to the courts of Gauteng.</li></ol><p class="muted">Summary of the FPSL clauses; the licence text in each repository is authoritative.</p>'; break;
+            case 'auth':
+                body = '<p>Activation, NDA and signature steps run through SecureSign™.</p><p><a class="btn" href="securesign/index.html">Open SecureSign™</a></p>'; break;
+            case 'metrics':
+                body = '<table>' + row('Price source', provenance(m.priceSource)) + row('Subnodes source', provenance(m.subNodesSource)) +
+                    row('Monthly pricing source', provenance(b.monthlyPricingSource)) + row('Sector fee source', provenance(s.sectorFeeSource)) +
+                    row('Data file', '<code>data/ecosystem.json</code> · generated ' + esc(DATA.generated || '')) + '</table>'; break;
+            default:
+                body = '<p class="lead">' + esc(b.name) + ' is a core brand in ' + esc(s.name) + ' with ' + subs.length + ' subnode' + (subs.length === 1 ? '' : 's') + '.</p>' +
+                    '<table>' + row('Master licence', money(b.price) + ' ' + provenance(m.priceSource)) + row('Tier', esc(b.tier || 'Not recorded')) +
+                    row('Royalty', b.royaltyPct != null ? b.royaltyPct + '%' : 'Not recorded') + '</table>' +
+                    '<h3 style="margin-top:22px">Related harvested pages</h3>' + atomList(relatedAtoms([b.name].concat(b.name.split(/[^A-Za-z]+/))));
+        }
+        app.innerHTML = '<p class="crumbs">' + link({}, 'Sector Studio') + ' › ' + link({ sector: s.key }, esc(s.name)) + ' › ' + esc(b.name) + '</p>' +
+            '<h1>' + esc(b.name) + '</h1>' + tabs + '<div class="panel">' + body + '</div>';
+    }
+
+    function render() {
+        var p = q(); window.scrollTo(0, 0);
+        document.querySelectorAll('.cur button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.cur === cur())); });
+        if (!p.s) return home(p.f);
+        var s = DATA.sectors.find(function (x) { return x.key === p.s; });
+        if (!s) { app.innerHTML = '<p class="lead" style="margin-top:40px">That sector is not in the ecosystem data. ' + link({}, 'Back to all sectors') + '</p>'; return; }
+        if (!p.b) return sector(s, p.f);
+        var b = s.brands.find(function (x) { return x.name === p.b; }) || s.brands.find(function (x) { return slug(x.name) === slug(p.b); });
+        if (!b) { app.innerHTML = '<p class="lead" style="margin-top:40px">That brand is not in ' + esc(s.name) + '. ' + link({ sector: s.key }, 'Back to the sector') + '</p>'; return; }
+        brand(s, b, VIEWS.some(function (x) { return x[0] === p.v; }) ? p.v : 'index');
+    }
+
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('a[data-nav]');
+        if (a && !e.metaKey && !e.ctrlKey && !e.shiftKey) { e.preventDefault(); history.pushState(null, '', a.getAttribute('href')); render(); }
+        var c = e.target.closest('.cur button');
+        if (c) { try { localStorage.setItem(KEY, c.dataset.cur); } catch (err) {} try { window.dispatchEvent(new CustomEvent('fruitful-currency-change', { detail: c.dataset.cur })); } catch (err) {} render(); }
+    });
+    addEventListener('popstate', render);
+    addEventListener('storage', function (e) { if (e.key === KEY) render(); });
+
+    Promise.all([fetch('data/ecosystem.json').then(function (r) { return r.json(); }),
+                 fetch('atoms/atoms.json').then(function (r) { return r.json(); }).catch(function () { return { items: [] }; })])
+        .then(function (res) { DATA = res[0]; ATOMS = res[1].items || []; render(); })
+        .catch(function () { app.innerHTML = '<p class="lead" style="margin-top:40px">The ecosystem data could not be loaded right now.</p>'; });
+})();
+</script>
+<script src="omnigrid-app.js"></script>
+</body>
+</html>
