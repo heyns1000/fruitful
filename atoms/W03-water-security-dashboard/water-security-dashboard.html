@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💧 Water Security Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Water Security & Quality Dashboard</h2>
+                <p class="text-gray-600 mt-1">Monitoring global water resources, access to clean water, and water quality.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html" class="active">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html">Global Health</a>
+            <a href="land_degradation_dashboard.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Access to Safely Managed Drinking Water -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Access to Safe Drinking Water (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-safe-water-access"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks progress towards universal access to clean and accessible drinking water (SDG 6.1).
+                </p>
+            </div>
+
+            <!-- Graph 2: Water Stress Levels by Major River Basins -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Water Stress Index by Continent</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-water-stress"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Highlights regions where water demand exceeds available renewable water resources.
+                </p>
+            </div>
+
+            <!-- Graph 3: Global Water Quality Index (Freshwater) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Freshwater Quality (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-water-quality"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Assesses the health of freshwater ecosystems based on pollution indicators.
+                </p>
+            </div>
+
+            <!-- Graph 4: Groundwater Depletion Rates by Aquifer -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Groundwater Depletion Rates (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-groundwater-depletion"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Monitors the sustainability of groundwater abstraction, crucial for long-term water security.
+                </p>
+            </div>
+
+            <!-- Graph 5: Water-related Disaster Events (Floods, Droughts) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Water-Related Disaster Occurrences (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-disaster-events"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks the frequency and impact of floods and droughts globally, linked to climate change.
+                </p>
+            </div>
+
+            <!-- Graph 6: AI-Optimized Water Distribution Efficiency -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">AI Water Distribution Efficiency (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="ws-distribution-efficiency"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Shows how AI helps reduce leaks and optimize water delivery in urban and rural areas.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-8 px-6 bg-gray-900 text-center text-sm text-gray-400">
+        <p>&copy; 2025 Heyns Schoeman ™. All rights reserved.</p>
+        <p class="mt-2">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+        <p class="mt-1">Water the Seed™ | Baobab™ Security | AI-Powered Global Expansion</p>
+    </footer>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // Sample data for water security metrics
+    { name: "Nigeria", continent: "Africa", safeWaterAccess: 60, waterStressIndex: 80, waterQuality: 50, groundwaterDepletion: 0.6, floods: 5, droughts: 3, distributionEfficiency: 70 },
+    { name: "USA", continent: "North America", safeWaterAccess: 95, waterStressIndex: 30, waterQuality: 90, groundwaterDepletion: 0.2, floods: 10, droughts: 2, distributionEfficiency: 95 },
+    { name: "Brazil", continent: "South America", safeWaterAccess: 85, waterStressIndex: 50, waterQuality: 70, groundwaterDepletion: 0.4, floods: 8, droughts: 4, distributionEfficiency: 85 },
+    { name: "Germany", continent: "Europe", safeWaterAccess: 99, waterStressIndex: 10, waterQuality: 95, groundwaterDepletion: 0.1, floods: 3, droughts: 1, distributionEfficiency: 98 },
+    { name: "China", continent: "Asia", safeWaterAccess: 90, waterStressIndex: 70, waterQuality: 60, groundwaterDepletion: 0.7, floods: 15, droughts: 6, distributionEfficiency: 75 },
+    { name: "Australia", continent: "Oceania", safeWaterAccess: 98, waterStressIndex: 40, waterQuality: 85, groundwaterDepletion: 0.3, floods: 7, droughts: 5, distributionEfficiency: 90 }
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('ws-safe-water-access', 'line', getSafeWaterAccessData);
+    createChart('ws-water-stress', 'bar', getWaterStressData);
+    createChart('ws-water-quality', 'bar', getWaterQualityData);
+    createChart('ws-groundwater-depletion', 'bar', getGroundwaterDepletionData);
+    createChart('ws-disaster-events', 'line', getWaterDisasterEventsData);
+    createChart('ws-distribution-efficiency', 'doughnut', getWaterDistributionEfficiencyData);
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        let config;
+        if (id === 'ws-safe-water-access') config = { dataFn: getSafeWaterAccessData };
+        else if (id === 'ws-water-stress') config = { dataFn: getWaterStressData };
+        else if (id === 'ws-water-quality') config = { dataFn: getWaterQualityData };
+        else if (id === 'ws-groundwater-depletion') config = { dataFn: getGroundwaterDepletionData };
+        else if (id === 'ws-disaster-events') config = { dataFn: getWaterDisasterEventsData };
+        else if (id === 'ws-distribution-efficiency') config = { dataFn: getWaterDistributionEfficiencyData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+
+function getSafeWaterAccessData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.safeWaterAccess * (Math.random() * 0.05 + 0.98)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Safe Water Access (%)',
+            data: datasetData,
+            borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getWaterStressData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.waterStressIndex, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Water Stress Index (0-100)',
+            data: chartData,
+            backgroundColor: '#EF4444', borderRadius: 4
+        }]
+    };
+}
+
+function getWaterQualityData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.waterQuality, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Water Quality Score (0-100)',
+            data: chartData,
+            backgroundColor: '#10B981', borderRadius: 4
+        }]
+    };
+}
+
+function getGroundwaterDepletionData(data) {
+    const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.groundwaterDepletion, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Groundwater Depletion Index (0-1)',
+            data: chartData,
+            backgroundColor: '#F97316', borderRadius: 4
+        }]
+    };
+}
+
+function getWaterDisasterEventsData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const floodsData = years.map(() => {
+        return data.reduce((sum, item) => sum + item.floods, 0) / data.length;
+    });
+    const droughtsData = years.map(() => {
+        return data.reduce((sum, item) => sum + item.droughts, 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [
+            {
+                label: 'Avg. Floods per Year',
+                data: floodsData,
+                borderColor: '#0EA5E9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: false, tension: 0.4
+            },
+            {
+                label: 'Avg. Droughts per Year',
+                data: droughtsData,
+                borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.1)', fill: false, tension: 0.4
+            }
+        ]
+    };
+}
+
+function getWaterDistributionEfficiencyData(data) {
+    const efficiencyLevels = { 'High (>90%)': 0, 'Medium (70-90%)': 0, 'Low (<70%)': 0 };
+    data.forEach(d => {
+        if (d.distributionEfficiency > 90) efficiencyLevels['High (>90%)']++;
+        else if (d.distributionEfficiency >= 70) efficiencyLevels['Medium (70-90%)']++;
+        else efficiencyLevels['Low (<70%)']++;
+    });
+    return {
+        labels: Object.keys(efficiencyLevels),
+        datasets: [{
+            data: Object.values(efficiencyLevels),
+            backgroundColor: ['#22C55E', '#A855F7', '#EF4444'],
+        }]
+    };
+}
+</script>
+</body>
+</html>

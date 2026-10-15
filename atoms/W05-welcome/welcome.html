@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seedwave™ - Global Pulse: Integration Beyond Words</title>
+    <link rel="icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js is no longer directly used for the Node.js graph, but kept for other potential uses if needed elsewhere -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Base Styles - More dynamic and modern for Seedwave */
+        :root {
+            /* Keep original dark theme colors for hero grid elements only */
+            --dark-bg: #0a0a0d; /* Very dark almost black */
+            --primary-glow: #00e393; /* Greenish glow, Tesla-inspired */
+            --secondary-glow: #007bff; /* Blue glow, Google/Apple-inspired */
+            --accent-red: #ff4d4d;
+            --card-bg-dark: #1c1c21;
+            --border-dark: #3a3a42;
+            --font-inter: 'Inter', sans-serif;
+
+            /* Fruitful Branding Colors - now unified and white for header */
+            --fruitful-logo-color: #ffffff; /* Unified white for Fruitful™ | Seedwave™ */
+            --fruitful-separator-color: #bbbbbb; /* Lighter grey for separator */
+
+            /* NEW: General page background and text colors (Black & White) */
+            --page-bg-light: #ffffff; /* Pure white background */
+            --page-text-dark: #000000; /* Pure black text */
+            --page-muted-text: #333333; /* Dark grey muted muted text */
+            --page-border-light: #cccccc; /* Light grey border */
+
+            /* NEW: Accent colors for metrics/charts in B&W theme (subtle grey tones) */
+            --accent-blue-light: #555555; /* Medium grey for icons/values */
+            --accent-green-light: #777777; /* Slightly lighter grey */
+            /* IMPORTANT: The canvas animations and Chart.js lines will retain their vibrant colors explicitly in JS */
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: var(--page-bg-light); /* Apply new light background */
+            color: var(--page-text-dark); /* Apply new dark text color */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Header - Background remains dark, logos are white */
+        header {
+            background-color: #0a0a0d; /* Solid dark background for header */
+            backdrop-filter: none; /* No blur, solid dark */
+            border-bottom: 1px solid var(--border-dark);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header-content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Colors defined directly on logo elements now */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        /* Unified Fruitful™ | Seedwave™ Logo (white and steady) */
+        .logo-fruitful, .logo-seedwave {
+            color: var(--fruitful-logo-color); /* White */
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            text-shadow: none; /* No glow/pulse */
+            transition: none; /* No transitions */
+        }
+        .logo-separator {
+            color: var(--fruitful-separator-color); /* Lighter grey for separator */
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: none; /* No glow/pulse */
+        }
+
+        /* New: Stock Exchange Pulse Canvas in Header */
+        #header-pulse-canvas {
+            flex-grow: 1; /* Take up available space */
+            height: 40px; /* Fixed height for the pulse */
+            background-color: transparent;
+            margin: 0 20px; /* Space between logo and right edge */
+            max-width: 600px; /* Limit width to keep it narrow */
+            min-width: 100px; /* Ensure it has some width even on smaller desktops */
+        }
+
+        /* Hero Section - Still dark and funky, as requested */
+        .hero-section {
+            position: relative;
+            height: 90vh; /* Taller hero section */
+            display: flex;
+            flex-direction: column; /* Stack button and grid */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            /* Background radial gradient based on original glow colors */
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+            padding: 2rem; /* Add padding for breathing room */
+            background-color: var(--dark-bg); /* Ensure dark background */
+        }
+
+        .hero-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            grid-template-rows: repeat(2, 1fr); /* 2 rows */
+            gap: 1rem; /* Space between canvas blocks */
+            width: 100%;
+            height: 100%; /* Fill hero section */
+            max-width: 1200px; /* Limit overall grid size */
+            max-height: 80vh; /* Adjust max height to leave space for button */
+            margin-top: 2rem; /* Space below the button */
+        }
+
+        .pulse-container {
+            position: relative;
+            background-color: var(--card-bg-dark); /* Dark background for each pulse block */
+            border-radius: 0.75rem; /* Rounded corners */
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: transparent; /* Ensure canvas background is transparent */
+            z-index: 1;
+        }
+
+        /* Discover button with new styling and embedded canvas */
+        .hero-cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center; /* Center content horizontally */
+            gap: 10px;
+            padding: 0.5rem 1.5rem; /* Reduced padding for more compact button */
+            background-color: #ffffff; /* White background */
+            color: var(--page-text-dark); /* Black text */
+            text-decoration: none;
+            border-radius: 1rem; /* Rounded corners */
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Softer shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--page-border-light); /* Light border */
+
+            width: 280px; /* Fixed width to align with blocks below */
+            margin: 0 auto 2rem auto; /* Centered with bottom margin */
+            position: relative;
+            z-index: 20;
+            height: 60px; /* Fixed height for the button */
+            overflow: hidden; /* Hide overflow from canvas */
+        }
+        .hero-cta-button:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .hero-cta-button .button-text {
+            position: relative;
+            z-index: 2; /* Ensure text is above canvas */
+        }
+        .hero-cta-button canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Below text */
+        }
+
+
+        /* General Section Styling (for content below hero) */
+        section {
+            padding: 6rem 0rem; /* Removed horizontal padding to allow blocks to stretch to edges */
+            background-color: var(--page-bg-light); /* Now uses light background */
+            border-top: 1px solid var(--page-border-light); /* Light border */
+            text-align: center;
+            color: var(--page-text-dark); /* Dark text for general sections */
+        }
+        section:last-of-type {
+            border-bottom: none; /* Remove bottom border for the last section */
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--page-text-dark); /* Dark text */
+            margin-bottom: 3rem; /* Default spacing */
+            text-shadow: none; /* No text shadow for clean look */
+            /* Removed max-width here, will apply directly in HTML for specific headings */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Operational Blocks (Auto Design, Auto Build, Auto Deploy) */
+        .operational-blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem; /* Gap between blocks */
+            padding: 0 2rem; /* Restore padding to grid container */
+            max-width: 1200px; /* Limit width */
+            margin: 0 auto; /* Center the grid */
+        }
+
+        .operational-block {
+            background-color: #ffffff; /* Pure white block background */
+            border-radius: 1rem; /* Rounded corners */
+            padding: 2.5rem; /* Standard padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Softer shadow */
+            border: 1px solid var(--page-border-light); /* Light border */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--page-text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0; /* No negative margins, rely on gap for spacing */
+            width: auto; /* Auto width within grid */
+        }
+        .operational-block:hover {
+            transform: translateY(-5px) scale(1.01); /* Softer hover effect */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .operational-block h3 {
+            font-size: 2rem; /* Larger font for impact */
+            font-weight: 900; /* Extra bold */
+            color: var(--page-text-dark); /* Pure black */
+            line-height: 1.2;
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+
+
+        /* Master License Brands Section */
+        #master-brands {
+            background-color: var(--page-bg-light); /* Consistent light background */
+            color: var(--page-text-dark);
+            padding-bottom: 0; /* Adjust padding for contiguous block below */
+        }
+        #master-brands h2 {
+            color: var(--page-text-dark);
+            text-shadow: none;
+            max-width: 800px; /* Specific width for this heading */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #master-brands .art-typo-container {
+            text-align: left;
+            font-family: monospace;
+            line-height: 1;
+            font-size: 1.1rem;
+            color: var(--page-muted-text);
+            max-width: 700px; /* Adjusted to align with heading width */
+            margin: 0 auto 3rem auto;
+            white-space: pre-wrap;
+        }
+
+
+        /* New styling for the brand blocks */
+        .master-brand-blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem; /* Consistent gap */
+            padding: 0 2rem; /* Restore padding to grid container */
+            max-width: 1200px; /* Max width for the grid */
+            margin: 0 auto; /* Center the grid */
+        }
+
+        .master-brand-block {
+            background-color: #ffffff; /* Pure white block background */
+            border-radius: 1rem; /* Rounded corners */
+            padding: 2.5rem; /* Standard padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--page-border-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--page-text-dark);
+            margin: 0; /* No negative margins */
+            width: auto; /* Auto width within grid */
+        }
+        .master-brand-block:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .master-brand-block h3 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--page-text-dark);
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Node.js Pulse Graph Blocks */
+        #node-pulse-sections {
+            padding-top: 6rem; /* Restore top padding to match other sections */
+            padding-bottom: 6rem; /* Restore bottom padding to match other sections */
+            padding-left: 2rem; /* Restore padding to section */
+            padding-right: 2rem; /* Restore padding to section */
+            background-color: var(--page-bg-light); /* Restore white background for the section */
+            border-top: 1px solid var(--page-border-light); /* Restore border top */
+            position: relative; /* For the absolute positioning of the black container */
+            overflow: hidden; /* Hide anything that goes outside */
+        }
+
+        /* The black block for the Node.js pulse graph */
+        .node-pulse-container-wrapper { /* New wrapper for the black block */
+            background-color: #000000; /* Solid black background for this entire block */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Subtle shadow */
+            border-radius: 1rem; /* Rounded corners for the black block (RESTORED) */
+            padding: 1rem; /* Padding inside the black block for the grid */
+            max-width: 1200px; /* Max width, centered */
+            margin: 0 auto;
+            position: relative; /* For relative positioning of titles if needed */
+            /* Removed fixed height here, let grid height dictate it */
+        }
+
+        .node-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            gap: 1rem; /* RESTORED GAP between canvases */
+            width: 100%; /* Full width of its wrapper */
+            height: 250px; /* Fixed height for the entire grid */
+            /* No borders/shadows/radius here, handled by wrapper */
+            margin: 0; /* No margin */
+        }
+
+        .node-pulse-block {
+            background-color: transparent; /* Make background transparent (allowing node-pulse-container-wrapper to show black) */
+            position: relative; /* For canvas positioning */
+            height: 100%; /* Fill parent grid item height */
+            overflow: hidden;
+            border-radius: 1rem; /* Rounded corners (RESTORED) */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle white border for each block */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effects */
+        }
+        .node-pulse-block:hover {
+            transform: translateY(-5px) scale(1.02); /* Slight lift */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* White glow on hover */
+        }
+        .node-pulse-block h3 {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; /* Above canvas */
+            color: rgba(255, 255, 255, 0.7); /* White text for headings */
+            font-size: 1.2rem; /* Smaller heading for sub-charts */
+            font-weight: 700;
+        }
+
+        .node-pulse-block canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            background-color: transparent; /* Canvas itself is transparent */
+            z-index: 1;
+        }
+
+
+        /* Footer (Updated for light theme) */
+        footer {
+            background-color: #f5f5f7; /* Very light grey footer */
+            border-top: 1px solid var(--page-border-light);
+            padding: 2.5rem;
+            text-align: center;
+            color: var(--page-muted-text); /* Muted dark text */
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: var(--page-muted-text); /* Muted link color */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--accent-blue-light); /* Hover to accent color (now grey) */
+        }
+
+        /* Animations (remain, but apply to relevant elements only) */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) { /* Adjust grid for tablets */
+            .hero-pulse-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+                grid-template-rows: repeat(3, 1fr); /* 3 rows on tablet */
+                max-height: none; /* Allow grid to stretch */
+            }
+            .node-pulse-grid {
+                grid-template-columns: repeat(1, 1fr); /* Stack on tablets as well */
+            }
+            .operational-block, .master-brand-block {
+                margin: 0; /* Ensure no negative margin on tablets */
+                width: 100%; /* Full width */
+            }
+            section {
+                padding: 6rem 2rem; /* Restore normal padding on tablets */
+            }
+        }
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.4rem; }
+            .logo-separator { font-size: 1.2rem; }
+
+            #header-pulse-canvas {
+                display: none; /* Hide header pulse on mobile to save space */
+            }
+
+            .hero-pulse-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                grid-template-rows: repeat(6, 1fr); /* 6 rows on mobile */
+                max-height: none; /* Allow grid to stretch */
+            }
+            .hero-cta-button { padding: 0.8rem 2rem; font-size: 1.1rem; } /* Slightly larger button on mobile */
+            h2 { font-size: 2.2rem; }
+            section { padding: 4rem 1rem; }
+            .operational-blocks-grid, .master-brand-blocks-grid { grid-template-columns: 1fr; } /* Stack on mobile */
+            .operational-block h3, .master-brand-block h3 { font-size: 1.5rem; }
+            .art-typo-container { font-size: 0.9rem; } /* Adjust font size for art typo on mobile */
+            footer { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content-wrapper">
+            <div class="logo-group">
+                <a href="#" class="logo-fruitful">Fruitful™</a>
+                <span class="logo-separator">|</span>
+                <span class="logo-seedwave">Seedwave™</span>
+            </div>
+            <!-- New: Stock Exchange Pulse Canvas in Header -->
+            <canvas id="header-pulse-canvas"></canvas>
+            <!-- Right nav bar removed -->
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" id="pulse">
+            <h1 class="text-6xl md:text-8xl font-extrabold text-white mb-8 leading-tight">
+                Seedwave™: The Global Pulse
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
+                *Integrating beyond what the word has witnessed as yet.* We orchestrate the future of innovation, from digital enterprises to groundbreaking non-digital ventures, with atomic precision and global reach.
+            </p>
+            <a href="homepage.html" class="hero-cta-button" id="discover-button">
+                <span class="button-text">Discover the Future</span>
+                <canvas id="button-arrow-canvas"></canvas>
+            </a>
+            <div class="hero-pulse-grid">
+                <div class="pulse-container">
+                    <canvas id="canvas-rhythmic"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-concentric"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-shooting"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-particles"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-radial-bursts"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-hyperspace"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Operational Pillars - now with rounded blocks and proper gaps -->
+        <section id="operational-pillars" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8">Our Operational Pillars: Beyond Conventional Integration</h2>
+            <p class="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
+                Seedwave's operational philosophy transcends traditional boundaries, focusing on seamless, intuitive integration across all phases of enterprise development. We automate the unseen, build the impossible, and deploy with a global consciousness.
+            </p>
+            <div class="operational-blocks-grid">
+                <div class="operational-block">
+                    <h3>Auto Design</h3>
+                </div>
+                <div class="operational-block">
+                    <h3>Auto Build</h3>
+                </div>
+                <div class="operational-block">
+                    <h3>Auto Deploy</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Master License Brands Section - now with rounded blocks and proper gaps -->
+        <section id="master-brands" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8" style="max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.2;">Seedwave™ Global Master License Brands</h2>
+            <p class="text-lg text-gray-700 mb-10 max-w-3xl mx-auto">
+                Our portfolio embodies a new epoch of integrated ventures, where each brand is a self-aware node in a larger, evolving consciousness, transcending traditional market boundaries and resonating with the very pulse of global transformation.
+            </p>
+            <div class="art-typo-container">
+<pre>
+Seedwave™:
+    The Nexus.
+      A Portfolio of Innovation.
+        Digital Enterprises, and so much more...
+          Beyond physical and meta-physical divides.
+            Groundbreaking Non-Digital Ventures.
+              Cultivating Tomorrow, and the Unseen.
+                Rapid Deployments, touching every dimension.
+                  Global Repositories, weaving universal truths.
+                    Tangible Presence, yet formless essence.
+                      The Pulse of Expansion, echoing through existence.
+                        Across All Frontiers, and beyond time.
+                          Every Brand, A Node, a conscious entity.
+                            Driving Collective Impact, a symphony of being.
+                              Integrating beyond what the word has witnessed as yet.
+</pre>
+            </div>
+            <!-- Master Brand Blocks - now with rounded blocks and proper gaps -->
+            <div class="mt-12 operational-blocks-grid master-brand-blocks-grid">
+                <a href="https://samfox.faa.zone" target="_blank" class="master-brand-block">
+                    <h3>Samfox™</h3>
+                </a>
+                <a href="https://seedwave.faa.zone" target="_blank" class="master-brand-block">
+                    <h3>Seedwave™</h3>
+                </a>
+                <a href="https://faa.zone/" target="_blank" class="master-brand-block">
+                    <h3>FAA.ZONE™</h3>
+                </a>
+            </div>
+
+            <div class="mt-12 p-8 bg-gray-50 rounded-lg shadow-inner max-w-xl mx-auto">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">✨ Brand Insight Generator</h3>
+                <p class="text-gray-600 mb-6">Enter a brand name to generate a marketing slogan and strategic insight, powered by Gemini AI.</p>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input
+                        type="text"
+                        id="brandNameInput"
+                        placeholder="e.g., HarmonyHearth™"
+                        class="flex-grow p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
+                    />
+                    <button
+                        id="generateBrandInsightBtn"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                        Generate Insight
+                    </button>
+                </div>
+                <div id="brandInsightLoading" class="hidden text-center text-blue-500 mt-4">
+                    <i class="fas fa-spinner fa-spin mr-2"></i> Generating insights...
+                </div>
+                <div id="brandInsightOutput" class="mt-6 p-4 bg-white border border-gray-200 rounded-md text-left text-gray-700 whitespace-pre-wrap min-h-[100px] flex items-center justify-center">
+                    <p class="text-gray-500">Insights will appear here.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Node.js Infiltration Pulse Section with three distinct canvases -->
+        <section id="node-pulse-sections" class="py-16 px-6 text-center">
+            <!-- Updated h2 text and styling to align with Seedwave heading -->
+            <h2 class="text-4xl font-bold mb-8" style="max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.2;">Noodle Juice Gorilla Combe™ Infiltrations</h2>
+            <p class="text-lg text-gray-700 mb-10 max-w-3xl mx-auto">
+                Witness the dynamic flow of data and consciousness across the foundational nodes of Seedwave. These visualizations represent the intricate, organic networks enabling integration beyond conventional comprehension.
+            </p>
+            <div class="node-pulse-container-wrapper">
+                <div class="node-pulse-grid">
+                    <!-- Samfox™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-samfox-node-pulse"></canvas>
+                    </div>
+                    <!-- Seedwave™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-seedwave-node-pulse"></canvas>
+                    </div>
+                    <!-- FAA.ZONE™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-faa-zone-node-pulse"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Removed paragraph here -->
+        </section>
+
+    </main>
+
+    <footer>
+        <p class="text-sm">© 2025 Seedwave™. All rights reserved. Integration Beyond Words.</p>
+        <p class="text-xs opacity-70 mt-2">A Fruitful™ Initiative | Cultivating Tomorrow</p>
+    </footer>
+
+    <script>
+        // Store canvas elements and their contexts
+        const canvases = {
+            rhythmic: { canvas: document.getElementById('canvas-rhythmic'), ctx: null, time: 0, animationId: null },
+            concentric: { canvas: document.getElementById('canvas-concentric'), ctx: null, time: 0, animationId: null },
+            shooting: { canvas: document.getElementById('canvas-shooting'), ctx: null, time: 0, animationId: null, pulses: [] },
+            particles: { canvas: document.getElementById('canvas-particles'), ctx: null, time: 0, animationId: null, particles: [] },
+            radialBursts: { canvas: document.getElementById('canvas-radial-bursts'), ctx: null, time: 0, animationId: null, bursts: [] },
+            hyperspace: { canvas: document.getElementById('canvas-hyperspace'), ctx: null, time: 0, animationId: null },
+            // New canvas objects for the Node.js pulses
+            samfoxNodePulse: { canvas: document.getElementById('canvas-samfox-node-pulse'), ctx: null, time: 0, animationId: null, history: [], particles: [] },
+            seedwaveNodePulse: { canvas: document.getElementById('canvas-seedwave-node-pulse'), ctx: null, time: 0, animationId: null, history: [], waves: [] },
+            faaZoneNodePulse: { canvas: document.getElementById('canvas-faa-zone-node-pulse'), ctx: null, time: 0, animationId: null, history: [], circles: [] }
+        };
+
+        // New: Header Pulse Canvas object
+        const headerPulse = {
+            canvas: document.getElementById('header-pulse-canvas'),
+            ctx: null,
+            time: 0,
+            animationId: null,
+            data: [], // Stores data points for the graph
+            maxDataPoints: 50, // Number of points visible
+            valueRange: 100, // Max value for fluctuations
+            speed: 0.8 // Speed of the graph scroll
+        };
+
+        // New: Discover Button Noodle Arrow Canvas Object
+        const discoverButtonArrow = {
+            canvas: document.getElementById('button-arrow-canvas'),
+            ctx: null,
+            time: 0,
+            animationId: null,
+            knittingDepth: 0.4, // Deeper loops for button arrow
+            knittingFrequency: 0.08, // More frequent loops
+            speed: 0.03, // Slower for a distinct feel
+            color: 'white', // This one stays white as per previous instructions
+            lineWidth: 1.5 // Thinner line
+        };
+
+
+        // Initialize contexts and start animation loops for each canvas
+        function initCanvases() {
+            // Initialize header pulse canvas first
+            if (headerPulse.canvas) {
+                headerPulse.ctx = headerPulse.canvas.getContext('2d');
+                resizeHeaderPulseCanvas();
+                startHeaderPulseAnimation();
+            }
+
+            // Initialize discover button arrow canvas
+            if (discoverButtonArrow.canvas) {
+                discoverButtonArrow.ctx = discoverButtonArrow.canvas.getContext('2d');
+                resizeCanvas(discoverButtonArrow.canvas); // Use generic resize for now
+                startDiscoverButtonArrowAnimation();
+            }
+
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    canvases[key].ctx = canvases[key].canvas.getContext('2d');
+                    resizeCanvas(canvases[key].canvas); // Initial resize
+                    startAnimation(key);
+                }
+            }
+        }
+
+        // Resize individual canvas elements
+        function resizeCanvas(canvas) {
+            if (canvas) { /* Check if canvas exists before accessing properties */
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+        }
+
+        // Resize header pulse canvas
+        function resizeHeaderPulseCanvas() {
+            if (headerPulse.canvas) {
+                headerPulse.canvas.width = headerPulse.canvas.offsetWidth;
+                headerPulse.canvas.height = headerPulse.canvas.offsetHeight;
+            }
+        }
+
+        // Handle window resize for all canvases
+        window.addEventListener('resize', () => {
+            resizeHeaderPulseCanvas(); // Resize header pulse
+            if (discoverButtonArrow.canvas) {
+                resizeCanvas(discoverButtonArrow.canvas);
+            }
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    resizeCanvas(canvases[key].canvas);
+                }
+            }
+        });
+
+        // --- Header "Stock Exchange Pulse" Animation ---
+        function drawHeaderPulse() {
+            const { canvas, ctx, data, maxDataPoints, valueRange, speed } = headerPulse;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.05)'; // Subtle trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add new data point (random walk for stock-like feel)
+            const lastValue = data.length > 0 ? data[data.length - 1] : valueRange / 2;
+            let newValue = lastValue + (Math.random() - 0.5) * 10; // Fluctuation
+            newValue = Math.max(5, Math.min(valueRange - 5, newValue)); // Keep within bounds
+            data.push(newValue);
+
+            // Keep only maxDataPoints
+            if (data.length > maxDataPoints) {
+                data.shift();
+            }
+
+            // Draw the pulse line with knitting effect for header
+            const headerKnittingDepth = canvas.height * 0.15; // Deeper loops for header
+            const headerKnittingFrequency = 0.3; // More frequent loops
+            const headerLoopSpeed = 0.05; // Adjust loop speed for header pulse
+
+            headerPulse.time += headerLoopSpeed;
+
+            ctx.beginPath();
+            // REVERTED to greenish glow for header pulse
+            ctx.strokeStyle = `rgba(0, 227, 147, ${0.9 + Math.sin(headerPulse.time * 2) * 0.1})`;
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = `rgba(0, 227, 147, ${0.7 + Math.sin(headerPulse.time * 2) * 0.1})`; // REVERTED to greenish glow
+
+            const pointWidth = canvas.width / (maxDataPoints - 1);
+            for (let i = 0; i < data.length; i++) {
+                const x = i * pointWidth;
+                const yBase = canvas.height - (data[i] / valueRange) * canvas.height;
+                const yLoop = Math.sin((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) * headerKnittingDepth; // Loop effect
+                const y = yBase + yLoop;
+
+                const phase = ((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+                ctx.globalAlpha = alphaMod * 0.7 + 0.3; // Make it fade in/out
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset alpha
+
+            headerPulse.animationId = requestAnimationFrame(drawHeaderPulse);
+        }
+
+        function startHeaderPulseAnimation() {
+            // Initialize data with some random values
+            for(let i = 0; i < headerPulse.maxDataPoints; i++) {
+                headerPulse.data.push(Math.random() * headerPulse.valueRange);
+            }
+            drawHeaderPulse();
+        }
+
+        // --- Discover Button Noodle Arrow Animation ---
+        function drawDiscoverButtonArrow(canvasObj) {
+            const { canvas, ctx, time, knittingDepth, knittingFrequency, speed, color, lineWidth } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear fully for crisp line
+
+            canvasObj.time += speed;
+
+            ctx.beginPath();
+            ctx.strokeStyle = color; // **This remains white as requested earlier**
+            ctx.lineWidth = lineWidth;
+            ctx.shadowBlur = 3; // Subtle glow for button arrow
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.6)'; // **This remains white glow**
+
+            const startX = 0;
+            const endX = canvas.width;
+            const step = 2; // Smaller steps for smoother line
+
+            for (let x = startX; x <= endX; x += step) {
+                const yBase = canvas.height / 2;
+                const yLoop = Math.sin((x / canvas.width) * Math.PI * 4 + time) * (canvas.height * knittingDepth);
+                const y = yBase + yLoop;
+
+                const phase = ((x / canvas.width) * Math.PI * 4 + time) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+
+                ctx.globalAlpha = alphaMod * 0.8 + 0.2; // Modulate alpha for disappearing effect
+
+                if (x === startX) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset global alpha
+
+            canvasObj.animationId = requestAnimationFrame(() => drawDiscoverButtonArrow(canvasObj));
+        }
+
+        function startDiscoverButtonArrowAnimation() {
+            if (discoverButtonArrow.canvas) {
+                discoverButtonArrow.time = Math.random() * 100; // Random starting phase
+                drawDiscoverButtonArrow(discoverButtonArrow);
+            }
+        }
+
+
+        // --- Pulse Animation Classes & Functions (for Hero Grid) ---
+
+        // Rhythmic Pulse (from fruitful.faa.zone/index.html, v5.0/v6.0)
+        function drawRhythmicPulse(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const numRhythmicLines = 40;
+            const rhythmicLineAmplitude = canvas.height / 2.5;
+            const rhythmicLineFrequency = 0.1;
+            const rhythmicLineSpeed = 0.015;
+
+            canvasObj.time += rhythmicLineSpeed;
+
+            for (let i = 0; i < numRhythmicLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numRhythmicLines);
+                const colorHue = (canvasObj.time * 200 + i * 15) % 360;
+                ctx.strokeStyle = `hsla(${colorHue}, 95%, 75%, 0.9)`;
+                ctx.lineWidth = 2.5;
+
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = Math.sin(x * rhythmicLineFrequency + canvasObj.time + offset) * (rhythmicLineAmplitude * (Math.sin(canvasObj.time * 0.3 + i * 0.15) * 0.5 + 0.5)) + canvas.height / 2;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRhythmicPulse(canvasObj));
+        }
+
+        // Concentric Waves (from v3.0)
+        function drawConcentricWaves(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const numWaves = 20;
+            const waveSpeed = 0.02;
+            const waveThickness = 4;
+            const waveSpacing = 12;
+
+            canvasObj.time += waveSpeed;
+
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                const radius = (canvasObj.time * waveSpacing + i * waveSpacing) % (Math.max(canvas.width, canvas.height) / 1.2) + 5;
+                const hue = (i * 20 + canvasObj.time * 100) % 360;
+                ctx.strokeStyle = `hsla(${hue}, 95%, 80%, ${0.95 - (radius / (Math.max(canvas.width, canvas.height) / 1.2))})`;
+                ctx.lineWidth = waveThickness;
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (i < 7) {
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${hue + 70}, 100%, 85%, ${0.6 - (radius / (Math.max(canvas.width, canvas.height) / 1.2)) * 0.6})`;
+                    ctx.fill();
+                }
+            }
+
+            const coreRadius = 20 + Math.sin(canvasObj.time * 10) * 8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 227, 147, ${0.95 + Math.sin(canvasObj.time * 10) * 0.05})`;
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(0, 227, 147, 1.0)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            canvasObj.animationId = requestAnimationFrame(() => drawConcentricWaves(canvasObj));
+        }
+
+        // Shooting Pulses (from v4.0/v6.0)
+        class ShootingPulse {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.initialRadius = 1;
+                this.currentRadius = this.initialRadius;
+                this.maxRadius = Math.random() * 150 + 80;
+                this.speed = Math.random() * 4 + 2;
+                this.alpha = 1;
+                this.decayRate = Math.random() * 0.012 + 0.006;
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+                this.numRings = Math.floor(Math.random() * 6) + 5;
+                this.glowStrength = Math.random() * 25 + 15;
+            }
+            update() {
+                this.currentRadius += this.speed;
+                this.alpha -= this.decayRate;
+                return this.alpha > 0 && this.currentRadius < this.maxRadius;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2.5;
+                for (let i = 0; i < this.numRings; i++) {
+                    const ringRadius = this.currentRadius - (i * (this.currentRadius / this.numRings));
+                    if (ringRadius > this.initialRadius) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.initialRadius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.glowStrength;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+        }
+
+        function drawShootingPulses(canvasObj) {
+            const { canvas, ctx, pulses } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const shootingPulseSpawnRate = 0.3;
+            const maxShootingPulses = 50;
+
+            if (Math.random() < shootingPulseSpawnRate && pulses.length < maxShootingPulses) {
+                pulses.push(new ShootingPulse(canvas));
+            }
+
+            for (let i = pulses.length - 1; i >= 0; i--) {
+                const pulse = pulses[i];
+                if (pulse.update()) {
+                    pulse.draw(ctx);
+                } else {
+                    pulses.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawShootingPulses(canvasObj));
+        }
+
+        // Particle Grid (from v2.0)
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * 2.5 + 1.5;
+                this.speedX = (Math.random() * 2 - 1);
+                this.speedY = (Math.random() * 2 - 1);
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+                this.alpha = 1;
+                this.decay = 0.002;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                if (this.alpha < 0 || this.x < -20 || this.x > this.canvas.width + 20 || this.y < -20 || this.y > this.canvas.height + 20) {
+                    this.alpha = 1;
+                    this.x = Math.random() * this.canvas.width;
+                    this.y = Math.random() * this.canvas.height;
+                    this.speedX = (Math.random() * 2 - 1);
+                    this.speedY = (Math.random() * 2 - 1);
+                }
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawParticlesWithConnections(canvasObj) {
+            const { canvas, ctx, particles } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (particles.length === 0) {
+                for (let i = 0; i < 150; i++) {
+                    particles.push(new Particle(canvas));
+                }
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw(ctx);
+
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 123, 255, ${particles[i].alpha * particles[j].alpha * (1 - (distance / 120)) * 1.0})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+            canvasObj.animationId = requestAnimationFrame(() => drawParticlesWithConnections(canvasObj));
+        }
+
+        // Radial Bursts (New)
+        class RadialBurst {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 200 + 100;
+                this.speed = Math.random() * 5 + 3;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.numLines = Math.floor(Math.random() * 20) + 15;
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+
+                for (let i = 0; i < this.numLines; i++) {
+                    const angle = (Math.PI * 2 / this.numLines) * i;
+                    const startX = this.x + Math.cos(angle) * this.radius * 0.1;
+                    const startY = this.y + Math.sin(angle) * this.radius * 0.1;
+                    const endX = this.x + Math.cos(angle) * this.radius;
+                    const endY = this.y + Math.sin(angle) * this.radius;
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawRadialBursts(canvasObj) {
+            const { canvas, ctx, bursts } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const burstSpawnRate = 0.12;
+            const maxBursts = 20;
+
+            if (Math.random() < burstSpawnRate && bursts.length < maxBursts) {
+                bursts.push(new RadialBurst(canvas));
+            }
+
+            for (let i = bursts.length - 1; i >= 0; i--) {
+                const burst = bursts[i];
+                if (burst.update()) {
+                    burst.draw(ctx);
+                } else {
+                    bursts.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRadialBursts(canvasObj));
+        }
+
+        // Hyperspace Warp (New) - **THIS ONE REMAINS WHITE**
+        function drawHyperspaceWarp(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            canvasObj.time += 0.06;
+
+            const gridSpacing = 25;
+            const lineCountX = Math.ceil(canvas.width / gridSpacing);
+            const lineCountY = Math.ceil(canvas.height / gridSpacing);
+
+            // This is the "cube lattice noodle frame" and its lines are explicitly white
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 + (Math.sin(canvasObj.time * 0.8) + 1) / 2 * 0.3})`; // Kept white
+            ctx.lineWidth = 1.5;
+
+            // Draw horizontal lines
+            for (let i = 0; i <= lineCountY; i++) {
+                const y = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(0, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.lineTo(canvas.width, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.stroke();
+            }
+
+            // Draw vertical lines
+            for (let i = 0; i <= lineCountX; i++) {
+                const x = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, 0);
+                ctx.lineTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, canvas.height);
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawHyperspaceWarp(canvasObj));
+        }
+
+
+        // Function to start the animation for a specific canvas (hero grid)
+        function startAnimation(key) {
+            const canvasObj = canvases[key];
+            if (!canvasObj.ctx) return;
+
+            // Cancel any existing animation frame to prevent duplicates
+            if (canvasObj.animationId) {
+                cancelAnimationFrame(canvasObj.animationId);
+            }
+
+            // Call the appropriate draw function for the canvas
+            switch (key) {
+                case 'rhythmic':
+                    drawRhythmicPulse(canvasObj);
+                    break;
+                case 'concentric':
+                    drawConcentricWaves(canvasObj);
+                    break;
+                case 'shooting':
+                    drawShootingPulses(canvasObj);
+                    break;
+                case 'particles':
+                    if (canvasObj.particles.length === 0) { // Initialize particles only once
+                        for (let i = 0; i < 150; i++) { // Initial count increased to match draw logic
+                            canvasObj.particles.push(new Particle(canvasObj.canvas));
+                        }
+                    }
+                    drawParticlesWithConnections(canvasObj);
+                    break;
+                case 'radialBursts':
+                    drawRadialBursts(canvasObj);
+                    break;
+                case 'hyperspace':
+                    drawHyperspaceWarp(canvasObj);
+                    break;
+                // Node Pulse animations
+                case 'samfoxNodePulse':
+                    drawSamfoxNodePulse(canvasObj);
+                    break;
+                case 'seedwaveNodePulse':
+                    drawSeedwaveNodePulse(canvasObj);
+                    break;
+                case 'faaZoneNodePulse':
+                    drawFaaZoneNodePulse(canvasObj);
+                    break;
+            }
+        }
+
+        // --- New MiniPulse class for Hyperspace Warp ---
+        class MiniPulse {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 8 + 4; // Small pulses
+                this.speed = Math.random() * 0.5 + 0.2; // Slower expansion
+                this.alpha = 1;
+                this.decayRate = Math.random() * 0.05 + 0.02; // Fast decay
+                this.color = 'white'; // Sparkling white
+                this.glowStrength = Math.random() * 3 + 1;
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.alpha -= this.decayRate;
+                return this.alpha > 0 && this.radius < this.maxRadius;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.glowStrength;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+        }
+
+        // --- New Node.js Pulse Animations for Samfox, Seedwave, FAA.ZONE ---
+
+        // Shared data for the combined Node Pulse Graph
+        const nodePulseGraphSharedData = {
+            totalWidth: 0,
+            height: 0,
+            points: [],
+            numPoints: 150,
+            time: 0,
+            amplitude: 0.3,
+            frequency: 0.02,
+            speed: 0.05,
+            electricityPoints: [],
+            maxElectricityPoints: 200,
+            electricitySpawnRate: 0.8,
+            electricityDecayRate: 0.03,
+            electricityLength: 10,
+            knittingDepth: 0.2, // Percentage of canvas height for loop depth
+            knittingFrequency: 0.1, // How often loops occur
+            knittingPhaseOffset: 0 // To make loops appear at different points
+        };
+
+        // Function to update shared graph data
+        function updateNodePulseGraphData() {
+            nodePulseGraphSharedData.time += nodePulseGraphSharedData.speed;
+            if (nodePulseGraphSharedData.points.length === 0) {
+                for (let i = 0; i < nodePulseGraphSharedData.numPoints; i++) {
+                    nodePulseGraphSharedData.points.push(Math.random() * nodePulseGraphSharedData.height);
+                }
+            } else {
+                for (let i = 0; i < nodePulseGraphSharedData.numPoints; i++) {
+                    const waveHeight = Math.sin(i * nodePulseGraphSharedData.frequency + nodePulseGraphSharedData.time) * nodePulseGraphSharedData.amplitude * nodePulseGraphSharedData.height;
+                    nodePulseGraphSharedData.points[i] = nodePulseGraphSharedData.height / 2 + waveHeight;
+                }
+            }
+
+            if (Math.random() < nodePulseGraphSharedData.electricitySpawnRate && nodePulseGraphSharedData.electricityPoints.length < nodePulseGraphSharedData.maxElectricityPoints) {
+                const randomPointIndex = Math.floor(Math.random() * nodePulseGraphSharedData.numPoints);
+                nodePulseGraphSharedData.electricityPoints.push({
+                    index: randomPointIndex,
+                    alpha: 1,
+                    length: Math.random() * nodePulseGraphSharedData.electricityLength + 5,
+                    offsetY: (Math.random() - 0.5) * 5
+                });
+            }
+
+            for (let i = nodePulseGraphSharedData.electricityPoints.length - 1; i >= 0; i--) {
+                const ep = nodePulseGraphSharedData.electricityPoints[i];
+                ep.alpha -= nodePulseGraphSharedData.electricityDecayRate;
+                if (ep.alpha <= 0) {
+                    nodePulseGraphSharedData.electricityPoints.splice(i, 1);
+                }
+            }
+        }
+        setInterval(updateNodePulseGraphData, 50);
+
+        // Helper to draw a segment of the noodle pulse graph with knitting effect
+        function drawNoodlePulseSegment(canvasObj, startIndex, endIndex, offsetCanvasX) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            const drawExtend = 30; // Extend drawing into the "walls"
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Updated fillStyle to a darker, less transparent black
+            ctx.fillStyle = '#000000'; /* Pitch black */
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Set global dimensions if not already set (first canvas will do this)
+            if (canvases.samfoxNodePulse.canvas && canvases.seedwaveNodePulse.canvas && canvases.faaZoneNodePulse.canvas) {
+                if (nodePulseGraphSharedData.totalWidth === 0 || nodePulseGraphSharedData.height === 0) {
+                    // Recalculate total width including gaps
+                    const actualBlockWidth = canvases.samfoxNodePulse.canvas.offsetWidth;
+                    const gapWidth = 16; /* 1rem = 16px */
+                    nodePulseGraphSharedData.totalWidth = (actualBlockWidth * 3) + (2 * gapWidth);
+                    nodePulseGraphSharedData.height = canvases.samfoxNodePulse.canvas.offsetHeight;
+                }
+            } else {
+                return;
+            }
+
+            const segmentWidth = nodePulseGraphSharedData.totalWidth / (nodePulseGraphSharedData.numPoints - 1);
+
+            ctx.beginPath();
+            // REVERTED to dynamic vibrant colors for Node Pulse Noodle
+            const globalHue = (nodePulseGraphSharedData.time * 20) % 360;
+            ctx.strokeStyle = `hsl(${globalHue}, 80%, 60%)`; // Reverted to HSL
+            ctx.lineWidth = 2; // Noodle thickness
+            ctx.shadowBlur = 8; // Subtle glow
+            ctx.shadowColor = `hsl(${globalHue}, 80%, 50%)`; // Reverted to HSL
+
+            // Draw line segment with "knitting" effect (looping in and out)
+            const loopDepth = canvas.height * nodePulseGraphSharedData.knittingDepth; // How much the line "dips" or "rises"
+            const loopFrequency = nodePulseGraphSharedData.knittingFrequency; // How often the loops occur
+
+            for (let i = startIndex; i <= endIndex; i++) {
+                const xGlobal = i * segmentWidth;
+                let xLocal = xGlobal - offsetCanvasX;
+
+                const yBase = nodePulseGraphSharedData.points[i];
+                const knittingYOffset = Math.sin((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) * loopDepth;
+                const y = yBase + knittingYOffset;
+
+                const phase = ((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+
+                ctx.globalAlpha = alphaMod * 0.8 + 0.2;
+
+                xLocal = Math.max(xLocal, -drawExtend);
+                xLocal = Math.min(xLocal, canvas.width + drawExtend);
+
+                if (i === startIndex || (ctx.canvas.lastPoint && Math.abs(xLocal - ctx.canvas.lastPoint.x) > segmentWidth * 1.5)) {
+                       ctx.moveTo(xLocal, y);
+                } else {
+                    ctx.lineTo(xLocal, y);
+                }
+                ctx.canvas.lastPoint = {x: xLocal, y: y};
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset alpha after drawing line
+
+            // Draw electricity effects
+            // REVERTED to dynamic vibrant colors for Node Pulse Electricity
+            const electricityHue = ((nodePulseGraphSharedData.time * 20) + 180) % 360; // Offset hue for electricity
+            ctx.strokeStyle = `hsla(${electricityHue}, 90%, 70%, 0.8)`; // Reverted to HSL
+            ctx.lineWidth = 1;
+            nodePulseGraphSharedData.electricityPoints.forEach(ep => {
+                if (ep.index >= startIndex && ep.index <= endIndex) {
+                    const xGlobal = ep.index * segmentWidth;
+                    let xLocal = xGlobal - offsetCanvasX;
+                    const yBase = nodePulseGraphSharedData.points[ep.index];
+                    const knittingYOffset = Math.sin((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) * loopDepth;
+                    const y = yBase + knittingYOffset;
+
+                    if (xLocal >= -drawExtend && xLocal <= canvas.width + drawExtend) {
+                        ctx.save();
+                        ctx.globalAlpha = ep.alpha;
+                        ctx.beginPath();
+                        ctx.moveTo(xLocal, y);
+                        ctx.lineTo(xLocal + (Math.random() - 0.5) * ep.length, y + (Math.random() - 0.5) * ep.length + ep.offsetY);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            });
+
+            canvasObj.animationId = requestAnimationFrame(() => {
+                switch(canvasObj.canvas.id) {
+                    case 'canvas-samfox-node-pulse':
+                        drawSamfoxNodePulse(canvasObj);
+                        break;
+                    case 'canvas-seedwave-node-pulse':
+                        drawSeedwaveNodePulse(canvasObj);
+                        break;
+                    case 'canvas-faa-zone-node-pulse':
+                        drawFaaZoneNodePulse(canvasObj);
+                        break;
+                }
+            });
+        }
+
+        // Specific draw functions for each Node Pulse canvas
+        function drawSamfoxNodePulse(canvasObj) {
+            const segmentStart = 0;
+            const segmentEnd = Math.floor(nodePulseGraphSharedData.numPoints / 3) + 2;
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, 0);
+        }
+
+        function drawSeedwaveNodePulse(canvasObj) {
+            const segmentStart = Math.floor(nodePulseGraphSharedData.numPoints / 3) - 2;
+            const segmentEnd = Math.floor(nodePulseGraphSharedData.numPoints * 2 / 3) + 2;
+            const offsetCanvasX = (canvases.samfoxNodePulse.canvas ? canvases.samfoxNodePulse.canvas.offsetWidth : 0) + 16; /* Samfox width + gap */
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, offsetCanvasX);
+        }
+
+        function drawFaaZoneNodePulse(canvasObj) {
+            const segmentStart = Math.floor(nodePulseGraphSharedData.numPoints * 2 / 3) - 2;
+            const segmentEnd = nodePulseGraphSharedData.numPoints - 1;
+            const offsetCanvasX = (canvases.samfoxNodePulse.canvas ? canvases.samfoxNodePulse.canvas.offsetWidth : 0) + (canvases.seedwaveNodePulse.canvas ? canvases.seedwaveNodePulse.canvas.offsetWidth : 0) + (2 * 16); /* Samfox width + Seedwave width + two gaps */
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, offsetCanvasX);
+        }
+
+        // Initialize all canvases and start their animations on window load
+        window.onload = function() {
+            initCanvases();
+
+            // Smooth scrolling for navigation links (if any were present)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        };
+
+
+        // --- Gemini API Brand Insights Generator Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBrandInsightBtn = document.getElementById('generateBrandInsightBtn');
+            const brandNameInput = document.getElementById('brandNameInput');
+            const brandInsightOutput = document.getElementById('brandInsightOutput');
+            const brandInsightLoading = document.getElementById('brandInsightLoading');
+
+            if (generateBrandInsightBtn && brandNameInput && brandInsightOutput && brandInsightLoading) {
+                generateBrandInsightBtn.addEventListener('click', async () => {
+                    const brandName = brandNameInput.value.trim();
+                    if (!brandName) {
+                        brandInsightOutput.innerHTML = '<p class="text-red-500">Please enter a brand name.</p>';
+                        return;
+                    }
+
+                    brandInsightOutput.textContent = ''; // Clear previous output
+                    brandInsightLoading.classList.remove('hidden'); // Show loading indicator
+                    generateBrandInsightBtn.disabled = true; // Disable button during generation
+
+                    try {
+                        let chatHistory = [];
+                        // Construct the prompt to guide Gemini's output
+                        const prompt = `Generate a concise, futuristic marketing slogan (5-10 words) and a brief strategic insight (2-3 sentences) for a brand named "${brandName}" within a decentralized, tech-sovereignty ecosystem called FAA.ZONE, which integrates music, aura enhancement, and global impact. Ensure the slogan captures innovation and the insight focuses on its unique value.`;
+
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will automatically provide this during runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        console.log("Attempting to call Gemini API for brand insights with prompt:", prompt);
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        console.log("Parsed API Result for brand insights:", result);
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            brandInsightOutput.textContent = text;
+                        } else {
+                            brandInsightOutput.innerHTML = '<p class="text-red-500">Error: Could not generate insight. Unexpected API response or no content found.</p>';
+                            console.error("Gemini API response for brand insights was unexpected:", result);
+                            if (result.error && result.error.message) {
+                                brandInsightOutput.textContent += ` Reason: ${result.error.message}`;
+                            }
+                        }
+
+                    } catch (error) {
+                        brandInsightOutput.innerHTML = `<p class="text-red-500">Error: Failed to connect to Gemini API for insights. Check console for details.</p>`;
+                        console.error("Error calling Gemini API for brand insights:", error);
+                    } finally {
+                        brandInsightLoading.classList.add('hidden'); // Hide loading indicator
+                        generateBrandInsightBtn.disabled = false; // Re-enable button
+                    }
+                });
+            } else {
+                console.warn("Brand Insight Generator elements (button, input, output, or loading indicator) not found in the DOM. Ensure IDs are correct.");
+            }
+        });
+    </script>
+</body>
+</html>

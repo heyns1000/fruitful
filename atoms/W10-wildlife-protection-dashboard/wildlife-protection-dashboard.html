@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦁 Wildlife Protection Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Wildlife Protection & Biodiversity Dashboard</h2>
+                <p class="text-gray-600 mt-1">Tracking endangered species, anti-poaching efforts, and habitat conservation worldwide.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html" class="active">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html">Global Health</a>
+            <a href="land_degradation_dashboard.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Endangered Species Index (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks the overall health of global biodiversity based on threatened species counts.
+                </p>
+            </div>
+
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Illegal Poaching Incidents by Continent</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Highlights areas with high poaching activity, informing anti-poaching deployments.
+                </p>
+            </div>
+
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Protected Areas Coverage (Global)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-doughnut"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Shows the extent of conserved habitats crucial for wildlife survival.
+                </p>
+            </div>
+
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Wildlife Trafficking Incidents by Type</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-trafficking-pie"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Visualizes types of seizures and informs efforts against illegal trade.
+                </p>
+            </div>
+
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Key Species Population Trends (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-species-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Monitors the health and recovery (or decline) of iconic species.
+                </p>
+            </div>
+
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">AI Surveillance Impact on Poaching</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="wp-ai-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Quantifies the success of AI in preventing illegal activities in protected areas.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // Include some sample data for wildlife-related metrics
+    { name: "Nigeria", continent: "Africa", threatenedSpecies: 80, poachingIncidents: 120, protectedAreas: 15, traffickingType: "Animal Products", elephantPopulation: 1000, rhinoPopulation: 50, aiAlerts: 500, incidentsPrevented: 100 },
+    { name: "USA", continent: "North America", threatenedSpecies: 50, poachingIncidents: 20, protectedAreas: 22, traffickingType: "Live Animals", elephantPopulation: 0, rhinoPopulation: 0, aiAlerts: 100, incidentsPrevented: 20 },
+    { name: "Brazil", continent: "South America", threatenedSpecies: 150, poachingIncidents: 80, protectedAreas: 20, traffickingType: "Animal Products", elephantPopulation: 0, rhinoPopulation: 0, aiAlerts: 300, incidentsPrevented: 60 },
+    { name: "Germany", continent: "Europe", threatenedSpecies: 10, poachingIncidents: 2, protectedAreas: 28, traffickingType: "Plants", elephantPopulation: 0, rhinoPopulation: 0, aiAlerts: 20, incidentsPrevented: 5 },
+    { name: "China", continent: "Asia", threatenedSpecies: 180, poachingIncidents: 50, protectedAreas: 18, traffickingType: "Live Animals", elephantPopulation: 0, rhinoPopulation: 0, aiAlerts: 400, incidentsPrevented: 80 },
+    { name: "Australia", continent: "Oceania", threatenedSpecies: 60, poachingIncidents: 5, protectedAreas: 10, traffickingType: "Reptiles", elephantPopulation: 0, rhinoPopulation: 0, aiAlerts: 80, incidentsPrevented: 15 }
+    // ... add more countries for all continents and relevant data fields here for a full dataset
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('wp-line', 'line', getEndangeredSpeciesData);
+    createChart('wp-bar', 'bar', getPoachingIncidentsData);
+    createChart('wp-doughnut', 'doughnut', getProtectedAreasData);
+    createChart('wp-trafficking-pie', 'pie', getTraffickingTypeData);
+    createChart('wp-species-line', 'line', getSpeciesPopulationData);
+    createChart('wp-ai-bar', 'bar', getAISurveillanceImpactData);
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        let config;
+        if (id === 'wp-line') config = { dataFn: getEndangeredSpeciesData };
+        else if (id === 'wp-bar') config = { dataFn: getPoachingIncidentsData };
+        else if (id === 'wp-doughnut') config = { dataFn: getProtectedAreasData };
+        else if (id === 'wp-trafficking-pie') config = { dataFn: getTraffickingTypeData };
+        else if (id === 'wp-species-line') config = { dataFn: getSpeciesPopulationData };
+        else if (id === 'wp-ai-bar') config = { dataFn: getAISurveillanceImpactData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+
+function getEndangeredSpeciesData(data) {
+    const labels = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const datasetData = labels.map(() => {
+        return data.reduce((sum, item) => sum + (item.threatenedSpecies * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Avg. Threatened Species Count',
+            data: datasetData,
+            borderColor: '#F97316', backgroundColor: 'rgba(249, 115, 22, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getPoachingIncidentsData(data) {
+    const continentCounts = continents.reduce((acc, c) => {
+        acc[c] = data.filter(d => d.continent === c).reduce((sum, item) => sum + item.poachingIncidents, 0);
+        return acc;
+    }, {});
+    const labels = Object.keys(continentCounts).filter(c => currentFilter === 'All' || continentCounts[c] > 0);
+    const chartData = labels.map(c => continentCounts[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Poaching Incidents',
+            data: chartData,
+            backgroundColor: '#EF4444', borderRadius: 4
+        }]
+    };
+}
+
+function getProtectedAreasData(data) {
+    const totalProtectedAreas = data.reduce((sum, item) => sum + item.protectedAreas, 0);
+    const totalLandMass = data.length * 100; // Simplified total land mass calculation
+    const percentage = totalLandMass > 0 ? (totalProtectedAreas / totalLandMass * 100).toFixed(1) : 0;
+
+    return {
+        labels: ['Protected Land (%)', 'Unprotected Land (%)'],
+        datasets: [{
+            data: [percentage, (100 - percentage).toFixed(1)],
+            backgroundColor: ['#22C55E', '#D1D5DB'],
+        }]
+    };
+}
+
+function getTraffickingTypeData(data) {
+    const traffickingTypes = {};
+    data.forEach(item => {
+        if (item.traffickingType) {
+            traffickingTypes[item.traffickingType] = (traffickingTypes[item.traffickingType] || 0) + 1;
+        }
+    });
+
+    return {
+        labels: Object.keys(traffickingTypes),
+        datasets: [{
+            data: Object.values(traffickingTypes),
+            backgroundColor: ['#FBBF24', '#A855F7', '#EC4899', '#3B82F6'],
+        }]
+    };
+}
+
+function getSpeciesPopulationData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `20${19 + i}`);
+    const elephantData = years.map(() => data.reduce((sum, item) => sum + (item.elephantPopulation * (Math.random() * 0.1 + 0.95)), 0));
+    const rhinoData = years.map(() => data.reduce((sum, item) => sum + (item.rhinoPopulation * (Math.random() * 0.1 + 0.95)), 0));
+
+    return {
+        labels: years,
+        datasets: [
+            {
+                label: 'Elephant Population (Simulated)',
+                data: elephantData,
+                borderColor: '#1D4ED8', // Blue-700
+                backgroundColor: 'rgba(29, 78, 216, 0.1)',
+                fill: false,
+                tension: 0.4
+            },
+            {
+                label: 'Rhino Population (Simulated)',
+                data: rhinoData,
+                borderColor: '#DC2626', // Red-600
+                backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                fill: false,
+                tension: 0.4
+            }
+        ]
+    };
+}
+
+function getAISurveillanceImpactData(data) {
+    const labels = currentFilter === 'All' ? continents : data.map(d => d.name);
+    const alertsData = currentFilter === 'All' ? 
+        continents.map(c => data.filter(d => d.continent === c).reduce((sum, item) => sum + item.aiAlerts, 0)) :
+        data.map(d => d.aiAlerts);
+    const preventedData = currentFilter === 'All' ? 
+        continents.map(c => data.filter(d => d.continent === c).reduce((sum, item) => sum + item.incidentsPrevented, 0)) :
+        data.map(d => d.incidentsPrevented);
+
+    return {
+        labels: labels,
+        datasets: [
+            {
+                label: 'AI Alerts Generated',
+                data: alertsData,
+                backgroundColor: '#3B82F6', // Blue-500
+                borderRadius: 4
+            },
+            {
+                label: 'Incidents Prevented',
+                data: preventedData,
+                backgroundColor: '#10B981', // Green-500
+                borderRadius: 4
+            }
+        ]
+    };
+}
+</script>
+</body>
+</html>
