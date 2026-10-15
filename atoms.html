@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atom Pages · Fruitful™ OmniGrid™</title>
+    <meta name="description" content="The best version of every faa.zone page, harvested from the atoms/* branches, with each page's full version history.">
+    <link rel="stylesheet" href="brand/samfox-ci.css">
+    <style>
+        :root { color-scheme: light dark; }
+        * { box-sizing: border-box; }
+        body { margin: 0; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px 80px; }
+        header.main-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color-light); }
+        .bar { display: flex; align-items: center; gap: 12px; height: 60px; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+        .logo-fruitful { font-size: 1.3rem; font-weight: 700; text-decoration: none; color: inherit; }
+        .bar nav { margin-left: auto; display: flex; gap: 4px; }
+        .bar nav a { text-decoration: none; color: var(--muted-text-light); font-size: .9rem; padding: 6px 10px; border-radius: 8px; }
+        h1 { margin: 28px 0 8px; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; }
+        .lead { margin: 0 0 18px; max-width: 760px; color: var(--muted-text-light); }
+        .tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px; }
+        .tools input { flex: 1; min-width: 220px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-color-light); background: var(--card-bg-light); color: inherit; }
+        .tools label { display: flex; gap: 6px; align-items: center; font-size: .9rem; color: var(--muted-text-light); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+        .card { background: var(--card-bg-light); border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 0 var(--sf-ink-line); }
+        .card h3 { margin: 2px 0 6px; font: 600 1rem/1.3 var(--sf-display); }
+        .card h3 a { color: inherit; text-decoration: none; }
+        .card p { margin: 0; font-size: .82rem; color: var(--muted-text-light); }
+        .card .links { margin-top: 8px; display: flex; gap: 10px; font-size: .82rem; }
+        .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .72rem; font-weight: 600; background: rgba(185,95,86,.16); color: var(--sf-dustyrose); }
+        .dark-mode .card { background: var(--card-bg-dark); }
+        @media (max-width: 560px) { .bar nav a.hide-sm { display: none; } }
+    </style>
+</head>
+<body>
+<header class="main-header"><div class="bar">
+    <a class="logo-fruitful" href="ecosystem.html">Fruitful™</a>
+    <nav aria-label="Main"><a class="hide-sm" href="ecosystem.html">Ecosystem</a><a href="sector-studio.html">Sector Studio</a><a href="atoms.html">Atom pages</a></nav>
+</div></header>
+<main class="wrap">
+    <h1>Atom pages</h1>
+    <p class="lead">The best version of every faa.zone page, harvested unchanged from the <code>atoms/*</code> branches. Each card links to the page and to its history: every earlier version with the repo, date and fingerprint it came from. Saved tool and chat screens, near-empty stubs and pages that held keys or personal details were left out.</p>
+    <div class="tools">
+        <input type="search" id="find" placeholder="Search atom pages…" aria-label="Search atom pages">
+        <label><input type="checkbox" id="real"> Only pages with no mock-data signs</label>
+    </div>
+    <p class="lead" id="count"></p>
+    <div class="grid" id="grid"></div>
+</main>
+<script>
+(function () {
+    'use strict';
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var all = [], find = document.getElementById('find'), real = document.getElementById('real');
+    function draw() {
+        var f = find.value.toLowerCase();
+        var list = all.filter(function (a) { return (!f || (a.title + ' ' + a.id).toLowerCase().indexOf(f) >= 0) && (!real.checked || !a.mock_signals); });
+        document.getElementById('count').textContent = list.length + ' of ' + all.length + ' pages';
+        document.getElementById('grid').innerHTML = list.map(function (a) {
+            var dir = a.href.replace(/[^/]+$/, '');
+            return '<div class="card"><h3><a href="' + esc(a.href) + '">' + esc(a.title || a.id) + '</a></h3><p>' + esc(a.id) + ' · ' + a.versions + ' version(s) · ' +
+                Number(a.chars).toLocaleString('en-US') + ' characters' + (a.mock_signals ? ' · <span class="pill">needs real data</span>' : '') + '</p>' +
+                '<div class="links"><a href="' + esc(a.href) + '">Open page</a><a href="' + esc(dir) + 'SOURCES.md">Version history</a><a href="' + esc(dir) + 'TAIL.md">Graft notes</a></div></div>';
+        }).join('');
+    }
+    find.addEventListener('input', draw); real.addEventListener('change', draw);
+    fetch('atoms/atoms.json').then(function (r) { return r.json(); }).then(function (d) {
+        all = (d.items || []).sort(function (x, y) { return x.id.localeCompare(y.id); }); draw();
+    }).catch(function () { document.getElementById('count').textContent = 'The atom index could not be loaded right now.'; });
+})();
+</script>
+<script src="omnigrid-app.js"></script>
+</body>
+</html>
