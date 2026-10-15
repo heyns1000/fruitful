@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeNest™ Global Repository & Routing Structure</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Define CodeNest Global Color Palette and Base Styles - copied from provided immersive */
+        :root {
+            /* Dark Mode Defaults */
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+            --text-color-dark: #1d1d1f; /* Dark text on light backgrounds - used for some components that flip colors */
+            --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+            --card-bg-dark: #2a2a2e; /* Darker grey for dark cards */
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
+            --accent-gold: #B8860B; /* Corporate gold accent */
+            --status-active: #30d158; /* Green for active */
+            --status-pending: #f59e0b; /* Amber for pending */
+            --status-draft: #6e6e73; /* Gray for draft */
+            --status-error: #ef4444; /* Red for error */
+
+            /* Light Mode Variables (will override dark mode) */
+            --light-primary-color: #0071e3;
+            --light-secondary-color: #30d158;
+            --light-text-color-light: #1d1d1f; /* Dark text for light mode body */
+            --light-text-color-dark: #1d1d1f; /* Dark text for light mode body content */
+            --light-bg-color-dark: #ffffff; /* White background for light mode */
+            --light-card-bg-dark: #fcfcfc; /* Off-white for light cards */
+            --light-border-color-dark: #e8e8ed; /* Subtle light border */
+        }
+
+        /* Base Body Styling - Defaults to dark mode based on root variables */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light); /* Main text color based on mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+            margin: 0;
+            padding: 2.5rem; /* Padding for the body content */
+            align-items: center; /* Center content horizontally */
+        }
+
+        /* Light Mode specific overrides for general content */
+        body.light-mode {
+            background-color: var(--light-bg-color-dark);
+            color: var(--light-text-color-light);
+            .panel {
+                background-color: var(--light-card-bg-dark);
+                border-color: var(--light-border-color-dark);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Lighter shadow */
+            }
+            .section-title {
+                color: var(--light-text-color-light);
+            }
+            .section-intro {
+                color: var(--light-text-color-dark);
+            }
+            .copy-square {
+                background-color: var(--light-border-color-dark);
+                border-color: #d1d1d1;
+            }
+            .copy-square pre.conversation-code-block {
+                color: var(--light-text-color-dark);
+            }
+            .toggle-section-btn span {
+                color: var(--light-text-color-dark) !important;
+            }
+            .repo-content-section {
+                border-color: var(--light-border-color-dark);
+            }
+            .repo-content-section .toggle-section-btn {
+                color: var(--light-text-color-dark) !important;
+            }
+            .repo-content-section .copy-square pre.conversation-code-block {
+                color: var(--light-text-color-dark) !important;
+            }
+            .footer-pages-link {
+                color: var(--light-text-color-dark);
+            }
+        }
+
+        /* Main container styling */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Panel styling for content sections */
+        .panel {
+            background-color: var(--card-bg-dark);
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border-color-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-intro {
+            color: var(--text-color-light);
+            text-align: center;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2.5rem;
+        }
+        .copy-square {
+            position: relative;
+            background-color: #3a3a3e;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            border: 1px solid var(--border-color-dark);
+        }
+        .copy-square .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s ease;
+        }
+        .copy-square:hover .copy-button {
+            opacity: 1; /* Show on hover */
+        }
+        .copy-square .copy-button:hover {
+            background-color: #005bb5;
+        }
+        .copy-square pre.conversation-code-block {
+            background: none;
+            border: none;
+            color: var(--text-color-light); /* Ensure text is visible in dark mode */
+            padding: 0;
+            margin: 0;
+            font-size: 0.85rem;
+            white-space: pre-wrap; /* Preserve formatting but wrap long lines */
+            word-break: break-all; /* Break long words if necessary */
+            padding-right: 40px; /* Make space for the copy button */
+        }
+
+        .toggle-section-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: color 0.2s ease;
+        }
+        .toggle-section-btn:hover {
+            color: var(--primary-color);
+        }
+        .toggle-section-btn i {
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        .toggle-section-btn i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
+        .repo-content-section {
+            padding-left: 1rem;
+            border-left: 2px solid var(--border-color-dark);
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+        }
+        .repo-content-section .toggle-section-btn {
+            font-size: 1rem; /* Smaller for nested levels */
+            font-weight: 500;
+            color: var(--text-color-light); /* Nested sections use lighter text color */
+        }
+
+        .footer-pages-link {
+            color: var(--text-color-light);
+            font-weight: 500;
+            margin-top: 1rem;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer-pages-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Custom Modal for Alerts */
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000; /* Ensure it's on top */
+            opacity: 0; /* Start hidden for fade effect */
+            visibility: hidden; /* Prevent interaction when hidden */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content {
+            background-color: var(--card-bg-dark); /* Modal background changes with theme */
+            color: var(--text-color-light); /* Modal text changes with theme */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border-color-dark); /* Border changes with theme */
+            transform: translateY(-20px); /* Start slightly up for animation */
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        body.light-mode .custom-modal-content {
+            background-color: var(--light-card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--light-border-color-dark);
+        }
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .custom-modal-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            body {
+                padding: 1rem;
+            }
+            .panel {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .section-intro {
+                font-size: 0.95rem;
+            }
+            .copy-square {
+                padding: 0.5rem 0.8rem;
+            }
+            .copy-square pre.conversation-code-block {
+                font-size: 0.75rem;
+            }
+            .toggle-section-btn {
+                font-size: 1rem;
+            }
+            .repo-content-section {
+                padding-left: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <h2 class="section-title">CodeNest™ Global Repository & Routing Structure</h2>
+            <p class="section-intro">
+                This document outlines the precise, templated file paths and repository structure for the entire FAA.Zone ecosystem, as managed by CodeNest™. Click on any sector to expand its details and reveal the exact URLs for its repositories, brands, and subnodes. This structure guarantees consistency and automated deployment across all 7038+ digital assets.
+            </p>
+            
+            <div id="sectorContainer" class="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-2xl text-left">
+                <h3 class="text-xl font-bold mb-4 text-yellow-400">Explore File Paths by Sector:</h3>
+                <div class="space-y-3">
+                    <!-- Dynamic sector-brand-subnode structure will be rendered here by JS -->
+                </div>
+            </div>
+
+            <div class="panel mt-8">
+                <h2 class="section-title">Global Footer Repository: The Legal Standard</h2>
+                <p class="section-intro">
+                    The global footer, including all mandatory legal and ecosystem links, is managed from a single, dedicated repository. This ensures strict consistency, legal compliance, and branding integrity across every single page, brand, and subnode within the FAA.Zone.
+                </p>
+                
+                <div class="max-w-3xl mx-auto bg-gray-800 p-6 rounded-lg shadow-2xl text-left">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">Conceptual `footer-global-repo` Structure:</h3>
+                    <div class="copy-square">
+                        <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+                        <pre class="conversation-code-block">
+/footer-global-repo/
+├── src/
+│   ├── components/
+│   │   └── GlobalFooter.js  # Reusable footer component
+│   └── styles/
+│       └── footer.css       # Styling for the footer
+├── public/
+│   ├── privacy.html         # Content for /privacy route
+│   ├── terms.html           # Content for /terms route
+│   ├── contact.html         # Content for /contact route
+│   ├── copyright.html       # Content for /copyright route
+│   ├── developers.html      # Content for /developers route
+│   ├── vaultmesh.html       # Content for /vaultmesh route
+│   ├── fruitful.html        # Content for /fruitful route
+│   ├── faa.zone.html        # Content for /faa.zone route
+│   ├── about.html           # Content for /about route
+│   └── accessibility.html   # Content for /accessibility route
+└── package.json             # Build scripts for global deployment
+                        </pre>
+                    </div>
+                    <p class="text-gray-400 text-sm mt-4">
+                        This repository is automatically integrated into every sector's build process, ensuring all sites adhere to the global footer mandate.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Alerts -->
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-gray-800 text-white p-6 rounded-lg shadow-xl text-center max-w-sm">
+            <p id="customModalMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- Data Definitions (Copied from hello-canvas for self-containment) ---
+        const sectorList = {
+            "agriculture": { name: "🌱 Agriculture & Biotech" },
+            "fsf": { name: "🥦 Food, Soil & Farming" },
+            "banking": { name: "🏦 Banking & Finance" },
+            "creative": { name: "🖋️ Creative Tech" },
+            "logistics": { name: "📦 Logistics & Packaging" },
+            "education-ip": { name: "📚 Education & IP" },
+            "fashion": { name: "✂ Fashion & Identity" },
+            "gaming": { name: "🎮 Gaming & Simulation" },
+            "health": { name: "🧠 Health & Hygiene" },
+            "housing": { name: "🏗️ Housing & Infrastructure" },
+            "justice": { name: "⚖ Justice & Ethics" },
+            "knowledge": { name: "📖 Knowledge & Archives" },
+            "micromesh": { name: "☰ Micro-Mesh Logistics" },
+            "media": { name: "🎬 Motion, Media & Sonic" },
+            "nutrition": { name: "✿ Nutrition & Food Chain" },
+            "ai-logic": { name: "🧠 AI, Logic & Grid" },
+            "packaging": { name: "📦 Packaging & Materials" },
+            "quantum": { name: "✴️ Quantum Protocols" },
+            "ritual": { name: "☯ Ritual & Culture" },
+            "saas": { name: "🔑 SaaS & Licensing" },
+            "trade": { name: "🧺 Trade Systems" },
+            "utilities": { name: "🔋 Utilities & Energy" },
+            "voice": { name: "🎙️ Voice & Audio" },
+            "webless": { name: "📡 Webless Tech & Nodes" },
+            "nft": { name: "🔁 NFT & Ownership" },
+            "education-youth": { name: "🎓 Education & Youth" },
+            "zerowaste": { name: "♻️ Zero Waste" },
+            "professional": { name: "🧾 Professional Services" },
+            "payroll-mining": { name: "🪙 Payroll Mining & Accounting" },
+            "mining": { name: "⛏️ Mining & Resources" },
+            "wildlife": { name: "🦁 Wildlife & Habitat" },
+            // "admin-panel": { name: "⚙️ Admin Panel" } // Removed to be replaced by codenest
+        };
+
+        const allSectorsData = {
+            // Updated Admin Panel to represent CodeNest explicitly
+            "admin-panel": {
+                name: "⚙️ CodeNest™ Central Hub",
+                repoName: "codenest-global-admin",
+                baseUrl: "codenest.faa.zone",
+                brands: [
+                    { name: "Core Services", subnodes: ["Project Management", "License Vault", "Deployment Pipelines", "User Access"] },
+                    { name: "System Monitoring", subnodes: ["Health Dashboard", "Log Analysis", "Traffic Insights"] }
+                ]
+            },
+            "ai-logic": {
+                name: "🧠 AI, Logic & Grid",
+                repoName: "ai-logic-seedwave-admin",
+                baseUrl: "ai-logic.seedwave.faa.zone",
+                brands: [
+                    { name: "OmniKey", subnodes: ["TraceBeam", "VaultEcho", "QRPath", "MeshID"] },
+                    { name: "SignalPulse", subnodes: ["BeamNode", "VaultTrack", "QRLogic", "SignalDrop"] },
+                    { name: "MeshIndex", subnodes: ["YieldTrack", "VaultMap", "QRClaim", "OmniPath"] }
+                ]
+            },
+            "agriculture": {
+                name: "🌱 Agriculture & Biotech",
+                repoName: "agriculture-seedwave-admin",
+                baseUrl: "agriculture.seedwave.faa.zone",
+                brands: [
+                    { name: "CropLink", subnodes: ["CropLink ID™", "CropLink Vault™", "CropLink Field™", "CropLink Yield™"] },
+                    { name: "SoilPulse", subnodes: ["SoilPulse Trace™", "SoilPulse Data™", "SoilPulse Alert™"] }
+                ]
+            },
+            "fsf": { 
+                name: "🥦 Food, Soil & Farming",
+                repoName: "fsf-seedwave-admin",
+                baseUrl: "fsf.seedwave.faa.zone",
+                brands: [{ name: "FarmFlow", subnodes: ["SoilScan", "WaterNet", "CropMonitor"] }] 
+            },
+            "banking": { 
+                name: "🏦 Banking & Finance",
+                repoName: "banking-seedwave-admin",
+                baseUrl: "banking.seedwave.faa.zone",
+                brands: [{ name: "CoinFlow", subnodes: ["LedgerTrack", "AssetVault"] }] 
+            },
+            "creative": { 
+                name: "🖋️ Creative Tech",
+                repoName: "creative-seedwave-admin",
+                baseUrl: "creative.seedwave.faa.zone",
+                brands: [{ name: "PixelFlow", subnodes: ["RenderEngine", "SonicWave", "VisualStory"] }] 
+            },
+            "logistics": { 
+                name: "📦 Logistics & Packaging",
+                repoName: "logistics-seedwave-admin",
+                baseUrl: "logistics.seedwave.faa.zone",
+                brands: [{ name: "CrateLogic", subnodes: ["RouteOptimize", "FleetTrack", "WarehouseSync"] }] 
+            },
+            "education-ip": { 
+                name: "📚 Education & IP",
+                repoName: "education-seedwave-admin",
+                baseUrl: "education-ip.seedwave.faa.zone",
+                brands: [{ name: "EduNest", subnodes: ["CurriculumForge", "LicenseTrack"] }] 
+            },
+            "fashion": { 
+                name: "✂ Fashion & Identity",
+                repoName: "fashion-seedwave-admin",
+                baseUrl: "fashion.seedwave.faa.zone",
+                brands: [{ name: "StyleFlow", subnodes: ["IdentityMesh", "TrendPulse"] }] 
+            },
+            "gaming": { 
+                name: "🎮 Gaming & Simulation",
+                repoName: "gaming-seedwave-admin",
+                baseUrl: "gaming.seedwave.faa.zone",
+                brands: [{ name: "GameGrid", subnodes: ["SimEngine", "RenderNode"] }] 
+            },
+            "health": { 
+                name: "🧠 Health & Hygiene",
+                repoName: "health-seedwave-admin",
+                baseUrl: "health.seedwave.faa.zone",
+                brands: [{ name: "MediVault", subnodes: ["DiagAI", "PatientLink"] }] 
+            },
+            "housing": { 
+                name: "🏗️ Housing & Infrastructure",
+                repoName: "housing-seedwave-admin",
+                baseUrl: "housing.seedwave.faa.zone",
+                brands: [{ name: "BuildFlow", subnodes: ["SmartGrid", "UrbanMesh"] }] 
+            },
+            "justice": { 
+                name: "⚖ Justice & Ethics",
+                repoName: "justice-seedwave-admin",
+                baseUrl: "justice.seedwave.faa.zone",
+                brands: [{ name: "EthiLock", subnodes: ["ComplianceScan", "VaultJustice"] }] 
+            },
+            "knowledge": { 
+                name: "📖 Knowledge & Archives",
+                repoName: "knowledge-seedwave-admin",
+                baseUrl: "knowledge.seedwave.faa.zone",
+                brands: [{ name: "LoreKeeper", subnodes: ["ArchiveSync", "MetaGrid"] }] 
+            },
+            "micromesh": { 
+                name: "☰ Micro-Mesh Logistics",
+                repoName: "micromesh-seedwave-admin",
+                baseUrl: "micromesh.seedwave.faa.zone",
+                brands: [{ name: "PicoFlow", subnodes: ["NanoTrack", "MicroRoute"] }] 
+            },
+            "media": { 
+                name: "🎬 Motion, Media & Sonic",
+                repoName: "media-seedwave-admin",
+                baseUrl: "media.seedwave.faa.zone",
+                brands: [{ name: "SoundWave", subnodes: ["VisualSync", "SonicForge"] }] 
+            },
+            "nutrition": { 
+                name: "✿ Nutrition & Food Chain",
+                repoName: "nutrition-seedwave-admin",
+                baseUrl: "nutrition.seedwave.faa.zone",
+                brands: [{ name: "NutriFlow", subnodes: ["FoodTrace", "YieldOpt"] }] 
+            },
+            "packaging": { 
+                name: "📦 Packaging & Materials",
+                repoName: "packaging-seedwave-admin",
+                baseUrl: "packaging.seedwave.faa.zone",
+                brands: [{ name: "PackSync", subnodes: ["MaterialTrace", "EcoPack"] }] 
+            },
+            "quantum": { 
+                name: "✴️ Quantum Protocols",
+                repoName: "quantum-seedwave-admin",
+                baseUrl: "quantum.seedwave.faa.zone",
+                brands: [{ name: "QuantumLock", subnodes: ["EntangleNode", "CipherStream"] }] 
+            },
+            "ritual": { 
+                name: "☯ Ritual & Culture",
+                repoName: "ritual-seedwave-admin",
+                baseUrl: "ritual.seedwave.faa.zone",
+                brands: [{ name: "CultureMesh", subnodes: ["TraditionVault", "EthnoSync"] }] 
+            },
+            "saas": { 
+                name: "🔑 SaaS & Licensing",
+                repoName: "saas-seedwave-admin",
+                baseUrl: "saas.seedwave.faa.zone",
+                brands: [{ name: "LicenseKey", subnodes: ["ClaimFlow", "TokenGate"] }] 
+            },
+            "trade": { 
+                name: "🧺 Trade Systems",
+                repoName: "trade-seedwave-admin",
+                baseUrl: "trade.seedwave.faa.zone",
+                brands: [{ name: "TradeFlow", subnodes: ["MarketSync", "SupplyLink"] }] 
+            },
+            "utilities": { 
+                name: "🔋 Utilities & Energy",
+                repoName: "utilities-seedwave-admin",
+                baseUrl: "utilities.seedwave.faa.zone",
+                brands: [{ name: "PowerGrid", subnodes: ["EnergyTrack", "DemandSync"] }] 
+            },
+            "voice": { 
+                name: "🎙️ Voice & Audio",
+                repoName: "voice-seedwave-admin",
+                baseUrl: "voice.seedwave.faa.zone",
+                brands: [{ name: "SonicFlow", subnodes: ["VoiceID", "AudioMesh"] }] 
+            },
+            "webless": { 
+                name: "📡 Webless Tech & Nodes",
+                repoName: "webless-seedwave-admin",
+                baseUrl: "webless.seedwave.faa.zone",
+                brands: [{ name: "ZeroWeb", subnodes: ["NodeConnect", "MeshPoint"] }] 
+            },
+            "nft": { 
+                name: "🔁 NFT & Ownership",
+                repoName: "nft-seedwave-admin",
+                baseUrl: "nft.seedwave.faa.zone",
+                brands: [{ name: "TokenVault", subnodes: ["ClaimChain", "ArtFlow"] }] 
+            },
+            "education-youth": { 
+                name: "🎓 Education & Youth",
+                repoName: "education-youth-seedwave-admin",
+                baseUrl: "education-youth.seedwave.faa.zone",
+                brands: [{ name: "FutureMind", subnodes: ["LearnPath", "SkillNode"] }] 
+            },
+            "zerowaste": { 
+                name: "♻️ Zero Waste",
+                repoName: "zerowaste-seedwave-admin",
+                baseUrl: "zerowaste.seedwave.faa.zone",
+                brands: [{ name: "EcoCycle", subnodes: ["RecycleTrack", "WasteOpt"] }] 
+            },
+            "professional": { 
+                name: "🧾 Professional Services",
+                repoName: "professional-seedwave-admin",
+                baseUrl: "professional.seedwave.faa.zone",
+                brands: [{ name: "ProServe", subnodes: ["ConsultFlow", "AdvisoryLink"] }] 
+            },
+            "payroll-mining": { 
+                name: "🪙 Payroll Mining & Accounting",
+                repoName: "payroll-mining-seedwave-admin",
+                baseUrl: "payroll-mining.seedwave.faa.zone",
+                brands: [{ name: "PayMine", subnodes: ["AccountSync", "LedgerFlow"] }] 
+            },
+            "mining": { 
+                name: "⛏️ Mining & Resources",
+                repoName: "mining-seedwave-admin",
+                baseUrl: "mining.seedwave.faa.zone",
+                brands: [{ name: "ResourceFlow", subnodes: ["MineTrack", "DrillNode"] }] 
+            },
+            "wildlife": { 
+                name: "🦁 Wildlife & Habitat",
+                repoName: "wildlife-seedwave-admin",
+                baseUrl: "wildlife.seedwave.faa.zone",
+                brands: [{ name: "HabitatGuard", subnodes: ["EcoTrack", "BioLink"] }] 
+            }
+        };
+
+        // --- Utility Functions ---
+
+        // Custom Modal for Alerts (standard app alerts)
+        window.showCustomModal = function(title, message, autoDismiss = true) {
+            const modal = document.getElementById('customModal');
+            const modalMessage = modal.querySelector('p');
+            if (modal && modalMessage) {
+                modalMessage.innerHTML = `<strong>${title}</strong><br>${message}`;
+                modal.classList.remove('hidden');
+                modal.classList.add('active'); // Add 'active' for transition
+                if (autoDismiss) {
+                    setTimeout(() => {
+                        window.hideCustomModal();
+                    }, 3000);
+                }
+            }
+        };
+
+        window.hideCustomModal = function() {
+            const modal = document.getElementById('customModal');
+            if (modal) {
+                modal.classList.remove('active'); // Remove 'active' for transition
+                // Give time for transition before hiding
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300); 
+            }
+        };
+
+        // Function to render the Ecosystem Map
+        function renderEcosystemMap() {
+            const sectorContainer = document.getElementById('sectorContainer').querySelector('.space-y-3');
+            if (!sectorContainer) return;
+            sectorContainer.innerHTML = ''; // Clear previous content
+
+            // Sort sectors alphabetically by name for consistent display
+            const sortedSectorKeys = Object.keys(allSectorsData).sort((a, b) => {
+                return allSectorsData[a].name.localeCompare(allSectorsData[b].name);
+            });
+
+            sortedSectorKeys.forEach(sectorKey => {
+                const sector = allSectorsData[sectorKey];
+                const sectorDiv = document.createElement('div');
+                sectorDiv.className = 'border border-gray-700 rounded-lg p-4 mb-4 bg-gray-800';
+                sectorDiv.innerHTML = `
+                    <button class="toggle-section-btn flex justify-between items-center w-full text-left p-2 -mx-2 -my-2 rounded-md hover:bg-gray-700 transition-colors duration-200" onclick="window.toggleSection('sector-${sectorKey}')">
+                        <span class="text-blue-400 text-xl font-bold">${sector.name} <span class="text-gray-400 text-sm">(${sector.baseUrl})</span></span>
+                        <span><i class="fas fa-chevron-down text-gray-400"></i></span>
+                    </button>
+                    <div id="sector-${sectorKey}" class="repo-content-section hidden mt-4">
+                        <h4 class="text-lg font-semibold text-yellow-400 mb-2">Repository & Base URL:</h4>
+                        <div class="copy-square">
+                            <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                            <pre class="conversation-code-block">${sector.repoName}/</pre>
+                        </div>
+                        <div class="copy-square mt-2">
+                            <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                            <pre class="conversation-code-block">${sector.baseUrl}/index</pre>
+                        </div>
+                        
+                        <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Brands & Subnodes:</h4>
+                        <div class="space-y-2">
+                            ${sector.brands.map(brand => `
+                                <div class="border border-gray-700 rounded-md p-3 bg-gray-700">
+                                    <button class="toggle-section-btn !bg-transparent !shadow-none !text-left !px-0 !py-0 !mb-0 flex justify-between items-center w-full hover:bg-gray-600 transition-colors duration-200" onclick="window.toggleSection('brand-${sectorKey}-${brand.name.replace(/ /g, '-')}')">
+                                        <span class="text-white font-medium">${brand.name}</span> <span><i class="fas fa-chevron-down"></i></span>
+                                    </button>
+                                    <div id="brand-${sectorKey}-${brand.name.replace(/ /g, '-')}" class="repo-content-section !border-none !bg-transparent !p-0 hidden mt-2">
+                                        <div class="copy-square">
+                                            <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                            <pre class="conversation-code-block">${sector.baseUrl}/sectors/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/index</pre>
+                                        </div>
+                                        ${brand.subnodes.map(subnode => `
+                                            <div class="copy-square ml-4 mt-2">
+                                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                                <pre class="conversation-code-block">${sector.baseUrl}/sectors/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/${encodeURIComponent(subnode.toLowerCase().replace(/ /g, '-'))}/index</pre>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Global Footer Pages (Example Paths):</h4>
+                        <div class="space-y-2">
+                            <div class="copy-square">
+                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                <pre class="conversation-code-block">
+${[
+    '/privacy', '/terms', '/contact', '/copyright', '/developers',
+    '/vaultmesh', '/fruitful', '/faa.zone', '/about', '/accessibility'
+].map(p => `${sector.baseUrl}${p}`).join('\n')}
+                                </pre>
+                            </div>
+                            <a href="#" class="footer-pages-link" onclick="window.showCustomModal('Global Footer', 'The global footer files are deployed from a dedicated repository and automatically linked.', true)">Learn more about Global Footer deployment</a>
+                        </div>
+                    </div>
+                `;
+                sectorContainer.appendChild(sectorDiv);
+            });
+        }
+
+        // Utility function to toggle section visibility (for ecosystem map)
+        window.toggleSection = function(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('hidden');
+                const icon = element.previousElementSibling.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                }
+            }
+        };
+
+        // Utility function to copy text to clipboard (for ecosystem map and emails)
+        window.copyToClipboard = function(buttonElement) {
+            const preElement = buttonElement.nextElementSibling; // Get the <pre> tag next to the button
+            if (preElement && preElement.tagName === 'PRE') {
+                const textToCopy = preElement.textContent.trim();
+                try {
+                    // Use execCommand for broader compatibility within iframes
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    
+                    window.showCustomModal('Copied!', 'Text copied to clipboard.', true);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    window.showCustomModal('Copy Failed', 'Failed to copy text. Please try manually.', true);
+                }
+            }
+        };
+
+        // Initial render when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEcosystemMap();
+        });
+    </script>
+</body>
+</html>

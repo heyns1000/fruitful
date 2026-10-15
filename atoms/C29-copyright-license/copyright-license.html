@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Copyright & License | Fruitful Global™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Consistent with Fruitful aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes footer to the bottom */
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f7;
+        }
+        body.dark-mode header {
+            background-color: rgba(26, 26, 26, 0.9);
+            border-bottom-color: #333;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode header h1 {
+            color: #f5f5f7;
+        }
+        body.dark-mode header nav a {
+            color: #f5f5f7; /* Light text in dark mode for visibility */
+        }
+        body.dark-mode header nav a:hover {
+            color: #66b2ff; /* Lighter blue for dark mode hover */
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-mode header nav a.px-4 { /* SecureSign button in dark mode */
+            background-color: #66b2ff;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+            border-color: #66b2ff; /* Ensure border color matches */
+        }
+        body.dark-mode header nav a.px-4:hover {
+            background-color: #7abaff;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.15);
+        }
+        body.dark-mode #language-toggle, body.dark-mode #theme-toggle {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+        }
+        body.dark-mode #language-toggle:focus, body.dark-mode #theme-toggle:focus {
+            box-shadow: 0 0 0 2px rgba(102, 178, 255, 0.5); /* Blue ring for dark mode */
+        }
+
+        body.dark-mode .container {
+            background-color: #2a2a2a;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        body.dark-mode .container h1, body.dark-mode h2, body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff;
+        }
+        body.dark-mode p, body.dark-mode ul li, body.dark-mode pre {
+            color: #e0e0e0;
+        }
+        body.dark-mode a {
+            color: #66b2ff;
+        }
+        body.dark-mode a:hover {
+            color: #7abaff;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            border-top-color: #333;
+            color: #888;
+        }
+        body.dark-mode footer a {
+            color: #e0e0e0;
+        }
+        body.dark-mode footer a:hover {
+            color: #f5f5f7;
+        }
+        body.dark-mode pre {
+            background-color: #1d1d1f; /* Darker background for code in dark mode */
+            border-color: #333;
+        }
+
+        /* Header specific styling from faa.zone/index.html */
+        header {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            sm:flex-direction: row; /* Adjusted for responsive header */
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+            md:padding-left: 3rem; /* md:px-12 */
+            md:padding-right: 3rem; /* md:px-12 */
+        }
+        header h1 {
+            color: #1d1d1f; /* Dark text for logo */
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem; /* mb-4 sm:mb-0 */
+            sm:margin-bottom: 0;
+        }
+        header nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            sm:justify-content: flex-end; /* sm:justify-end */
+            align-items: center;
+            gap: 0.5rem; /* space-x-2 sm:space-x-4 */
+            sm:gap: 1rem;
+        }
+        header nav a {
+            color: #1d1d1f; /* Ensure dark color for links on light header */
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: #0071e3; /* Apple blue on hover */
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        header nav a.px-4 { /* Sign Up button */
+            background-color: #0071e3; /* Apple blue */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #0071e3; /* Ensure border is visible and matches */
+        }
+        header nav a.px-4:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        header .flex.items-center.space-x-2.ml-4 {
+            margin-left: 1rem; /* ml-4 */
+        }
+        header select, header button {
+            padding: 0.5rem; /* p-2 */
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem; /* text-sm */
+            cursor: pointer;
+            outline: none;
+            border: none; /* remove default border */
+            background-color: #e5e7eb; /* bg-gray-100 */
+            color: #1f2937; /* text-gray-800 */
+            transition: all 0.2s ease-in-out;
+        }
+        header select:focus, header button:focus {
+            box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+        }
+
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 960px;
+            width: 100%;
+            margin: 2rem auto;
+            flex-grow: 1; /* Allows container to take available space */
+        }
+
+        /* Corrected styling for main title and headings */
+        .container h1 {
+            font-size: 2.8rem; /* Consistent with faa.zone hero h2 */
+            font-weight: 800; /* Extra bold */
+            color: #1d1d1f; /* Near black for primary text on light mode */
+            margin-bottom: 0.5rem; /* Reduced margin to bring brand text closer */
+            text-align: center;
+            letter-spacing: -0.03em;
+        }
+        body.dark-mode .container h1 {
+            color: #f5f5f7; /* White in dark mode */
+        }
+        .container .brand-logo-text {
+            font-size: 1.8rem; /* Adjusted for a strong presence within content */
+            font-weight: 700;
+            color: #0071e3; /* Fruitful blue */
+            text-align: center;
+            margin-top: 0; /* Align with h1's bottom */
+            margin-bottom: 2rem; /* Space below brand text */
+            letter-spacing: -0.02em;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff; /* Lighter blue in dark mode */
+        }
+
+
+        /* Enhanced H2 styling for numbered sections */
+        h2 {
+            font-size: 2.2rem; /* Slightly larger than before, closer to main H1 */
+            font-weight: 800; /* Extra bold, like main title */
+            color: #0071e3; /* Fruitful blue for prominence */
+            margin-top: 3rem; /* More space above */
+            margin-bottom: 1.5rem; /* More space below */
+            border-bottom: 1px solid #e8e8ed;
+            padding-bottom: 0.75rem; /* More padding below border */
+            letter-spacing: -0.02em; /* Tighter spacing */
+        }
+        body.dark-mode h2 {
+            color: #66b2ff; /* Lighter blue in dark mode */
+            border-bottom-color: #333;
+        }
+
+        h3 {
+            font-size: 1.5rem; /* Consistent with faa.zone h3 */
+            font-weight: 700; /* Bold */
+            color: #1d1d1f; /* Near black */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+
+        p {
+            margin-bottom: 1rem; /* Consistent spacing between paragraphs */
+            color: #424245; /* Slightly lighter gray for body text */
+        }
+        body.dark-mode p {
+            color: #e0e0e0;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #424245;
+        }
+        ul li {
+            margin-bottom: 0.5rem; /* Spacing for list items */
+        }
+        body.dark-mode ul {
+            color: #e0e0e0;
+        }
+        body.dark-mode ul li {
+            color: #e0e0e0;
+        }
+
+        /* Styling for the preformatted license text */
+        pre {
+            background-color: #f0f0f0; /* Light gray background */
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.85rem;
+            color: #1d1d1f;
+            white-space: pre-wrap; /* Wrap long lines */
+            word-break: break-all; /* Break long words if necessary */
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e8e8ed;
+        }
+        body.dark-mode pre {
+            background-color: #1d1d1f; /* Darker background for code in dark mode */
+            border-color: #333;
+            color: #f5f5f7;
+        }
+
+        a {
+            color: #0071e3; /* Apple Blue */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #6e6e73;
+            margin-top: 2rem;
+            margin-bottom: 1rem; /* Ensure space below last updated */
+        }
+        body.dark-mode .last-updated {
+            color: #888;
+        }
+
+        /* Footer styles - copied directly from faa.zone/index.html */
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem; /* Horizontal spacing */
+            margin-bottom: 0.5rem; /* Vertical spacing for wrapped items */
+            white-space: nowrap; /* Prevent links from breaking individually */
+        }
+        body.dark-mode footer .footer-links a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer .footer-links a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer .footer-links a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            header h1 {
+                font-size: 1.2rem;
+            }
+            header nav {
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            header .flex.items-center.space-x-2.ml-4 {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+            header select, header button {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .container .brand-logo-text {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            p, ul li {
+                font-size: 0.95rem;
+            }
+            footer {
+                padding: 1.5rem;
+            }
+            footer .footer-links a {
+                margin: 0 0.25rem; /* Smaller horizontal margin for mobile */
+                margin-bottom: 0.25rem; /* Smaller vertical margin for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center text-white">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="fruitfulBrand">Fruitful™</h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center space-x-2 sm:space-x-4">
+            <a href="https://faa.zone/#features" class="transition-colors duration-200" data-i18n="navFeatures">Features</a>
+            <a href="https://faa.zone/#shareprice" class="transition-colors duration-200" data-i18n="navSignal">Signal</a>
+            <a href="https://faa.zone/#vault-access" class="transition-colors duration-200" data-i18n="navVault">Vault</a>
+            <a href="https://faa.zone/#treaty" class="transition-colors duration-200" data-i18n="navTreaty">Treaty</a>
+            <a href="https://faa.zone/#vaultmesh-section" class="transition-colors duration-200" data-i18n="navVaultMesh">VaultMesh</a>
+            <a href="https://faa.zone/#about" class="transition-colors duration-200" data-i18n="navAbout">About</a>
+            <a href="https://fruitfulcratedance.com/" class="transition-colors duration-200" data-i18n="navCrateDance">Fruitful Crate Dance</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" data-i18n="navCareers">Careers</a>
+            <a href="https://faa.zone/legal/securesign.html" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full" data-i18n="navSecureSign">SecureSign</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200" data-i18n="navSignUp">Sign Up</a>
+
+            <!-- Language and Day/Night Toggles -->
+            <div class="flex items-center space-x-2 ml-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    ☀️
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 data-i18n="copyrightTitle">Copyright Information</h1>
+        <p class="brand-logo-text" data-i18n="fruitfulGlobalBrand">Fruitful Global™</p>
+        <p class="last-updated" data-i18n="lastUpdated">Last Updated: <span id="lastUpdatedDate">July 1, 2025</span></p>
+
+        <h2 data-i18n="licenseTitle">Apache License</h2>
+        <p data-i18n="licenseVersion">Version 2.0, January 2004</p>
+        <p><a href="http://www.apache.org/licenses/" data-i18n="apacheLicenseLink">http://www.apache.org/licenses/</a></p>
+
+        <h2 data-i18n="termsConditionsTitle">TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION</h2>
+
+        <h3 data-i18n="definitionsTitle">1. Definitions.</h3>
+        <p data-i18n="definitionLicense">
+            "License" shall mean the terms and conditions for use, reproduction,
+            and distribution as defined by Sections 1 through 9 of this document.
+        </p>
+        <p data-i18n="definitionLicensor">
+            "Licensor" shall mean the copyright owner or entity authorized by
+            the copyright owner that is granting the License.
+        </p>
+        <p data-i18n="definitionLegalEntity">
+            "Legal Entity" shall mean the union of the acting entity and all
+            other entities that control, are controlled by, or are under common
+            control with that entity. For the purposes of this definition,
+            "control" means (i) the power, direct or indirect, to cause the
+            direction or management of such entity, whether by contract or
+            otherwise, or (ii) ownership of fifty percent (50%) or more of the
+            outstanding shares, or (iii) beneficial ownership of such entity.
+        </p>
+        <p data-i18n="definitionYou">
+            "You" (or "Your") shall mean an individual or Legal Entity
+            exercising permissions granted by this License.
+        </p>
+        <p data-i18n="definitionSource">
+            "Source" form shall mean the preferred form for making modifications,
+            including but not limited to software source code, documentation
+            source, and configuration files.
+        </p>
+        <p data-i18n="definitionObject">
+            "Object" form shall mean any form resulting from mechanical
+            transformation or translation of a Source form, including but
+            not limited to compiled object code, generated documentation,
+            and conversions to other media types.
+        </p>
+        <p data-i18n="definitionWork">
+            "Work" shall mean the work of authorship, whether in Source or
+            Object form, made available under the License, as indicated by a
+            copyright notice that is included in or attached to the work
+            (an example is provided in the Appendix below).
+        </p>
+        <p data-i18n="definitionDerivativeWorks">
+            "Derivative Works" shall mean any work, whether in Source or Object
+            form, that is based on (or derived from) the Work and for which the
+            editorial revisions, annotations, elaborations, or other modifications
+            represent, as a whole, an original work of authorship. For the purposes
+            of this License, Derivative Works shall not include works that remain
+            separable from, or merely link (or bind by name) to the interfaces of,
+            the Work and Derivative Works thereof.
+        </p>
+        <p data-i18n="definitionContribution">
+            "Contribution" shall mean any work of authorship, including
+            the original version of the Work and any modifications or additions
+            to that Work or Derivative Works thereof, that is intentionally
+            submitted to Licensor for inclusion in the Work by the copyright owner
+            or by an individual or Legal Entity authorized to submit on behalf of
+            the copyright owner. For the purposes of this definition, "submitted"
+            means any form of electronic, verbal, or written communication sent
+            to the Licensor or its representatives, including but not limited to
+            communication on electronic mailing lists, source code control systems,
+            and issue tracking systems that are managed by, or on behalf of, the
+            Licensor for the purpose of discussing and improving the Work, but
+            excluding communication that is conspicuously marked or otherwise
+            designated in writing by the copyright owner as "Not a Contribution."
+        </p>
+        <p data-i18n="definitionContributor">
+            "Contributor" shall mean Licensor and any individual or Legal Entity
+            on behalf of whom a Contribution has been received by Licensor and
+            subsequently incorporated within the Work.
+        </p>
+
+        <h3 data-i18n="grantCopyrightTitle">2. Grant of Copyright License.</h3>
+        <p data-i18n="grantCopyrightPara1">
+            Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual,
+            worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+            copyright license to reproduce, prepare Derivative Works of,
+            publicly display, publicly perform, sublicense, and distribute the
+            Work and such Derivative Works in Source or Object form.
+        </p>
+
+        <h3 data-i18n="grantPatentTitle">3. Grant of Patent License.</h3>
+        <p data-i18n="grantPatentPara1">
+            Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual,
+            worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+            (except as stated in this section) patent license to make, have made,
+            use, offer to sell, sell, import, and otherwise transfer the Work,
+            where such license applies only to those patent claims licensable
+            by such Contributor that are necessarily infringed by their
+            Contribution(s) alone or by combination of their Contribution(s)
+            with the Work to which such Contribution(s) was submitted. If You
+            institute patent litigation against any entity (including a
+            cross-claim or counterclaim in a lawsuit) alleging that the Work
+            or a Contribution incorporated within the Work constitutes direct
+            or contributory patent infringement, then any patent licenses
+            granted to You under this License for that Work shall terminate
+            as of the date such litigation is filed.
+        </p>
+
+        <h3 data-i18n="redistributionTitle">4. Redistribution.</h3>
+        <p data-i18n="redistributionPara1">
+            You may reproduce and distribute copies of the
+            Work or Derivative Works thereof in any medium, with or without
+            modifications, and in Source or Object form, provided that You
+            meet the following conditions:
+        </p>
+        <ul class="list-none">
+            <li data-i18n="redistributionListItemA">(a) You must give any other recipients of the Work or
+                Derivative Works a copy of this License; and</li>
+            <li data-i18n="redistributionListItemB">(b) You must cause any modified files to carry prominent notices
+                stating that You changed the files; and</li>
+            <li data-i18n="redistributionListItemC">(c) You must retain, in the Source form of any Derivative Works
+                that You distribute, all copyright, patent, trademark, and
+                attribution notices from the Source form of the Work,
+                excluding those notices that do not pertain to any part of
+                the Derivative Works; and</li>
+            <li data-i18n="redistributionListItemD">(d) If the Work includes a "NOTICE" text file as part of its
+                distribution, then any Derivative Works that You distribute must
+                include a readable copy of the attribution notices contained
+                within such NOTICE file, excluding those notices that do not
+                pertain to any part of the Derivative Works, in at least one
+                of the following places: within a NOTICE text file distributed
+                as part of the Derivative Works; within the Source form or
+                documentation, if provided along with the Derivative Works; or,
+                within a display generated by the Derivative Works, if and
+                wherever such third-party notices normally appear. The contents
+                of the NOTICE file are for informational purposes only and
+                do not modify the License. You may add Your own attribution
+                notices within Derivative Works that You distribute, alongside
+                or as an addendum to the NOTICE text from the Work, provided
+                that such additional attribution notices cannot be construed
+                as modifying the License.</li>
+        </ul>
+        <p data-i18n="redistributionPara2">
+            You may add Your own copyright statement to Your modifications and
+            may provide additional or different license terms and conditions
+            for use, reproduction, or distribution of Your modifications, or
+            for any such Derivative Works as a whole, provided Your use,
+            reproduction, and distribution of the Work otherwise complies with
+            the conditions stated in this License.
+        </p>
+
+        <h3 data-i18n="submissionContributionsTitle">5. Submission of Contributions.</h3>
+        <p data-i18n="submissionContributionsPara1">
+            Unless You explicitly state otherwise,
+            any Contribution intentionally submitted for inclusion in the Work
+            by You to the Licensor shall be under the terms and conditions of
+            this License, without any additional terms or conditions.
+            Notwithstanding the above, nothing herein shall supersede or modify
+            the terms of any separate license agreement you may have executed
+            with Licensor regarding such Contributions.
+        </p>
+
+        <h3 data-i18n="trademarksTitle">6. Trademarks.</h3>
+        <p data-i18n="trademarksPara1">
+            This License does not grant permission to use the trade
+            names, trademarks, service marks, or product names of the Licensor,
+            except as required for reasonable and customary use in describing the
+            origin of the Work and reproducing the content of the NOTICE file.
+        </p>
+
+        <h3 data-i18n="disclaimerWarrantyTitle">7. Disclaimer of Warranty.</h3>
+        <p data-i18n="disclaimerWarrantyPara1">
+            Unless required by applicable law or
+            agreed to in writing, Licensor provides the Work (and each
+            Contributor provides its Contributions) on an "AS IS" BASIS,
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+            implied, including, without limitation, any warranties or conditions
+            of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+            PARTICULAR PURPOSE. You are solely responsible for determining the
+            appropriateness of using or redistributing the Work and assume any
+            risks associated with Your exercise of permissions under this License.
+        </p>
+
+        <h3 data-i18n="limitationLiabilityTitle">8. Limitation of Liability.</h3>
+        <p data-i18n="limitationLiabilityPara1">
+            In no event and under no legal theory,
+            whether in tort (including negligence), contract, or otherwise,
+            unless required by applicable law (such as deliberate and grossly
+            negligent acts) or agreed to in writing, shall any Contributor be
+            liable to You for damages, including any direct, indirect, special,
+            incidental, or consequential damages of any character arising as a
+            result of this License or out of the use or inability to use the
+            Work (including but not limited to damages for loss of goodwill,
+            work stoppage, computer failure or malfunction, or any and all
+            other commercial damages or losses), even if such Contributor
+            has been advised of the possibility of such damages.
+        </p>
+
+        <h3 data-i18n="acceptingWarrantyTitle">9. Accepting Warranty or Additional Liability.</h3>
+        <p data-i18n="acceptingWarrantyPara1">
+            While redistributing the Work or Derivative Works thereof, You may choose to offer,
+            and charge a fee for, acceptance of support, warranty, indemnity,
+            or other liability obligations and/or rights consistent with this
+            License. However, in accepting such obligations, You may act only
+            on Your own behalf and on Your sole responsibility, not on behalf
+            of any other Contributor, and only if You agree to indemnify,
+            defend, and hold each Contributor harmless for any liability
+            incurred by, or claims asserted against, such Contributor by reason
+            of your accepting any such warranty or additional liability.
+        </p>
+
+        <h2 data-i18n="endOfTermsTitle">END OF TERMS AND CONDITIONS</h2>
+
+        <h2 data-i18n="appendixTitle">APPENDIX: How to apply the Apache License to your work.</h2>
+        <p data-i18n="appendixPara1">
+            To apply the Apache License to your work, attach the following
+            boilerplate notice, with the fields enclosed by brackets "[]"
+            replaced with your own identifying information. (Don't include
+            the brackets!) The text should be enclosed in the appropriate
+            comment syntax for the file format. We also recommend that a
+            file or class name and description of purpose be included on the
+            same "printed page" as the copyright notice for easier
+            identification within third-party archives.
+        </p>
+        <pre data-i18n="apacheBoilerplate">
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+        </pre>
+    </div>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Set the last updated date dynamically
+        document.getElementById('lastUpdatedDate').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Language data for i18n
+        window.languageData = { // Changed to window.languageData to avoid re-declaration errors
+            en: {
+                pageTitle: 'Copyright & License | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                // Copyright & License Content
+                copyrightTitle: 'Copyright Information',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Last Updated: ',
+                licenseTitle: 'Apache License',
+                licenseVersion: 'Version 2.0, January 2004',
+                apacheLicenseLink: 'http://www.apache.org/licenses/',
+                termsConditionsTitle: 'TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION',
+                definitionsTitle: '1. Definitions.',
+                definitionLicense: '"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.',
+                definitionLicensor: '"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.',
+                definitionLegalEntity: '"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.',
+                definitionYou: '"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.',
+                definitionSource: '"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.',
+                definitionObject: '"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.',
+                definitionWork: '"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).',
+                definitionDerivativeWorks: '"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.',
+                definitionContribution: '"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."',
+                definitionContributor: '"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.',
+                grantCopyrightTitle: '2. Grant of Copyright License.',
+                grantCopyrightPara1: 'Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.',
+                grantPatentTitle: '3. Grant of Patent License.',
+                grantPatentPara1: 'Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.',
+                redistributionTitle: '4. Redistribution.',
+                redistributionPara1: 'You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:',
+                redistributionListItemA: '(a) You must give any other recipients of the Work or Derivative Works a copy of this License; and',
+                redistributionListItemB: '(b) You must cause any modified files to carry prominent notices stating that You changed the files; and',
+                redistributionListItemC: '(c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and',
+                redistributionListItemD: '(d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.',
+                redistributionPara2: 'You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.',
+                submissionContributionsTitle: '5. Submission of Contributions.',
+                submissionContributionsPara1: 'Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.',
+                trademarksTitle: '6. Trademarks.',
+                trademarksPara1: 'This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.',
+                disclaimerWarrantyTitle: '7. Disclaimer of Warranty.',
+                disclaimerWarrantyPara1: 'Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.',
+                limitationLiabilityTitle: '8. Limitation of Liability.',
+                limitationLiabilityPara1: 'In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.',
+                acceptingWarrantyTitle: '9. Accepting Warranty or Additional Liability.',
+                acceptingWarrantyPara1: 'While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.',
+                endOfTermsTitle: 'END OF TERMS AND CONDITIONS',
+                appendixTitle: 'APPENDIX: How to apply the Apache License to your work.',
+                appendixPara1: 'To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don\'t include the brackets!) The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.',
+                apacheBoilerplate: 'Copyright [yyyy] [name of copyright owner]\n\nLicensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.'
+            },
+            es: {
+                pageTitle: 'Derechos de Autor y Licencia | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                // Copyright & License Content
+                copyrightTitle: 'Información de Derechos de Autor',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Última Actualización: ',
+                licenseTitle: 'Licencia Apache',
+                licenseVersion: 'Versión 2.0, Enero de 2004',
+                apacheLicenseLink: 'http://www.apache.org/licenses/',
+                termsConditionsTitle: 'TÉRMINOS Y CONDICIONES DE USO, REPRODUCCIÓN Y DISTRIBUCIÓN',
+                definitionsTitle: '1. Definiciones.',
+                definitionLicense: '"Licencia" significará los términos y condiciones de uso, reproducción y distribución tal como se definen en las Secciones 1 a 9 de este documento.',
+                definitionLicensor: '"Licenciante" significará el propietario de los derechos de autor o la entidad autorizada por el propietario de los derechos de autor que concede la Licencia.',
+                definitionLegalEntity: '"Entidad Legal" significará la unión de la entidad actuante y todas las demás entidades que controlan, son controladas por, o están bajo control común con esa entidad. A los efectos de esta definición, "control" significa (i) el poder, directo o indirecto, de causar la dirección o gestión de dicha entidad, ya sea por contrato o de otra manera, o (ii) la propiedad del cincuenta por ciento (50%) o más de las acciones en circulación, o (iii) la propiedad beneficiaria de dicha entidad.',
+                definitionYou: '"Usted" (o "Su") significará una persona o Entidad Legal que ejerce los permisos otorgados por esta Licencia.',
+                definitionSource: '"Formato Fuente" significará el formato preferido para realizar modificaciones, incluyendo, entre otros, el código fuente del software, la fuente de la documentación y los archivos de configuración.',
+                definitionObject: '"Formato Objeto" significará cualquier formato resultante de la transformación mecánica o traducción de un formato Fuente, incluyendo, entre otros, el código objeto compilado, la documentación generada y las conversiones a otros tipos de medios.',
+                definitionWork: '"Obra" significará la obra de autoría, ya sea en formato Fuente u Objeto, puesta a disposición bajo la Licencia, según lo indicado por un aviso de derechos de autor que se incluye o adjunta a la obra (se proporciona un ejemplo en el Apéndice a continuación).',
+                definitionDerivativeWorks: '"Obras Derivadas" significará cualquier obra, ya sea en formato Fuente u Objeto, que se base en (o se derive de) la Obra y para la cual las revisiones editoriales, anotaciones, elaboraciones u otras modificaciones representen, en su conjunto, una obra de autoría original. A los efectos de esta Licencia, las Obras Derivadas no incluirán obras que permanezcan separables de, o simplemente enlacen (o vinculen por nombre) a las interfaces de, la Obra y sus Obras Derivadas.',
+                definitionContribution: '"Contribución" significará cualquier obra de autoría, incluyendo la versión original de la Obra y cualquier modificación o adición a esa Obra u Obras Derivadas de la misma, que sea intencionalmente enviada al Licenciante para su inclusión en la Obra por el propietario de los derechos de autor o por una persona o Entidad Legal autorizada para enviar en nombre del propietario de los derechos de autor. A los efectos de esta definición, "enviado" significa cualquier forma de comunicación electrónica, verbal o escrita enviada al Licenciante o sus representantes, incluyendo, entre otros, la comunicación en listas de correo electrónico, sistemas de control de código fuente y sistemas de seguimiento de problemas que sean gestionados por, o en nombre de, el Licenciante con el propósito de discutir y mejorar la Obra, pero excluyendo la comunicación que esté claramente marcada o designada de otra manera por escrito por el propietario de los derechos de autor como "No es una Contribución."',
+                definitionContributor: '"Colaborador" significará el Licenciante y cualquier persona o Entidad Legal en cuyo nombre el Licenciante haya recibido una Contribución y posteriormente la haya incorporado a la Obra.',
+                grantCopyrightTitle: '2. Concesión de Licencia de Derechos de Autor.',
+                grantCopyrightPara1: 'Sujeto a los términos y condiciones de esta Licencia, cada Colaborador le otorga una licencia de derechos de autor perpetua, mundial, no exclusiva, gratuita e irrevocable para reproducir, preparar Obras Derivadas, exhibir públicamente, ejecutar públicamente, sublicenciar y distribuir la Obra y dichas Obras Derivadas en formato Fuente u Objeto.',
+                grantPatentTitle: '3. Concesión de Licencia de Patente.',
+                grantPatentPara1: 'Sujeto a los términos y condiciones de esta Licencia, cada Colaborador le otorga una licencia de patente perpetua, mundial, no exclusiva, gratuita e irrevocable (excepto lo establecido en esta sección) para fabricar, hacer fabricar, usar, ofrecer para la venta, vender, importar y transferir de cualquier otra forma la Obra, donde dicha licencia se aplica únicamente a aquellas reclamaciones de patente que pueden ser licenciadas por dicho Colaborador y que son necesariamente infringidas por su(s) Contribución(es) sola(s) o por la combinación de su(s) Contribución(es) con la Obra a la que se envió dicha(s) Contribución(es). Si usted inicia un litigio de patentes contra cualquier entidad (incluida una contrademanda o reconvención en una demanda) alegando que la Obra o una Contribución incorporada en la Obra constituye una infracción directa o contributiva de patentes, entonces cualquier licencia de patentes otorgada a usted bajo esta Licencia para esa Obra terminará a partir de la fecha en que se presente dicho litigio.',
+                redistributionTitle: '4. Redistribución.',
+                redistributionPara1: 'Usted puede reproducir y distribuir copias de la Obra u Obras Derivadas de la misma en cualquier medio, con o sin modificaciones, y en formato Fuente u Objeto, siempre que cumpla las siguientes condiciones:',
+                redistributionListItemA: '(a) Debe entregar a cualquier otro receptor de la Obra u Obras Derivadas una copia de esta Licencia; y',
+                redistributionListItemB: '(b) Debe hacer que cualquier archivo modificado lleve avisos prominentes que indiquen que Usted cambió los archivos; y',
+                redistributionListItemC: '(c) Debe conservar, en el formato Fuente de cualquier Obra Derivada que Usted distribuya, todos los avisos de derechos de autor, patentes, marcas comerciales y atribución del formato Fuente de la Obra, excluyendo aquellos avisos que no pertenezcan a ninguna parte de las Obras Derivadas; y',
+                redistributionListItemD: '(d) Si la Obra incluye un archivo de texto "NOTICE" como parte de su distribución, entonces cualquier Obra Derivada que Usted distribuya debe incluir una copia legible de los avisos de atribución contenidos en dicho archivo NOTICE, excluyendo aquellos avisos que no pertenezcan a ninguna parte de las Obras Derivadas, en al menos uno de los siguientes lugares: dentro de un archivo de texto NOTICE distribuido como parte de las Obras Derivadas; dentro del formato Fuente o la documentación, si se proporciona junto con las Obras Derivadas; o, dentro de una pantalla generada por las Obras Derivadas, si y dondequiera que aparezcan normalmente dichos avisos de terceros. El contenido del archivo NOTICE es solo para fines informativos y no modifica la Licencia. Usted puede agregar Sus propios avisos de atribución dentro de las Obras Derivadas que Usted distribuya, junto con o como un anexo al texto NOTICE de la Obra, siempre que dichos avisos de atribución adicionales no puedan interpretarse como una modificación de la Licencia.',
+                redistributionPara2: 'Usted puede agregar Su propia declaración de derechos de autor a Sus modificaciones y puede proporcionar términos y condiciones de licencia adicionales o diferentes para el uso, reproducción o distribución de Sus modificaciones, o para cualquiera de dichas Obras Derivadas en su conjunto, siempre que Su uso, reproducción y distribución de la Obra cumplan de otra manera con las condiciones establecidas en esta Licencia.',
+                submissionContributionsTitle: '5. Envío de Contribuciones.',
+                submissionContributionsPara1: 'A menos que Usted declare explícitamente lo contrario, cualquier Contribución enviada intencionalmente para su inclusión en la Obra por Usted al Licenciante estará bajo los términos y condiciones de esta Licencia, sin términos o condiciones adicionales. No obstante lo anterior, nada de lo aquí contenido anulará o modificará los términos de cualquier acuerdo de licencia separado que Usted haya ejecutado con el Licenciante con respecto a dichas Contribuciones.',
+                trademarksTitle: '6. Marcas Comerciales.',
+                trademarksPara1: 'Esta Licencia no otorga permiso para usar los nombres comerciales, marcas comerciales, marcas de servicio o nombres de productos del Licenciante, excepto cuando sea necesario para un uso razonable y habitual al describir el origen de la Obra y reproducir el contenido del archivo NOTICE.',
+                disclaimerWarrantyTitle: '7. Exención de Garantía.',
+                disclaimerWarrantyPara1: 'A menos que lo exija la ley aplicable o se acuerde por escrito, el Licenciante proporciona la Obra (y cada Colaborador proporciona sus Contribuciones) "TAL CUAL", SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas, incluyendo, sin limitación, cualquier garantía o condición de TÍTULO, NO INFRACCIÓN, COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Usted es el único responsable de determinar la idoneidad de usar o redistribuir la Obra y asume cualquier riesgo asociado con Su ejercicio de los permisos bajo esta Licencia.',
+                limitationLiabilityTitle: '8. Limitación de Responsabilidad.',
+                limitationLiabilityPara1: 'En ningún caso y bajo ninguna teoría legal, ya sea por agravio (incluida la negligencia), contrato o de otra manera, a menos que lo exija la ley aplicable (como actos deliberados y negligencia grave) o se acuerde por escrito, ningún Colaborador será responsable ante Usted por daños, incluidos daños directos, indirectos, especiales, incidentales o consecuentes de cualquier carácter que surjan como resultado de esta Licencia o del uso o la imposibilidad de usar la Obra (incluidos, entre otros, daños por pérdida de buena voluntad, interrupción del trabajo, falla o mal funcionamiento de la computadora, o cualquier otro daño o pérdida comercial), incluso si dicho Colaborador ha sido advertido de la posibilidad de tales daños.',
+                acceptingWarrantyTitle: '9. Aceptación de Garantía o Responsabilidad Adicional.',
+                acceptingWarrantyPara1: 'Al redistribuir la Obra u Obras Derivadas de la misma, Usted puede optar por ofrecer, y cobrar una tarifa por, la aceptación de obligaciones de soporte, garantía, indemnización u otras obligaciones y/o derechos de responsabilidad consistentes con esta Licencia. Sin embargo, al aceptar dichas obligaciones, Usted solo puede actuar en Su propio nombre y bajo Su exclusiva responsabilidad, no en nombre de ningún otro Colaborador, y solo si Usted acepta indemnizar, defender y eximir de responsabilidad a cada Colaborador por cualquier responsabilidad incurrida por, o reclamaciones presentadas contra, dicho Colaborador debido a Su aceptación de dicha garantía o responsabilidad adicional.',
+                endOfTermsTitle: 'FIN DE LOS TÉRMINOS Y CONDICIONES',
+                appendixTitle: 'APÉNDICE: Cómo aplicar la Licencia Apache a su trabajo.',
+                appendixPara1: 'Para aplicar la Licencia Apache a su trabajo, adjunte el siguiente aviso estándar, con los campos encerrados entre corchetes "[]" reemplazados con su propia información de identificación. (¡No incluya los corchetes!) El texto debe estar encerrado en la sintaxis de comentario adecuada para el formato del archivo. También recomendamos que se incluya un nombre de archivo o clase y una descripción del propósito en la misma "página impresa" que el aviso de derechos de autor para facilitar la identificación en archivos de terceros.',
+                apacheBoilerplate: 'Copyright [yyyy] [nombre del propietario de los derechos de autor]\n\nLicenciado bajo la Licencia Apache, Versión 2.0 (la "Licencia");\nusted no puede usar este archivo excepto en cumplimiento con la Licencia.\nUsted puede obtener una copia de la Licencia en\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nA menos que lo exija la ley aplicable o se acuerde por escrito, el software\ndistribuido bajo la Licencia se distribuye "TAL CUAL",\nSIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.\nConsulte la Licencia para conocer el idioma específico que rige los permisos y\nlas limitaciones bajo la Licencia.'
+            },
+            fr: {
+                pageTitle: 'Droits d\'Auteur et Licence | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À Propos',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                // Copyright & License Content
+                copyrightTitle: 'Informations sur les Droits d\'Auteur',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Dernière mise à jour : ',
+                licenseTitle: 'Licence Apache',
+                licenseVersion: 'Version 2.0, Janvier 2004',
+                apacheLicenseLink: 'http://www.apache.org/licenses/',
+                termsConditionsTitle: 'CONDITIONS GÉNÉRALES D\'UTILISATION, DE REPRODUCTION ET DE DISTRIBUTION',
+                definitionsTitle: '1. Définitions.',
+                definitionLicense: '« Licence » désigne les termes et conditions d\'utilisation, de reproduction et de distribution tels que définis par les Sections 1 à 9 du présent document.',
+                definitionLicensor: '« Concédant » désigne le titulaire des droits d\'auteur ou l\'entité autorisée par le titulaire des droits d\'auteur qui accorde la Licence.',
+                definitionLegalEntity: '« Entité Juridique » désigne l\'union de l\'entité agissante et de toutes les autres entités qui contrôlent, sont contrôlées par, ou sont sous contrôle commun avec cette entité. Aux fins de cette définition, « contrôle » signifie (i) le pouvoir, direct ou indirect, de diriger ou de gérer cette entité, que ce soit par contrat ou autrement, ou (ii) la propriété de cinquante pour cent (50%) ou plus des actions en circulation, ou (iii) la propriété effective de cette entité.',
+                definitionYou: '« Vous » (ou « Votre ») désigne une personne physique ou une Entité Juridique exerçant les autorisations accordées par la présente Licence.',
+                definitionSource: 'Le terme « Source » désigne la forme préférée pour effectuer des modifications, y compris, sans s\'y limiter, le code source du logiciel, la source de la documentation et les fichiers de configuration.',
+                definitionObject: 'Le terme « Objet » désigne toute forme résultant de la transformation mécanique ou de la traduction d\'une forme Source, y compris, sans s\'y limiter, le code objet compilé, la documentation générée et les conversions vers d\'autres types de médias.',
+                definitionWork: '« Œuvre » désigne l\'œuvre de l\'auteur, sous forme Source ou Objet, mise à disposition sous la Licence, comme indiqué par un avis de droit d\'auteur inclus ou joint à l\'œuvre (un exemple est fourni dans l\'Annexe ci-dessous).',
+                definitionDerivativeWorks: '« Œuvres Dérivées » désigne toute œuvre, sous forme Source ou Objet, qui est basée sur (ou dérivée de) l\'Œuvre et pour laquelle les révisions éditoriales, les annotations, les élaborations ou d\'autres modifications représentent, dans leur ensemble, une œuvre originale de l\'auteur. Aux fins de la présente Licence, les Œuvres Dérivées n\'incluent pas les œuvres qui restent séparables de, ou qui ne font que lier (ou lier par nom) aux interfaces de, l\'Œuvre et des Œuvres Dérivées de celle-ci.',
+                definitionContribution: '« Contribution » désigne toute œuvre de l\'auteur, y compris la version originale de l\'Œuvre et toute modification ou ajout à cette Œuvre ou aux Œuvres Dérivées de celle-ci, qui est intentionnellement soumise au Concédant pour inclusion dans l\'Œuvre par le titulaire des droits d\'auteur ou par une personne physique ou une Entité Juridique autorisée à soumettre au nom du titulaire des droits d\'auteur. Aux fins de cette définition, « soumise » désigne toute forme de communication électronique, verbale ou écrite envoyée au Concédant ou à ses représentants, y compris, sans s\'y limiter, la communication sur les listes de diffusion électroniques, les systèmes de contrôle du code source et les systèmes de suivi des problèmes qui sont gérés par, ou au nom de, le Concédant dans le but de discuter et d\'améliorer l\'Œuvre, mais excluant la communication qui est ostensiblement marquée ou autrement désignée par écrit par le titulaire des droits d\'auteur comme « Non une Contribution ».',
+                definitionContributor: '« Contributeur » désigne le Concédant et toute personne physique ou Entité Juridique au nom de laquelle une Contribution a été reçue par le Concédant et ultérieurement incorporée dans l\'Œuvre.',
+                grantCopyrightTitle: '2. Octroi de la Licence de Droit d\'Auteur.',
+                grantCopyrightPara1: 'Sous réserve des termes et conditions de la présente Licence, chaque Contributeur vous accorde par la présente une licence de droit d\'auteur perpétuelle, mondiale, non exclusive, gratuite et irrévocable pour reproduire, préparer des Œuvres Dérivées, afficher publiquement, exécuter publiquement, sous-licencier et distribuer l\'Œuvre et ces Œuvres Dérivées sous forme Source ou Objet.',
+                grantPatentTitle: '3. Octroi de la Licence de Brevet.',
+                grantPatentPara1: 'Sous réserve des termes et conditions de la présente Licence, chaque Contributeur vous accorde par la présente une licence de brevet perpétuelle, mondiale, non exclusive, gratuite et irrévocable (sauf indication contraire dans cette section) pour fabriquer, faire fabriquer, utiliser, proposer à la vente, vendre, importer et transférer autrement l\'Œuvre, lorsque cette licence s\'applique uniquement aux revendications de brevet pouvant être concédées sous licence par ce Contributeur qui sont nécessairement violées par sa (ses) Contribution(s) seule(s) ou par la combinaison de sa (ses) Contribution(s) avec l\'Œuvre à laquelle cette (ces) Contribution(s) a (ont) été soumise(s). Si vous intentez une action en justice en matière de brevet contre une entité (y compris une demande reconventionnelle ou une demande reconventionnelle dans un procès) alléguant que l\'Œuvre ou une Contribution incorporée dans l\'Œuvre constitue une violation directe ou contributive de brevet, alors toutes les licences de brevet qui vous ont été accordées en vertu de la présente Licence pour cette Œuvre prendront fin à la date du dépôt de cette action en justice.',
+                redistributionTitle: '4. Redistribution.',
+                redistributionPara1: 'Vous pouvez reproduire et distribuer des copies de l\'Œuvre ou des Œuvres Dérivées de celle-ci sur n\'importe quel support, avec ou sans modifications, et sous forme Source ou Objet, à condition de respecter les conditions suivantes :',
+                redistributionListItemA: '(a) Vous devez donner à tout autre destinataire de l\'Œuvre ou des Œuvres Dérivées une copie de la présente Licence ; et',
+                redistributionListItemB: '(b) Vous devez faire en sorte que tous les fichiers modifiés portent des avis bien visibles indiquant que Vous avez modifié les fichiers ; et',
+                redistributionListItemC: '(c) Vous devez conserver, dans la forme Source de toute Œuvre Dérivée que Vous distribuez, tous les avis de droit d\'auteur, de brevet, de marque et d\'attribution de la forme Source de l\'Œuvre, à l\'exclusion des avis qui ne se rapportent à aucune partie des Œuvres Dérivées ; et',
+                redistributionListItemD: '(d) Si l\'Œuvre inclut un fichier texte « NOTICE » dans le cadre de sa distribution, alors toute Œuvre Dérivée que Vous distribuez doit inclure une copie lisible des avis d\'attribution contenus dans ce fichier NOTICE, à l\'exclusion des avis qui ne se rapportent à aucune partie des Œuvres Dérivées, dans au moins l\'un des endroits suivants : dans un fichier texte NOTICE distribué dans le cadre des Œuvres Dérivées ; dans la forme Source ou la documentation, si fournie avec les Œuvres Dérivées ; ou, dans un affichage généré par les Œuvres Dérivées, si et partout où de tels avis de tiers apparaissent normalement. Le contenu du fichier NOTICE est uniquement à des fins d\'information et ne modifie pas la Licence. Vous pouvez ajouter Vos propres avis d\'attribution dans les Œuvres Dérivées que Vous distribuez, à côté ou en annexe du texte NOTICE de l\'Œuvre, à condition que ces avis d\'attribution supplémentaires ne puissent être interprétés comme modifiant la Licence.',
+                redistributionPara2: 'Vous pouvez ajouter Votre propre déclaration de droit d\'auteur à Vos modifications et pouvez fournir des termes et conditions de licence supplémentaires ou différents pour l\'utilisation, la reproduction ou la distribution de Vos modifications, ou pour toute Œuvre Dérivée dans son ensemble, à condition que Votre utilisation, reproduction et distribution de l\'Œuvre soient par ailleurs conformes aux conditions énoncées dans la présente Licence.',
+                submissionContributionsTitle: '5. Soumission des Contributions.',
+                submissionContributionsPara1: 'Sauf si Vous le déclarez explicitement autrement, toute Contribution soumise intentionnellement pour inclusion dans l\'Œuvre par Vous au Concédant sera soumise aux termes et conditions de la présente Licence, sans termes ou conditions supplémentaires. Nonobstant ce qui précède, rien dans les présentes ne saurait annuler ou modifier les termes de tout accord de licence distinct que vous auriez pu conclure avec le Concédant concernant ces Contributions.',
+                trademarksTitle: '6. Marques de Commerce.',
+                trademarksPara1: 'La présente Licence n\'accorde pas l\'autorisation d\'utiliser les noms commerciaux, marques de commerce, marques de service ou noms de produits du Concédant, sauf si cela est requis pour une utilisation raisonnable et habituelle dans la description de l\'origine de l\'Œuvre et la reproduction du contenu du fichier NOTICE.',
+                disclaimerWarrantyTitle: '7. Exclusion de Garantie.',
+                disclaimerWarrantyPara1: 'Sauf si requis par la loi applicable ou convenu par écrit, le Concédant fournit l\'Œuvre (et chaque Contributeur fournit ses Contributions) « EN L\'ÉTAT », SANS GARANTIES OU CONDITIONS D\'AUCUNE SORTE, expresses ou implicites, y compris, sans limitation, toute garantie ou condition de TITRE, DE NON-CONTREFAÇON, DE QUALITÉ MARCHANDE OU D\'ADÉQUATION À UN USAGE PARTICULIER. Vous êtes seul responsable de la détermination de l\'opportunité d\'utiliser ou de redistribuer l\'Œuvre et assumez tous les risques associés à Votre exercice des autorisations en vertu de la présente Licence.',
+                limitationLiabilityTitle: '8. Limitation de Responsabilité.',
+                limitationLiabilityPara1: 'En aucun cas et sous aucune théorie juridique, que ce soit par délit (y compris la négligence), contrat ou autre, sauf si requis par la loi applicable (comme les actes délibérés et de négligence grave) ou convenu par écrit, aucun Contributeur ne sera responsable envers Vous des dommages, y compris les dommages directs, indirects, spéciaux, accessoires ou consécutifs de quelque nature que ce soit résultant de la présente Licence ou de l\'utilisation ou de l\'incapacité d\'utiliser l\'Œuvre (y compris, mais sans s\'y limiter, les dommages pour perte de clientèle, interruption de travail, panne ou dysfonctionnement informatique, ou tout autre dommage ou perte commerciale), même si ce Contributeur a été informé de la possibilité de tels dommages.',
+                acceptingWarrantyTitle: '9. Acceptation de Garantie ou de Responsabilité Additionnelle.',
+                acceptingWarrantyPara1: 'Lors de la redistribution de l\'Œuvre ou des Œuvres Dérivées de celle-ci, Vous pouvez choisir d\'offrir, et de facturer des frais pour, l\'acceptation de la prise en charge, de la garantie, de l\'indemnisation ou d\'autres obligations et/ou droits de responsabilité conformes à la présente Licence. Cependant, en acceptant de telles obligations, Vous ne pouvez agir qu\'en Votre propre nom et sous Votre seule responsabilité, et non au nom de tout autre Contributeur, et seulement si Vous acceptez d\'indemniser, de défendre et de dégager de toute responsabilité chaque Contributeur pour toute responsabilité encourue par, ou réclamations formulées contre, ce Contributeur en raison de Votre acceptation de cette garantie ou de cette responsabilité supplémentaire.',
+                endOfTermsTitle: 'FIN DES CONDITIONS GÉNÉRALES',
+                appendixTitle: 'ANNEXE : Comment appliquer la Licence Apache à votre travail.',
+                appendixPara1: 'Pour appliquer la Licence Apache à votre travail, joignez l\'avis standard suivant, en remplaçant les champs entre crochets « [] » par vos propres informations d\'identification. (N\'incluez pas les crochets !) Le texte doit être inclus dans la syntaxe de commentaire appropriée pour le format du fichier. Nous recommandons également qu\'un nom de fichier ou de classe et une description de l\'objectif soient inclus sur la même « page imprimée » que l\'avis de droit d\'auteur pour une identification plus facile dans les archives de tiers.',
+                apacheBoilerplate: 'Copyright [yyyy] [nom du titulaire des droits d\'auteur]\n\nSous licence Apache, Version 2.0 (la « Licence ») ;\nvous ne pouvez pas utiliser ce fichier sauf en conformité avec la Licence.\nVous pouvez obtenir une copie de la Licence à l\'adresse\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nSauf si requis par la loi applicable ou convenu par écrit, les logiciels\ndistribués sous la Licence sont distribués « EN L\'ÉTAT »,\nSANS GARANTIES NI CONDITIONS D\'AUCUNE SORTE, expresses ou implicites.\nVoir la Licence pour le langage spécifique régissant les autorisations et\nles limitations en vertu de la Licence.'
+            },
+            ar: {
+                pageTitle: 'حقوق النشر والترخيص | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'الميزات',
+                navSignal: 'الإشارة',
+                navVault: 'الخزنة',
+                navTreaty: 'المعاهدة',
+                navVaultMesh: 'شبكة الكهف',
+                navAbout: 'حول',
+                navCrateDance: 'رقصة الصندوق المثمر',
+                navCareers: 'الوظائف',
+                navSecureSign: 'توقيع آمن',
+                navSignUp: 'التسجيل',
+                // Copyright & License Content
+                copyrightTitle: 'معلومات حقوق النشر',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'آخر تحديث: ',
+                licenseTitle: 'ترخيص أباتشي',
+                licenseVersion: 'الإصدار 2.0، يناير 2004',
+                apacheLicenseLink: 'http://www.apache.org/licenses/',
+                termsConditionsTitle: 'الشروط والأحكام للاستخدام والاستنساخ والتوزيع',
+                definitionsTitle: '1. التعريفات.',
+                definitionLicense: '"الترخيص" يعني الشروط والأحكام للاستخدام والاستنساخ والتوزيع كما هو محدد في الأقسام من 1 إلى 9 من هذا المستند.',
+                definitionLicensor: '"المرخص" يعني مالك حقوق النشر أو الكيان المرخص له من قبل مالك حقوق النشر الذي يمنح الترخيص.',
+                definitionLegalEntity: '"الكيان القانوني" يعني اتحاد الكيان الفاعل وجميع الكيانات الأخرى التي تتحكم في هذا الكيان أو تخضع لسيطرته أو تخضع لسيطرة مشتركة معه. لأغراض هذا التعريف، يعني "السيطرة" (1) القدرة، المباشرة أو غير المباشرة، على التسبب في توجيه أو إدارة هذا الكيان، سواء بموجب عقد أو غير ذلك، أو (2) ملكية خمسين بالمائة (50%) أو أكثر من الأسهم القائمة، أو (3) الملكية النفعية لهذا الكيان.',
+                definitionYou: '"أنت" (أو "الخاص بك") يعني فردًا أو كيانًا قانونيًا يمارس الأذونات الممنوحة بموجب هذا الترخيص.',
+                definitionSource: '"شكل المصدر" يعني الشكل المفضل لإجراء التعديلات، بما في ذلك على سبيل المثال لا الحصر، كود مصدر البرنامج، ومصدر الوثائق، وملفات التكوين.',
+                definitionObject: '"شكل الكائن" يعني أي شكل ناتج عن التحويل الميكانيكي أو ترجمة شكل المصدر، بما في ذلك على سبيل المثال لا الحصر، كود الكائن المترجم، والوثائق التي تم إنشاؤها، والتحويلات إلى أنواع وسائط أخرى.',
+                definitionWork: '"العمل" يعني عمل المؤلف، سواء في شكل المصدر أو الكائن، المتاح بموجب الترخيص، كما هو موضح بإشعار حقوق النشر المضمن في العمل أو المرفق به (يتم تقديم مثال في الملحق أدناه).',
+                definitionDerivativeWorks: '"الأعمال المشتقة" تعني أي عمل، سواء في شكل المصدر أو الكائن، يعتمد على (أو مشتق من) العمل والذي تمثل التعديلات التحريرية أو التعليقات التوضيحية أو التفصيلات أو التعديلات الأخرى، ككل، عملاً أصليًا للمؤلف. لأغراض هذا الترخيص، لا تشمل الأعمال المشتقة الأعمال التي تظل قابلة للفصل عن واجهات العمل والأعمال المشتقة منه، أو التي ترتبط بها (أو ترتبط بالاسم) فقط.',
+                definitionContribution: '"المساهمة" تعني أي عمل مؤلف، بما في ذلك النسخة الأصلية من العمل وأي تعديلات أو إضافات على هذا العمل أو الأعمال المشتقة منه، والتي يتم تقديمها عمدًا إلى المرخص لإدراجها في العمل من قبل مالك حقوق النشر أو من قبل فرد أو كيان قانوني مصرح له بالتقديم نيابة عن مالك حقوق النشر. لأغراض هذا التعريف، تعني "مقدمة" أي شكل من أشكال الاتصال الإلكتروني أو الشفهي أو الكتابي المرسل إلى المرخص أو ممثليه، بما في ذلك على سبيل المثال لا الحصر، الاتصال على القوائم البريدية الإلكترونية، وأنظمة التحكم في كود المصدر، وأنظمة تتبع المشكلات التي يديرها المرخص، أو نيابة عنه، لغرض مناقشة العمل وتحسينه، ولكن باستثناء الاتصال الذي يتم تمييزه بشكل واضح أو تحديده كتابيًا من قبل مالك حقوق النشر على أنه "ليس مساهمة."',
+                definitionContributor: '"المساهم" يعني المرخص وأي فرد أو كيان قانوني تم استلام مساهمة نيابة عنه من قبل المرخص وتم دمجها لاحقًا في العمل.',
+                grantCopyrightTitle: '2. منح ترخيص حقوق النشر.',
+                grantCopyrightPara1: 'بموجب شروط وأحكام هذا الترخيص، يمنحك كل مساهم بموجب هذا ترخيص حقوق نشر دائمًا، عالميًا، غير حصري، بدون رسوم، بدون حقوق ملكية، وغير قابل للإلغاء لإعادة إنتاج الأعمال وإعداد أعمال مشتقة منها وعرضها علنًا وأدائها علنًا وترخيصها من الباطن وتوزيعها في شكل المصدر أو الكائن.',
+                grantPatentTitle: '3. منح ترخيص براءة الاختراع.',
+                grantPatentPara1: 'بموجب شروط وأحكام هذا الترخيص، يمنحك كل مساهم بموجب هذا ترخيص براءة اختراع دائمًا، عالميًا، غير حصري، بدون رسوم، بدون حقوق ملكية، وغير قابل للإلغاء (باستثناء ما هو منصوص عليه في هذا القسم) لإنشاء، أو جعل الآخرين ينشئون، أو استخدام، أو عرض للبيع، أو بيع، أو استيراد، أو نقل العمل بأي طريقة أخرى، حيث ينطبق هذا الترخيص فقط على مطالبات البراءات التي يمكن ترخيصها من قبل هذا المساهم والتي تنتهك بالضرورة مساهمته (مساهماته) وحدها أو بدمج مساهمته (مساهماته) مع العمل الذي تم تقديم هذه المساهمة (المساهمات) إليه. إذا رفعت دعوى قضائية بشأن براءة اختراع ضد أي كيان (بما في ذلك مطالبة متقاطعة أو مطالبة مضادة في دعوى قضائية) تزعم أن العمل أو مساهمة مدرجة في العمل تشكل انتهاكًا مباشرًا أو مساهمًا لبراءة اختراع، فإن أي تراخيص براءات اختراع ممنوحة لك بموجب هذا الترخيص لهذا العمل ستنتهي اعتبارًا من تاريخ رفع هذه الدعوى القضائية.',
+                redistributionTitle: '4. إعادة التوزيع.',
+                redistributionPara1: 'يجوز لك إعادة إنتاج وتوزيع نسخ من العمل أو الأعمال المشتقة منه بأي وسيلة، مع أو بدون تعديلات، وفي شكل المصدر أو الكائن، شريطة أن تستوفي الشروط التالية:',
+                redistributionListItemA: '(أ) يجب عليك أن تعطي أي مستلمين آخرين للعمل أو الأعمال المشتقة نسخة من هذا الترخيص؛ و',
+                redistributionListItemB: '(ب) يجب عليك أن تتسبب في أن تحمل أي ملفات معدلة إشعارات بارزة تفيد بأنك قمت بتغيير الملفات؛ و',
+                redistributionListItemC: '(ج) يجب عليك الاحتفاظ، في شكل المصدر لأي أعمال مشتقة تقوم بتوزيعها، بجميع إشعارات حقوق النشر والبراءات والعلامات التجارية والإسناد من شكل المصدر للعمل، باستثناء تلك الإشعارات التي لا تتعلق بأي جزء من الأعمال المشتقة؛ و',
+                redistributionListItemD: '(د) إذا كان العمل يتضمن ملف نص "إشعار" كجزء من توزيعه، فيجب أن تتضمن أي أعمال مشتقة تقوم بتوزيعها نسخة قابلة للقراءة من إشعارات الإسناد الموجودة داخل ملف الإشعار هذا، باستثناء تلك الإشعارات التي لا تتعلق بأي جزء من الأعمال المشتقة، في واحد على الأقل من الأماكن التالية: داخل ملف نص إشعار يتم توزيعه كجزء من الأعمال المشتقة؛ داخل شكل المصدر أو الوثائق، إذا تم توفيرها مع الأعمال المشتقة؛ أو، ضمن عرض يتم إنشاؤه بواسطة الأعمال المشتقة، إذا وحيثما تظهر إشعارات الطرف الثالث هذه عادةً. محتويات ملف الإشعار هي لأغراض إعلامية فقط ولا تعدل الترخيص. يجوز لك إضافة إشعارات الإسناد الخاصة بك داخل الأعمال المشتقة التي تقوم بتوزيعها، جنبًا إلى جنب أو كملحق لنص الإشعار من العمل، شريطة ألا يمكن تفسير إشعارات الإسناد الإضافية هذه على أنها تعديل للترخيص.',
+                redistributionPara2: 'يجوز لك إضافة بيان حقوق النشر الخاص بك إلى تعديلاتك، ويجوز لك تقديم شروط وأحكام ترخيص إضافية أو مختلفة للاستخدام أو الاستنساخ أو التوزيع لتعديلاتك، أو لأي من هذه الأعمال المشتقة ككل، شريطة أن يتوافق استخدامك واستنساخك وتوزيعك للعمل بخلاف ذلك مع الشروط المنصوص عليها في هذا الترخيص.',
+                submissionContributionsTitle: '5. تقديم المساهمات.',
+                submissionContributionsPara1: 'ما لم تذكر صراحة خلاف ذلك، فإن أي مساهمة تقدمها عمدًا لإدراجها في العمل إلى المرخص ستكون بموجب شروط وأحكام هذا الترخيص، دون أي شروط أو أحكام إضافية. بغض النظر عما سبق، لا شيء هنا يحل محل أو يعدل شروط أي اتفاقية ترخيص منفصلة قد تكون قد أبرمتها مع المرخص فيما يتعلق بهذه المساهمات.',
+                trademarksTitle: '6. العلامات التجارية.',
+                trademarksPara1: 'لا يمنح هذا الترخيص إذنًا باستخدام الأسماء التجارية أو العلامات التجارية أو علامات الخدمة أو أسماء المنتجات الخاصة بالمرخص، باستثناء ما هو مطلوب للاستخدام المعقول والعادي في وصف أصل العمل وإعادة إنتاج محتوى ملف الإشعار.',
+                disclaimerWarrantyTitle: '7. إخلاء المسؤولية عن الضمان.',
+                disclaimerWarrantyPara1: 'ما لم يقتض القانون المعمول به أو يتم الاتفاق عليه كتابةً، يقدم المرخص العمل (ويقدم كل مساهم مساهماته) "كما هو"، دون ضمانات أو شروط من أي نوع، سواء كانت صريحة أو ضمنية، بما في ذلك، على سبيل المثال لا الحصر، أي ضمانات أو شروط تتعلق بالملكية أو عدم الانتهاك أو القابلية للتسويق أو الملاءمة لغرض معين. أنت وحدك المسؤول عن تحديد مدى ملاءمة استخدام العمل أو إعادة توزيعه وتتحمل أي مخاطر مرتبطة بممارستك للأذونات بموجب هذا الترخيص.',
+                limitationLiabilityTitle: '8. تحديد المسؤولية.',
+                limitationLiabilityPara1: 'لا يتحمل أي مساهم، في أي حال من الأحوال وبموجب أي نظرية قانونية، سواء كانت في المسؤولية التقصيرية (بما في ذلك الإهمال) أو العقد أو غير ذلك، ما لم يقتض القانون المعمول به (مثل الأفعال المتعمدة والإهمال الجسيم) أو يتم الاتفاق عليه كتابةً، المسؤولية تجاهك عن الأضرار، بما في ذلك أي أضرار مباشرة أو غير مباشرة أو خاصة أو عرضية أو تبعية من أي نوع تنشأ نتيجة لهذا الترخيص أو عن استخدام العمل أو عدم القدرة على استخدامه (بما في ذلك على سبيل المثال لا الحصر، الأضرار الناجمة عن فقدان الشهرة أو توقف العمل أو فشل الكمبيوتر أو سوء عمله، أو أي وجميع الأضرار أو الخسائر التجارية الأخرى)، حتى لو تم إخطار هذا المساهم باحتمالية حدوث هذه الأضرار.',
+                acceptingWarrantyTitle: '9. قبول الضمان أو المسؤولية الإضافية.',
+                acceptingWarrantyPara1: 'أثناء إعادة توزيع العمل أو الأعمال المشتقة منه، يجوز لك اختيار تقديم، وفرض رسوم مقابل، قبول الدعم أو الضمان أو التعويض أو غيرها من التزامات و/أو حقوق المسؤولية المتوافقة مع هذا الترخيص. ومع ذلك، عند قبول هذه الالتزامات، يجوز لك التصرف فقط نيابة عنك وعلى مسؤوليتك وحدك، وليس نيابة عن أي مساهم آخر، وفقط إذا وافقت على تعويض كل مساهم والدفاع عنه وإبعاده عن أي مسؤولية يتكبدها، أو مطالبات ترفع ضده، بسبب قبولك لأي ضمان أو مسؤولية إضافية.',
+                endOfTermsTitle: 'نهاية الشروط والأحكام',
+                appendixTitle: 'الملحق: كيفية تطبيق ترخيص أباتشي على عملك.',
+                appendixPara1: 'لتطبيق ترخيص أباتشي على عملك، أرفق الإشعار القياسي التالي، مع استبدال الحقول المحاطة بأقواس مربعة "[]" بمعلومات التعريف الخاصة بك. (لا تضمن الأقواس!) يجب أن يكون النص محاطًا ببنية التعليق المناسبة لتنسيق الملف. نوصي أيضًا بتضمين اسم ملف أو فئة ووصف للغرض في نفس "الصفحة المطبوعة" مثل إشعار حقوق النشر لتسهيل التعرف عليه داخل أرشيفات الطرف الثالث.',
+                apacheBoilerplate: 'حقوق النشر [السنة] [اسم مالك حقوق النشر]\n\nمرخص بموجب ترخيص أباتشي، الإصدار 2.0 ("الترخيص")؛\nلا يجوز لك استخدام هذا الملف إلا وفقًا للترخيص.\nيمكنك الحصول على نسخة من الترخيص على\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nما لم يقتض القانون المعمول به أو يتم الاتفاق عليه كتابةً، فإن البرنامج\nالموزع بموجب الترخيص يتم توزيعه "كما هو"،\nدون ضمانات أو شروط من أي نوع، سواء كانت صريحة أو ضمنية.\nراجع الترخيص لمعرفة اللغة المحددة التي تحكم الأذونات و\nالقيود بموجب الترخيص.'
+            },
+            zh: {
+                pageTitle: '版权与许可 | 丰硕全球™',
+                fruitfulBrand: '丰硕™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                // Copyright & License Content
+                copyrightTitle: '版权信息',
+                fruitfulGlobalBrand: '丰硕全球™',
+                lastUpdated: '最后更新: ',
+                licenseTitle: 'Apache 许可证',
+                licenseVersion: '版本 2.0, 2004 年 1 月',
+                apacheLicenseLink: 'http://www.apache.org/licenses/',
+                termsConditionsTitle: '使用、复制和分发的条款和条件',
+                definitionsTitle: '1. 定义。',
+                definitionLicense: '“许可证”是指本文件第 1 至 9 节所定义的使用、复制和分发的条款和条件。',
+                definitionLicensor: '“许可方”是指版权所有者或经版权所有者授权授予许可证的实体。',
+                definitionLegalEntity: '“法律实体”是指行为实体与所有控制、受控制或与该实体处于共同控制之下的其他实体的结合。就本定义而言，“控制”是指 (i) 直接或间接导致该实体方向或管理的权力，无论是通过合同还是其他方式，或 (ii) 拥有百分之五十 (50%) 或以上流通股的所有权，或 (iii) 拥有该实体的实益所有权。',
+                definitionYou: '“您”（或“您的”）是指行使本许可证授予的权限的个人或法律实体。',
+                definitionSource: '“源代码”形式是指进行修改的首选形式，包括但不限于软件源代码、文档源代码和配置文件。',
+                definitionObject: '“目标”形式是指从源代码形式的机械转换或翻译中产生的任何形式，包括但不限于编译后的目标代码、生成的文档以及转换为其他媒体类型。',
+                definitionWork: '“作品”是指根据许可证提供的著作，无论是源代码形式还是目标形式，如作品中包含或附带的版权声明所示（示例如下文附录中提供）。',
+                definitionDerivativeWorks: '“衍生作品”是指任何基于（或源自）作品的著作，无论是源代码形式还是目标形式，并且其编辑修订、注释、阐述或其他修改作为一个整体代表了原创著作。就本许可证而言，衍生作品不包括与作品及其衍生作品的接口保持分离或仅链接（或按名称绑定）的作品。',
+                definitionContribution: '“贡献”是指任何著作，包括作品的原始版本以及对该作品或其衍生作品的任何修改或添加，由版权所有者或经授权代表版权所有者提交给许可方以包含在作品中的。就本定义而言，“提交”是指发送给许可方或其代表的任何形式的电子、口头或书面通信，包括但不限于电子邮件列表、源代码控制系统和问题跟踪系统上的通信，这些系统由许可方或代表许可方管理，目的是讨论和改进作品，但不包括版权所有者明确标记或以其他书面形式指定为“非贡献”的通信。',
+                definitionContributor: '“贡献者”是指许可方以及许可方已收到其贡献并随后将其纳入作品的任何个人或法律实体。',
+                grantCopyrightTitle: '2. 版权许可的授予。',
+                grantCopyrightPara1: '根据本许可证的条款和条件，每个贡献者特此授予您一项永久的、全球性的、非排他性的、免费的、免版税的、不可撤销的版权许可，以源代码或目标代码形式复制、准备衍生作品、公开展示、公开表演、再许可和分发作品以及此类衍生作品。',
+                grantPatentTitle: '3. 专利许可的授予。',
+                grantPatentPara1: '根据本许可证的条款和条件，每个贡献者特此授予您一项永久的、全球性的、非排他性的、免费的、免版税的、不可撤销的（本节另有规定的除外）专利许可，以制造、委托制造、使用、提供销售、销售、进口以及以其他方式转让作品，其中此类许可仅适用于该贡献者可许可的、必然因其贡献本身或其贡献与所提交作品的组合而侵犯的专利权利要求。如果您对任何实体（包括诉讼中的交叉索赔或反诉）提起专利诉讼，声称作品或作品中包含的贡献构成直接或间接专利侵权，则根据本许可证授予您的该作品的任何专利许可应在提起此类诉讼之日终止。',
+                redistributionTitle: '4. 再分发。',
+                redistributionPara1: '您可以以任何介质、有或没有修改、以源代码或目标代码形式复制和分发作品或其衍生作品的副本，前提是您符合以下条件：',
+                redistributionListItemA: '(a) 您必须向作品或衍生作品的任何其他接收者提供本许可证的副本；并且',
+                redistributionListItemB: '(b) 您必须使任何修改过的文件带有醒目通知，说明您更改了文件；并且',
+                redistributionListItemC: '(c) 您必须在您分发的任何衍生作品的源代码形式中保留作品源代码形式中的所有版权、专利、商标和署名通知，不包括与衍生作品任何部分无关的通知；并且',
+                redistributionListItemD: '(d) 如果作品包含一个“NOTICE”文本文件作为其分发的一部分，那么您分发的任何衍生作品必须包含该 NOTICE 文件中包含的署名通知的可读副本，不包括与衍生作品任何部分无关的通知，至少在以下一个位置：作为衍生作品分发的一部分的 NOTICE 文本文件中；在源代码形式或文档中（如果与衍生作品一起提供）；或者，在衍生作品生成的显示中（如果以及在任何此类第三方通知通常出现的地方）。NOTICE 文件的内容仅供参考，不修改许可证。您可以在您分发的衍生作品中添加您自己的署名通知，与作品的 NOTICE 文本并列或作为其附录，前提是此类附加署名通知不能被解释为修改许可证。',
+                redistributionPara2: '您可以将您自己的版权声明添加到您的修改中，并可以为您的修改或任何此类衍生作品的整体使用、复制或分发提供额外或不同的许可条款和条件，前提是您的作品的使用、复制和分发符合本许可证中规定的条件。',
+                submissionContributionsTitle: '5. 贡献的提交。',
+                submissionContributionsPara1: '除非您明确声明，否则您有意提交给许可方以包含在作品中的任何贡献，均应受本许可证的条款和条件的约束，不附带任何额外条款或条件。尽管有上述规定，本协议中的任何内容均不应取代或修改您可能与许可方就此类贡献签订的任何单独许可协议的条款。',
+                trademarksTitle: '6. 商标。',
+                trademarksPara1: '本许可证不授予使用许可方的商品名称、商标、服务标记或产品名称的权限，除非在描述作品来源和复制 NOTICE 文件内容时合理和惯常使用所必需。',
+                disclaimerWarrantyTitle: '7. 免责声明。',
+                disclaimerWarrantyPara1: '除非适用法律要求或书面同意，许可方按“原样”提供作品（每个贡献者按“原样”提供其贡献），不附带任何明示或暗示的保证或条件，包括但不限于所有权、非侵权、适销性或特定用途适用性的任何保证或条件。您全权负责确定使用或重新分发作品的适当性，并承担与您行使本许可证下的权限相关的任何风险。',
+                limitationLiabilityTitle: '8. 责任限制。',
+                limitationLiabilityPara1: '在任何情况下，在任何法律理论下，无论是侵权（包括过失）、合同或其他，除非适用法律要求（例如故意和严重过失行为）或书面同意，任何贡献者均不对您承担损害赔偿责任，包括因本许可证或使用或无法使用作品而产生的任何性质的直接、间接、特殊、偶然或后果性损害（包括但不限于商誉损失、停工、计算机故障或故障，或任何及所有其他商业损害或损失），即使该贡献者已被告知可能发生此类损害。',
+                acceptingWarrantyTitle: '9. 接受保证或额外责任。',
+                acceptingWarrantyPara1: '在重新分发作品或其衍生作品时，您可以选择提供并收取费用，以接受与本许可证一致的支持、保证、赔偿或其他责任义务和/或权利。但是，在接受此类义务时，您只能代表您自己并承担您的全部责任，而不是代表任何其他贡献者，并且只有在您同意赔偿、辩护并使每个贡献者免受因您接受任何此类保证或额外责任而产生的任何责任或索赔时。',
+                endOfTermsTitle: '条款和条件结束',
+                appendixTitle: '附录：如何将 Apache 许可证应用于您的作品。',
+                appendixPara1: '要将 Apache 许可证应用于您的作品，请附上以下样板通知，其中方括号“[]”中的字段替换为您自己的识别信息。（不要包含方括号！）文本应包含在文件格式的相应注释语法中。我们还建议在版权声明的同一“打印页面”上包含文件或类名以及用途说明，以便在第三方档案中更容易识别。',
+                apacheBoilerplate: 'Copyright [yyyy] [name of copyright owner]\n\nLicensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.'
+            }
+        };
+
+        // Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerText = '🌙';
+            } else {
+                themeToggle.innerText = '☀️';
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+
+            // Language toggle event listener
+            languageToggle.addEventListener('change', (event) => {
+                const newLang = event.target.value;
+                updateLanguage(newLang);
+                localStorage.setItem('language', newLang);
+            });
+
+            // Function to update text content based on selected language
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (window.languageData[lang] && window.languageData[lang][key]) { // Use window.languageData
+                        el.innerHTML = window.languageData[lang][key];
+                    }
+                });
+                document.title = window.languageData[lang]?.pageTitle || 'Fruitful Global'; // Use window.languageData
+            }
+        });
+    </script>
+</body>
+</html>

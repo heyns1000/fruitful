@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌍 FAA.ZONE™ Careers</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f3f4f6; }
+  .global-header-bg { background: linear-gradient(to right, #4c51bf, #6b46c1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .job-card { transition: all 0.2s; border: 1px solid #e5e7eb; }
+  .job-card:hover { border-color: #4f46e5; box-shadow: 0 8px 24px rgba(79,70,229,0.1); transform: translateY(-2px); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
+  .tag-remote { background: #dcfce7; color: #15803d; }
+  .tag-new { background: #eff6ff; color: #1d4ed8; }
+  .tag-urgent { background: #fef2f2; color: #dc2626; }
+  .tag-senior { background: #f5f3ff; color: #6d28d9; }
+  .tag-mid { background: #fff7ed; color: #c2410c; }
+  .tag-junior { background: #ecfdf5; color: #065f46; }
+  .filter-btn { border: 1px solid #d1d5db; transition: all 0.15s; }
+  .filter-btn.active, .filter-btn:hover { background: #4f46e5; color: white; border-color: #4f46e5; }
+  .apply-btn { transition: all 0.2s; }
+  .apply-btn:hover { box-shadow: 0 0 20px rgba(79,70,229,0.4); transform: translateY(-1px); }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.4)} }
+  .stat-card { border-left: 4px solid; }
+</style>
+</head>
+<body>
+
+<header class="global-header-bg text-white py-8 shadow-xl">
+  <div class="container mx-auto px-6 text-center">
+    <h1 class="text-4xl font-extrabold" style="text-shadow:0 2px 4px rgba(0,0,0,0.5)">FAA.ZONE™</h1>
+    <p class="text-base opacity-90 mt-1">The Earth's Financial Allocation Architecture</p>
+    <p class="text-xs opacity-60 mt-1">Remote Careers — Ecosystem Roles — Global Impact</p>
+  </div>
+</header>
+
+<div class="bg-indigo-700 text-white py-4 shadow">
+  <div class="container mx-auto px-6 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2 class="text-xl font-bold">🌍 Remote Careers</h2>
+      <p class="text-xs opacity-70 mt-0.5">Work across the FAA · Seedwave · Fruitful · OmniGrid ecosystem</p>
+    </div>
+    <div class="flex gap-3">
+      <span class="text-xs bg-green-500 bg-opacity-20 text-green-200 px-3 py-1 rounded-full flex items-center gap-1">
+        <span class="pulse-dot"></span> <span id="open-count">11</span> Roles Open
+      </span>
+      <a href="/public/omnigrid_admin_portal.html" class="text-xs text-indigo-200 hover:text-white underline">← Admin Portal</a>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+    <div class="bg-white rounded-xl p-5 stat-card" style="border-left-color:#4f46e5">
+      <div class="text-2xl font-extrabold text-indigo-700">100%</div>
+      <div class="text-xs text-gray-500 mt-1">Remote-First Roles</div>
+    </div>
+    <div class="bg-white rounded-xl p-5 stat-card" style="border-left-color:#22c55e">
+      <div class="text-2xl font-extrabold text-green-600">11</div>
+      <div class="text-xs text-gray-500 mt-1">Open Positions</div>
+    </div>
+    <div class="bg-white rounded-xl p-5 stat-card" style="border-left-color:#a855f7">
+      <div class="text-2xl font-extrabold text-purple-600">94</div>
+      <div class="text-xs text-gray-500 mt-1">Repos in Ecosystem</div>
+    </div>
+    <div class="bg-white rounded-xl p-5 stat-card" style="border-left-color:#f59e0b">
+      <div class="text-2xl font-extrabold text-yellow-600">7</div>
+      <div class="text-xs text-gray-500 mt-1">Functional Areas</div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-4 mb-8 flex flex-wrap gap-2 items-center">
+    <span class="text-xs font-semibold text-gray-500 mr-2">Filter:</span>
+    <button class="filter-btn active text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('all', this)">All Roles</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('engineering', this)">⚙️ Engineering</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('design', this)">🎨 Design</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('operations', this)">📊 Operations</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('ecosystem', this)">🌿 Ecosystem</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('strategy', this)">🧭 Strategy</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('finance', this)">🏦 Finance</button>
+    <button class="filter-btn text-xs px-3 py-1.5 rounded-lg" onclick="filterJobs('content', this)">🔊 Content</button>
+    <div class="ml-auto">
+      <input type="text" id="search" placeholder="Search roles..." oninput="searchJobs(this.value)" class="text-xs border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    </div>
+  </div>
+
+  <div id="job-grid" class="space-y-4">
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="engineering">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">⚙️</span><h3 class="text-base font-bold text-gray-800">Senior Full-Stack Engineer — OmniGrid Platform</h3></div>
+          <p class="text-xs text-gray-500 mb-3">OmniGrid · Remote (Global) · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Own core platform development across the OmniGrid ecosystem. Build the automation engine, CI/CD pipelines, and API layer connecting 94 repositories.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-senior">Senior</span><span class="tag tag-new">New</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">TypeScript</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Node.js</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">GitHub Actions</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R65 000 – R95 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity + Scroll Rewards</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Senior Full-Stack Engineer — OmniGrid Platform')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="engineering">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🔐</span><h3 class="text-base font-bold text-gray-800">Security Engineer — FAA Ecosystem</h3></div>
+          <p class="text-xs text-gray-500 mb-3">FAA.ZONE Security · Remote · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Implement and maintain SIMUNYE v1 security protocols, secret scanning, HMAC authentication, and compliance across the 94-repo ecosystem.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-senior">Senior</span><span class="tag tag-urgent">Urgent</span>
+            <span class="tag" style="background:#fef2f2;color:#991b1b">Security</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Python</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">FIPS 204</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R70 000 – R110 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Security Engineer — FAA Ecosystem')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="engineering">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🌐</span><h3 class="text-base font-bold text-gray-800">Cloudflare Workers / Edge Engineer — Banimal</h3></div>
+          <p class="text-xs text-gray-500 mb-3">Banimal Project · Remote · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Build and scale edge functions on Cloudflare Workers + D1 + R2. Own the wp-bridge, marketplace APIs, and performance optimisation.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-mid">Mid-Level</span>
+            <span class="tag" style="background:#fff7ed;color:#c2410c">Hono</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">TypeScript</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">Cloudflare</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R45 000 – R70 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Scroll Rewards</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Cloudflare Workers / Edge Engineer — Banimal')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="engineering">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">⚡</span><h3 class="text-base font-bold text-gray-800">React / Vite Frontend Engineer — Fruitful App</h3></div>
+          <p class="text-xs text-gray-500 mb-3">Fruitfulapp · Remote · Full-time or Contract</p>
+          <p class="text-sm text-gray-600 mb-3">Own the fruitfulapp frontend. Bring Fruitful Global dashboards to life with React 18/19, Tailwind, Chart.js, and Leaflet maps.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-mid">Mid-Level</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">React</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">Tailwind</span>
+            <span class="tag" style="background:#fff7ed;color:#c2410c">Vite</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R35 000 – R60 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('React / Vite Frontend Engineer — Fruitful App')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="design">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🎨</span><h3 class="text-base font-bold text-gray-800">Senior UI/UX Designer — Seedwave Dashboards</h3></div>
+          <p class="text-xs text-gray-500 mb-3">Seedwave · Remote (Africa/Europe preferred) · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Design the next generation of Seedwave and Fruitful dashboards. You'll work from our 1100+ version design library and extend it with precision, not opinion.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-senior">Senior</span><span class="tag tag-new">New</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">Figma</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">Tailwind</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Design Systems</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R50 000 – R80 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity + Scroll</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Senior UI/UX Designer — Seedwave Dashboards')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="operations">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">📡</span><h3 class="text-base font-bold text-gray-800">DevOps / CI Lead — OmniGrid Automation</h3></div>
+          <p class="text-xs text-gray-500 mb-3">OmniGrid · Remote · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Own GitHub Actions CI across 94 repos. Implement the SIMUNYE v1 automation engine. Maintain Netlify deployments and CDN pipeline.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-senior">Senior</span><span class="tag tag-urgent">Urgent</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">GitHub Actions</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Netlify</span>
+            <span class="tag" style="background:#fff7ed;color:#c2410c">DevOps</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R55 000 – R85 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('DevOps / CI Lead — OmniGrid Automation')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="ecosystem">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🌿</span><h3 class="text-base font-bold text-gray-800">Ecosystem Coordinator — Sector Sync</h3></div>
+          <p class="text-xs text-gray-500 mb-3">FAA.ZONE Ecosystem · Remote · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Coordinate the bidirectional sync of 94 repositories. Track sector health across Agriculture, Finance, Health, Logistics, and 28 other sectors in the FAA grid.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-mid">Mid-Level</span><span class="tag tag-new">New</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">GitHub</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">JSON / YAML</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Python</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R30 000 – R50 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Scroll Rewards</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Ecosystem Coordinator — Sector Sync')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="strategy">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🧭</span><h3 class="text-base font-bold text-gray-800">Strategic Growth Director — Fruitful Global</h3></div>
+          <p class="text-xs text-gray-500 mb-3">Fruitful Global · Remote · Executive</p>
+          <p class="text-sm text-gray-600 mb-3">Drive sector expansion across the Fruitful Global™ index. Identify new verticals, partnership opportunities, and drive the 56-sector Seedwave roadmap.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-senior">Executive</span><span class="tag tag-new">New</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">Strategy</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">Partnerships</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">ESG</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R100 000+/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity + Profit Share</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Strategic Growth Director — Fruitful Global')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="finance">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🏦</span><h3 class="text-base font-bold text-gray-800">VaultMesh Actuarial Analyst</h3></div>
+          <p class="text-xs text-gray-500 mb-3">VaultMesh · FAA.ZONE · Remote · Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Model risk and financial flows within the VaultMesh Actuarial Grid. Analyse scroll activity, loyalty tiers, and real-time pulse data across the FAA ecosystem.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-mid">Mid-Level</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">Actuarial</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">R / Python</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">FinTech</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R45 000 – R75 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Loyalty Scroll Bonus</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('VaultMesh Actuarial Analyst')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="ecosystem">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🦡</span><h3 class="text-base font-bold text-gray-800">CodeNest Package Manager — pnpm Workspaces</h3></div>
+          <p class="text-xs text-gray-500 mb-3">CodeNest · Remote · Full-time or Contract</p>
+          <p class="text-sm text-gray-600 mb-3">Manage the CodeNest hub's 83 pnpm workspace packages across apps, fruitful, seedwave-sectors, and infrastructure directories.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-mid">Mid-Level</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">pnpm</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">TypeScript</span>
+            <span class="tag" style="background:#fff7ed;color:#c2410c">Monorepo</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R35 000 – R55 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Equity</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('CodeNest Package Manager')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-card bg-white rounded-xl p-6" data-category="content">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1"><span class="text-lg">🔊</span><h3 class="text-base font-bold text-gray-800">Technical Content Writer — FAA Documentation</h3></div>
+          <p class="text-xs text-gray-500 mb-3">FAA.ZONE · Remote · Part-time or Full-time</p>
+          <p class="text-sm text-gray-600 mb-3">Write technical documentation, sector briefs, and ecosystem guides for FAA.ZONE and OmniGrid. Translate complex grid logic into clear, accessible content.</p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag tag-remote">🌍 Remote</span><span class="tag tag-junior">Entry/Mid</span><span class="tag tag-new">New</span>
+            <span class="tag" style="background:#f0fdf4;color:#166534">Technical Writing</span>
+            <span class="tag" style="background:#eff6ff;color:#1e40af">Markdown</span>
+            <span class="tag" style="background:#faf5ff;color:#7e22ce">Docs</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-bold text-indigo-700 mb-1">R18 000 – R35 000/mo</div>
+          <div class="text-xs text-gray-400 mb-3">+ Scroll Rewards</div>
+          <button class="apply-btn bg-indigo-600 text-white text-xs font-bold px-5 py-2 rounded-lg" onclick="openApply('Technical Content Writer — FAA Documentation')">Apply Now →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="no-results" class="hidden text-center py-16 text-gray-400">
+    <div class="text-4xl mb-4">🔍</div>
+    <p class="text-sm">No roles match your search. Try a different filter or keyword.</p>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-8 mt-12 mb-8">
+    <h2 class="text-xl font-bold text-gray-800 mb-6 text-center">Why Join the FAA.ZONE Ecosystem?</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="text-center p-4"><div class="text-3xl mb-2">🌍</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Fully Remote</h3><p class="text-xs text-gray-500">Work from anywhere. We operate across Africa, Europe, and globally with async-first culture.</p></div>
+      <div class="text-center p-4"><div class="text-3xl mb-2">🍇</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Meaningful Work</h3><p class="text-xs text-gray-500">Build infrastructure that operates at the scale of the Earth's Financial Allocation Architecture — 56 sectors, 94 repos.</p></div>
+      <div class="text-center p-4"><div class="text-3xl mb-2">🪙</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Scroll Rewards</h3><p class="text-xs text-gray-500">All roles include FAA Scroll loyalty rewards, giving you stake in the ecosystem you help build.</p></div>
+      <div class="text-center p-4"><div class="text-3xl mb-2">📡</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Cutting Edge Stack</h3><p class="text-xs text-gray-500">Cloudflare Workers, React 19, FIPS 204 post-quantum cryptography, Hono, D1 — always at the frontier.</p></div>
+      <div class="text-center p-4"><div class="text-3xl mb-2">🌱</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Impact at Scale</h3><p class="text-xs text-gray-500">Your code runs across 94 repositories and serves sectors from Agriculture to Quantum Protocols.</p></div>
+      <div class="text-center p-4"><div class="text-3xl mb-2">📈</div><h3 class="font-bold text-gray-800 mb-1 text-sm">Equity Participation</h3><p class="text-xs text-gray-500">Senior roles carry equity. Grow with the ecosystem from the ground floor of something original.</p></div>
+    </div>
+  </div>
+
+  <footer class="text-center text-xs text-gray-400 pt-6 border-t">
+    <p>FAA.ZONE™ Careers · Powered by OmniGrid · GC7:FSP2021121654:4400302974:VM9s:BL1501:GHOST7CHAIN:FAA13713</p>
+    <p class="mt-1">
+      <a href="/public/omnigrid_admin_portal.html" class="text-indigo-400 hover:text-indigo-600">← Admin Portal</a> &nbsp;|&nbsp;
+      <a href="../admin/admin-portal-approval.html" class="text-indigo-400 hover:text-indigo-600">🔐 Access Portal</a> &nbsp;|&nbsp;
+      <a href="mailto:careers@faa.zone" class="text-indigo-400 hover:text-indigo-600">careers@faa.zone</a>
+    </p>
+  </footer>
+</div>
+
+<div id="apply-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full mx-4">
+    <h3 class="text-lg font-bold text-gray-800 mb-1">Apply: <span id="modal-role"></span></h3>
+    <p class="text-xs text-gray-400 mb-5">Remote · FAA.ZONE Ecosystem</p>
+    <div class="space-y-3">
+      <input type="text" placeholder="Full name" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <input type="email" placeholder="Email address" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <input type="url" placeholder="GitHub / Portfolio / LinkedIn URL" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <textarea rows="4" placeholder="Why do you want this role? What will you bring to the FAA ecosystem?" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+    </div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="submitApplication()" class="apply-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2 rounded-lg text-sm flex-1">Submit Application</button>
+      <button onclick="closeModal()" class="border text-gray-500 hover:bg-gray-50 font-medium px-4 py-2 rounded-lg text-sm">Cancel</button>
+    </div>
+    <div id="modal-status" class="mt-3 hidden text-sm text-green-600 font-medium"></div>
+  </div>
+</div>
+
+<script>
+let activeFilter = 'all';
+function filterJobs(category, btn) {
+  activeFilter = category;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+function searchJobs(q) { applyFilters(q); }
+function applyFilters(search = document.getElementById('search').value) {
+  const cards = document.querySelectorAll('.job-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const catMatch = activeFilter === 'all' || card.dataset.category === activeFilter;
+    const searchMatch = !search || card.textContent.toLowerCase().includes(search.toLowerCase());
+    if (catMatch && searchMatch) { card.style.display = ''; visible++; }
+    else { card.style.display = 'none'; }
+  });
+  document.getElementById('no-results').classList.toggle('hidden', visible > 0);
+  document.getElementById('open-count').textContent = visible;
+}
+function openApply(role) {
+  document.getElementById('modal-role').textContent = role;
+  document.getElementById('apply-modal').classList.remove('hidden');
+  document.getElementById('modal-status').classList.add('hidden');
+}
+function closeModal() { document.getElementById('apply-modal').classList.add('hidden'); }
+function submitApplication() {
+  const el = document.getElementById('modal-status');
+  el.textContent = '✅ Application submitted! We will be in touch within 48 hours.';
+  el.classList.remove('hidden');
+  setTimeout(closeModal, 2500);
+}
+</script>
+</body>
+</html>

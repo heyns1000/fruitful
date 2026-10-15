@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeNest™ Dashboard: Settings Panel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Palette & Base Styles */
+        :root {
+            --primary-color: #007BFF; /* Bright Blue */
+            --secondary-color: #28A745; /* Vibrant Green */
+            --accent-color: #FFC107; /* Gold/Yellow */
+            --background-dark: #1A202C; /* Dark Grey-Blue, adjusted slightly for contrast */
+            --card-background: #2D3748; /* Slightly lighter dark for cards */
+            --text-light: #E2E8F0; /* Light text on dark backgrounds */
+            --text-muted: #A0AEC0; /* Muted text */
+            --border-color: #4A5568; /* Border for elements */
+            --input-background: #252F3F; /* Darker input fields */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main Dashboard Container */
+        .dashboard-container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            margin: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 2.25rem; /* text-3xl */
+            font-weight: 800; /* font-extrabold */
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Tab Navigation */
+        .settings-tab-nav {
+            display: flex;
+            flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+            gap: 10px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            justify-content: center; /* Center tabs */
+        }
+        .settings-tab-btn {
+            padding: 10px 20px;
+            border-radius: 9999px; /* Full rounded */
+            background-color: var(--input-background);
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid var(--input-background);
+            white-space: nowrap; /* Prevent text wrapping inside button */
+        }
+        .settings-tab-btn:hover {
+            background-color: var(--border-color);
+            color: var(--text-light);
+        }
+        .settings-tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Sub-views */
+        .settings-sub-view {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-out;
+        }
+        .settings-sub-view.active {
+            display: block; /* Shown when active */
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-background);
+            color: var(--text-light);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Action Button */
+        .action-button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .action-button.primary {
+            background-color: var(--primary-color);
+        }
+        .action-button.primary:hover {
+            background-color: #0056b3; /* Darker blue */
+            transform: translateY(-2px);
+        }
+        .action-button.secondary {
+            background-color: var(--secondary-color);
+        }
+        .action-button.secondary:hover {
+            background-color: #218838; /* Darker green */
+            transform: translateY(-2px);
+        }
+        .action-button.accent {
+            background-color: var(--accent-color);
+            color: #1a202c; /* Dark text for yellow button */
+        }
+        .action-button.accent:hover {
+            background-color: #d6a100; /* Darker yellow */
+            transform: translateY(-2px);
+        }
+        .action-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-table th {
+            background-color: var(--input-background);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+        .data-table tbody tr:hover {
+            background-color: #374151; /* Slightly lighter on hover */
+        }
+        .data-table td .button-group button {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-left: 8px;
+        }
+
+        /* AI Output & Status */
+        .ai-output-box {
+            background-color: var(--input-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 80px; /* Ensure some height for content */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-style: italic;
+            color: var(--text-muted);
+            position: relative; /* For copy button */
+        }
+        .ai-output-box pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: left;
+            width: 100%;
+            font-style: normal;
+            color: var(--text-light);
+        }
+        .ai-status-message {
+            margin-top: 0.75rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .ai-status-message.loading {
+            color: var(--primary-color);
+        }
+        .ai-status-message.success {
+            color: var(--secondary-color);
+        }
+        .ai-status-message.error {
+            color: #EF4444; /* Red */
+        }
+
+        /* Copy Button for AI Output */
+        .copy-button-small {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+        .copy-button-small:hover {
+            opacity: 1;
+        }
+
+        /* Custom Modal */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .custom-modal-content {
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+        .custom-modal-content .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .custom-modal-content .close-button:hover {
+            color: var(--text-light);
+        }
+        .custom-modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        .custom-modal-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Email Draft Modal specific */
+        .email-draft-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 10px;
+        }
+        .email-draft-controls button {
+            flex-grow: 1;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1 class="section-title">⚙️ CodeNest™ Dashboard: Settings Panel</h1>
+
+        <!-- Settings Tab Navigation -->
+        <nav class="settings-tab-nav">
+            <button class="settings-tab-btn" data-settings-tab="profile">Profile</button>
+            <button class="settings-tab-btn" data-settings-tab="preferences">Preferences</button>
+            <button class="settings-tab-btn" data-settings-tab="security">Security</button>
+            <button class="settings-tab-btn" data-settings-tab="domains">Domain & Cloud Services</button>
+        </nav>
+
+        <!-- Settings Sub-views Container -->
+        <div id="settingsView" class="settings-view">
+
+            <!-- Profile Sub-view -->
+            <div id="settings-profile" class="settings-sub-view">
+                <h2 class="text-xl font-bold mb-4 text-text-light">User Profile Settings</h2>
+                <div class="form-group">
+                    <label for="displayName" class="form-label">Display Name</label>
+                    <input type="text" id="displayName" class="form-input" value="Heyns Simson" placeholder="Your display name">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" value="heyns@faa.zone" placeholder="Your email address">
+                </div>
+                <button id="updateProfileButton" class="action-button primary w-full">Update Profile</button>
+            </div>
+
+            <!-- Preferences Sub-view -->
+            <div id="settings-preferences" class="settings-sub-view">
+                <h2 class="text-xl font-bold mb-4 text-text-light">Scroll Preferences</h2>
+                <div class="form-group">
+                    <label for="defaultRegion" class="form-label">Default Deployment Region</label>
+                    <select id="defaultRegion" class="form-select">
+                        <option value="us-east-1">US East (N. Virginia)</option>
+                        <option value="eu-central-1">EU (Frankfurt)</option>
+                        <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="autoClaimSetting" class="form-label">Auto-enable ClaimRoot™ Licensing</label>
+                    <select id="autoClaimSetting" class="form-select">
+                        <option value="enabled">Enabled (Recommended for automation)</option>
+                        <option value="disabled">Disabled (Manual claim process)</option>
+                    </select>
+                </div>
+                <button id="savePreferencesButton" class="action-button primary w-full">Save Preferences</button>
+            </div>
+
+            <!-- Security Sub-view -->
+            <div id="settings-security" class="settings-sub-view">
+                <h2 class="text-xl font-bold mb-4 text-text-light">Account Security</h2>
+                <div class="form-group">
+                    <label for="password" class="form-label">New Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                </div>
+                <button id="updatePasswordButton" class="action-button primary w-full">Update Password</button>
+
+                <!-- NEW: AI-powered Security Best Practices -->
+                <div class="bg-card-background p-6 rounded-lg mt-6 border border-border-color">
+                    <h3 class="text-lg font-bold text-accent-color mb-4">✨ AI Security Best Practices</h3>
+                    <div class="form-group">
+                        <label for="securityTopicInput" class="form-label">Security Topic/Question</label>
+                        <input type="text" id="securityTopicInput" class="form-input" placeholder="e.g., password strength, 2FA, phishing protection">
+                    </div>
+                    <button id="getSecurityTipsBtn" class="action-button secondary w-full">Get Security Tips ✨</button>
+                    <p id="securityTipsStatus" class="ai-status-message hidden"></p>
+                    <div id="securityTipsOutput" class="ai-output-box hidden">
+                        <pre>AI generated security tips will appear here...</pre>
+                        <button class="copy-button-small" onclick="copyAiOutput('securityTipsOutput')">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Domain & Cloud Services Mini-Dashboard -->
+            <div id="settings-domains" class="settings-sub-view">
+                <h2 class="text-xl font-bold mb-4 text-text-light">Domain & Cloud Services (Mini-Dashboard)</h2>
+                <p class="text-sm text-text-muted mb-6">Manage DNS records, domains, and email accounts across integrated cloud services (Plesk, Zoho, Cloudflare, Vercel).</p>
+
+                <!-- DNS Zone Management Section -->
+                <div class="bg-card-background p-6 rounded-lg mb-6 border border-border-color">
+                    <h3 class="text-lg font-bold text-accent-color mb-4">DNS Zone Management</h3>
+                    <div class="form-group">
+                        <label for="dnsRecordTypeInput" class="form-label">DNS Record Type to Explain</label>
+                        <input type="text" id="dnsRecordTypeInput" class="form-input" placeholder="e.g., A, CNAME, MX, TXT">
+                    </div>
+                    <button id="explainDnsBtn" class="action-button secondary w-full">Explain DNS Type <span class="loading-spinner hidden"></span></button>
+                    <p id="dnsExplainStatus" class="ai-status-message hidden"></p>
+                    <div id="dnsExplanationOutput" class="ai-output-box hidden">
+                        <pre>AI explanation will appear here...</pre>
+                        <button class="copy-button-small" onclick="copyAiOutput('dnsExplanationOutput')">Copy</button>
+                    </div>
+
+                    <!-- NEW: AI-powered DNS Record Value Suggestion -->
+                    <div class="mt-6 pt-6 border-t border-border-color">
+                        <h4 class="text-md font-semibold text-text-light mb-2">✨ AI DNS Value Suggestion</h4>
+                        <div class="form-group">
+                            <label for="dnsSuggestTypeInput" class="form-label">Record Type</label>
+                            <input type="text" id="dnsSuggestTypeInput" class="form-input" placeholder="e.g., A, CNAME, MX">
+                        </div>
+                        <div class="form-group">
+                            <label for="dnsSuggestNameInput" class="form-label">Record Name</label>
+                            <input type="text" id="dnsSuggestNameInput" class="form-input" placeholder="e.g., @, www, mail">
+                        </div>
+                        <button id="suggestDnsValueBtn" class="action-button accent w-full">Suggest DNS Value ✨</button>
+                        <p id="dnsSuggestStatus" class="ai-status-message hidden"></p>
+                        <div id="dnsSuggestOutput" class="ai-output-box hidden">
+                            <pre>AI suggested value will appear here...</pre>
+                            <button class="copy-button-small" onclick="copyAiOutput('dnsSuggestOutput')">Copy</button>
+                        </div>
+                    </div>
+
+
+                    <h4 class="text-md font-semibold text-text-light mb-2 mt-6">Current DNS Records:</h4>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>TTL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dnsRecordsTableBody">
+                                <!-- DNS records will be rendered here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button id="addDnsRecordButton" class="action-button primary mt-4 w-full">Add New DNS Record</button>
+                </div>
+
+                <!-- Domain Management Section -->
+                <div class="bg-card-background p-6 rounded-lg mb-6 border border-border-color">
+                    <h3 class="text-lg font-bold text-accent-color mb-4">Domain Management</h3>
+                    <h4 class="text-md font-semibold text-text-light mb-2">Primary Domains:</h4>
+                    <ul id="domainList" class="list-disc list-inside space-y-2 mb-4 pl-4">
+                        <!-- Domains will be rendered here by JavaScript -->
+                    </ul>
+
+                    <div class="form-group">
+                        <label for="newDomainName" class="form-label">New Primary Domain</label>
+                        <input type="text" id="newDomainName" class="form-input" placeholder="e.g., mynewbrand.com">
+                    </div>
+                    <button id="addDomainButton" class="action-button primary w-full">Add Primary Domain</button>
+
+                    <div class="form-group mt-6">
+                        <label for="newAddonDomainName" class="form-label">New Add-on Domain</label>
+                        <input type="text" id="newAddonDomainName" class="form-input" placeholder="e.g., addon.mynewbrand.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="addonDomainTarget" class="form-label">Target Primary Domain for Add-on</label>
+                        <select id="addonDomainTarget" class="form-select">
+                            <!-- Options populated dynamically from appData.domains -->
+                        </select>
+                    </div>
+                    <button id="addAddOnButton" class="action-button primary w-full">Add Add-on Domain</button>
+
+                    <button id="deployInSilenceButton" class="action-button secondary w-full mt-6">✨ Deploy All Changes (Silent Deployment)</button>
+                </div>
+
+                <!-- Email Accounts Section -->
+                <div class="bg-card-background p-6 rounded-lg border border-border-color">
+                    <h3 class="text-lg font-bold text-accent-color mb-4">Email Accounts</h3>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Email Address</th>
+                                    <th>Storage Used</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailAccountsTableBody">
+                                <!-- Email accounts will be rendered here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="newEmailPrefix" class="form-label">New Email Account Prefix</label>
+                        <input type="text" id="newEmailPrefix" class="form-input" placeholder="e.g., info">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmailDomain" class="form-label">Domain for New Email</label>
+                        <select id="newEmailDomain" class="form-select">
+                            <!-- Options populated dynamically from appData.domains -->
+                        </select>
+                    </div>
+                    <button id="createEmailBtn" class="action-button primary w-full">Create Email Account</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModalOverlay" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <button class="close-button" onclick="closeCustomModal()">&times;</button>
+            <h3 id="customModalTitle"></h3>
+            <p id="customModalMessage"></p>
+            <button class="action-button primary w-full" onclick="closeCustomModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Email Draft Modal Structure -->
+    <div id="emailDraftModalOverlay" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <button class="close-button" onclick="closeEmailDraftModal()">&times;</button>
+            <h3 class="text-accent-color mb-4">Draft Email for <span id="draftFromEmail"></span></h3>
+            <div class="form-group">
+                <label for="emailPurposeInput" class="form-label">Purpose of Email</label>
+                <input type="text" id="emailPurposeInput" class="form-input" placeholder="e.g., onboarding new client, quarterly report">
+            </div>
+            <button id="generateEmailDraftBtn" class="action-button secondary w-full">Generate Draft ✨</button>
+            <p id="emailDraftStatus" class="ai-status-message hidden"></p>
+            <div id="generatedEmailDraftOutput" class="ai-output-box mt-4">
+                <pre>AI generated draft will appear here...</pre>
+                <button class="copy-button-small" onclick="copyAiOutput('generatedEmailDraftOutput')">Copy</button>
+            </div>
+            <div class="email-draft-controls">
+                <button class="action-button primary" onclick="closeEmailDraftModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Dummy data to simulate backend data for the settings panel
+        const appData = {
+            dnsRecords: [
+                { type: 'A', name: '@', value: '192.0.2.1', ttl: 3600 },
+                { type: 'CNAME', name: 'www', value: 'example.vercel.app', ttl: 3600 },
+                { type: 'MX', name: '@', value: 'mx.zoho.com', ttl: 3600 },
+                { type: 'TXT', name: 'default._domainkey', value: 'v=DKIM1; k=rsa; p=...', ttl: 3600 },
+                { type: 'TXT', name: '@', value: 'v=spf1 include:zoho.com ~all', ttl: 3600 },
+            ],
+            domains: [
+                'faa.zone',
+                'seedwave.faa.zone',
+                'codenest.faa.zone',
+                'vaultmesh.com'
+            ],
+            emailAccounts: [
+                { email: 'info@faa.zone', storage: '1.2 GB' },
+                { email: 'support@seedwave.faa.zone', storage: '0.8 GB' },
+                { email: 'admin@codenest.faa.zone', storage: '2.5 GB' }
+            ]
+        };
+
+        // --- Utility Functions ---
+
+        // Function to show a custom modal with a message
+        function showCustomModal(title, message) {
+            document.getElementById('customModalTitle').textContent = title;
+            document.getElementById('customModalMessage').textContent = message;
+            document.getElementById('customModalOverlay').classList.remove('hidden');
+        }
+
+        // Function to close the custom modal
+        function closeCustomModal() {
+            document.getElementById('customModalOverlay').classList.add('hidden');
+        }
+
+        // Function to open the email draft modal
+        function openEmailDraftModal(fromEmail) {
+            document.getElementById('draftFromEmail').textContent = fromEmail;
+            document.getElementById('emailPurposeInput').value = ''; // Clear previous input
+            document.getElementById('generatedEmailDraftOutput').querySelector('pre').textContent = 'AI generated draft will appear here...'; // Reset output
+            document.getElementById('emailDraftStatus').classList.add('hidden'); // Hide status
+            document.getElementById('emailDraftModalOverlay').classList.remove('hidden');
+        }
+
+        // Function to close the email draft modal
+        function closeEmailDraftModal() {
+            document.getElementById('emailDraftModalOverlay').classList.add('hidden');
+        }
+
+        // Function to copy text from an AI output box
+        function copyAiOutput(outputElementId) {
+            const outputElement = document.getElementById(outputElementId);
+            const textToCopy = outputElement.querySelector('pre').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showCustomModal('Copied!', 'The generated text has been copied to your clipboard.');
+            }).catch(err => {
+                console.error('Failed to copy AI output: ', err);
+                // Fallback for environments where clipboard.writeText might not work (e.g., some iframes)
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showCustomModal('Copied (Fallback)!', 'The generated text has been copied to your clipboard using a fallback method.');
+            });
+        }
+
+        // Function to call Gemini API for text generation (re-usable)
+        async function call_gemini_api(prompt, outputElementId, statusElementId, buttonElement, originalButtonText) {
+            const outputElement = document.getElementById(outputElementId);
+            const statusElement = document.getElementById(statusElementId);
+
+            if (!prompt.trim()) {
+                statusElement.textContent = 'Please enter a valid prompt.';
+                statusElement.className = 'ai-status-message error';
+                statusElement.classList.remove('hidden');
+                return;
+            }
+
+            // Reset UI for new call
+            outputElement.classList.add('hidden'); // Hide until content is ready
+            outputElement.querySelector('pre').textContent = ''; // Clear previous content
+            statusElement.textContent = 'Generating...';
+            statusElement.className = 'ai-status-message loading';
+            statusElement.classList.remove('hidden');
+            if (buttonElement) {
+                buttonElement.disabled = true;
+                // Check if the button has a specific loading spinner span
+                const loadingSpinner = buttonElement.querySelector('.loading-spinner');
+                if (loadingSpinner) {
+                    loadingSpinner.classList.remove('hidden');
+                } else {
+                    // Fallback to changing button text if no specific spinner
+                    buttonElement.textContent = 'Generating...';
+                }
+            }
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide this during runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    outputElement.querySelector('pre').textContent = text;
+                    outputElement.classList.remove('hidden');
+                    statusElement.textContent = 'Generated successfully!';
+                    statusElement.className = 'ai-status-message success';
+                } else {
+                    statusElement.textContent = 'Error: No AI answer. Please try again.';
+                    statusElement.className = 'ai-status-message error';
+                    outputElement.querySelector('pre').textContent = 'Could not retrieve AI response.';
+                    outputElement.classList.remove('hidden');
+                    console.error("Gemini API response was unexpected or missing content:", result);
+                    if (result.error && result.error.message) {
+                        statusElement.textContent += ` Reason: ${result.error.message}`;
+                    }
+                }
+            } catch (error) {
+                statusElement.textContent = `Error: API connection failed. ${error.message}`;
+                statusElement.className = 'ai-status-message error';
+                outputElement.querySelector('pre').textContent = 'Failed to connect to the AI service.';
+                outputElement.classList.remove('hidden');
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                if (buttonElement) {
+                    buttonElement.disabled = false;
+                    const loadingSpinner = buttonElement.querySelector('.loading-spinner');
+                    if (loadingSpinner) {
+                        loadingSpinner.classList.add('hidden');
+                    } else {
+                        buttonElement.textContent = originalButtonText; // Restore original text
+                    }
+                }
+            }
+        }
+
+        // --- Settings Panel Logic ---
+
+        // Function to show a specific settings tab and hide others
+        function show_settings_tab(tabName) {
+            // Hide all sub-views
+            document.querySelectorAll('.settings-sub-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            // Deactivate all tab buttons
+            document.querySelectorAll('.settings-tab-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show the selected sub-view
+            const selectedView = document.getElementById(`settings-${tabName}`);
+            if (selectedView) {
+                selectedView.classList.add('active');
+            }
+
+            // Activate the corresponding tab button
+            const selectedButton = document.querySelector(`.settings-tab-btn[data-settings-tab="${tabName}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+            }
+
+            // Specific rendering for the 'domains' mini-dashboard
+            if (tabName === 'domains') {
+                render_dns_records();
+                render_domains();
+                render_email_accounts();
+            }
+        }
+
+        // Function to populate DNS records table
+        function render_dns_records() {
+            const tbody = document.getElementById('dnsRecordsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = ''; // Clear existing rows
+
+            if (appData.dnsRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-text-muted">No DNS records found.</td></tr>`;
+                return;
+            }
+
+            appData.dnsRecords.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.type}</td>
+                    <td>${record.name}</td>
+                    <td><span class="text-text-muted text-sm break-all">${record.value}</span></td>
+                    <td>${record.ttl}</td>
+                    <td class="button-group">
+                        <button class="action-button primary text-sm" onclick="showCustomModal('Edit Record', 'Edit functionality for ${record.type} record coming soon!')">Edit</button>
+                        <button class="action-button primary text-sm !bg-red-600 hover:!bg-red-700" onclick="showCustomModal('Delete Record', 'Delete functionality for ${record.type} record coming soon!')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Function to populate domains list and dropdowns
+        function render_domains() {
+            const domainList = document.getElementById('domainList');
+            const addonDomainTargetSelect = document.getElementById('addonDomainTarget');
+            const newEmailDomainSelect = document.getElementById('newEmailDomain');
+
+            if (!domainList || !addonDomainTargetSelect || !newEmailDomainSelect) return;
+
+            domainList.innerHTML = ''; // Clear existing
+            addonDomainTargetSelect.innerHTML = '<option value="">-- Select Primary Domain --</option>';
+            newEmailDomainSelect.innerHTML = '<option value="">-- Select Domain --</option>';
+
+            if (appData.domains.length === 0) {
+                domainList.innerHTML = `<li class="text-center text-text-muted">No domains found.</li>`;
+            }
+
+            appData.domains.forEach(domain => {
+                const listItem = document.createElement('li');
+                listItem.textContent = domain;
+                domainList.appendChild(listItem);
+
+                const option1 = document.createElement('option');
+                option1.value = domain;
+                option1.textContent = domain;
+                addonDomainTargetSelect.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = domain;
+                option2.textContent = domain;
+                newEmailDomainSelect.appendChild(option2);
+            });
+        }
+
+        // Function to populate email accounts table
+        function render_email_accounts() {
+            const tbody = document.getElementById('emailAccountsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = ''; // Clear existing rows
+
+            if (appData.emailAccounts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-text-muted">No email accounts found.</td></tr>`;
+                return;
+            }
+
+            appData.emailAccounts.forEach(account => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${account.email}</td>
+                    <td>${account.storage}</td>
+                    <td class="button-group">
+                        <button class="action-button primary text-sm" onclick="showCustomModal('Edit Account', 'Edit functionality for ${account.email} coming soon!')">Edit</button>
+                        <button class="action-button primary text-sm !bg-red-600 hover:!bg-red-700" onclick="showCustomModal('Delete Account', 'Delete functionality for ${account.email} coming soon!')">Delete</button>
+                        <button class="action-button accent text-sm" onclick="openEmailDraftModal('${account.email}')">Draft Email</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // --- Event Listeners and Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial load: show default tab (Profile)
+            show_settings_tab('profile');
+
+            // Attach event listeners for tab navigation
+            document.querySelectorAll('.settings-tab-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const tabName = event.target.dataset.settingsTab;
+                    show_settings_tab(tabName);
+                });
+            });
+
+            // Attach event listeners for simulated save/add/deploy buttons
+            document.getElementById('updateProfileButton')?.addEventListener('click', () => {
+                showCustomModal('Profile Updated!', 'Your profile information has been successfully updated.');
+            });
+            document.getElementById('savePreferencesButton')?.addEventListener('click', () => {
+                showCustomModal('Preferences Saved!', 'Your scroll preferences have been saved.');
+            });
+            document.getElementById('updatePasswordButton')?.addEventListener('click', () => {
+                showCustomModal('Password Updated!', 'Your password has been successfully changed.');
+            });
+            document.getElementById('addDnsRecordButton')?.addEventListener('click', () => {
+                showCustomModal('Coming Soon!', 'Adding DNS Record functionality is coming soon!');
+            });
+            document.getElementById('addDomainButton')?.addEventListener('click', () => {
+                showCustomModal('Coming Soon!', 'Adding primary domain functionality is coming soon!');
+            });
+            document.getElementById('addAddOnButton')?.addEventListener('click', () => {
+                showCustomModal('Coming Soon!', 'Adding add-on domain functionality is coming soon!');
+            });
+            document.getElementById('createEmailBtn')?.addEventListener('click', () => {
+                showCustomModal('Coming Soon!', 'Creating email account functionality is coming soon!');
+            });
+
+            // --- Silent Deployment Button Logic ---
+            document.getElementById('deployInSilenceButton')?.addEventListener('click', () => {
+                // Simulate the start of a complex backend workflow
+                showCustomModal('Silent Deploy Initiated!', `
+                    Global deployment workflow has been initiated.
+                    This process involves:
+                    1. Packaging frontend assets.
+                    2. Triggering Vercel deployments across all projects.
+                    3. Configuring Cloudflare DNS and proxy settings for all domains.
+                    4. Configuring Zoho Mail MX records via Cloudflare API.
+                    5. Logging global deployment event.
+                    <br><br>
+                    This is fully automated. No helpline needed.
+                `);
+                // In a real application, this would trigger an actual API call to a backend service.
+                console.log("Simulating: Triggering GLOBAL_DEPLOYMENT_LOGIC_START...");
+            });
+
+            // --- AI Integration Buttons ---
+            // Explain DNS Type Button
+            document.getElementById('explainDnsBtn')?.addEventListener('click', () => {
+                const dnsRecordType = document.getElementById('dnsRecordTypeInput').value;
+                const prompt = `Explain the purpose and common usage of a DNS record type: "${dnsRecordType}". Be concise and clear, suitable for a developer or IT professional.`;
+                call_gemini_api(prompt, 'dnsExplanationOutput', 'dnsExplainStatus', document.getElementById('explainDnsBtn'), 'Explain DNS Type ✨');
+            });
+
+            // NEW: AI-powered DNS Record Value Suggestion
+            document.getElementById('suggestDnsValueBtn')?.addEventListener('click', () => {
+                const recordType = document.getElementById('dnsSuggestTypeInput').value.trim();
+                const recordName = document.getElementById('dnsSuggestNameInput').value.trim();
+
+                if (!recordType) {
+                    document.getElementById('dnsSuggestStatus').textContent = 'Please enter a DNS record type.';
+                    document.getElementById('dnsSuggestStatus').className = 'ai-status-message error';
+                    document.getElementById('dnsSuggestStatus').classList.remove('hidden');
+                    return;
+                }
+
+                const prompt = `Provide a typical example value for a DNS record of type "${recordType}" with name "${recordName}". Be concise and provide only the example value, no additional text or explanation. If it's a common record like 'A' for '@' or 'www', suggest a generic IP or hostname. If it's 'MX', provide a common mail server hostname. For 'TXT' records like SPF or DKIM, provide a simplified example.`;
+                call_gemini_api(prompt, 'dnsSuggestOutput', 'dnsSuggestStatus', document.getElementById('suggestDnsValueBtn'), 'Suggest DNS Value ✨');
+            });
+
+            // Generate Email Draft Button (inside email draft modal)
+            document.getElementById('generateEmailDraftBtn')?.addEventListener('click', () => {
+                const fromEmail = document.getElementById('draftFromEmail').textContent;
+                const emailPurpose = document.getElementById('emailPurposeInput').value;
+                const prompt = `Draft a concise professional email from "${fromEmail}" with the purpose: "${emailPurpose}". Include a professional greeting, state the purpose clearly, and a professional closing. Keep it to 3-5 sentences.`;
+                call_gemini_api(prompt, 'generatedEmailDraftOutput', 'emailDraftStatus', document.getElementById('generateEmailDraftBtn'), 'Generate Draft ✨');
+            });
+
+            // NEW: AI-powered Security Best Practices
+            document.getElementById('getSecurityTipsBtn')?.addEventListener('click', () => {
+                const securityTopic = document.getElementById('securityTopicInput').value.trim();
+                const prompt = `Provide 3-5 concise best practices or tips for the security topic: "${securityTopic}". Focus on actionable advice suitable for account security.`;
+                call_gemini_api(prompt, 'securityTipsOutput', 'securityTipsStatus', document.getElementById('getSecurityTipsBtn'), 'Get Security Tips ✨');
+            });
+        });
+    </script>
+</body>
+</html>

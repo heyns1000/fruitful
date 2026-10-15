@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Payment - FAA.ZONE</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 from ecosystem.html */
+        }
+        /* Custom styles for an enhanced button effect */
+        .featured-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .featured-button:hover {
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4); /* Stronger shadow on hover, using indigo-600 */
+        }
+
+        .featured-button:active {
+            transform: scale(0.98);
+        }
+
+        .featured-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transition: all 0.7s ease-out;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .featured-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Nav link styling from ecosystem.html */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: #475569; /* slate-600 */
+            text-decoration: none; /* Ensure no underline on links */
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #1e293b; /* slate-900 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+    <!-- Payment Form Container -->
+    <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full text-center border-t-8 border-indigo-600 animate-fade-in-down flex flex-col justify-between min-h-[600px]">
+        <div>
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8">
+                <span class="text-4xl">🦍</span> <!-- Larger gorilla icon -->
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1> <!-- Added Trademark symbol -->
+            </div>
+
+            <h2 class="text-4xl font-extrabold text-slate-800 mb-4 tracking-tight">
+                <span class="text-indigo-600">Secure</span> Your Payment
+            </h2>
+            <p class="text-lg text-slate-700 mb-8 leading-relaxed">
+                Finalize your purchase with confidence. Your details are safe with us.
+            </p>
+
+            <!-- PayFast Payment Form -->
+            <form action="{{ payfast_process_url }}" method="POST" class="space-y-6">
+                <!-- Hidden fields populated by Flask -->
+                {% for key, value in payment_data.items() %}
+                    <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endfor %}
+
+                <!-- Display fields (visible and editable by user) -->
+                <div class="flex flex-col items-start">
+                    <label for="item_name" class="text-slate-700 font-medium mb-1">Item Name:</label>
+                    <input type="text" id="item_name" name="item_name_display" value="{{ payment_data.item_name }}" readonly
+                           class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-slate-800">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="amount" class="text-slate-700 font-medium mb-1">Amount (ZAR):</label>
+                    <input type="text" id="amount" name="amount_display" value="R {{ payment_data.amount }}" readonly
+                           class="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-slate-800">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="item_description" class="text-slate-700 font-medium mb-1">Item Description (Optional):</label>
+                    <textarea id="item_description" name="item_description"
+                              class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
+                              rows="2" placeholder="e.g., Annual license for advanced business tools">{{ payment_data.item_description | default('') }}</textarea>
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="name_first" class="text-slate-700 font-medium mb-1">First Name:</label>
+                    <input type="text" id="name_first" name="name_first" value="{{ payment_data.name_first }}"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="name_last" class="text-slate-700 font-medium mb-1">Last Name:</label>
+                    <input type="text" id="name_last" name="name_last" value="{{ payment_data.name_last }}"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="email_address" class="text-slate-700 font-medium mb-1">Email Address:</label>
+                    <input type="email" id="email_address" name="email_address" value="{{ payment_data.email_address }}"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="cell_number" class="text-slate-700 font-medium mb-1">Cell Number (Optional):</label>
+                    <input type="tel" id="cell_number" name="cell_number" value="{{ payment_data.cell_number | default('') }}"
+                           placeholder="e.g., 0821234567"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="company_name" class="text-slate-700 font-medium mb-1">Company Name (Optional):</label>
+                    <input type="text" id="company_name" name="company_name" value="{{ payment_data.company_name | default('') }}"
+                           placeholder="Enter company name if applicable"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="vat_number" class="text-slate-700 font-medium mb-1">VAT Number (Optional):</label>
+                    <input type="text" id="vat_number" name="vat_number" value="{{ payment_data.vat_number | default('') }}"
+                           placeholder="Enter VAT number if applicable"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="custom_int1" class="text-slate-700 font-medium mb-1">Custom Reference 1 (Int, Optional):</label>
+                    <input type="number" id="custom_int1" name="custom_int1" value="{{ payment_data.custom_int1 | default('') }}"
+                           placeholder="e.g., 12345"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="custom_str1" class="text-slate-700 font-medium mb-1">Custom Reference 2 (String, Optional):</label>
+                    <input type="text" id="custom_str1" name="custom_str1" value="{{ payment_data.custom_str1 | default('') }}"
+                           placeholder="e.g., Internal Project ID"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <label for="payment_method" class="text-slate-700 font-medium mb-1">Preferred Payment Method (Optional):</label>
+                    <select id="payment_method" name="payment_method"
+                            class="w-full p-3 border border-slate-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                        <option value="">Any Available</option>
+                        <option value="ef">EFT</option>
+                        <option value="cc">Credit Card</option>
+                        <option value="dc">Debit Card</option>
+                        <option value="mp">Masterpass Scan to Pay</option>
+                        <option value="mc">Mobicred</option>
+                        <option value="sc">SCode</option>
+                        <option value="ss">SnapScan</option>
+                        <option value="zp">Zapper</option>
+                        <option value="mt">MoreTyme</option>
+                        <option value="rc">Store Card</option>
+                        <option value="mu">Mukuru</option>
+                        <option value="ap">Apple Pay</option>
+                        <option value="sp">Samsung Pay</option>
+                        <option value="cp">Capitec Pay</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-2 mt-4">
+                    <input type="checkbox" id="email_confirmation" name="email_confirmation" value="1"
+                           class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                    <label for="email_confirmation" class="text-slate-700 text-sm">Send me an email confirmation</label>
+                </div>
+
+                <div class="flex flex-col items-start" id="confirmation_address_field" style="display: none;">
+                    <label for="confirmation_address" class="text-slate-700 font-medium mb-1">Confirmation Email (Optional):</label>
+                    <input type="email" id="confirmation_address" name="confirmation_address" value="{{ payment_data.confirmation_address | default('') }}"
+                           placeholder="Override confirmation email address"
+                           class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                        class="featured-button w-full bg-indigo-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-400 focus:ring-opacity-75 relative">
+                    Buy Business Package Now
+                </button>
+            </form>
+        </div>
+
+        <!-- Navigation and Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200">
+            <!-- Back to Home Button/Link styled like nav-link -->
+            <a href="/" class="nav-link justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 001.414 1.414L5.414 9H17a1 1 0 110 2H5.414l3.293 3.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                Back to Home
+            </a>
+            <!-- FAA.ZONE Footer -->
+            <div class="text-xs text-slate-400">
+                <p>&copy; 2025 FAA.ZONE</p>
+                <p>Interactive SPA v1.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to toggle confirmation_address field based on checkbox
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailConfirmationCheckbox = document.getElementById('email_confirmation');
+            const confirmationAddressField = document.getElementById('confirmation_address_field');
+
+            function toggleConfirmationAddress() {
+                if (emailConfirmationCheckbox.checked) {
+                    confirmationAddressField.style.display = 'flex';
+                } else {
+                    confirmationAddressField.style.display = 'none';
+                }
+            }
+
+            emailConfirmationCheckbox.addEventListener('change', toggleConfirmationAddress);
+
+            // Set initial state based on default value
+            toggleConfirmationAddress();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="page_title">Fruitful Crate Dance Showcase - Sponsorship Tiers</title>
+    <!-- Removed PayPal SDK script as it was causing "Can not read window host" errors in this environment.
+         Direct PayPal links are now used for all transactions, which do not require the SDK. -->
+    
+    <!-- Tailwind CSS for utility classes and responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization (Impact Chart) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Inter for consistent typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for theming, allowing easy color scheme changes */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #121212;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e1e1e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Fruitful primary blue */
+            --minenest-color: #D2691E; /* Chocolate */
+            --minenest-accent-color: #E97451; /* Burnt Sienna */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+        }
+        /* Base body styles with smooth transitions for theme changes */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--bg-color-dark); /* Default to dark mode */
+            color: var(--text-color-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensures footer stays at the bottom */
+        }
+        /* Light mode specific styles, overriding dark mode defaults */
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+        /* Container for content centering and padding */
+        .container {
+            max-width: 1400px; /* Made wider for more content space */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        /* Header Bar Styling */
+        .top-header {
+            background-color: #1a1a1c; /* Dark background for header */
+            padding: 0.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color-dark);
+            position: sticky; /* Sticky header for navigation */
+            top: 0;
+            z-index: 1000;
+        }
+        .light-mode .top-header {
+            background-color: #ffffff;
+            border-bottom-color: var(--border-color-light);
+        }
+        .top-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-logo a {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text-color-dark);
+            text-decoration: none;
+        }
+        .light-mode .header-logo a {
+            color: var(--text-color-light);
+        }
+        .header-logo span {
+            color: var(--primary-color); /* Fruitful branding color */
+        }
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-controls button {
+            background-color: var(--card-bg-dark); /* Ensure dark background by default */
+            border: 1px solid var(--border-color-dark);
+            color: var(--muted-text-dark); /* Ensure dark text by default */
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        /* Style for select options, ensuring they are readable across themes */
+        .theme-controls select option {
+            background-color: #ffffff !important; /* Force white background for options */
+            color: #1d1d1f !important; /* Force dark text for options */
+        }
+        /* Only apply light-mode styles to buttons, as select is now fixed */
+        .light-mode .theme-controls button {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            color: var(--muted-text-light);
+        }
+        .theme-controls button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        /* Section padding and border styles */
+        .section-padding { padding: 80px 20px; border-bottom: 1px solid var(--border-color-dark); }
+        .light-mode .section-padding { border-bottom-color: var(--border-color-light); }
+        .section-padding:last-of-type { border-bottom: none; } /* No border on the last section */
+        .section-title { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 50px; }
+        
+        /* Specific styles for sponsorship tiers section */
+        .sponsorship-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+        }
+        .sponsorship-header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-color-dark);
+            margin-bottom: 0.5rem;
+        }
+        .light-mode .sponsorship-header h1 {
+            color: var(--text-color-light);
+        }
+        .sponsorship-header p {
+            font-size: 1.25rem;
+            color: var(--muted-text-dark);
+        }
+        .light-mode .sponsorship-header p {
+            color: var(--muted-text-light);
+        }
+
+        /* Styling for individual tier cards */
+        .tier-card {
+            background-color: var(--card-bg-dark);
+            border-radius: 16px;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color-dark);
+            height: 100%; /* Ensure cards fill the height of their grid cell */
+        }
+        .light-mode .tier-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+        }
+        .tier-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 45px -8px rgba(0, 0, 0, 0.15), 0 10px 15px -7px rgba(0, 0, 0, 0.08);
+        }
+        .tier-header-card { /* Renamed to avoid conflict with .tier-card */
+            border-bottom: 2px solid var(--border-color-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .light-mode .tier-header-card {
+            border-bottom-color: var(--border-color-light);
+        }
+        .tier-header-card h3 {
+            font-weight: 900;
+            color: var(--text-color-dark);
+        }
+        .light-mode .tier-header-card h3 {
+            color: var(--text-color-light);
+        }
+        .tier-header-card p {
+            color: var(--muted-text-dark);
+            font-size: 0.95rem;
+        }
+        .light-mode .tier-header-card p {
+            color: var(--muted-text-light);
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 1.5rem;
+            flex-grow: 1; /* Allow feature list to grow and push content down */
+        }
+        .feature-list li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-color-dark);
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            color: var(--muted-text-dark);
+        }
+        .light-mode .feature-list li {
+            border-bottom-color: var(--border-color-light);
+            color: var(--muted-text-light);
+        }
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-list i {
+            color: #10b981; /* Green for checkmark icons */
+            margin-right: 0.75rem;
+            margin-top: 0.2rem;
+        }
+        .value-section-wrapper { /* New wrapper for value boxes to control their combined height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0; /* Prevent shrinking */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .value-box {
+            border: 2px solid var(--border-color-dark);
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0; /* Prevent shrinking */
+            height: 120px; /* Fixed height for individual value boxes */
+            background-color: #2a2a2a; /* Darker background for value boxes in dark mode */
+            margin-bottom: 1rem; /* Space between value boxes */
+        }
+        .value-box:last-child {
+            margin-bottom: 0; /* No margin on the last value box */
+        }
+        .light-mode .value-box {
+            border-color: var(--border-color-light);
+            background-color: #f7fafc; /* Very light gray */
+        }
+        .value-box h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-color-dark);
+        }
+        .light-mode .value-box h4 {
+            color: var(--text-color-light);
+        }
+        .value-box p {
+            font-size: 1.8rem;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--text-color-dark);
+        }
+        .light-mode .value-box p {
+            color: var(--text-color-light);
+        }
+        .value-box.bg-green-100 { /* Specific override for green background */
+            background-color: #1f2a2a; /* Dark green for dark mode */
+            border-color: #059669; /* Stronger green border */
+        }
+        .light-mode .value-box.bg-green-100 {
+            background-color: #ecfdf5; /* Very light green */
+            border-color: #a7f3d0; /* Light green border */
+        }
+        .value-box .text-blue-600 {
+            color: #60a5fa; /* Lighter blue for investment in dark mode */
+        }
+        .light-mode .value-box .text-blue-600 {
+            color: #2563eb; /* Stronger blue for investment in light mode */
+        }
+        .value-box .text-green-600 {
+            color: #34d399; /* Lighter green for meals in dark mode */
+        }
+        .light-mode .value-box .text-green-600 {
+            color: #059669; /* Stronger green for meals in light mode */
+        }
+
+        /* Specific tier highlights for "Most Popular" or premium tiers */
+        .tier-card.border-blue-500 {
+            border-color: #3b82f6;
+            box-shadow: 0 15px 25px -5px rgba(59, 130, 246, 0.2), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+        }
+        .tier-card.border-yellow-500 {
+            border-color: #f59e0b;
+            box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.2), 0 8px 10px -6px rgba(245, 158, 11, 0.1);
+        }
+        .tier-card.border-blue-500 .tier-header-card h3 {
+            color: #3b82f6;
+        }
+        .tier-card.border-yellow-500 .tier-header-card h3 {
+            color: #f59e0b;
+        }
+
+        /* "Most Popular" badge styling */
+        .most-popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3b82f6;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Chart container styling for the impact chart */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px; /* Made wider */
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 500px;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: var(--card-bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .light-mode .chart-container {
+            background-color: var(--card-bg-light);
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+
+        /* Footer styling */
+        footer {
+            background-color: #1a1a1c; /* Dark background */
+            color: var(--muted-text-dark);
+            padding: 2rem;
+            font-size: 0.85rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color-dark);
+            margin-top: auto; /* Push footer to bottom */
+        }
+        .light-mode footer {
+            background-color: #f5f5f7;
+            color: var(--muted-text-light);
+            border-top-color: var(--border-color-light);
+        }
+        footer h3 {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        footer p {
+            color: var(--muted-text-dark);
+        }
+        .light-mode footer p {
+            color: var(--muted-text-light);
+        }
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+        .light-mode footer a {
+            color: var(--primary-color);
+        }
+        .light-mode footer a:hover {
+            color: #005bb5;
+        }
+        footer .fab {
+            font-size: 1.5rem;
+        }
+        footer .flex.justify-center.space-x-4 a {
+            color: var(--muted-text-dark);
+        }
+        .light-mode footer .flex.justify-center.space-x-4 a {
+            color: var(--muted-text-light);
+        }
+        footer .flex.justify-center.space-x-4 a:hover {
+            color: var(--text-color-dark);
+        }
+        .light-mode footer .flex.justify-center.space-x-4 a:hover {
+            color: var(--text-color-light);
+        }
+
+        /* Currency Converter Section specific styles */
+        .currency-converter-section .currency-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .currency-converter-section select,
+        .currency-converter-section input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #3a3a3e;
+            border: 1px solid var(--border-color-dark);
+            color: var(--text-color-dark);
+            font-size: 1rem;
+        }
+        .light-mode .currency-converter-section select,
+        .light-mode .currency-converter-section input[type="number"] {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+            color: var(--text-color-light);
+        }
+
+        .currency-converter-section select option {
+            background-color: #ffffff !important; /* Force white background for options */
+            color: #1d1d1f !important; /* Force dark text for options */
+        }
+
+        .currency-converter-section button {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+        .currency-converter-section button:hover {
+            background-color: #005bb5;
+        }
+        .currency-converter-section button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .currency-converter-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px dashed var(--border-color-dark);
+            border-radius: 0.5rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .light-mode .currency-converter-result {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+        }
+
+        /* Responsive adjustments for currency converter section */
+        @media (min-width: 640px) {
+            .currency-converter-section .currency-input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+            .currency-converter-section input[type="number"],
+            .currency-converter-section select {
+                flex: 1;
+            }
+            .currency-converter-section button {
+                width: auto;
+            }
+        }
+
+        /* Specific styles for the custom donation section */
+        .custom-donation-section {
+            background-color: var(--card-bg-dark);
+            border-radius: 16px;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .light-mode .custom-donation-section {
+            background-color: var(--card-bg-light);
+        }
+
+        .custom-donation-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-color-dark);
+        }
+
+        .light-mode .custom-donation-section h2 {
+            color: var(--text-color-light);
+        }
+
+        .custom-donation-section p {
+            color: var(--muted-text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .light-mode .custom-donation-section p {
+            color: var(--muted-text-light);
+        }
+
+        .custom-donation-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .custom-donation-input-group input[type="number"],
+        .custom-donation-input-group select {
+            width: 100%;
+            max-width: 300px; /* Constrain width for better aesthetics */
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #3a3a3e;
+            border: 1px solid var(--border-color-dark);
+            color: var(--text-color-dark);
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .light-mode .custom-donation-input-group input[type="number"],
+        .light-mode .custom-donation-input-group select {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+            color: var(--text-color-light);
+        }
+
+        .custom-donation-input-group .paypal-button-container {
+            width: 100%;
+            max-width: 300px; /* Match input width */
+        }
+
+        @media (min-width: 768px) {
+            .custom-donation-input-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header class="top-header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="#">Fruitful <span>Internal Portal</span></a>
+            </div>
+            <div class="controls-container">
+                <div class="theme-controls">
+                    <button id="theme-day-btn">☀️</button>
+                    <button id="theme-night-btn">🌙</button>
+                </div>
+                <div class="language-control">
+                    <select id="languageSwitcher" class="theme-controls"></select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="sponsorship-header">
+            <div class="container">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2" data-lang-key="sponsorship_main_title">Sponsorship Opportunities</h1>
+                <p class="text-xl" data-lang-key="sponsorship_subtitle">Join the Movement. Amplify Your Brand. Make a Difference.</p>
+                <!-- Spotify Embed iFrame for a musical touch -->
+                <div class="mt-8 mb-8 flex justify-center">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/6Yc1jKNswE2CEuRO43u291?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <div class="container">
+                <!-- Currency Selector for Pricing Tiers -->
+                <div class="flex justify-center items-center gap-4 mb-8">
+                    <label for="pricing-currency-select" class="text-lg font-medium" data-lang-key="select_pricing_currency_label">Display Prices In:</label>
+                    <select id="pricing-currency-select" class="p-2 rounded-lg text-lg bg-gray-700 text-white border border-gray-600">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8" id="sponsorship-tiers">
+                    <!-- Tier cards will be dynamically populated by JavaScript -->
+                </div>
+
+                <!-- New section for custom "Sponsor a Child in Need" donation -->
+                <div class="custom-donation-section">
+                    <h2 data-lang-key="sponsor_child_title">Sponsor a Child in Need</h2>
+                    <p data-lang-key="sponsor_child_desc">Your direct contribution helps provide essential meals and support. Enter any amount you wish to donate.</p>
+                    <div class="custom-donation-input-group">
+                        <input type="number" id="custom-amount-input" data-lang-key="custom_amount_placeholder" placeholder="Enter Amount" min="1" step="1" value="100" class="w-full p-3 rounded-lg text-lg">
+                        <select id="custom-currency-select" class="w-full p-3 rounded-lg text-lg"></select>
+                    </div>
+                    <div id="paypal-custom-donation-button" class="paypal-button-container mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <div class="container text-center">
+                <h3 class="text-2xl font-semibold mb-4 text-gray-800" data-lang-key="chart_title">Visualizing the Impact: Investment vs. Meals Donated</h3>
+                <p class="text-gray-600 mb-8 max-w-2xl mx-auto" data-lang-key="chart_description">This chart illustrates the direct relationship between your sponsorship level and the number of meals provided to children in need. As your investment grows, so does your direct, measurable impact on the community.</p>
+                <div class="chart-container">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency Converter Section -->
+        <section id="currency-converter-section" class="section-padding currency-converter-section">
+            <div class="container max-w-5xl mx-auto">
+                <h2 data-lang-key="currency_converter_title" class="section-title">💱 Global Currency Converter</h2>
+                <p data-lang-key="currency_converter_desc" class="text-center -mt-8 mb-6">Convert any currency globally using real-time exchange rates. Please note, this tool is for informational purposes only and uses a third-party API.</p>
+                
+                <div class="currency-input-group">
+                    <input type="number" id="amount-input" data-lang-key="amount_placeholder" placeholder="Amount" value="1" min="0.01" step="0.01" class="w-full p-3 rounded-lg text-lg">
+                    <select id="from-currency-select" class="w-full p-3 rounded-lg text-lg"></select>
+                    <i class="fas fa-exchange-alt text-2xl mx-4 text-gray-400"></i>
+                    <select id="to-currency-select" class="w-full p-3 rounded-lg text-lg"></select>
+                    <button id="convert-button" class="bg-blue-700 text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        <span data-lang-key="convert_button">Convert</span>
+                    </button>
+                </div>
+                <div id="currency-converter-result" class="mt-6 p-6 rounded-lg currency-converter-result">
+                    <p id="converted-result-text" class="text-lg" data-lang-key="currency_result_placeholder">Converted amount will appear here...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Global Footer -->
+    <footer class="py-8 px-6 md:px-12 text-center bg-f5f5f7 text-gray-600 border-t border-e8e8ed dark:bg-1a1a1a dark:text-gray-400 dark:border-333">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.zone/about.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            // Define translations for multiple languages
+            const translations = {
+                en: {
+                    "page_title": "Fruitful Crate Dance Showcase - Sponsorship Tiers",
+                    "sponsorship_main_title": "Sponsorship Opportunities",
+                    "sponsorship_subtitle": "Join the Movement. Amplify Your Brand. Make a Difference.",
+                    "chart_title": "Visualizing the Impact: Investment vs. Meals Donated",
+                    "chart_description": "This chart illustrates the direct relationship between your sponsorship level and the number of meals provided to children in need. As your investment grows, so does your direct, measurable impact on the community.",
+                    "lang_name": "English",
+                    "starter_title": "Starter", "starter_desc": "Entry-level Partnership",
+                    "local_champion_title": "Local Champion", "local_champion_desc": "Community-focused Engagement",
+                    "regional_partner_title": "Regional Partner", "regional_partner_desc": "Strong Regional Presence",
+                    "national_sponsor_title": "National Sponsor", "national_sponsor_desc": "Premier Nationwide Exposure",
+                    "investment_label": "Investment",
+                    "value_return_label": "Value-for-Value Return",
+                    "meals_donated_suffix": "Meals Donated",
+                    "key_features_label": "Key Features:",
+                    "feature_logo_website": "Logo on event website",
+                    "feature_social_mention": "Social media mention",
+                    "feature_event_passes": "Event Passes",
+                    "feature_all_starter": "All Starter benefits",
+                    "feature_logo_local_banners": "Logo on local event banners",
+                    "feature_small_booth": "Small on-site booth",
+                    "feature_product_placement": "Product placement opportunity",
+                    "feature_all_local_champion": "All Local Champion benefits",
+                    "feature_prominent_regional_logo": "Prominent logo on regional marketing",
+                    "feature_regional_press": "Mention in regional press releases",
+                    "feature_dedicated_social": "Dedicated social media post",
+                    "feature_vip_access": "VIP Access",
+                    "feature_vip_hospitality": "VIP Hospitality",
+                    "feature_all_regional_partner": "All Regional Partner benefits",
+                    "feature_national_marketing_logo": "Logo on all national marketing materials",
+                    "feature_stage_branding": "Stage announcement and branding",
+                    "feature_category_exclusivity": "Category exclusivity (e.g., \"Official Drink\")",
+                    "feature_branded_clothing": "Branded clothing (hats, sweatbands, t-shirts, pants, socks, shoes, logo placement on t-shirts)",
+                    "feature_national_crates": "Branding on 400,000 national crates (20-year lifespan, eco-friendly manufacturing from recycled materials, includes logic school suitcase roller crates for scholars)",
+                    "select_pricing_currency_label": "Display Prices In:",
+                    "currency_converter_title": "💱 Global Currency Converter",
+                    "currency_converter_desc": "Convert any currency globally using real-time exchange rates. Please note, this tool is for informational purposes only and uses a third-party API.",
+                    "amount_placeholder": "Amount",
+                    "convert_button": "Convert",
+                    "currency_result_placeholder": "Converted amount will appear here...",
+                    "invalid_amount": "Please enter a valid amount.",
+                    "currency_not_found": "Currency not found or exchange rate unavailable.",
+                    "error_conversion": "Error during conversion. Please try again.",
+                    "sponsor_child_title": "Sponsor a Child in Need",
+                    "sponsor_child_desc": "Your direct contribution helps provide essential meals and support. Enter any amount you wish to donate.",
+                    "custom_amount_placeholder": "Enter Amount",
+                    footerPrivacy: 'Privacy', footerTerms: 'Terms', footerContact: 'Contact', footerCopyrightLink: 'Copyright', footerDevelopers: 'Developers', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Fruitful', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'About', footerAccessibility: 'Accessibility', footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.', footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+                },
+                af: {
+                    "page_title": "Fruitful Crate Dance Showcase - Borgskapvlakke",
+                    "sponsorship_main_title": "Borgskapgeleenthede",
+                    "sponsorship_subtitle": "Sluit aan by die Beweging. Versterk Jou Handelsmerk. Maak 'n Verskil.",
+                    "chart_title": "Visualisering van die Impak: Belegging vs. Maaltye Geskenk",
+                    "chart_description": "Hierdie grafiek illustreer die direkte verband tussen jou borgskapvlak en die aantal maaltye wat aan behoeftige kinders verskaf word. Soos jou belegging groei, so ook jou direkte, meetbare impak op die gemeenskap.",
+                    "lang_name": "Afrikaans",
+                    "starter_title": "Beginner", "starter_desc": "Toegangsvlak Vennootskap",
+                    "local_champion_title": "Plaaslike Kampioen", "local_champion_desc": "Gemeenskapsgefokusde Betrokkenheid",
+                    "regional_partner_title": "Streeksvennoot", "regional_partner_desc": "Sterk Streeks teenwoordigheid",
+                    "national_sponsor_title": "Nasionale Borg", "national_sponsor_desc": "Vooraanstaande Nasionale Blootstelling",
+                    "investment_label": "Belegging",
+                    "value_return_label": "Waarde-vir-Waarde Terugkeer",
+                    "meals_donated_suffix": "Maaltye Geskenk",
+                    "key_features_label": "Sleutelkenmerke:",
+                    "feature_logo_website": "Logo op gebeurteniswebwerf",
+                    "feature_social_mention": "Sosiale media vermelding",
+                    "feature_event_passes": "Gebeurtenispasse",
+                    "feature_all_starter": "Alle Beginner voordele",
+                    "feature_logo_local_banners": "Logo op plaaslike gebeurtenisbanne",
+                    "feature_small_booth": "Klein op-terrein stand",
+                    "feature_product_placement": "Produkplasing geleentheid",
+                    "feature_all_local_champion": "Alle Plaaslike Kampioen voordele",
+                    "feature_prominent_regional_logo": "Prominente logo op streeksbemarking",
+                    "feature_regional_press": "Vermelding in streeksnuusvrystellings",
+                    "feature_dedicated_social": "Toegewyde sosiale media pos",
+                    "feature_vip_access": "BBP Toegang",
+                    "feature_vip_hospitality": "BBP Gasvryheid",
+                    "feature_all_regional_partner": "Alle Streeksvennoot voordele",
+                    "feature_national_marketing_logo": "Logo op alle nasionale bemarkingsmateriaal",
+                    "feature_stage_branding": "Verhoog aankondiging en handelsmerk",
+                    "feature_category_exclusivity": "Kategorie eksklusiwiteit (bv. \"Amptelike Drankie\")",
+                    "feature_branded_clothing": "Gebrandmerkde klere (hoede, sweetbande, T-hemde, broeke, sokkies, skoene, logo-plasing op T-hemde)",
+                    "feature_national_crates": "Handelsmerk op 400,000 nasionale kratte (20-jaar lewensduur, eko-vriendelike vervaardiging van herwinde materiale, sluit logiese skooltas-rolkratte vir skoliere in)",
+                    "select_pricing_currency_label": "Wys Pryse In:",
+                    "currency_converter_title": "💱 Wêreldwye Geldeenheid Omsetter",
+                    "currency_converter_desc": "Skakel enige geldeenheid wêreldwyd om met intydse wisselkoerse. Let wel, hierdie hulpmiddel is slegs vir inligtingdoeleindes en gebruik 'n derdeparty-API.",
+                    "amount_placeholder": "Bedrag",
+                    "convert_button": "Skakel om",
+                    "currency_result_placeholder": "Omgeskakelde bedrag sal hier verskyn...",
+                    "invalid_amount": "Voer asseblief 'n geldige bedrag in.",
+                    "currency_not_found": "Geldeenheid nie gevind nie of wisselkoers onbeskikbaar.",
+                    "error_conversion": "Fout tydens omskakeling. Probeer asseblief weer.",
+                    "sponsor_child_title": "Borg 'n Kind in Nood",
+                    "sponsor_child_desc": "Jou direkte bydrae help om noodsaaklike maaltye en ondersteuning te verskaf. Voer enige bedrag in wat jy wil skenk.",
+                    "custom_amount_placeholder": "Voer Bedrag in",
+                    footerPrivacy: 'Privaatheid', footerTerms: 'Bepalings', footerContact: 'Kontak', footerCopyrightLink: 'Kopiereg', footerDevelopers: 'Ontwikkelaars', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Vrugbaar', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Oor Ons', footerAccessibility: 'Toeganklikheid', footerCopyright: '© 2025 FAA™ Verdragstelsel™. Alle Regte Voorbehou.', footerPoweredBy: 'Aangedryf deur 🦍 gliewe + Vault API. Gesinkroniseer met Seedwave™.'
+                },
+                zu: {
+                    "page_title": "I-Fruitful Crate Dance Showcase - Izinhlelo Zokuxhasa",
+                    "sponsorship_main_title": "Amathuba Okuxhasa",
+                    "sponsorship_subtitle": "Joyina Umnyakazo. Khulisa Umkhiqizo Wakho. Yenza Umehluko.",
+                    "chart_title": "Ukubuka Umthelela: Utshalomali vs. Ukudla Okunikwe Umusa",
+                    "chart_description": "Le chart ikhombisa ubudlelwane obuphakathi kwezinga lokuxhasa kwakho kanye nenani lokudla okunikezwa zingane ezidingayo. Njengoba utshalomali lwakho lukhula, kanjalo nomthelela wakho oqondile, olinganisekayo emphakathini.",
+                    "lang_name": "isiZulu",
+                    "starter_title": "Isiqalo", "starter_desc": "Ubudlelwane bezinga lokuqala",
+                    "local_champion_title": "Umpetha Wendawo", "local_champion_desc": "Ukuzibandakanya Okugxile emphakathini",
+                    "regional_partner_title": "Uzakwethu Wesifunda", "regional_partner_desc": "Ukuba khona okuqinile kwesifunda",
+                    "national_sponsor_title": "Umxhasi Kazwelonke", "national_sponsor_desc": "Ukuchayeka Okuhamba Phambili Kuzwelonke",
+                    "investment_label": "Utshalomali",
+                    "value_return_label": "Ukubuya Kwenani Ngenani",
+                    "meals_donated_suffix": "Ukudla Okunikwe Umusa",
+                    "key_features_label": "Izici Eziyinhloko:",
+                    "feature_logo_website": "Ilogo kuwebhusayithi yomcimbi",
+                    "feature_social_mention": "Ukukhulunywa ezinkundleni zokuxhumana",
+                    "feature_event_passes": "Amaphasi Omcimbi",
+                    "feature_all_starter": "Zonke izinzuzo zesitata",
+                    "feature_logo_local_banners": "Ilogo kumabhanela endawo omcimbi",
+                    "feature_small_booth": "Indawo encane yokuma emcimbini",
+                    "feature_product_placement": "Ithuba lokubeka umkhiqizo",
+                    "feature_all_local_champion": "Zonke izinzuzo zompetha wendawo",
+                    "feature_prominent_regional_logo": "Ilogo evelele ekukhangiseni kwesifunda",
+                    "feature_regional_press": "Ukukhulunywa emaphephandabeni esifunda",
+                    "feature_dedicated_social": "Okuthunyelwe okukhethekile ezinkundleni zokuxhumana",
+                    "feature_vip_access": "Ukufinyelela kwe-VIP",
+                    "feature_vip_hospitality": "Ukungenisa izihambi kwe-VIP",
+                    "feature_all_regional_partner": "Zonke izinzuzo zozakwethu wesifunda",
+                    "feature_national_marketing_logo": "Ilogo kuzo zonke izinto zokukhangisa zikazwelonke",
+                    "feature_stage_branding": "Isimemezelo sesiteji nokukhangisa",
+                    "feature_category_exclusivity": "Ukukhetheka kwesigaba (isb., \"Isiphuzo Esisemthethweni\")",
+                    "feature_branded_clothing": "Izingubo ezinophawu (amakepisi, izindwangu zokujuluka, izikibha, amabhulukwe, amasokisi, izicathulo, ukubekwa kwelogo ezikibheni)",
+                    "feature_national_crates": "Ukufakwa uphawu kumakreyithi kazwelonke angu-400,000 (impilo yeminyaka engu-20, ukukhiqizwa okungahambi kahle kwemvelo kusuka ezintweni ezigaywe kabusha, kuhlanganisa namakreyithi esikole anamasondo abafundi)",
+                    "select_pricing_currency_label": "Bonisa Amanani Ku:",
+                    "currency_converter_title": "💱 Isiguquli Semali Yomhlaba Wonke",
+                    "currency_converter_desc": "Guqula noma iyiphi imali emhlabeni wonke usebenzisa amazinga okushintshanisa esikhathi sangempela. Sicela uqaphele, leli thuluzi elolwazi kuphela futhi lisebenzisa i-API yomuntu wesithathu.",
+                    "amount_placeholder": "Inani",
+                    "convert_button": "Guqula",
+                    "currency_result_placeholder": "Inani eliguquliwe lizovela lapha...",
+                    "invalid_amount": "Sicela ufake inani elivumelekile.",
+                    "currency_not_found": "Imali ayitholakalanga noma izinga lokushintshanisa alitholakali.",
+                    "error_conversion": "Iphutha ngesikhathi sokuguqulwa. Sicela uzame futhi.",
+                    "sponsor_child_title": "Xhasa Ingane Edingayo",
+                    "sponsor_child_desc": "Umnikelo wakho oqondile usiza ekuhlinzekeni ukudla okubalulekile nokusekelwa. Faka noma yiliphi inani ofisa ukulinikela.",
+                    "custom_amount_placeholder": "Faka Inani",
+                    footerPrivacy: 'Ubumfihlo', footerTerms: 'Imigomo', footerContact: 'Xhumana', footerCopyrightLink: 'I-Copyright', footerDevelopers: 'Abathuthukisi', footerVaultMeshLink: 'I-VaultMesh', footerFruitfulLink: 'Okunenzuzo', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Mayelana', footerAccessibility: 'Ukufinyeleleka', footerCopyright: '© 2025 FAA™ Treaty System™. Wonke Amalungelo Agodliwe.', footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Ivunyelaniswe ne-Seedwave™.'
+                },
+                xh: {
+                    "page_title": "I-Fruitful Crate Dance Showcase - Amanqanaba Okuxhasa",
+                    "sponsorship_main_title": "Amathuba Okuxhasa",
+                    "sponsorship_subtitle": "Joyina Intshukumo. Khulisa Uhlobo Lwakho. Yenza Umahluko.",
+                    "chart_title": "Ukubonisa Impembelelo: Utyalo-mali vs. Ukutya Okunikwe Ilahleko",
+                    "chart_description": "Le tshati ibonisa ubudlelwane obuthe ngqo phakathi kwenqanaba lakho lokuxhasa kunye nenani lokutya elinikwe abantwana abasweleyo. Njengoko utyalo-mali lwakho lukhula, kunjalo nempembelelo yakho ethe ngqo, elinganiswayo kuluntu.",
+                    "lang_name": "isiXhosa",
+                    "starter_title": "Ukuqala", "starter_desc": "Intsebenziswano Yokuqala",
+                    "local_champion_title": "Intshatsheli Yasekhaya", "local_champion_desc": "Ukubandakanyeka Okujolise Kuluntu",
+                    "regional_partner_title": "Umlingane Wesithili", "regional_partner_desc": "Ubukho Obuqinileyo Besithili",
+                    "national_sponsor_title": "Umxhasi Wesizwe", "national_sponsor_desc": "Ukuvezwa Okuphezulu KweSizwe",
+                    "investment_label": "Utyalo-mali",
+                    "value_return_label": "Ixabiso-nge-Xabiso Lokubuya",
+                    "meals_donated_suffix": "Ukutya Okunikwe Ilahleko",
+                    "key_features_label": "Iimpawu Eziphambili:",
+                    "feature_logo_website": "Ilogo kwiwebhusayithi yomsitho",
+                    "feature_social_mention": "Ukukhankanywa kwimidiya yoluntu",
+                    "feature_event_passes": "IiPasi Zomsitho",
+                    "feature_all_starter": "Zonke izibonelelo zokuqala",
+                    "feature_logo_local_banners": "Ilogo kwiibhanari zendawo zomsitho",
+                    "feature_small_booth": "Indawo encinci yokuma",
+                    "feature_product_placement": "Ithuba lokubeka imveliso",
+                    "feature_all_local_champion": "Zonke izibonelelo zeNtshatsheli Yasekhaya",
+                    "feature_prominent_regional_logo": "Ilogo evelele ekuthengiseni kwesithili",
+                    "feature_regional_press": "Ukukhankanywa kwiindaba zengingqi",
+                    "feature_dedicated_social": "Isithuba esizinikeleyo kwimidiya yoluntu",
+                    "feature_vip_access": "Ukufikelela kwe-VIP",
+                    "feature_vip_hospitality": "Ukungenisa iindwendwe kwe-VIP",
+                    "feature_all_regional_partner": "Zonke izibonelelo zoMlingane Wesithili",
+                    "feature_national_marketing_logo": "Ilogo kuzo zonke izixhobo zokuthengisa zesizwe",
+                    "feature_stage_branding": "Isibhengezo seqonga kunye nokuhlohla uphawu",
+                    "feature_category_exclusivity": "Ukukhethwa kodidi (umz., \"Isiselo Esisemthethweni\")",
+                    "feature_branded_clothing": "Iimpahla ezinophawu (imiphanda, iziqwenga zokubila, iitishithi, iibhulukhwe, iikawusi, izihlangu, ukubekwa kwelogo kwiitishithi)",
+                    "feature_national_crates": "Ukuhlohla uphawu kwiibhokisi zesizwe ezingama-400,000 (ubomi beminyaka engama-20, ukuveliswa okusingqongileyo okuvela kwizinto ezihlaziyiweyo, kubandakanya iibhokisi zesikolo ezinevili zabafundi)",
+                    "select_pricing_currency_label": "Bonisa Amaxabiso Nge:",
+                    "currency_converter_title": "💱 Umguquli WeMali YeHlabathi",
+                    "currency_converter_desc": "Guqula nayiphi na imali yehlabathi usebenzisa amaxabiso otshintshiselwano ngexesha lokwenyani. Nceda uqaphele, esi sixhobo sesolwazi kuphela kwaye sisebenzisa i-API yomntu wesithathu.",
+                    "amount_placeholder": "Isixa",
+                    "convert_button": "Guqula",
+                    "currency_result_placeholder": "Isixa esiguquliweyo siya kuvela apha...",
+                    "invalid_amount": "Nceda faka isixa esisebenzayo.",
+                    "currency_not_found": "Imali ayifunyanwanga okanye izinga lotshintshiselwano alufumaneki.",
+                    "error_conversion": "Impazamo ngexesha lokuguqula. Nceda uzame kwakhona.",
+                    "sponsor_child_title": "Xhasa Umntwana Ofuna Uncedo",
+                    "sponsor_child_desc": "Igalelo lakho elithe ngqo linceda ekuboneleleni ngezidlo ezibalulekileyo kunye nenkxaso. Faka nayiphi na imali oyifunayo ukuba uyinikele.",
+                    "custom_amount_placeholder": "Faka Isixa",
+                    footerPrivacy: 'Ubumfihlo', footerTerms: 'Imigaqo', footerContact: 'Qhagamshelana', footerCopyrightLink: 'Ilungelo Lokushicilela', footerDevelopers: 'Abaphuhlisi', footerVaultMeshLink: 'I-VaultMesh', footerFruitfulLink: 'Eneziqhamo', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Malunga Nathi', footerAccessibility: 'Ukufikeleleka', footerCopyright: '© 2025 FAA™ Treaty System™. Onke Amalungelo Agciniwe.', footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Ivunyelaniswe ne-Seedwave™.'
+                },
+                sw: {
+                    "page_title": "Fruitful Crate Dance Showcase - Ngazi za Udhamini",
+                    "sponsorship_main_title": "Fursa za Udhamini",
+                    "sponsorship_subtitle": "Jiunge na Harakati. Panua Chapa Yako. Leta Mabadiliko.",
+                    "chart_title": "Kuonyesha Athari: Uwekezaji dhidi ya Milio Iliyotolewa",
+                    "chart_description": "Chati hii inaonyesha uhusiano wa moja kwa moja kati ya kiwango chako cha udhamini na idadi ya milo inayotolewa kwa watoto wanaohitaji. Kadiri uwekezaji wako unavyoongezeka, ndivyo pia athari yako ya moja kwa moja, inayoweza kupimwa kwa jamii.",
+                    "lang_name": "Kiswahili",
+                    "starter_title": "Mwanzo", "starter_desc": "Ushirikiano wa Ngazi ya Kuanza",
+                    "local_champion_title": "Bingwa wa Mitaa", "local_champion_desc": "Ushirikishwaji Unaolenga Jamii",
+                    "regional_partner_title": "Mshirika wa Kanda", "regional_partner_desc": "Uwepo Imara wa Kanda",
+                    "national_sponsor_title": "Mhifadhi wa Kitaifa", "national_sponsor_desc": "Mfiduo Mkuu wa Kitaifa",
+                    "investment_label": "Uwekezaji",
+                    "value_return_label": "Thamani kwa Thamani Rudishi",
+                    "meals_donated_suffix": "Milo Iliyotolewa",
+                    "key_features_label": "Vipengele Muhimu:",
+                    "feature_logo_website": "Nembo kwenye tovuti ya tukio",
+                    "feature_social_mention": "Kutajwa kwenye mitandao ya kijamii",
+                    "feature_event_passes": "Pasi za Tukio",
+                    "feature_all_starter": "Faida zote za Mwanzo",
+                    "feature_logo_local_banners": "Nembo kwenye mabango ya matukio ya ndani",
+                    "feature_small_booth": "Kibanda kidogo kwenye tovuti",
+                    "feature_product_placement": "Fursa ya uwekaji bidhaa",
+                    "feature_all_local_champion": "Faida zote za Bingwa wa Mitaa",
+                    "feature_prominent_regional_logo": "Nembo inayoonekana kwenye masoko ya kikanda",
+                    "feature_regional_press": "Kutajwa katika taarifa za habari za kikanda",
+                    "feature_dedicated_social": "Chapisho maalum la mitandao ya kijamii",
+                    "feature_vip_access": "Ufikiaji wa VIP",
+                    "feature_vip_hospitality": "Ukarimu wa VIP",
+                    "feature_all_regional_partner": "Faida zote za Mshirika wa Kanda",
+                    "feature_national_marketing_logo": "Nembo kwenye vifaa vyote vya masoko vya kitaifa",
+                    "feature_stage_branding": "Tangazo la jukwaa na chapa",
+                    "feature_category_exclusivity": "Upekee wa kategoria (k.m., \"Kinywaji Rasmi\")",
+                    "feature_branded_clothing": "Nguo zenye chapa (kofia, vitambaa vya jasho, fulana, suruali, soksi, viatu, uwekaji wa nembo kwenye fulana)",
+                    "feature_national_crates": "Chapa kwenye makreti ya kitaifa 400,000 (muda wa maisha wa miaka 20, utengenezaji rafiki wa mazingira kutoka kwa vifaa vilivyorejeshwa, inajumuisha makreti ya shule yenye magurudumu kwa wasomi)",
+                    "select_pricing_currency_label": "Onyesha Bei Katika:",
+                    "currency_converter_title": "💱 Kigeuzi cha Sarafu cha Ulimwengu",
+                    "currency_converter_desc": "Badilisha sarafu yoyote duniani kote ukitumia viwango vya ubadilishaji halisi. Tafadhali kumbuka, zana hii ni kwa madhumuni ya habari tu na inatumia API ya mtu wa tatu.",
+                    "amount_placeholder": "Kiasi",
+                    "convert_button": "Badilisha",
+                    "currency_result_placeholder": "Kiasi kilichobadilishwa kitaonekana hapa...",
+                    "invalid_amount": "Tafadhali weka kiasi halali.",
+                    "currency_not_found": "Sarafu haikupatikana au kiwango cha ubadilishaji hakipatikani.",
+                    "error_conversion": "Hitilafu wakati wa ubadilishaji. Tafadhali jaribu tena.",
+                    "sponsor_child_title": "Mdhamini Mtoto Anayehitaji",
+                    "sponsor_child_desc": "Mchango wako wa moja kwa moja husaidia kutoa milo muhimu na msaada. Ingiza kiasi chochote unachotaka kuchanga.",
+                    "custom_amount_placeholder": "Ingiza Kiasi",
+                    footerPrivacy: 'Faragha', footerTerms: 'Masharti', footerContact: 'Wasiliana', footerCopyrightLink: 'Hakimiliki', footerDevelopers: 'Waendelezaji', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Matunda', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Kuhusu', footerAccessibility: 'Ufikiaji', footerCopyright: '© 2025 FAA™ Treaty System™. Haki Zote Zimehifadhiwa.', footerPoweredBy: 'Inaendeshwa na 🦍 glyphs + Vault API. Imesawazishwa na Seedwave™.'
+                },
+                zh: {
+                    "page_title": "丰硕板条箱之舞展示 - 赞助等级",
+                    "sponsorship_main_title": "赞助机会",
+                    "sponsorship_subtitle": "加入运动。放大您的品牌。做出改变。",
+                    "chart_title": "影响可视化：投资 vs. 捐赠餐食",
+                    "chart_description": "此图表显示了您的赞助级别与捐赠给有需要儿童的餐食数量之间的直接关系。随着您的投资增长，您对社区的直接、可衡量的影响也会随之增长。",
+                    "lang_name": "中文 (简体)",
+                    "starter_title": "入门级", "starter_desc": "入门级合作伙伴关系",
+                    "local_champion_title": "本地冠军", "local_champion_desc": "社区重点参与",
+                    "regional_partner_title": "区域合作伙伴", "regional_partner_desc": "强大的区域影响力",
+                    "national_sponsor_title": "全国赞助商", "national_sponsor_desc": "全国顶级曝光",
+                    "investment_label": "投资",
+                    "value_return_label": "价值回报",
+                    "meals_donated_suffix": "餐食捐赠",
+                    "key_features_label": "主要特点：",
+                    "feature_logo_website": "活动网站上显示徽标",
+                    "feature_social_mention": "社交媒体提及",
+                    "feature_event_passes": "活动通行证",
+                    "feature_all_starter": "所有入门级福利",
+                    "feature_logo_local_banners": "本地活动横幅上显示徽标",
+                    "feature_small_booth": "小型现场展位",
+                    "feature_product_placement": "产品植入机会",
+                    "feature_all_local_champion": "所有本地冠军福利",
+                    "feature_prominent_regional_logo": "区域营销中突出显示徽标",
+                    "feature_regional_press": "区域新闻稿中提及",
+                    "feature_dedicated_social": "专用社交媒体帖子",
+                    "feature_vip_access": "VIP 通行证",
+                    "feature_vip_hospitality": "VIP 招待",
+                    "feature_all_regional_partner": "所有区域合作伙伴福利",
+                    "feature_national_marketing_logo": "所有全国营销材料上显示徽标",
+                    "feature_stage_branding": "舞台公告和品牌宣传",
+                    "feature_category_exclusivity": "类别独家（例如，“官方饮品”）",
+                    "feature_branded_clothing": "品牌服装（帽子、汗带、T恤、裤子、袜子、鞋子、T恤上的标志放置）",
+                    "feature_national_crates": "40万个全国板条箱上的品牌（20年使用寿命，由回收材料环保制造，包括学生用逻辑学校手提箱式滚轮板条箱）",
+                    "select_pricing_currency_label": "显示价格：",
+                    "currency_converter_title": "💱 全球货币转换器",
+                    "currency_converter_desc": "使用实时汇率转换全球任何货币。请注意，此工具仅供参考，并使用第三方 API。",
+                    "amount_placeholder": "金额",
+                    "convert_button": "转换",
+                    "currency_result_placeholder": "转换后的金额将显示在此处...",
+                    "invalid_amount": "请输入有效金额。",
+                    "currency_not_found": "未找到货币或汇率不可用。",
+                    "error_conversion": "转换错误。请重试。",
+                    "sponsor_child_title": "赞助有需要的儿童",
+                    "sponsor_child_desc": "您的直接捐款有助于提供必需的餐食和支持。输入您希望捐赠的任何金额。",
+                    "custom_amount_placeholder": "输入金额",
+                    footerPrivacy: '隐私', footerTerms: '条款', footerContact: '联系', footerCopyrightLink: '版权', footerDevelopers: '开发者', footerVaultMeshLink: '金库网格', footerFruitfulLink: '丰硕', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: '关于', footerAccessibility: '无障碍', footerCopyright: '© 2025 FAA™ Treaty System™. 保留所有权利。', footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+                }
+            };
+
+            let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+
+            // Function to update all content based on the selected language
+            const updateContent = () => {
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.getAttribute('data-lang-key');
+                    if (translations[selectedLanguage] && translations[selectedLanguage][key]) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = translations[selectedLanguage][key];
+                        } else {
+                            element.textContent = translations[selectedLanguage][key];
+                        }
+                    } else if (translations.en[key]) { // Fallback to English if translation is missing
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = translations.en[key];
+                        } else {
+                            element.textContent = translations.en[key];
+                        }
+                    }
+                });
+
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translations[selectedLanguage] && translations[selectedLanguage][key]) {
+                        element.innerHTML = translations[selectedLanguage][key];
+                    } else if (translations.en[key]) { // Fallback to English
+                        element.innerHTML = translations.en[key];
+                    }
+                });
+
+                document.title = translations[selectedLanguage]?.page_title || translations.en.page_title;
+
+                renderSponsorshipTiers(); // Re-render tiers to update language and currency
+                updateChartLabels(); // Update chart labels to reflect selected language
+                renderCustomDonationButton(); // Render/re-render the custom donation button
+            };
+
+            // Populate language switcher dropdown
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            for (const langCode in translations) {
+                const option = document.createElement('option');
+                option.value = langCode;
+                option.textContent = translations[langCode].lang_name;
+                languageSwitcher.appendChild(option);
+            }
+            languageSwitcher.value = selectedLanguage; // Set initial language
+            languageSwitcher.addEventListener('change', (event) => {
+                selectedLanguage = event.target.value;
+                localStorage.setItem('selectedLanguage', selectedLanguage); // Save preference
+                updateContent(); // Update page content
+            });
+
+            // Theme Toggle Logic (Light/Dark Mode)
+            const themeDayBtn = document.getElementById('theme-day-btn');
+            const themeNightBtn = document.getElementById('theme-night-btn');
+
+            const setTheme = (theme) => {
+                document.body.classList.remove('light-mode', 'dark-mode');
+                themeDayBtn.classList.remove('active');
+                themeNightBtn.classList.remove('active');
+
+                if (theme === 'light') {
+                    document.body.classList.add('light-mode');
+                    themeDayBtn.classList.add('active');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    themeNightBtn.classList.add('active');
+                }
+                localStorage.setItem('themeMode', theme); // Save theme preference
+            };
+
+            themeDayBtn.addEventListener('click', () => setTheme('light'));
+            themeNightBtn.addEventListener('click', () => setTheme('dark'));
+
+            // Apply saved theme or default to dark mode
+            const savedTheme = localStorage.getItem('themeMode') || 'dark';
+            setTheme(savedTheme);
+
+            // Sponsorship Data - Base costs are in ZAR (South African Rand)
+            const sponsorshipData = [
+                { tier: 'Starter', costZAR: 25000, meals: 250, descKey: 'starter_desc', titleKey: 'starter_title', features: ['feature_logo_website', 'feature_social_mention', 'feature_event_passes'], paypalId: '9KZH38XFK3TX2' },
+                { tier: 'Local Champion', costZAR: 75000, meals: 750, descKey: 'local_champion_desc', titleKey: 'local_champion_title', features: ['feature_all_starter', 'feature_logo_local_banners', 'feature_small_booth', 'feature_product_placement', 'feature_event_passes'], paypalId: 'FNGGP5UJ9VYHQ' },
+                { tier: 'Regional Partner', costZAR: 250000, meals: 2500, descKey: 'regional_partner_desc', titleKey: 'regional_partner_title', features: ['feature_all_local_champion', 'feature_prominent_regional_logo', 'feature_regional_press', 'feature_dedicated_social', 'feature_vip_access', 'feature_branded_clothing'], paypalId: 'AL5VLUCCEW586', popular: true },
+                { tier: 'National Sponsor', costZAR: 1000000, meals: 10000, descKey: 'national_sponsor_desc', titleKey: 'national_sponsor_title', features: ['feature_all_regional_partner', 'feature_national_marketing_logo', 'feature_stage_branding', 'feature_category_exclusivity', 'feature_vip_hospitality', 'feature_branded_clothing', 'feature_national_crates'], paypalId: 'NATIONAL_SPONSOR_PAYPAL_ID_PLACEHOLDER' } // Placeholder ID
+            ];
+
+            const tiersContainer = document.getElementById('sponsorship-tiers');
+            let pricingExchangeRates = {}; // Stores ZAR-based exchange rates for pricing tiers
+            let selectedPricingCurrency = 'ZAR'; // Default pricing currency for tiers
+
+            // Helper function to get translated features for a tier
+            const getFeaturesForTier = (featuresKeys) => {
+                return featuresKeys.map(key => {
+                    const text = translations[selectedLanguage][key] || translations.en[key];
+                    return `<li><i class="fas fa-check-circle text-green-500 mr-2"></i>${text}</li>`;
+                }).join('');
+            };
+
+            // Renders/re-renders the sponsorship tier cards
+            const renderSponsorshipTiers = () => {
+                if (!tiersContainer) return;
+                tiersContainer.innerHTML = ''; // Clear existing tiers
+
+                // Get the exchange rate from ZAR to the selected pricing currency
+                const exchangeRate = pricingExchangeRates[selectedPricingCurrency] || 1; 
+                // Create a currency formatter for the selected locale and currency
+                const currencyFormatter = new Intl.NumberFormat(selectedLanguage, { style: 'currency', currency: selectedPricingCurrency, minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+                sponsorshipData.forEach((item) => {
+                    const card = document.createElement('div');
+                    let cardClasses = 'tier-card flex flex-col p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300';
+                    let borderColorClass = ''; // Initialize to empty string
+
+                    // Add specific border colors and 'most popular' badge for certain tiers
+                    if (item.tier === "Regional Partner") {
+                        borderColorClass = 'border-blue-500';
+                        cardClasses += ' relative'; // Needed for absolute positioning of badge
+                    }
+                    if (item.tier === "National Sponsor") {
+                        borderColorClass = 'border-yellow-500';
+                    }
+
+                    card.className = cardClasses; // Apply base classes
+                    if (borderColorClass) { // Only add border class if it's set
+                        card.classList.add(borderColorClass);
+                    }
+
+                    let popularBadge = '';
+                    if (item.popular) {
+                        popularBadge = '<div class="most-popular-badge">Most Popular</div>';
+                    }
+
+                    const featuresHtml = getFeaturesForTier(item.features);
+                    const convertedCost = item.costZAR * exchangeRate; // Calculate converted cost
+
+                    card.innerHTML = `
+                        ${popularBadge}
+                        <div class="tier-header-card pb-4 border-b">
+                            <h3 class="text-2xl font-bold">${translations[selectedLanguage][item.titleKey] || translations.en[item.titleKey]}</h3>
+                            <p class="text-gray-500">${translations[selectedLanguage][item.descKey] || translations.en[item.descKey]}</p>
+                        </div>
+                        <div class="value-section-wrapper">
+                            <div class="value-box bg-gray-50 mb-4">
+                                <h4 class="text-gray-800" data-lang-key="investment_label">${translations[selectedLanguage].investment_label || translations.en.investment_label}</h4>
+                                <p class="text-2xl font-bold text-blue-600">${currencyFormatter.format(convertedCost)}</p>
+                            </div>
+                            <div class="value-box bg-green-50">
+                                <h4 class="text-green-800" data-lang-key="value_return_label">${translations[selectedLanguage].value_return_label || translations.en.value_return_label}</h4>
+                                <p class="text-2xl font-bold text-green-600">${item.meals.toLocaleString()} <span class="text-base" data-lang-key="meals_donated_suffix">${translations[selectedLanguage].meals_donated_suffix || translations.en.meals_donated_suffix}</span></p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex-grow">
+                            <p class="text-gray-600 font-semibold mb-2" data-lang-key="key_features_label">${translations[selectedLanguage].key_features_label || translations.en.key_features_label}</p>
+                            <ul class="feature-list text-gray-500 space-y-2">
+                                ${featuresHtml}
+                            </ul>
+                        </div>
+                        <div class="paypal-button-container mt-6">
+                            <!-- Direct PayPal link for hosted button -->
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=${item.paypalId}" target="_blank" rel="noopener noreferrer" class="w-full text-center bg-blue-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors block">Buy Now (Direct)</a>
+                        </div>
+                    `;
+                    tiersContainer.appendChild(card);
+                });
+            };
+
+            let impactChartInstance = null; // To store the Chart.js instance
+
+            // Updates the labels of the impact chart based on the selected language
+            const updateChartLabels = () => {
+                if (impactChartInstance) {
+                    impactChartInstance.data.labels = sponsorshipData.map(s => translations[selectedLanguage][s.titleKey] || translations.en[s.titleKey]);
+                    impactChartInstance.options.scales.y.title.text = translations[selectedLanguage].meals_donated_suffix || translations.en.meals_donated_suffix;
+                    impactChartInstance.update();
+                }
+            };
+
+            // Initialize the Chart.js impact chart
+            const impactCanvas = document.getElementById('impactChart');
+            if (impactCanvas) {
+                const impactCtx = impactCanvas.getContext('2d');
+                impactChartInstance = new Chart(impactCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: sponsorshipData.map(s => translations[selectedLanguage][s.titleKey] || translations.en[s.titleKey]),
+                        datasets: [{
+                            label: 'Meals Donated',
+                            data: sponsorshipData.map(s => s.meals),
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: translations[selectedLanguage].meals_donated_suffix || translations.en.meals_donated_suffix,
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold',
+                                        family: 'Inter'
+                                    },
+                                    color: 'var(--text-color-dark)' // Dynamic color for dark mode
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return new Intl.NumberFormat('en-US').format(value);
+                                    },
+                                    font: {
+                                        family: 'Inter'
+                                    },
+                                    color: 'var(--muted-text-dark)' // Dynamic color for dark mode
+                                },
+                                grid: {
+                                    color: 'var(--border-color-dark)' // Dynamic color for dark mode
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Inter'
+                                    },
+                                    color: 'var(--muted-text-dark)' // Dynamic color for dark mode
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // No legend needed for single dataset
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        return Array.isArray(label) ? label.join(' ') : label;
+                                    },
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US').format(context.parsed.y) + ' ' + (translations[selectedLanguage].meals_donated_suffix || translations.en.meals_donated_suffix);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Global variables for currency API (ExchangeRate-API)
+            const CURRENCY_API_KEY = '40015d117bc7fff9495dcf28'; // Provided API Key
+            const BASE_CURRENCY_API_URL = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}`;
+
+            // Currency Converter Logic (for the dedicated converter section)
+            const amountInput = document.getElementById('amount-input');
+            const fromCurrencySelect = document.getElementById('from-currency-select');
+            const toCurrencySelect = document.getElementById('to-currency-select');
+            const convertButton = document.getElementById('convert-button');
+            const convertedResultText = document.getElementById('converted-result-text');
+
+            let generalExchangeRates = {}; // Stores fetched exchange rates for the general converter
+
+            // Elements for the new custom donation section
+            const customAmountInput = document.getElementById('custom-amount-input');
+            const customCurrencySelect = document.getElementById('custom-currency-select');
+            const paypalCustomDonationButtonContainer = document.getElementById('paypal-custom-donation-button');
+
+            // Function to fetch and populate currency dropdowns for all converters
+            async function populateAllCurrencyDropdowns() {
+                try {
+                    const codesResponse = await fetch(`${BASE_CURRENCY_API_URL}/codes`);
+                    const codesData = await codesResponse.json();
+
+                    if (codesData.result === 'success' && codesData.supported_codes) {
+                        const currencies = codesData.supported_codes;
+                        
+                        // Clear existing options before populating
+                        if (fromCurrencySelect) fromCurrencySelect.innerHTML = '';
+                        if (toCurrencySelect) toCurrencySelect.innerHTML = '';
+                        if (pricingCurrencySelect) pricingCurrencySelect.innerHTML = '';
+                        if (customCurrencySelect) customCurrencySelect.innerHTML = '';
+
+                        // Populate all currency dropdowns
+                        currencies.forEach(currency => {
+                            const [code, name] = currency;
+                            const optionFrom = document.createElement('option');
+                            optionFrom.value = code;
+                            optionFrom.textContent = `${code} - ${name}`;
+                            if (fromCurrencySelect) fromCurrencySelect.appendChild(optionFrom);
+
+                            const optionTo = document.createElement('option');
+                            optionTo.value = code;
+                            optionTo.textContent = `${code} - ${name}`;
+                            if (toCurrencySelect) toCurrencySelect.appendChild(optionTo);
+
+                            const optionPricing = document.createElement('option');
+                            optionPricing.value = code;
+                            optionPricing.textContent = `${code} - ${name}`;
+                            if (pricingCurrencySelect) pricingCurrencySelect.appendChild(optionPricing);
+
+                            const optionCustom = document.createElement('option');
+                            optionCustom.value = code;
+                            optionCustom.textContent = `${code} - ${name}`;
+                            if (customCurrencySelect) customCurrencySelect.appendChild(optionCustom);
+                        });
+
+                        // Set default selected currencies for general converter
+                        if (fromCurrencySelect) fromCurrencySelect.value = 'USD';
+                        if (toCurrencySelect) toCurrencySelect.value = 'ZAR';
+                        
+                        // Set default selected currency for pricing and custom donation
+                        if (pricingCurrencySelect) pricingCurrencySelect.value = 'ZAR'; // Default to ZAR for pricing
+                        if (customCurrencySelect) customCurrencySelect.value = 'USD'; // Default to USD for custom donation
+
+                        // Fetch initial rates for general converter (USD as base)
+                        await fetchGeneralExchangeRates('USD');
+                        // Fetch initial rates for pricing converter (ZAR as base)
+                        await fetchPricingExchangeRates('ZAR');
+
+                        // Perform initial conversion for general converter
+                        convertCurrency();
+                        // Render pricing tiers with initial currency
+                        renderSponsorshipTiers();
+                        // Render custom donation button with initial currency
+                        renderCustomDonationButton();
+
+                    } else {
+                        console.error("Currency API Error (codes):", codesData);
+                    }
+                } catch (error) {
+                    console.error("Fetch All Currencies and Rates Error:", error);
+                }
+            }
+
+            // Function to fetch exchange rates for the general currency converter
+            async function fetchGeneralExchangeRates(baseCurrency) {
+                try {
+                    const ratesResponse = await fetch(`${BASE_CURRENCY_API_URL}/latest/${baseCurrency}`);
+                    const ratesData = await ratesResponse.json();
+
+                    if (ratesData.result === 'success' && ratesData.conversion_rates) {
+                        generalExchangeRates = ratesData.conversion_rates;
+                    } else {
+                        console.error("Currency API Error (general rates):", ratesData);
+                    }
+                } catch (error) {
+                    console.error("Fetch General Exchange Rates Error:", error);
+                }
+            }
+
+            // Function to fetch exchange rates specifically for the pricing converter (ZAR as base)
+            async function fetchPricingExchangeRates(baseCurrency) {
+                try {
+                    const ratesResponse = await fetch(`${BASE_CURRENCY_API_URL}/latest/${baseCurrency}`);
+                    const ratesData = await ratesResponse.json();
+
+                    if (ratesData.result === 'success' && ratesData.conversion_rates) {
+                        pricingExchangeRates = ratesData.conversion_rates;
+                    } else {
+                        console.error("Currency API Error (pricing rates):", ratesData);
+                    }
+                } catch (error) {
+                    console.error("Fetch Pricing Exchange Rates Error:", error);
+                }
+            }
+
+            // Function to perform currency conversion for the dedicated converter section
+            async function convertCurrency() {
+                const amount = parseFloat(amountInput.value);
+                const fromCurrency = fromCurrencySelect.value;
+                const toCurrency = toCurrencySelect.value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    if (convertedResultText) convertedResultText.textContent = translations[selectedLanguage].invalid_amount;
+                    return;
+                }
+
+                if (convertedResultText) convertedResultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+                if (convertButton) convertButton.disabled = true;
+
+                try {
+                    // Ensure rates are up-to-date for the selected 'from' currency
+                    await fetchGeneralExchangeRates(fromCurrency); 
+
+                    if (generalExchangeRates[toCurrency]) {
+                        const convertedAmount = amount * generalExchangeRates[toCurrency];
+                        if (convertedResultText) convertedResultText.textContent = `${amount} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+                    } else {
+                        if (convertedResultText) convertedResultText.textContent = translations[selectedLanguage].currency_not_found;
+                    }
+                } catch (error) {
+                    if (convertedResultText) convertedResultText.textContent = translations[selectedLanguage].error_conversion;
+                    console.error("Convert Currency Error:", error);
+                } finally {
+                    if (convertButton) convertButton.disabled = false;
+                }
+            }
+
+            // Function to render the custom donation PayPal button
+            const renderCustomDonationButton = () => {
+                if (!paypalCustomDonationButtonContainer) return;
+                paypalCustomDonationButtonContainer.innerHTML = ''; // Clear existing button
+
+                const customAmount = parseFloat(customAmountInput.value);
+                const customCurrency = customCurrencySelect.value;
+
+                if (isNaN(customAmount) || customAmount <= 0) {
+                    paypalCustomDonationButtonContainer.innerHTML = `<p class="text-red-500">${translations[selectedLanguage].invalid_amount}</p>`;
+                    return;
+                }
+
+                // Use a direct PayPal donation link
+                paypalCustomDonationButtonContainer.innerHTML = `
+                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amount=${customAmount.toFixed(2)}&currency_code=${customCurrency}" target="_blank" rel="noopener noreferrer" class="w-full text-center bg-blue-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors block">Donate Now (Direct)</a>
+                `;
+            };
+
+
+            // Add event listeners for the general currency converter inputs and button
+            if (convertButton) convertButton.addEventListener('click', convertCurrency);
+            if (fromCurrencySelect) fromCurrencySelect.addEventListener('change', convertCurrency);
+            if (toCurrencySelect) toCurrencySelect.addEventListener('change', convertCurrency);
+            if (amountInput) amountInput.addEventListener('input', convertCurrency);
+
+            // Event listener for pricing currency select dropdown
+            const pricingCurrencySelect = document.getElementById('pricing-currency-select');
+            if (pricingCurrencySelect) {
+                pricingCurrencySelect.addEventListener('change', async (e) => {
+                    selectedPricingCurrency = e.target.value;
+                    renderSponsorshipTiers(); // Re-render tiers with new currency
+                });
+            }
+
+            // Event listeners for custom donation input and select
+            if (customAmountInput) customAmountInput.addEventListener('input', renderCustomDonationButton);
+            if (customCurrencySelect) customCurrencySelect.addEventListener('change', renderCustomDonationButton);
+
+
+            // Initial population of all currencies and rates when the page loads
+            populateAllCurrencyDropdowns();
+
+            // Initial content update and render (already called at top of DOMContentLoaded)
+            updateContent();
+        });
+    </script>
+</body>
+</html>

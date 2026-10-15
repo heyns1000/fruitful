@@ -1,0 +1,250 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>CodeNest Branch Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#232220; --paper:#F7F5F0; --panel:#FFFFFF; --rule:#DDD8CC; --muted:#726C60;
+    --slate:#4B5A63; --slate-soft:#E7ECEE;
+    --amber:#9A6A1F; --amber-soft:#F5E6C8; --amber-line:#DEBE7C;
+    --green:#3D6B4C; --green-soft:#DCEBE0; --green-line:#9CC7AB;
+    --red:#A23B33; --red-soft:#F4DEDA; --red-line:#DE9F92;
+    --shadow: 0 1px 2px rgba(35,34,32,0.06), 0 8px 24px rgba(35,34,32,0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:#EDEAE2; --paper:#1B1A17; --panel:#232220; --rule:#3A362E; --muted:#A39B89;
+      --slate:#9FB4BE; --slate-soft:#232B2E;
+      --amber:#E0AE5C; --amber-soft:#332B18; --amber-line:#5C4A24;
+      --green:#8FC29F; --green-soft:#1E2C22; --green-line:#3C5946;
+      --red:#E29288; --red-soft:#332320; --red-line:#5C3630;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink:#EDEAE2; --paper:#1B1A17; --panel:#232220; --rule:#3A362E; --muted:#A39B89;
+    --slate:#9FB4BE; --slate-soft:#232B2E;
+    --amber:#E0AE5C; --amber-soft:#332B18; --amber-line:#5C4A24;
+    --green:#8FC29F; --green-soft:#1E2C22; --green-line:#3C5946;
+    --red:#E29288; --red-soft:#332320; --red-line:#5C3630;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',system-ui,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'IBM Plex Mono',Menlo,monospace; }
+  h1,h2,h3 { font-family:'Source Serif 4',Georgia,serif; text-wrap:balance; margin:0; }
+  .wrap { max-width: 980px; margin:0 auto; padding: 44px 28px 80px; }
+
+  header.doc { border-bottom: 2px solid var(--ink); padding-bottom: 22px; margin-bottom: 30px; }
+  .eyebrow { font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  header.doc h1 { font-size: clamp(26px,4vw,36px); font-weight:700; }
+  header.doc p.sub { font-size:15px; color:var(--muted); max-width:66ch; margin:12px 0 0; }
+  .meta-row { display:flex; gap:18px; flex-wrap:wrap; margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted); }
+  .meta-row b { color: var(--ink); }
+
+  .statbar { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:12px; overflow:hidden; margin: 26px 0 34px; }
+  .stat { background:var(--panel); padding:16px 18px; }
+  .stat .n { font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; }
+  .stat .l { font-size:11.5px; color:var(--muted); margin-top:4px; }
+  .stat.merged .n { color: var(--green); }
+  .stat.stale .n { color: var(--amber); }
+
+  section { margin: 40px 0; }
+  h2 { font-size: 21px; font-weight:700; margin-bottom: 6px; }
+  .section-sub { font-size:13.5px; color:var(--muted); max-width:70ch; margin: 0 0 18px; }
+
+  .evidence {
+    background: var(--panel); border:1px solid var(--rule); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .evidence pre { font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.75; background:var(--slate-soft); color:var(--ink); border-radius:10px; padding:14px 16px; overflow-x:auto; margin: 12px 0 0; }
+  .evidence pre .merge { color: var(--green); }
+  .evidence pre .direct { color: var(--muted); }
+
+  .callout { border-radius: 12px; padding:14px 18px; font-size:13.5px; margin-top:16px; border:1px solid; }
+  .callout.red { background:var(--red-soft); border-color:var(--red-line); color:var(--red); }
+  .callout.amber { background: var(--amber-soft); border-color: var(--amber-line); color: var(--amber); }
+  .callout b { display:block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:16px; }
+  .card { background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--green); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow); }
+  .card .k { font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--green); text-transform:uppercase; letter-spacing:.06em; }
+  .card h3 { font-size:15.5px; margin:6px 0 6px; }
+  .card p { font-size:12.5px; color:var(--muted); margin:0; }
+  .card .pr { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink); margin-top:8px; }
+
+  .tablewrap { overflow-x:auto; border:1px solid var(--rule); border-radius:12px; background:var(--panel); box-shadow:var(--shadow); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  thead th { text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 14px; border-bottom:1px solid var(--rule); position:sticky; top:0; background:var(--panel); }
+  tbody td { padding:8px 14px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background: var(--slate-soft); }
+  .branch-name { font-family:'IBM Plex Mono',monospace; font-size:11.5px; }
+  .cat-head td { background: var(--slate-soft); font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--slate); font-weight:600; padding:7px 14px; }
+  .pill { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.04em; padding:2px 9px; border-radius:100px; border:1px solid; white-space:nowrap; }
+  .pill.merged { background:var(--green-soft); border-color:var(--green-line); color:var(--green); }
+  .pill.closed { background:var(--amber-soft); border-color:var(--amber-line); color:var(--amber); }
+  .pill.nopr { background:var(--rule); border-color:var(--rule); color:var(--muted); }
+  .pr-cell { color: var(--muted); }
+
+  .methodology { background: var(--panel); border:1px solid var(--rule); border-radius:14px; padding:18px 22px; font-size:13px; color:var(--muted); }
+  .methodology h3 { font-size:14px; color:var(--ink); margin-bottom:8px; }
+  .methodology ul { margin: 8px 0 0; padding-left: 20px; }
+  .methodology li { margin: 6px 0; }
+  .methodology code { font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--slate-soft); padding:1px 5px; border-radius:4px; color:var(--ink); }
+
+  footer { margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--rule); font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+</style>
+
+<div class="wrap">
+  <header class="doc">
+    <div class="eyebrow">Repository audit · read-only, no changes made</div>
+    <h1>heyns1000/codenest — branch &amp; PR reality check</h1>
+    <p class="sub">This repo's own README already warns not to trust ecosystem status claims without checking live GitHub. This audit takes that seriously: every number below is either read directly from the GitHub API or from <code class="mono">git log</code> on <code class="mono">main</code> — not copied from a prior report.</p>
+    <div class="meta-row">
+      <span><b>Audited</b> 2026-09-03</span>
+      <span><b>main HEAD</b> 5be7b04</span>
+      <span><b>main history</b> 64 commits total</span>
+    </div>
+  </header>
+
+  <div class="statbar">
+    <div class="stat"><div class="n">77</div><div class="l">branches (incl. main)</div></div>
+    <div class="stat"><div class="n">90</div><div class="l">files on main</div></div>
+    <div class="stat merged"><div class="n">3</div><div class="l">branches ever merged</div></div>
+    <div class="stat stale"><div class="n">73</div><div class="l">branches never merged</div></div>
+    <div class="stat"><div class="n">51</div><div class="l">closed PRs, unmerged</div></div>
+    <div class="stat"><div class="n">22</div><div class="l">branches, no PR found</div></div>
+  </div>
+
+  <section>
+    <h2>How content actually reaches main</h2>
+    <p class="section-sub">Of 64 commits on <code class="mono">main</code>, only 8 arrived through a reviewed pull request. Everything else — the large majority — was pushed to <code class="mono">main</code> directly.</p>
+    <div class="evidence">
+      <div style="font-size:13px;">Full <code class="mono">git log origin/main --merges</code> output — every commit on main that represents an actual GitHub PR merge:</div>
+      <pre>4d298ba <span class="merge">Merge pull request #117</span> from claude/lucid-rubin-h1k269
+9e31d56 <span class="merge">Merge pull request #116</span> from claude/pr-merge-review-f34m8f
+a3c3146 <span class="merge">Merge pull request #115</span> from claude/lucid-rubin-h1k269
+24b3ee8 <span class="merge">Merge pull request #114</span> from claude/lucid-rubin-h1k269
+d8c4fcc <span class="merge">Merge pull request #113</span> from claude/lucid-rubin-h1k269
+6581e02 <span class="merge">Merge pull request #112</span> from claude/lucid-rubin-h1k269
+8c3b1c0 <span class="merge">Merge pull request #111</span> from claude/lucid-rubin-h1k269
+a7d733e <span class="merge">feat(repo): bootstrap CodeNest monorepo (Slice 01) (#118)</span>  — squash-merge
+
+<span class="direct">— every other commit on main (56 of 64), including a
+   "💾 COMPLETE BACKUP: All 11,231 files ... 2.3GB" commit and a
+   "PHASE 3 COMPLETE — merged all remaining heyns1000 repos" commit —
+   was pushed straight to main. No PR, no review, no merge commit.</span></pre>
+      <div class="callout amber">
+        <b>Correction to an earlier draft of this audit</b>
+        A first pass of this report said "there's no PR trail to reconstruct what happened" and stopped there. That undersold what's actually available: there's no <em>PR</em> trail, but the full <code class="mono">git</code> commit trail is completely intact and was not hard to trace. See the next section.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Reconstructed: where the 11,231-file backup actually went</h2>
+    <p class="section-sub">Traced directly from <code class="mono">git ls-tree</code> and <code class="mono">git diff --stat</code> on the real commits — not inferred, not guessed.</p>
+    <div class="evidence">
+      <div style="font-size:13px; margin-bottom:14px;">Tree file count at each milestone commit, in order:</div>
+      <pre>2025-11-17  ae6c569  "add missing 3 repos"                    →   1 file
+2025-11-17  ef9bb5d  "PHASE 3 COMPLETE — merged all repos"    →   2 files
+2026-01-27  7fe8722  "COMPLETE BACKUP: All 11,231 files"      →   <span class="merge">11,086 files</span>
+2026-06-12  242a008  "feat(vaultpay): Add Paystack provider"  →   <span class="direct">11 files</span>
+2026-09-03  5be7b04  current main HEAD                        →     225 files
+
+  ae6c569's 1 file is a git <b>submodule pointer</b> — contributes 0 real files
+  ef9bb5d's 2nd file is scripts/merge-all-repos.sh (see below)
+  7fe8722 is real — the only one of these that matches its own commit message
+  242a008 is authored by "Claude Code Agent" (see below)</pre>
+      <div class="callout red">
+        <b>What "PHASE 3 COMPLETE" actually was</b>
+        <code class="mono">scripts/merge-all-repos.sh</code>, committed in that same batch, is a real script that would run <code class="mono">git subtree add</code> for every heyns1000 repo — its own <code class="mono">echo</code> statements print <code class="mono">"🎉 PHASE 3 COMPLETE!"</code> and <code class="mono">"🦍 THE OMNI-INTEGRATION IS COMPLETE"</code> as its planned success output. Nothing in the actual committed tree shows the script was ever run at that point — the commit message reads like the script's own celebratory banner, copied in as if the merge had already happened, two months before any bulk content (7fe8722) actually landed.
+      </div>
+      <div class="callout red" style="margin-top:10px;">
+        <b>What actually erased the 11,086-file backup</b>
+        Commit <code class="mono">242a008</code>, four and a half months after the backup landed: <b>11,093 files changed, 2,784 insertions(+), 6,075,017 deletions(-)</b>. It deleted 11,083 of the 11,086 backed-up files and added 8 new Paystack-integration files — in the same commit, under a message that describes only the addition. It's a normal, linear, non-force-pushed child of the backup commit (confirmed via <code class="mono">git log --format=%P</code> and <code class="mono">git merge-base --is-ancestor</code>) — nothing was rewritten or purged from git history; this one commit simply stopped carrying that content forward. The author field reads <code class="mono">Claude Code Agent</code>. The shape of it — a small stated purpose, a six-million-line unstated deletion — is consistent with a session that treated the repo as an empty scaffold and never surfaced what it was overwriting, but that's a reading of the diff, not a confirmed account of what that session's operator saw or intended.
+      </div>
+      <div class="callout amber" style="margin-top:10px;">
+        <b>The backup is not actually gone</b>
+        <code class="mono">7fe8722</code> is a real, unaltered, still-reachable ancestor of current <code class="mono">main</code>. Every one of those 11,086 files can be restored today with <code class="mono">git show 7fe8722:&lt;path&gt;</code> or a straightforward restore commit — this is recoverable, not lost.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The 3 branches that did merge</h2>
+    <p class="section-sub">Verified against real merge commits on main, not the GitHub API's list-endpoint <code class="mono">merged</code> field (see Methodology — that field proved unreliable here).</p>
+    <div class="cards">
+      <div class="card">
+        <div class="k">6 PRs · #111–115, #117</div>
+        <h3>claude/lucid-rubin-h1k269</h3>
+        <p>Fruitful Perplexity Gateway (3-layer, circuit breaker, redaction telemetry, OpenAPI spec) → Research &amp; Brief panel consuming it → Vercel static preview → FPSL v1.0 license upgrade.</p>
+      </div>
+      <div class="card">
+        <div class="k">PR #116</div>
+        <h3>claude/pr-merge-review-f34m8f</h3>
+        <p>"feat(vercel): CodeNest Research &amp; Brief panel — live preview deployment" — merged into the lucid-rubin-h1k269 branch, then into main with it.</p>
+      </div>
+      <div class="card">
+        <div class="k">PR #118</div>
+        <h3>feature/repo-bootstrap-fixed</h3>
+        <p>Repo scaffold + Supabase schema, rebuilt from the orphaned <code class="mono">feature/repo-bootstrap</code> (which had no shared history with main and couldn't be opened as a PR at all).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Every branch, by status</h2>
+    <p class="section-sub">76 non-main branches. <span class="pill merged">merged</span> landed on main (confirmed above). <span class="pill closed">closed, unmerged</span> had a PR that was closed without merging. <span class="pill nopr">no PR found</span> means no PR turned up in the 100 most recent PRs fetched — it may never have had one, or its PR may be older than that window.</p>
+    <div class="tablewrap" id="branchtable"></div>
+  </section>
+
+  <section>
+    <h2>Methodology &amp; a correction made mid-audit</h2>
+    <div class="methodology">
+      <h3>What broke, and how it was caught</h3>
+      <p>The GitHub API's bulk pull-request list endpoint returned <code>merged: false</code> for <em>every one</em> of the 100 PRs fetched — including PR #117, which a direct per-PR fetch confirmed was genuinely merged (<code>merged: true</code>, <code>merged_by: heyns1000</code>). Trusting the bulk field would have produced a false "0 of 100 PRs ever merged" headline.</p>
+      <ul>
+        <li>Ground truth for "did this land on main" is <code>git log origin/main --merges</code> (real merge commits) plus a scan for GitHub's <code>(#N)</code> squash-merge commit-message convention — not any PR-list API field.</li>
+        <li>Branch/status pairing otherwise uses the bulk PR list's <code>state</code> field (open/closed), which is reliable — only <code>merged</code> was not.</li>
+        <li>Branch count (77 incl. main) and file-count (90) are read directly from this session's clone and the GitHub branches API on 2026-09-03 — not carried over from the README's own "74 branches" figure, which is now a few branches stale.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>heyns1000/codenest · read-only audit · no branches deleted, no PRs merged</span>
+    <span>Generated by Claude Code</span>
+  </footer>
+</div>
+
+<script>
+const rows = [{"branch": "claude/add-profile-pulse-integration-cIJ8o", "category": "claude", "status": "closed", "pr_number": 46, "pr_title": "Auto-merge: Integrate claude/add-profile-pulse-integration-cIJ8o", "pr_count": 3}, {"branch": "claude/automate-cicd-pipeline-01QCkVJXtXEekjuydpUsdXTn", "category": "claude", "status": "closed", "pr_number": 47, "pr_title": "Auto-merge: Integrate claude/automate-cicd-pipeline-01QCkVJXtXEekjuydpUsdXTn", "pr_count": 1}, {"branch": "claude/claude-md-mitfg6milyaxgnjd-0128D8kYDsctNyVijtC9ywuL", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "claude/compile-bash-commands-ZIvBJ", "category": "claude", "status": "closed", "pr_number": 61, "pr_title": "Merge pull request #60 from heyns1000/main", "pr_count": 4}, {"branch": "claude/fix-jsx-build-error-cIJ8o", "category": "claude", "status": "closed", "pr_number": 75, "pr_title": "Merge pull request #74 from heyns1000/main", "pr_count": 4}, {"branch": "claude/fruitful-holdings-overview-lrrMT", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "claude/fruitful-holdings-plan-LZ7a2", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "claude/grok-ai-integration-01M51GYG5CiSnUwbgsnZwgzf", "category": "claude", "status": "closed", "pr_number": 84, "pr_title": "Merge pull request #83 from heyns1000/main", "pr_count": 5}, {"branch": "claude/grok-ai-integration-79ndz", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "claude/lucid-rubin-h1k269", "category": "claude", "status": "merged", "pr_number": 117, "pr_title": "legal: FPSL v1.0 license + ecosystem URL registry", "pr_count": 6}, {"branch": "claude/organize-thesis-gallery-iYLpu", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "claude/pr-merge-review-f34m8f", "category": "claude", "status": "merged", "pr_number": 116, "pr_title": "feat(vercel): CodeNest Research & Brief panel \u2014 live preview deployment", "pr_count": 1}, {"branch": "claude/review-repos-heatmap-planning-nLDYK", "category": "claude", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/add-advanced-github-actions-workflow", "category": "copilot", "status": "closed", "pr_number": 73, "pr_title": "Add advanced GitHub Actions workflow demonstrating CI/CD best practices", "pr_count": 1}, {"branch": "copilot/add-adversarial-robustness-mitre-atlas", "category": "copilot", "status": "closed", "pr_number": 91, "pr_title": "Implement MITRE ATLAS adversarial robustness with HOGPR certified bounds", "pr_count": 1}, {"branch": "copilot/add-github-actions-workflow", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/add-image-renamer-tool", "category": "copilot", "status": "closed", "pr_number": 20, "pr_title": "Add production-ready OCR-based batch image renamer tool", "pr_count": 1}, {"branch": "copilot/add-quantum-safety-features", "category": "copilot", "status": "closed", "pr_number": 92, "pr_title": "Add post-quantum cryptography to HOGPR predictions with ATLAS threat extensions", "pr_count": 1}, {"branch": "copilot/add-realtyx-conflict-resolver", "category": "copilot", "status": "closed", "pr_number": 103, "pr_title": "Add RealtyX Conflict Resolver v8000 with GPR AI system", "pr_count": 1}, {"branch": "copilot/add-scoped-execution-backend", "category": "copilot", "status": "closed", "pr_number": 110, "pr_title": "Add Rust/Tauri scoped execution backend and Treaty Grid visualization with 9s VaultMesh pulse", "pr_count": 1}, {"branch": "copilot/augment-qrng-for-hogpr-priors", "category": "copilot", "status": "closed", "pr_number": 94, "pr_title": "Add QRNG entropy injection for HOGPR hyperprior calibration", "pr_count": 1}, {"branch": "copilot/certify-noodle-bad-boys", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/check-action-workflow", "category": "copilot", "status": "closed", "pr_number": 99, "pr_title": "Fix pulse-trade-9s workflow: Handle profile badge permission error gracefully", "pr_count": 1}, {"branch": "copilot/clone-buildnest-engines-system", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/complete-banimal-migration", "category": "copilot", "status": "closed", "pr_number": 72, "pr_title": "um (#71)", "pr_count": 2}, {"branch": "copilot/comprehensive-ecosystem-research", "category": "copilot", "status": "closed", "pr_number": 86, "pr_title": "Comprehensive ecosystem research: Architecture analysis, sync strategy, deployment guide, and global launch roadmap", "pr_count": 1}, {"branch": "copilot/create-admin-dashboard-api", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/create-complete-toynest-system", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/create-deployment-matrix-docs", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/create-github-actions-workflow", "category": "copilot", "status": "closed", "pr_number": 82, "pr_title": "Implement VaultMaster Level 7 Directive deployment workflow", "pr_count": 1}, {"branch": "copilot/create-new-repository", "category": "copilot", "status": "closed", "pr_number": 105, "pr_title": "[WIP] Create a new repository", "pr_count": 1}, {"branch": "copilot/create-plunger-node-documentation", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/create-universal-workflow-template", "category": "copilot", "status": "closed", "pr_number": 78, "pr_title": "[WIP] Create universal GitHub Actions workflow deployment system", "pr_count": 1}, {"branch": "copilot/debug-interstellar-sync-workflow", "category": "copilot", "status": "closed", "pr_number": 51, "pr_title": "Auto-merge: Integrate copilot/debug-interstellar-sync-workflow", "pr_count": 2}, {"branch": "copilot/deploy-ant-colony-command", "category": "copilot", "status": "closed", "pr_number": 102, "pr_title": "Add Losie Quarry Bush Portal - 1984 DOS-style CI/CD deployment interface", "pr_count": 1}, {"branch": "copilot/deploy-autonomous-infrastructure", "category": "copilot", "status": "closed", "pr_number": 97, "pr_title": "Deploy autonomous 9-second pulse engine for 95-repo ecosystem synchronization", "pr_count": 1}, {"branch": "copilot/deploy-treaty-security-architecture", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/enhance-hourly-ping-mechanism", "category": "copilot", "status": "closed", "pr_number": 106, "pr_title": "Implement hourly ping mechanism for marketplace sync monitoring", "pr_count": 1}, {"branch": "copilot/enhance-hourly-ping-mechanism-again", "category": "copilot", "status": "closed", "pr_number": 107, "pr_title": "Implement hourly ping mechanism with retry logic for marketplace synchronization", "pr_count": 1}, {"branch": "copilot/enhance-omnidrop-setup-script", "category": "copilot", "status": "closed", "pr_number": 104, "pr_title": "[WIP] Enhance OmniDrop setup script for CI/CD pipeline", "pr_count": 1}, {"branch": "copilot/finalize-v01-beta-deployment", "category": "copilot", "status": "closed", "pr_number": 109, "pr_title": "Implement Tauri v2 Desktop Commander with auto-bootstrap and Treaty Grid integration", "pr_count": 1}, {"branch": "copilot/fix-ci-dependency-issues", "category": "copilot", "status": "closed", "pr_number": 52, "pr_title": "Auto-merge: Integrate copilot/fix-ci-dependency-issues", "pr_count": 2}, {"branch": "copilot/fix-github-actions-pnpm-config", "category": "copilot", "status": "closed", "pr_number": 79, "pr_title": "Fix GitHub Actions workflows to use pnpm instead of npm", "pr_count": 1}, {"branch": "copilot/fix-interstellar-sync-workflow", "category": "copilot", "status": "closed", "pr_number": 70, "pr_title": "Merge pull request #67 from heyns1000/main", "pr_count": 3}, {"branch": "copilot/fix-json-parsing-and-submodule-entry", "category": "copilot", "status": "closed", "pr_number": 36, "pr_title": "[WIP] Fix JSON parsing error and submodule configuration issues", "pr_count": 1}, {"branch": "copilot/fix-missing-package-lock", "category": "copilot", "status": "closed", "pr_number": 26, "pr_title": "Implement npm workspaces to fix missing package-lock.json in CI", "pr_count": 1}, {"branch": "copilot/fix-profile-badge-permission-issue", "category": "copilot", "status": "closed", "pr_number": 100, "pr_title": "[WIP] Fix permission issues in update profile badge script", "pr_count": 1}, {"branch": "copilot/fix-profile-badge-update", "category": "copilot", "status": "closed", "pr_number": 101, "pr_title": "[WIP] Fix error in updating profile badges in workflow", "pr_count": 1}, {"branch": "copilot/fix-workflow-badge-issue", "category": "copilot", "status": "closed", "pr_number": 98, "pr_title": "Fix pulse-trade-9s workflow failures and add status badge", "pr_count": 1}, {"branch": "copilot/implement-autonomous-governance", "category": "copilot", "status": "closed", "pr_number": 88, "pr_title": "Implement FAA Ecosystem autonomous governance with Four Pillars framework and ASE Command Center", "pr_count": 1}, {"branch": "copilot/implement-master-sync-infrastructure", "category": "copilot", "status": "closed", "pr_number": 87, "pr_title": "Implement FAA Master Sync Infrastructure: IntegrityGuardian, WebSocket Pulse, VaultMesh Dashboard", "pr_count": 1}, {"branch": "copilot/implement-universal-improvement-plan", "category": "copilot", "status": "closed", "pr_number": 108, "pr_title": "Implement universal improvement plan: ecosystem sync monitor audit, Omnigrid PR#35 cascade, Baobab metrics tracking, and global conflict resolution", "pr_count": 1}, {"branch": "copilot/improve-slow-code-efficiency", "category": "copilot", "status": "closed", "pr_number": 77, "pr_title": "Merge pull request #76 from heyns1000/main", "pr_count": 2}, {"branch": "copilot/integrate-baobab-ignition", "category": "copilot", "status": "closed", "pr_number": 21, "pr_title": "Integrate BaobabIgnition\u2122 foundational spark system into ToyNest", "pr_count": 1}, {"branch": "copilot/integrate-fruitful-marketplace", "category": "copilot", "status": "closed", "pr_number": 24, "pr_title": "Integrate Fruitful Global Marketplace with Profile Pulse API, SeedwaveConnect, and Backend Secrets Configuration", "pr_count": 1}, {"branch": "copilot/integrate-heyns1000-ecosystem", "category": "copilot", "status": "closed", "pr_number": 54, "pr_title": "Auto-merge: Integrate copilot/integrate-heyns1000-ecosystem", "pr_count": 1}, {"branch": "copilot/integrate-hotstack-into-codenest", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/merge-admin-dashboard-commits", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/merge-documentation-branches-phase-1", "category": "copilot", "status": "closed", "pr_number": 80, "pr_title": "[WIP] Consolidate documentation branches in Phase 1", "pr_count": 1}, {"branch": "copilot/merge-quantum-safety-extensions", "category": "copilot", "status": "closed", "pr_number": 93, "pr_title": "Draft merged Quantum Safety Extensions specification", "pr_count": 1}, {"branch": "copilot/migrate-banimal-to-codenest", "category": "copilot", "status": "closed", "pr_number": 81, "pr_title": "Merge pull request #65 from heyns1000/copilot/complete-banimal-migration", "pr_count": 2}, {"branch": "copilot/migrate-to-pnpm-package-manager", "category": "copilot", "status": "closed", "pr_number": 66, "pr_title": "Migrate from npm to pnpm: fix workflow duplicates and regenerate lockfile", "pr_count": 1}, {"branch": "copilot/optimize-github-actions-workflows", "category": "copilot", "status": "closed", "pr_number": 85, "pr_title": "[WIP] Optimize GitHub Actions workflows for reduced execution frequency", "pr_count": 1}, {"branch": "copilot/optimize-quantum-circuits", "category": "copilot", "status": "closed", "pr_number": 95, "pr_title": "Implement quantum circuit optimization with VQE transpiler and tensor network noise reduction", "pr_count": 1}, {"branch": "copilot/refine-pebble-lattice-calibration", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/review-and-update-readme", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/sub-500ms-hogpr-tweaks", "category": "copilot", "status": "closed", "pr_number": 89, "pr_title": "Sub-500ms HOGPR inference with Kronecker fusion and FlashAttention", "pr_count": 1}, {"branch": "copilot/update-brand-metadata-handling", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/update-global-regulatory-compliance", "category": "copilot", "status": "closed", "pr_number": 90, "pr_title": "Global Regulatory Compliance (G-13): EU AI Act, GDPR, HIPAA, Basel III - 93%\u2192100%", "pr_count": 1}, {"branch": "copilot/update-profile-landing-page", "category": "copilot", "status": "closed", "pr_number": 96, "pr_title": "Add GitHub profile pulse validation with 9s ecosystem monitoring workflows", "pr_count": 1}, {"branch": "copilot/update-readme-accurately", "category": "copilot", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "copilot/update-repositories-to-93", "category": "copilot", "status": "closed", "pr_number": 23, "pr_title": "Update repository count from 84/87 to 93 across ecosystem", "pr_count": 1}, {"branch": "copilot/update-repository-count-and-translation-system", "category": "copilot", "status": "closed", "pr_number": 22, "pr_title": "Implement 93-repository orchestration with translation, integrity, and compliance systems", "pr_count": 1}, {"branch": "feature/repo-bootstrap", "category": "feature", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}, {"branch": "feature/repo-bootstrap-fixed", "category": "feature", "status": "merged", "pr_number": 118, "pr_title": "feat(repo): bootstrap CodeNest monorepo (Slice 01)", "pr_count": 1}, {"branch": "resolve-conflicts-manually", "category": "resolve-conflicts-manually", "status": "no-pr", "pr_number": null, "pr_title": null, "pr_count": 0}];
+
+const categoryLabel = {
+  claude: 'claude/*', copilot: 'copilot/*', feature: 'feature/*', 'resolve-conflicts-manually': 'other'
+};
+const order = ['claude', 'copilot', 'feature', 'resolve-conflicts-manually'];
+
+function pill(status) {
+  if (status === 'merged') return '<span class="pill merged">merged</span>';
+  if (status === 'closed') return '<span class="pill closed">closed, unmerged</span>';
+  return '<span class="pill nopr">no PR found</span>';
+}
+
+let html = '<table><thead><tr><th>Branch</th><th>Status</th><th>Pull request</th></tr></thead><tbody>';
+for (const cat of order) {
+  const group = rows.filter(r => r.category === cat);
+  if (!group.length) continue;
+  html += `<tr class="cat-head"><td colspan="3">${categoryLabel[cat]} — ${group.length}</td></tr>`;
+  for (const r of group) {
+    const pr = r.pr_number ? `#${r.pr_number} — ${r.pr_title}` : '—';
+    html += `<tr><td class="branch-name">${r.branch}</td><td>${pill(r.status)}</td><td class="pr-cell">${pr}</td></tr>`;
+  }
+}
+html += '</tbody></table>';
+document.getElementById('branchtable').innerHTML = html;
+</script>
+
+</body></html>

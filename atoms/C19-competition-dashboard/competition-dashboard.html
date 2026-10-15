@@ -1,0 +1,621 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful™ Competition Dashboard - Foxed Has Mobiles</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'fox-orange': '#FF6B35',
+                        'fox-brown': '#8B4513',
+                        'gaming-purple': '#6441A4',
+                        'success-green': '#00FF87',
+                        'fruitful-blue': '#007bff',
+                        'fruitful-glow': '#00e393'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-bg': 'pulseBG 8s ease-in-out infinite',
+                        'score-update': 'scoreUpdate 0.6s ease-out',
+                        'fox-bounce': 'foxBounce 2s ease-in-out infinite'
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f8f8f8;
+            --text-color: #000000;
+            --muted-text-color: #333333;
+            --border-color: #cccccc;
+            --card-bg: #ffffff;
+            --button-bg: #007bff;
+            --button-text: #ffffff;
+            --fox-primary: #FF6B35;
+            --fox-secondary: #8B4513;
+            --gaming-accent: #6441A4;
+            --success-color: #00FF87;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --muted-text-color: #aaaaaa;
+            --border-color: #444444;
+            --card-bg: #1c1c1c;
+            --button-bg: #282828;
+            --button-text: #ffffff;
+        }
+
+        body.hyper-mode {
+            --bg-color: #0d0d1a;
+            --text-color: #c0f0ff;
+            --muted-text-color: #88ccee;
+            --border-color: #3a1a5a;
+            --card-bg: #1a1a33;
+            --button-bg: #6a0dad;
+            --button-text: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulseBG {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes scoreUpdate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); color: var(--success-color); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes foxBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .competition-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .competition-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .leaderboard-row {
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-row:hover {
+            background-color: rgba(255, 107, 53, 0.1);
+            transform: translateX(8px);
+        }
+
+        .fox-mascot {
+            animation: foxBounce 2s ease-in-out infinite;
+        }
+
+        .pulsing-bg {
+            background: linear-gradient(-45deg, #FF6B35, #8B4513, #6441A4, #007bff);
+            background-size: 400% 400%;
+            animation: pulseBG 8s ease-in-out infinite;
+        }
+
+        .real-time-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        .score-highlight {
+            animation: scoreUpdate 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-gray-900 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-white">Fruitful™</h1>
+                    <span class="text-gray-400">|</span>
+                    <h2 class="text-xl font-semibold text-fox-orange">Banimal Competitions</h2>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#dashboard" class="text-gray-300 hover:text-white transition-colors">Dashboard</a>
+                    <a href="#leaderboards" class="text-gray-300 hover:text-white transition-colors">Leaderboards</a>
+                    <a href="#competitors" class="text-gray-300 hover:text-white transition-colors">Competitors</a>
+                    <a href="#analytics" class="text-gray-300 hover:text-white transition-colors">Analytics</a>
+                </nav>
+                <div class="flex items-center space-x-3">
+                    <div class="real-time-indicator flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-success-green rounded-full"></div>
+                        <span class="text-sm text-gray-300">Live</span>
+                    </div>
+                    <button id="theme-toggle" class="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Fox-Themed Hero Section -->
+    <section class="pulsing-bg text-white py-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center">
+                <div class="flex justify-center mb-6">
+                    <!-- Stylized fox mascot with gaming headset -->
+                    <div class="fox-mascot text-8xl">🦊</div>
+                </div>
+                <h1 class="text-6xl font-black mb-4 tracking-tight">
+                    <span class="text-fox-orange">Foxed</span> Has <span class="text-white">Mobiles</span>
+                </h1>
+                <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+                    Elite mobile gaming competitor dominating the leaderboards with lightning-fast reflexes and strategic prowess
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="px-8 py-4 bg-fox-orange text-white rounded-xl font-bold text-lg hover:bg-opacity-90 transition-all transform hover:scale-105">
+                        <i class="fas fa-trophy mr-2"></i>View Profile
+                    </button>
+                    <button class="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-gray-900 transition-all">
+                        <i class="fas fa-chart-line mr-2"></i>Performance Stats
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competition Dashboard -->
+    <section id="dashboard" class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Competition Dashboard</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">Real-time tracking of active competitions and performance metrics</p>
+            </div>
+
+            <!-- Competition Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <!-- Active Competitions Card -->
+                <div class="competition-card rounded-xl p-6">
+                    <!-- Professional esports tournament setup with gaming monitors and equipment -->
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200" alt="Active gaming competitions" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-fox-orange">12</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Active Competitions</p>
+                        </div>
+                        <i class="fas fa-gamepad text-3xl text-gaming-purple"></i>
+                    </div>
+                </div>
+
+                <!-- Foxed's Ranking Card -->
+                <div class="competition-card rounded-xl p-6 ring-2 ring-fox-orange">
+                    <!-- Close-up of gaming leaderboard displaying top player rankings -->
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200" alt="Competition ranking display" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-success-green">#3</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Foxed's Global Rank</p>
+                        </div>
+                        <i class="fas fa-trophy text-3xl text-fox-orange"></i>
+                    </div>
+                </div>
+
+                <!-- Total Points Card -->
+                <div class="competition-card rounded-xl p-6">
+                    <!-- Digital dashboard showing analytics and performance metrics -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200" alt="Performance analytics dashboard" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-fruitful-blue score-highlight">24,567</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Total Points</p>
+                        </div>
+                        <i class="fas fa-star text-3xl text-yellow-500"></i>
+                    </div>
+                </div>
+
+                <!-- Win Rate Card -->
+                <div class="competition-card rounded-xl p-6">
+                    <!-- Competitive gaming setup with multiple monitors showing game interfaces -->
+                    <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200" alt="Gaming interface setup" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold text-success-green">87%</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Win Rate</p>
+                        </div>
+                        <i class="fas fa-chart-line text-3xl text-success-green"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Leaderboards -->
+    <section id="leaderboards" class="py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Global Leaderboards</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">Top competitors across all active tournaments</p>
+            </div>
+
+            <!-- Competition Categories Tabs -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button class="px-6 py-3 bg-fox-orange text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all">
+                    Mobile Gaming
+                </button>
+                <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                    Strategy Games
+                </button>
+                <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                    Battle Royale
+                </button>
+                <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
+                    Racing
+                </button>
+            </div>
+
+            <!-- Leaderboard Table -->
+            <div class="competition-card rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-semibold">Rank</th>
+                                <th class="px-6 py-4 text-left font-semibold">Player</th>
+                                <th class="px-6 py-4 text-left font-semibold">Points</th>
+                                <th class="px-6 py-4 text-left font-semibold">Wins</th>
+                                <th class="px-6 py-4 text-left font-semibold">Win Rate</th>
+                                <th class="px-6 py-4 text-left font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="leaderboard-row border-b border-gray-200 dark:border-gray-700">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-crown text-yellow-500 mr-2"></i>
+                                        <span class="font-bold text-lg">1</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                            G
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">GamerPro2024</div>
+                                            <div class="text-sm text-gray-500">Elite Player</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-bold text-fruitful-blue">26,890</td>
+                                <td class="px-6 py-4">156</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-success-green bg-opacity-20 text-success-green rounded-full text-sm font-medium">
+                                        94%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center text-success-green text-sm">
+                                        <div class="w-2 h-2 bg-success-green rounded-full mr-2"></div>
+                                        Online
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="leaderboard-row border-b border-gray-200 dark:border-gray-700">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-medal text-gray-400 mr-2"></i>
+                                        <span class="font-bold text-lg">2</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                            S
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">StrategyKing</div>
+                                            <div class="text-sm text-gray-500">Pro Player</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-bold text-fruitful-blue">25,234</td>
+                                <td class="px-6 py-4">142</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-success-green bg-opacity-20 text-success-green rounded-full text-sm font-medium">
+                                        91%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center text-success-green text-sm">
+                                        <div class="w-2 h-2 bg-success-green rounded-full mr-2"></div>
+                                        Online
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="leaderboard-row border-b border-gray-200 dark:border-gray-700 bg-fox-orange bg-opacity-5 ring-2 ring-fox-orange ring-opacity-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-medal text-orange-500 mr-2"></i>
+                                        <span class="font-bold text-lg">3</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-fox-orange to-fox-brown rounded-full flex items-center justify-center text-white font-bold">
+                                            🦊
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-fox-orange">Foxed Has Mobiles</div>
+                                            <div class="text-sm text-gray-500">Rising Star</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-bold text-fox-orange">24,567</td>
+                                <td class="px-6 py-4">134</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-fox-orange bg-opacity-20 text-fox-orange rounded-full text-sm font-medium">
+                                        87%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center text-success-green text-sm">
+                                        <div class="w-2 h-2 bg-success-green rounded-full mr-2"></div>
+                                        In Game
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="leaderboard-row border-b border-gray-200 dark:border-gray-700">
+                                <td class="px-6 py-4">
+                                    <span class="font-bold text-lg">4</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+                                            M
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">MobileAce</div>
+                                            <div class="text-sm text-gray-500">Veteran</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-bold text-fruitful-blue">23,891</td>
+                                <td class="px-6 py-4">128</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-yellow-500 bg-opacity-20 text-yellow-600 rounded-full text-sm font-medium">
+                                        85%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center text-gray-500 text-sm">
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full mr-2"></div>
+                                        Offline
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="leaderboard-row border-b border-gray-200 dark:border-gray-700">
+                                <td class="px-6 py-4">
+                                    <span class="font-bold text-lg">5</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
+                                            R
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold">RushGamer</div>
+                                            <div class="text-sm text-gray-500">Competitor</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-bold text-fruitful-blue">22,456</td>
+                                <td class="px-6 py-4">119</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-yellow-500 bg-opacity-20 text-yellow-600 rounded-full text-sm font-medium">
+                                        83%
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="flex items-center text-success-green text-sm">
+                                        <div class="w-2 h-2 bg-success-green rounded-full mr-2"></div>
+                                        Online
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Analytics -->
+    <section id="analytics" class="py-16 bg-gray-50 dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Performance Analytics</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400">Detailed insights into Foxed's competitive journey</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Performance Chart Card -->
+                <div class="competition-card rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chart-area text-fox-orange mr-3"></i>
+                        Score Progression
+                    </h3>
+                    <!-- Data visualization dashboard showing gaming performance metrics -->
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300" alt="Performance analytics chart" class="w-full h-64 object-cover rounded-lg mb-4">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-fox-orange">+1,234</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">This Week</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-success-green">+5,678</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">This Month</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-fruitful-blue">24,567</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">All Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Matches Card -->
+                <div class="competition-card rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-history text-gaming-purple mr-3"></i>
+                        Recent Matches
+                    </h3>
+                    <!-- Gaming tournament setup with professional esports arena -->
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=200" alt="Recent gaming matches" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-success-green bg-opacity-10 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-trophy text-success-green"></i>
+                                <span class="font-medium">Victory vs TechNinja</span>
+                            </div>
+                            <span class="text-success-green font-bold">+450 pts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-success-green bg-opacity-10 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-trophy text-success-green"></i>
+                                <span class="font-medium">Victory vs SpeedRacer</span>
+                            </div>
+                            <span class="text-success-green font-bold">+380 pts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-red-500 bg-opacity-10 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-times text-red-500"></i>
+                                <span class="font-medium">Defeat vs GamerPro2024</span>
+                            </div>
+                            <span class="text-red-500 font-bold">-120 pts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-success-green bg-opacity-10 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-trophy text-success-green"></i>
+                                <span class="font-medium">Victory vs MobileAce</span>
+                            </div>
+                            <span class="text-success-green font-bold">+520 pts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl font-bold">Fruitful™</span>
+                        <span class="text-fox-orange">🦊</span>
+                    </div>
+                    <p class="text-gray-400">Leading the future of competitive gaming analytics and performance tracking.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Competitions</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Mobile Gaming</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Strategy Games</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Battle Royale</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Racing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Analytics</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Performance Metrics</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Leaderboards</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Player Profiles</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Match History</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Fruitful™ Competition Platform. All rights reserved. | Powered by Banimal Gaming Analytics</p>
+            </div>
+        </footer>
+
+    <script>
+        // Theme switching functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            let currentTheme = 0; // 0: light, 1: dark, 2: hyper
+            const themes = ['', 'dark-mode', 'hyper-mode'];
+            const themeIcons = ['fa-sun', 'fa-moon', 'fa-bolt'];
+            
+            themeToggle.addEventListener('click', function() {
+                // Remove current theme
+                if (currentTheme > 0) {
+                    body.classList.remove(themes[currentTheme]);
+                }
+                
+                // Cycle to next theme
+                currentTheme = (currentTheme + 1) % 3;
+                
+                // Apply new theme
+                if (currentTheme > 0) {
+                    body.classList.add(themes[currentTheme]);
+                }
+                
+                // Update icon
+                const icon = themeToggle.querySelector('i');
+                icon.className = `fas ${themeIcons[currentTheme]}`;
+            });
+
+            // Simulate real-time score updates
+            setInterval(() => {
+                const scoreElements = document.querySelectorAll('.score-highlight');
+                scoreElements.forEach(element => {
+                    element.classList.remove('score-highlight');
+                    setTimeout(() => {
+                        element.classList.add('score-highlight');
+                    }, 100);
+                });
+            }, 5000);
+
+            // Real-time status updates simulation
+            const statusIndicators = document.querySelectorAll('.real-time-indicator .w-2');
+            setInterval(() => {
+                statusIndicators.forEach(indicator => {
+                    indicator.style.opacity = indicator.style.opacity === '0.5' ? '1' : '0.5';
+                });
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA™ Cash Flow AI - ARIMA Forecast</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .card { background: #1e293b; border-radius: 12px; padding: 1.5rem; border: 1px solid #334155; }
+        .badge { @apply px-3 py-1 text-xs font-bold rounded-full; }
+        .badge-positive { background: #10b98133; color: #10b981; border: 1px solid #10b981; }
+        .badge-warning { background: #f59e0b33; color: #f59e0b; border: 1px solid #f59e0b; }
+        .metric { font-size: 2rem; font-weight: 900; }
+        canvas { border-radius: 12px; }
+        .alert { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center mb-8 text-cyan-400">FAA™ Cash Flow AI</h1>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card text-center">
+                <p class="text-sm text-gray-400">Current Balance</p>
+                <p class="metric text-green-400">R<?php echo number_format($historical_balance[9]); ?></p>
+            </div>
+            <div class="card text-center">
+                <p class="text-sm text-gray-400">30-Day Forecast</p>
+                <p class="metric text-cyan-400">R<?php echo number_format(end($forecast)); ?></p>
+            </div>
+            <div class="card text-center">
+                <p class="text-sm text-gray-400">Model</p>
+                <p class="metric text-purple-400">ARIMA(1,1,1)</p>
+            </div>
+            <div class="card text-center">
+                <p class="text-sm text-gray-400">Confidence</p>
+                <p class="metric text-yellow-400">92%</p>
+            </div>
+        </div>
+
+        <!-- AI Alert -->
+        <div class="card mb-8 p-6 text-center alert bg-gradient-to-r from-purple-900 to-pink-900">
+            <p class="text-lg font-bold">ARIMA AI: Cash flow rising. Peak at R<?php echo number_format(max($forecast)); ?> on Day 25.</p>
+        </div>
+
+        <!-- ARIMA Forecast Chart -->
+        <div class="card mb-8">
+            <h2 class="text-xl font-bold mb-4 text-pink-400">30-Day ARIMA Cash Flow Forecast</h2>
+            <canvas id="arimaChart"></canvas>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="card">
+            <h2 class="text-xl font-bold mb-4 text-emerald-400">Recent Transactions</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-400">
+                            <th class="py-2">Date</th>
+                            <th class="py-2">ID</th>
+                            <th class="py-2">Client</th>
+                            <th class="py-2 text-right">Amount</th>
+                            <th class="py-2">Type</th>
+                            <th class="py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $tx = [
+                            ['2025-04-05', 'TX-10', 'Client F', '+R32,000', 'EFT', 'Received'],
+                            ['2025-04-04', 'TX-09', 'Client G', '+R28,500', 'COD', 'Received'],
+                            ['2025-04-03', 'TX-08', 'Client H', '-R15,000', 'EFT', 'Paid'],
+                            ['2025-04-02', 'TX-07', 'Client I', '+R22,000', 'COD', 'Pending'],
+                            ['2025-04-01', 'TX-06', 'Client J', '+R35,000', 'EFT', 'Received']
+                        ];
+                        foreach ($tx as $t) {
+                            $status = $t[5] === 'Received' ? 'badge-positive' : ($t[5] === 'Pending' ? 'badge-warning' : '');
+                            $amountClass = str_starts_with($t[3], '+') ? 'text-green-400' : 'text-red-400';
+                            echo "<tr>
+                                <td class='py-2'>{$t[0]}</td>
+                                <td class='py-2 font-mono'>{$t[1]}</td>
+                                <td class='py-2'>{$t[2]}</td>
+                                <td class='py-2 text-right font-bold $amountClass'>{$t[3]}</td>
+                                <td class='py-2'>{$t[4]}</td>
+                                <td class='py-2'><span class='badge $status'>{$t[5]}</span></td>
+                            </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('arimaChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [...<?php echo json_encode($dates); ?>, ...<?php echo json_encode($forecast_dates); ?>],
+                datasets: [
+                    {
+                        label: 'Historical Balance',
+                        data: [<?php echo implode(',', $historical_balance); ?>, ...Array(<?php echo $forecast_steps; ?>).fill(null)],
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'transparent',
+                        pointRadius: 4,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'ARIMA Forecast',
+                        data: [null, null, null, null, null, null, null, null, null, null, ...<?php echo json_encode($forecast); ?>],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        fill: '+1',
+                        tension: 0.3,
+                        pointRadius: 3
+                    },
+                    {
+                        label: '95% Confidence',
+                        data: [null, null, null, null, null, null, null, null, null, null, ...<?php echo json_encode($upper); ?>],
+                        borderColor: 'transparent',
+                        backgroundColor: 'rgba(6, 182, 212, 0.05)',
+                        fill: '+2'
+                    },
+                    {
+                        label: 'Lower Bound',
+                        data: [null, null, null, null, null, null, null, null, null, null, ...<?php echo json_encode($lower); ?>],
+                        borderColor: 'transparent',
+                        backgroundColor: 'transparent',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { 
+                    legend: { labels: { color: '#e2e8f0' } },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: { 
+                        ticks: { color: '#94a3b8', callback: v => 'R' + v.toLocaleString() },
+                        grid: { color: '#334155' }
+                    },
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

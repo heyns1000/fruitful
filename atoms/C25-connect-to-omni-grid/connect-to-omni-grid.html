@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect to Omni Grid™ – FAA.zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Apple inspired cleanliness */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9); /* Light mode default */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .logo {
+            color: var(--text-color-dark);
+        }
+        .logo-faa {
+            color: var(--primary-color);
+        }
+        .logo-buildnest {
+            color: var(--text-color-light);
+        }
+        .dark-mode .logo-buildnest {
+            color: var(--text-color-dark);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hamburger-menu {
+            display: none; /* Hidden on desktop */
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+
+        /* Section Styling */
+        .section-padding {
+            padding: 80px 20px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+
+        /* Page Specific Sections */
+        .page-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .page-hero {
+            background-color: var(--bg-color-dark);
+        }
+        .page-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .page-hero h1 {
+            color: var(--text-color-dark);
+        }
+        .page-hero p {
+            font-size: 1.2rem;
+            color: var(--muted-text-light);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .page-hero p {
+            color: var(--muted-text-dark);
+        }
+
+        .content-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .content-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .content-section h2 {
+            color: var(--text-color-dark);
+        }
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--muted-text-light);
+        }
+        .dark-mode .content-section p {
+            color: var(--muted-text-dark);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            flex: 1 1 300px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--muted-text-light);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .copyright {
+            color: var(--muted-text-dark);
+        }
+
+        .footer-links {
+            display: flex;
+            flex: 2 1 500px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-column {
+            flex: 1 1 150px;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .footer-column h4 {
+            color: var(--text-color-dark);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+            margin-bottom: 8px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .footer-column a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none; /* Hidden by default on mobile */
+                flex-direction: column;
+                position: absolute;
+                top: 70px; /* Below header */
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg-light);
+                border-bottom: 1px solid var(--border-color-light);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+            }
+            .dark-mode .main-nav {
+                background-color: var(--card-bg-dark);
+                border-bottom-color: var(--border-color-dark);
+            }
+            .main-nav.active {
+                display: flex;
+            }
+            .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            .nav-list li {
+                width: 100%;
+            }
+            .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            .nav-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color-light);
+            }
+            .dark-mode .nav-actions {
+                border-top-color: var(--border-color-dark);
+            }
+            .nav-actions .cta-button {
+                width: calc(100% - 40px); /* Adjust for padding */
+                margin: 0 20px;
+                text-align: center;
+            }
+
+            .hamburger-menu {
+                display: block; /* Show hamburger on small screens */
+            }
+
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+            .page-hero p {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-brand, .footer-links {
+                flex: 1 1 100%;
+            }
+            .footer-column {
+                flex: 1 1 100%;
+                margin-bottom: 20px;
+            }
+            .footer-column h4 {
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                text-align: center;
+            }
+            .footer-column a {
+                display: inline-block;
+                margin: 0 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">Omni Grid™</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html#overview">Overview</a></li>
+                    <li><a href="index.html#architecture">Architecture</a></li>
+                    <li><a href="index.html#connectivity">Connectivity</a></li>
+                    <li><a href="index.html#get-started">Get Started</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="connect-to-omni-grid.html" class="cta-button nav-cta">Explore Grid</a>
+                </div>
+            </nav>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container hero-content">
+                <h1>Connect to Omni Grid™</h1>
+                <p>Seamlessly integrate your systems and data with the universal interconnected network of FAA.zone.</p>
+                <a href="index.html" class="cta-button hero-cta">Go Back to Main Page &rarr;</a>
+            </div>
+        </section>
+
+        <section class="content-section section-padding">
+            <div class="container">
+                <h2>Getting Started with Omni Grid™ Connectivity</h2>
+                <p>Connecting to Omni Grid™ opens up a world of possibilities, enabling real-time data exchange, enhanced security, and unparalleled access to the FAA.zone ecosystem. Follow the steps below to begin your integration journey.</p>
+
+                <p>For detailed documentation and API references, please visit our developer portal or contact our support team.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">BuildNest™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA.zone. All systems, symbols, and brand echoes protected by the Omni Present Copyright™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="index.html#overview">Features</a></li>
+                        <li><a href="index.html#architecture">Use Cases</a></li>
+                        <li><a href="index.html#connectivity">Pricing</a></li>
+                        <li><a href="plotvault.html">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone</h4>
+                    <ul>
+                        <li><a href="about-faa.html">About FAA Systems™</a></li>
+                        <li><a href="index.html">Omni Grid™</a></li>
+                        <li><a href="baobab-archive.html">Baobab Archive™</a></li>
+                        <li><a href="compliance.html">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                        <li><a href="developer-api.html">Developer API</a></li>
+                        <li><a href="legal-privacy.html">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+            // Apply saved theme mode
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode) {
+                body.classList.add(savedMode);
+            } else {
+                body.classList.add('light-mode'); // Default to light mode
+            }
+
+            // Hamburger menu functionality
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', () => {
+                    if (mainNav) {
+                        mainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Close mobile nav on link click
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    if (mainNav && mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
