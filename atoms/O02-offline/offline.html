@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline — Baobab · Fruitful Portals</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: 'Courier New', Courier, monospace;
+        background: #06070d;
+        color: #e8f5e9;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .baobab {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: sway 4s ease-in-out infinite;
+      }
+
+      @keyframes sway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.3rem 0.85rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(72, 187, 152, 0.35);
+        background: rgba(72, 187, 152, 0.08);
+        color: #48BB98;
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        margin-bottom: 1.5rem;
+      }
+
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #f59e0b;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #ffffff;
+        margin-bottom: 0.75rem;
+      }
+
+      h1 span { color: #48BB98; }
+
+      p {
+        color: #6b7280;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        max-width: 360px;
+        margin-bottom: 2rem;
+      }
+
+      .cached-sessions {
+        width: 100%;
+        max-width: 480px;
+        margin-bottom: 2rem;
+      }
+
+      .cached-sessions h2 {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        color: #4b5563;
+        margin-bottom: 0.75rem;
+      }
+
+      #sessions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .session-item {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid rgba(255,255,255,0.07);
+        background: rgba(255,255,255,0.03);
+        text-align: left;
+        font-size: 0.78rem;
+        color: #9ca3af;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .session-item strong { color: #e5e7eb; }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        background: #48BB98;
+        color: #06070d;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        margin-bottom: 1rem;
+      }
+
+      .btn:hover { opacity: 0.85; }
+
+      footer {
+        margin-top: 3rem;
+        font-size: 0.65rem;
+        color: #374151;
+        letter-spacing: 0.15em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="baobab">🌳</div>
+
+    <div class="badge">
+      <span class="dot"></span>
+      NO SIGNAL IN THE BUSH
+    </div>
+
+    <h1>YOU'RE <span>OFFLINE</span></h1>
+
+    <p>
+      Baobab will sync when you reconnect. Your previously generated sessions are cached and ready to view below.
+    </p>
+
+    <div class="cached-sessions">
+      <h2>CACHED SESSIONS</h2>
+      <div id="sessions-list"></div>
+    </div>
+
+    <button class="btn" onclick="window.location.reload()">
+      ↻ RETRY CONNECTION
+    </button>
+
+    <footer>FRUITFUL HOLDINGS (PTY) LTD · FAA.ZONE ECOSYSTEM · BUILT FOR THE BUSH — WORKS ANYWHERE</footer>
+
+    <script>
+      // Load cached sessions from localStorage
+      try {
+        const raw = localStorage.getItem("baobab_recent_sessions");
+        const sessions = raw ? JSON.parse(raw) : [];
+        const list = document.getElementById("sessions-list");
+        if (sessions.length === 0) {
+          list.innerHTML = '<div class="session-item"><span style="color:#4b5563">No cached sessions yet</span></div>';
+        } else {
+          sessions.slice(0, 5).forEach(function(s) {
+            const el = document.createElement("div");
+            el.className = "session-item";
+            el.innerHTML =
+              "<strong>" + (s.appName || "Untitled App") + "</strong>" +
+              "<span>" + (s.fileCount || 0) + " files</span>";
+            list.appendChild(el);
+          });
+        }
+      } catch (e) {
+        // silently ignore
+      }
+    </script>
+  </body>
+</html>

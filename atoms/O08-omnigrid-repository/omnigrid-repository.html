@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ðŸ•¸ï¸ OmniGridâ„¢ Repository - Fruitful Holdings | FAA.zone</title>
+<link rel="icon" href="/favicon.ico">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+/* Following Fruitful CI/Brand Guidelines from index.html */
+:root {
+--text-color-light: #1d1d1f;
+--text-color-dark: #f5f5f7;
+--bg-color-light: #ffffff;
+--bg-color-dark: #1a1a1c;
+--card-bg-light: #ffffff;
+--card-bg-dark: #2a2a2e;
+--border-color-light: #e8e8ed;
+--border-color-dark: #3a3a3e;
+--primary-color: #0071e3;
+--secondary-color: #30d158;
+--tertiary-color: #ff3b30;
+--muted-text-light: #6e6e73;
+--muted-text-dark: #a0b0b5;
+--omnigrid-purple: #8b5cf6;
+--omnigrid-cyan: #06b6d4;
+}
+
+body {
+font-family: 'Inter', sans-serif;
+background-color: var(--bg-color-light);
+color: var(--text-color-light);
+line-height: 1.4;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+margin: 0;
+padding: 0;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+background-color: var(--bg-color-dark);
+color: var(--text-color-dark);
+}
+
+.dark-mode header,
+.dark-mode .omnigrid-card,
+.dark-mode .stat-card,
+.dark-mode .repository-item,
+.dark-mode .modal-content,
+.dark-mode footer {
+background-color: var(--card-bg-dark);
+border-color: var(--border-color-dark);
+}
+
+.dark-mode .repository-item:hover {
+background-color: #3a3a3e;
+}
+
+.container {
+max-width: 1400px;
+margin: 0 auto;
+padding: 0 20px;
+}
+
+header {
+background-color: #ffffff;
+border-bottom: 1px solid #e8e8ed;
+padding: 1rem 0;
+box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+position: sticky;
+top: 0;
+z-index: 50;
+transition: all 0.3s ease;
+}
+
+.header-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 100%;
+}
+
+.logo-group {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.logo-link {
+text-decoration: none;
+color: inherit;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.logo-fruitful {
+color: var(--primary-color);
+font-size: 1.6rem;
+font-weight: 800;
+}
+
+.logo-separator {
+color: var(--muted-text-light);
+font-size: 1.4rem;
+font-weight: 600;
+}
+
+.logo-omnigrid {
+color: var(--omnigrid-purple);
+font-size: 1.4rem;
+font-weight: 600;
+}
+
+.main-nav {
+display: flex;
+align-items: center;
+gap: 20px;
+}
+
+.nav-list {
+display: flex;
+list-style: none;
+margin: 0;
+padding: 0;
+gap: 20px;
+}
+
+.nav-list a {
+text-decoration: none;
+color: var(--muted-text-light);
+font-weight: 500;
+font-size: 0.95rem;
+transition: color 0.3s ease;
+}
+
+.nav-list a:hover {
+color: var(--primary-color);
+}
+
+.nav-actions {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+
+.header-cta-button {
+display: inline-block;
+padding: 8px 16px;
+background-color: var(--primary-color);
+color: white;
+text-decoration: none;
+border-radius: 20px;
+font-weight: 600;
+font-size: 0.85rem;
+transition: all 0.3s ease;
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+border: none;
+cursor: pointer;
+}
+
+.header-cta-button:hover {
+background-color: #0066cc;
+transform: translateY(-1px);
+box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.header-cta-button.secondary {
+background-color: #e8e8ed;
+color: #424245;
+border: 1px solid #dcdcdc;
+}
+
+body.dark-mode .header-cta-button.secondary {
+background-color: var(--primary-color);
+color: white;
+border-color: var(--primary-color);
+box-shadow: 0 1px 5px rgba(0, 113, 227, 0.4);
+}
+
+.hamburger-menu {
+display: none;
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+color: var(--text-color-light);
+}
+
+.omnigrid-hero {
+padding: 6rem 1.5rem 4rem;
+text-align: center;
+background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+border-bottom: 1px solid var(--border-color-light);
+}
+
+body.dark-mode .omnigrid-hero {
+background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+}
+
+.omnigrid-hero h1 {
+font-size: 4rem;
+font-weight: 900;
+margin-bottom: 1rem;
+background: linear-gradient(135deg, var(--omnigrid-purple), var(--omnigrid-cyan));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+
+.omnigrid-hero p {
+font-size: 1.3rem;
+color: var(--muted-text-light);
+max-width: 800px;
+margin: 0 auto 2rem;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 2rem;
+margin: 3rem 0;
+}
+
+.stat-card {
+background: var(--card-bg-light);
+border: 1px solid var(--border-color-light);
+border-radius: 16px;
+padding: 2rem;
+text-align: center;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.stat-card .stat-icon {
+font-size: 3rem;
+margin-bottom: 1rem;
+}
+
+.stat-card .stat-value {
+font-size: 2.5rem;
+font-weight: 800;
+color: var(--primary-color);
+margin-bottom: 0.5rem;
+}
+
+body.dark-mode .stat-card .stat-value {
+color: var(--omnigrid-cyan);
+}
+
+.stat-card .stat-label {
+font-size: 1rem;
+color: var(--muted-text-light);
+font-weight: 500;
+}
+
+.repository-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+gap: 2rem;
+margin: 3rem 0;
+}
+
+.repository-item {
+background: var(--card-bg-light);
+border: 1px solid var(--border-color-light);
+border-radius: 12px;
+padding: 1.5rem;
+transition: all 0.3s ease;
+cursor: pointer;
+}
+
+.repository-item:hover {
+transform: translateY(-4px);
+box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+border-color: var(--primary-color);
+}
+
+.repository-header {
+display: flex;
+align-items: start;
+gap: 1rem;
+margin-bottom: 1rem;
+}
+
+.repository-icon {
+font-size: 2rem;
+min-width: 50px;
+}
+
+.repository-info h3 {
+font-size: 1.2rem;
+font-weight: 700;
+margin: 0 0 0.5rem 0;
+color: var(--text-color-light);
+}
+
+body.dark-mode .repository-info h3 {
+color: var(--text-color-dark);
+}
+
+.repository-status {
+display: inline-block;
+padding: 0.25rem 0.75rem;
+border-radius: 12px;
+font-size: 0.75rem;
+font-weight: 600;
+}
+
+.status-active {
+background-color: rgba(48, 209, 88, 0.2);
+color: var(--secondary-color);
+}
+
+.status-development {
+background-color: rgba(255, 204, 0, 0.2);
+color: #ffcc00;
+}
+
+.repository-description {
+color: var(--muted-text-light);
+font-size: 0.95rem;
+margin-bottom: 1rem;
+line-height: 1.5;
+}
+
+.repository-meta {
+display: flex;
+gap: 1.5rem;
+font-size: 0.85rem;
+color: var(--muted-text-light);
+margin-bottom: 1rem;
+}
+
+.repository-actions {
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
+
+.repo-btn {
+padding: 0.5rem 1rem;
+border-radius: 8px;
+font-size: 0.85rem;
+font-weight: 600;
+text-decoration: none;
+transition: all 0.3s ease;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+border: 1px solid var(--border-color-light);
+background: var(--card-bg-light);
+color: var(--text-color-light);
+}
+
+.repo-btn:hover {
+background: var(--primary-color);
+color: white;
+border-color: var(--primary-color);
+}
+
+.filter-section {
+display: flex;
+gap: 1rem;
+margin: 2rem 0;
+flex-wrap: wrap;
+align-items: center;
+}
+
+.filter-btn {
+padding: 0.5rem 1.25rem;
+border-radius: 20px;
+border: 1px solid var(--border-color-light);
+background: var(--card-bg-light);
+color: var(--text-color-light);
+font-weight: 600;
+font-size: 0.9rem;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+background: var(--primary-color);
+color: white;
+border-color: var(--primary-color);
+}
+
+.search-box {
+flex: 1;
+min-width: 300px;
+padding: 0.75rem 1.25rem;
+border-radius: 20px;
+border: 1px solid var(--border-color-light);
+background: var(--card-bg-light);
+color: var(--text-color-light);
+font-size: 0.95rem;
+}
+
+.search-box:focus {
+outline: none;
+border-color: var(--primary-color);
+box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+section {
+padding: 4rem 1.5rem;
+}
+
+section h2 {
+font-size: 2.5rem;
+font-weight: 800;
+margin-bottom: 1rem;
+}
+
+footer {
+margin-top: auto;
+padding: 2rem 1.5rem;
+text-align: center;
+background-color: var(--bg-color-light);
+border-top: 1px solid var(--border-color-light);
+color: var(--muted-text-light);
+}
+
+footer a {
+color: var(--muted-text-light);
+text-decoration: none;
+}
+
+footer a:hover {
+color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+.omnigrid-hero h1 {
+font-size: 2.5rem;
+}
+.repository-grid {
+grid-template-columns: 1fr;
+}
+.main-nav {
+display: none;
+}
+.main-nav.active {
+display: flex;
+flex-direction: column;
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: var(--card-bg-light);
+padding: 1rem;
+}
+.hamburger-menu {
+display: block;
+position: absolute;
+top: 15px;
+right: 20px;
+}
+}
+</style>
+</head>
+<body class="light-mode">
+
+<header>
+<div class="container header-content">
+<div class="logo-group">
+<a href="https://fruitful.faa.zone/index.html" class="logo-link">
+<span class="logo-fruitful">Fruitfulâ„¢</span>
+<span class="logo-separator">|</span>
+<span class="logo-omnigrid">OmniGridâ„¢</span>
+</a>
+<button class="hamburger-menu" aria-label="Toggle navigation">
+<i class="fas fa-bars"></i>
+</button>
+</div>
+<nav class="main-nav">
+<ul class="nav-list">
+<li><a href="https://fruitful.faa.zone/index.html">ðŸ  Home</a></li>
+<li><a href="https://seedwave.faa.zone">ðŸŒŠ Seedwave Admin</a></li>
+<li><a href="https://vaultmesh.faa.zone">ðŸŒ VaultMesh</a></li>
+<li><a href="https://github.com/heyns1000?tab=repositories" target="_blank">ðŸ’» GitHub</a></li>
+<li><a href="https://faa.zone/contact-us.html">âœ‰ï¸ Contact</a></li>
+</ul>
+<div class="nav-actions">
+<button id="dayNightToggle" class="header-cta-button secondary">
+<i class="fas fa-moon"></i> Day/Night
+</button>
+<a href="https://seedwave.faa.zone/admin_panel_xero.html" class="header-cta-button">
+<i class="fas fa-cog"></i> Admin Panel
+</a>
+</div>
+</nav>
+</div>
+</header>
+
+<main>
+<section class="omnigrid-hero">
+<h1>ðŸ•¸ï¸ OmniGridâ„¢ Repository</h1>
+<p>
+Your centralized command center for all Fruitful Holdings projects, protocols, and integrations.
+<br>Connecting <strong>Seedwave</strong>, <strong>VaultMesh</strong>, <strong>HotStack</strong>, and the entire FAA.zone ecosystem.
+</p>
+</section>
+
+<section class="container">
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-icon">ðŸ“¦</div>
+<div class="stat-value" id="totalRepos">25+</div>
+<div class="stat-label">Total Repositories</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">âœ…</div>
+<div class="stat-value" id="activeRepos">23</div>
+<div class="stat-label">Active Projects</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">ðŸš€</div>
+<div class="stat-value">156</div>
+<div class="stat-label">Deployments Today</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">ðŸ‘¨â€ðŸ’»</div>
+<div class="stat-value">8</div>
+<div class="stat-label">Contributors</div>
+</div>
+</div>
+</section>
+
+<section class="container">
+<h2>Explore Repositories</h2>
+<div class="filter-section">
+<button class="filter-btn active" data-filter="all">All</button>
+<button class="filter-btn" data-filter="active">Active</button>
+<button class="filter-btn" data-filter="development">Development</button>
+<input type="text" class="search-box" id="searchBox" placeholder="ðŸ” Search repositories...">
+</div>
+</section>
+
+<section class="container">
+<div class="repository-grid" id="repositoryGrid"></div>
+</section>
+</main>
+
+<footer>
+<p>Â© 2025 Fruitful Holdings (Pty) Ltdâ„¢ | 302 Dykor Street, Silverton, Pretoria, South Africa</p>
+<div class="mt-4 flex justify-center space-x-4">
+<a href="https://www.faa.zone">FAA.zoneâ„¢</a>
+<span>|</span>
+<a href="https://github.com/heyns1000" target="_blank">GitHub</a>
+<span>|</span>
+<a href="/terms-of-service.html">Terms</a>
+<span>|</span>
+<a href="/privacy-policy.html">Privacy</a>
+</div>
+</footer>
+
+<script>
+// REAL Repository Data from https://github.com/heyns1000
+const repositories = [
+{
+id: 'seedwave',
+name: 'Seedwaveâ„¢ Admin Portal',
+icon: 'ðŸŒŠ',
+status: 'active',
+description: 'Central admin portal and backend functions for FAAâ„¢ Global Ecosystem. Primary control center for all Fruitful operations.',
+language: 'HTML',
+stars: 1,
+forks: 1,
+url: 'https://seedwave.faa.zone',
+docs: 'https://seedwave.faa.zone/admin_panel_xero.html',
+github: 'https://github.com/heyns1000/seedwave',
+lastUpdate: 'Aug 4, 2025',
+contributors: 8,
+tags: ['admin', 'backend', 'core', 'xero']
+},
+{
+id: 'vaultpay',
+name: 'VaultPayâ„¢',
+icon: 'ðŸ’³',
+status: 'active',
+description: 'Integrated payment processing system for Fruitful ecosystem with multi-gateway support and transaction management.',
+language: 'JavaScript',
+stars: 0,
+forks: 0,
+url: 'https://vaultpay.faa.zone',
+docs: 'https://vaultpay.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/vaultpay',
+lastUpdate: 'Oct 28, 2025',
+contributors: 3,
+tags: ['payments', 'gateway', 'commerce']
+},
+{
+id: 'zoho',
+name: 'Zoho Integration Hub',
+icon: 'ðŸ“Š',
+status: 'active',
+description: 'Zoho CRM and business tools integration for Fruitful Holdings operations and customer management.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://zoho.faa.zone',
+docs: 'https://zoho.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/zoho',
+lastUpdate: 'Oct 28, 2025',
+contributors: 2,
+tags: ['crm', 'integration', 'business']
+},
+{
+id: 'banimal',
+name: 'Banimalâ„¢',
+icon: 'ðŸ¦',
+status: 'active',
+description: 'Wildlife management and business operations platform for Banimal game lodge and hunting enterprises.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://banimal.faa.zone',
+docs: 'https://banimal.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/banimal',
+lastUpdate: 'Oct 27, 2025',
+contributors: 4,
+tags: ['wildlife', 'business', 'lodge']
+},
+{
+id: 'vaultmesh',
+name: 'VaultMeshâ„¢',
+icon: 'ðŸŒ',
+status: 'active',
+description: 'GitHub profile configuration and mesh networking protocol for decentralized data distribution.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://vaultmesh.faa.zone',
+docs: 'https://vaultmesh.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/vaultmesh',
+lastUpdate: 'Oct 27, 2025',
+contributors: 5,
+tags: ['networking', 'config', 'mesh']
+},
+{
+id: 'faau-realm',
+name: 'FAAU REALMâ„¢',
+icon: 'ðŸŒ',
+status: 'active',
+description: 'TypeScript-based realm management system for FAA Universe distributed architecture and governance.',
+language: 'TypeScript',
+stars: 0,
+forks: 0,
+url: 'https://realm.faa.zone',
+docs: 'https://realm.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/FAAU_REALM',
+lastUpdate: 'Oct 25, 2025',
+contributors: 4,
+tags: ['typescript', 'realm', 'architecture']
+},
+{
+id: 'muller',
+name: 'Muller Analytics',
+icon: 'ðŸ““',
+status: 'active',
+description: 'Jupyter Notebook based analytics and data science platform for business intelligence and reporting.',
+language: 'Jupyter Notebook',
+stars: 0,
+forks: 0,
+url: 'https://muller.faa.zone',
+docs: 'https://muller.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/Muller.faa.zone',
+lastUpdate: 'Oct 19, 2025',
+contributors: 3,
+tags: ['jupyter', 'analytics', 'data-science']
+},
+{
+id: 'hotstack',
+name: 'HotStackâ„¢',
+icon: 'ðŸ”¥',
+status: 'active',
+description: 'Rapid deployment system for instant web presence. Deploy scrolls and sites in under 180 seconds with auto-DNS.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://fruitful.faa.zone/index.html#hotstack-section',
+docs: 'https://fruitful.faa.zone/hotstack-docs.html',
+github: 'https://github.com/heyns1000/hotstack',
+lastUpdate: 'Oct 17, 2025',
+contributors: 6,
+tags: ['deployment', 'automation', 'rapid']
+},
+{
+id: 'legal',
+name: 'Legal Repository',
+icon: 'âš–ï¸',
+status: 'active',
+description: 'All legal minutes of meetings, documents and global legal index for all repositories and corporate compliance.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://legal.faa.zone',
+docs: 'https://legal.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/legal',
+lastUpdate: 'Oct 12, 2025',
+contributors: 4,
+tags: ['legal', 'documentation', 'compliance']
+},
+{
+id: 'payroll-mining',
+name: 'Payroll Mining Operations',
+icon: 'â›ï¸',
+status: 'active',
+description: 'Mining operations payroll management system integrated with Seedwave for workforce administration.',
+language: 'HTML',
+stars: 0,
+forks: 1,
+url: 'https://payroll-mining.seedwave.faa.zone',
+docs: 'https://payroll-mining.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/payroll-mining.seedwave.faa.zone',
+lastUpdate: 'Oct 11, 2025',
+contributors: 3,
+tags: ['payroll', 'mining', 'hr']
+},
+{
+id: 'wildbutcher',
+name: 'WildButcher Platform',
+icon: 'ðŸ¥©',
+status: 'active',
+description: 'Wildlife processing and butchery management system for game meat operations and inventory control.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://wildbutcher.faa.zone',
+docs: 'https://wildbutcher.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/Wildbutcher',
+lastUpdate: 'Oct 10, 2025',
+contributors: 2,
+tags: ['wildlife', 'processing', 'inventory']
+},
+{
+id: 'heyns1e3-seedwave',
+name: 'Heyns1E3 Seedwave',
+icon: 'ðŸ’§',
+status: 'active',
+description: 'Enhanced Seedwave implementation for specialized operations and advanced data synchronization.',
+language: 'JavaScript',
+stars: 0,
+forks: 0,
+url: 'https://heyns1e3.seedwave.faa.zone',
+docs: 'https://heyns1e3.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/heyns1E3-seedwave',
+lastUpdate: 'Sep 29, 2025',
+contributors: 3,
+tags: ['seedwave', 'enhanced', 'sync']
+},
+{
+id: 'careers',
+name: 'Careers Portal',
+icon: 'ðŸ’¼',
+status: 'active',
+description: 'Fruitful Holdings career opportunities and recruitment platform with applicant tracking.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://careers.faa.zone',
+docs: 'https://careers.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/careers',
+lastUpdate: 'Sep 11, 2025',
+contributors: 4,
+tags: ['careers', 'recruitment', 'hr']
+},
+{
+id: 'noodle-juice',
+name: 'Noodle Juiceâ„¢',
+icon: 'ðŸœ',
+status: 'active',
+description: 'Advanced data flow visualization and network traffic analysis system with real-time monitoring.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://noodle.juice',
+docs: 'https://noodle.juice/docs.html',
+github: 'https://github.com/heyns1000/noodle.juice',
+lastUpdate: 'Sep 8, 2025',
+contributors: 5,
+tags: ['visualization', 'networking', 'monitoring']
+},
+{
+id: 'seedwave-portal',
+name: 'Seedwave Access Portal',
+icon: 'ðŸšª',
+status: 'active',
+description: 'Primary access portal for Seedwave ecosystem services and unified authentication gateway.',
+language: 'JavaScript',
+stars: 0,
+forks: 0,
+url: 'https://portal.seedwave.faa.zone',
+docs: 'https://portal.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/seedwave_portal',
+lastUpdate: 'Aug 12, 2025',
+contributors: 6,
+tags: ['portal', 'access', 'auth']
+},
+{
+id: 'trompie',
+name: 'Trompie Platform',
+icon: 'ðŸŽº',
+status: 'active',
+description: 'Specialized business operations platform for Trompie Holdings subsidiary operations.',
+language: 'JavaScript',
+stars: 0,
+forks: 0,
+url: 'https://trompie.faa.zone',
+docs: 'https://trompie.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/trompie.faa.zone',
+lastUpdate: 'Aug 12, 2025',
+contributors: 2,
+tags: ['business', 'operations', 'subsidiary']
+},
+{
+id: 'adele',
+name: 'Adele Platform',
+icon: 'ðŸŽµ',
+status: 'active',
+description: 'Content management and media platform for digital asset organization and distribution.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://adele.faa.zone',
+docs: 'https://adele.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/adele',
+lastUpdate: 'Aug 1, 2025',
+contributors: 3,
+tags: ['media', 'content', 'assets']
+},
+{
+id: 'ai-logic',
+name: 'AI Logic Engine',
+icon: 'ðŸ¤–',
+status: 'active',
+description: 'Artificial intelligence and logic processing system for Seedwave ecosystem automation and decision-making.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://ai-logic.seedwave.faa.zone',
+docs: 'https://ai-logic.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/ai-logic.seedwave.faa.zone',
+lastUpdate: 'Jul 20, 2025',
+contributors: 5,
+tags: ['ai', 'logic', 'automation']
+},
+{
+id: 'nutrition',
+name: 'Nutrition Management',
+icon: 'ðŸ¥—',
+status: 'active',
+description: 'Wildlife and animal nutrition management system for optimal feeding programs and health tracking.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://nutrition.seedwave.faa.zone',
+docs: 'https://nutrition.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/nutrition.seedwave.faa.zone',
+lastUpdate: 'Jul 19, 2025',
+contributors: 3,
+tags: ['nutrition', 'wildlife', 'health']
+},
+{
+id: 'wildlife',
+name: 'Wildlife Tracking System',
+icon: 'ðŸ¦“',
+status: 'active',
+description: 'Comprehensive wildlife tracking and management system with GPS integration and population analytics.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://wildlife.seedwave.faa.zone',
+docs: 'https://wildlife.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/wildlife.seedwave.faa.zone',
+lastUpdate: 'Jul 19, 2025',
+contributors: 4,
+tags: ['wildlife', 'gps', 'tracking']
+},
+{
+id: 'payroll',
+name: 'Enterprise Payroll',
+icon: 'ðŸ’°',
+status: 'active',
+description: 'Enterprise payroll management and processing system with tax compliance and reporting.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://payroll.faa.zone',
+docs: 'https://payroll.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/payroll',
+lastUpdate: 'Jul 18, 2025',
+contributors: 4,
+tags: ['payroll', 'hr', 'finance']
+},
+{
+id: 'toynest',
+name: 'ToyNest E-commerce',
+icon: 'ðŸ§¸',
+status: 'active',
+description: 'E-commerce and inventory management platform for toy retail operations and online sales.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://toynest.seedwave.faa.zone',
+docs: 'https://toynest.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/toynest.seedwave.faa.zone',
+lastUpdate: 'Jul 18, 2025',
+contributors: 3,
+tags: ['e-commerce', 'retail', 'inventory']
+},
+{
+id: 'lesotho',
+name: 'Lesotho Operations',
+icon: 'ðŸ”ï¸',
+status: 'active',
+description: 'Regional operations management for Lesotho business activities and cross-border logistics.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://lesotho.faa.zone',
+docs: 'https://lesotho.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/lesotho.faa.zone',
+lastUpdate: 'Jul 17, 2025',
+contributors: 3,
+tags: ['regional', 'operations', 'lesotho']
+},
+{
+id: 'logistics',
+name: 'Logistics Platform',
+icon: 'ðŸšš',
+status: 'active',
+description: 'Supply chain and logistics management system for Seedwave operations with real-time tracking.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://logistics.seedwave.faa.zone',
+docs: 'https://logistics.seedwave.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/logistics.seedwave.faa.zone',
+lastUpdate: 'Jul 17, 2025',
+contributors: 4,
+tags: ['logistics', 'supply-chain', 'tracking']
+},
+{
+id: 'payment',
+name: 'Payment Gateway Core',
+icon: 'ðŸ’³',
+status: 'active',
+description: 'Integrated payment processing and transaction management with multi-currency support.',
+language: 'HTML',
+stars: 0,
+forks: 0,
+url: 'https://payment.faa.zone',
+docs: 'https://payment.faa.zone/docs.html',
+github: 'https://github.com/heyns1000/payment',
+lastUpdate: 'Jul 16, 2025',
+contributors: 5,
+tags: ['payments', 'gateway', 'transactions']
+}
+];
+
+// State
+let currentFilter = 'all';
+let searchQuery = '';
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+setupEventListeners();
+loadDayNightPreference();
+renderRepositories();
+animateStats();
+});
+
+function setupEventListeners() {
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+btn.addEventListener('click', (e) => {
+document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+e.target.classList.add('active');
+currentFilter = e.target.dataset.filter;
+renderRepositories();
+});
+});
+
+// Search
+document.getElementById('searchBox').addEventListener('input', (e) => {
+searchQuery = e.target.value.toLowerCase();
+renderRepositories();
+});
+
+// Day/Night
+document.getElementById('dayNightToggle').addEventListener('click', () => {
+const isDark = !document.body.classList.contains('dark-mode');
+document.body.classList.toggle('dark-mode');
+localStorage.setItem('theme', isDark ? 'dark' : 'light');
+document.getElementById('dayNightToggle').innerHTML = isDark ? 
+'<i class="fas fa-sun"></i> Day/Night' : '<i class="fas fa-moon"></i> Day/Night';
+});
+
+// Mobile menu
+const hamburger = document.querySelector('.hamburger-menu');
+const nav = document.querySelector('.main-nav');
+if (hamburger && nav) {
+hamburger.addEventListener('click', () => nav.classList.toggle('active'));
+}
+}
+
+function loadDayNightPreference() {
+const theme = localStorage.getItem('theme');
+if (theme === 'dark') {
+document.body.classList.add('dark-mode');
+document.getElementById('dayNightToggle').innerHTML = '<i class="fas fa-sun"></i> Day/Night';
+}
+}
+
+function animateStats() {
+const activeCount = repositories.filter(r => r.status === 'active').length;
+animateValue('totalRepos', 0, repositories.length, 1000);
+animateValue('activeRepos', 0, activeCount, 1000);
+}
+
+function animateValue(id, start, end, duration) {
+const el = document.getElementById(id);
+if (!el) return;
+const range = end - start;
+const increment = range / (duration / 16);
+let current = start;
+const timer = setInterval(() => {
+current += increment;
+if (current >= end) {
+current = end;
+clearInterval(timer);
+}
+el.textContent = Math.floor(current);
+}, 16);
+}
+
+function renderRepositories() {
+const grid = document.getElementById('repositoryGrid');
+const filtered = repositories.filter(repo => {
+const matchesFilter = currentFilter === 'all' || repo.status === currentFilter;
+const matchesSearch = searchQuery === '' ||
+repo.name.toLowerCase().includes(searchQuery) ||
+repo.description.toLowerCase().includes(searchQuery) ||
+repo.tags.some(tag => tag.includes(searchQuery));
+return matchesFilter && matchesSearch;
+});
+
+if (filtered.length === 0) {
+grid.innerHTML = `
+<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--muted-text-light);">
+<i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+<p style="font-size: 1.2rem;">No repositories found.</p>
+</div>
+`;
+return;
+}
+
+grid.innerHTML = filtered.map(repo => `
+<div class="repository-item">
+<div class="repository-header">
+<div class="repository-icon">${repo.icon}</div>
+<div class="repository-info">
+<h3>${repo.name}</h3>
+<span class="repository-status status-${repo.status}">${repo.status.toUpperCase()}</span>
+</div>
+</div>
+<p class="repository-description">${repo.description}</p>
+<div class="repository-meta">
+<span><i class="fas fa-code"></i> ${repo.language}</span>
+<span><i class="fas fa-star"></i> ${repo.stars}</span>
+<span><i class="fas fa-code-branch"></i> ${repo.forks}</span>
+<span><i class="fas fa-clock"></i> ${repo.lastUpdate}</span>
+</div>
+<div class="repository-actions">
+<a href="${repo.url}" class="repo-btn" target="_blank">
+<i class="fas fa-external-link-alt"></i> Open
+</a>
+<a href="${repo.github}" class="repo-btn" target="_blank">
+<i class="fab fa-github"></i> GitHub
+</a>
+<a href="${repo.docs}" class="repo-btn" target="_blank">
+<i class="fas fa-book"></i> Docs
+</a>
+</div>
+</div>
+`).join('');
+}
+</script>
+
+</body>
+</html>

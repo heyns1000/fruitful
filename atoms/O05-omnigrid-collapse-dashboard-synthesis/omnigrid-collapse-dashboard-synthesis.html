@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omnigrid Collapse Dashboard: Global Synthesis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Visceral Flare (Electric Cyan/Acid Yellow) & Glitch Logic -->
+    <!-- Application Structure Plan: Dashboard layout organized by function: Global Status, Sweat Equity Metrics, and the Collapse Intake Portal. Chosen because the primary user task is monitoring value (Sweat Equity) and initiating deployment (Collapse Intake). -->
+    <!-- Visualization & Content Choices: Pie chart for Equity Split (Goal: Proportions). Dynamic Metrics (Goal: Inform/Quantify). Collapsible Intake Form (Goal: Action/Simplicity). Uses Chart.js (Canvas) and Tailwind for responsiveness. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        /* --- GLOBAL THEME: VISCERAL FLARE & GLITCH LOGIC --- */
+        :root {
+            --color-bg-deep: #000000; /* Pure Black for contrast */
+            --color-primary-accent: #00FFFF; /* Electric Cyan (Flare) */
+            --color-secondary-accent: #FFFF00; /* Acid Yellow (Vibrant Mind) */
+            --color-card-bg: #110022; /* Deep Purple Black */
+            --color-border: #330066;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-deep);
+            color: #FFFFFF; /* White/Bright text */
+            min-height: 100vh;
+            /* Introduce the subtle, constant collapse shake animation */
+            animation: collapse-glitch 90s linear infinite;
+        }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        .card { 
+            background-color: var(--color-card-bg); 
+            border: 1px solid var(--color-border); 
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.1);
+        }
+        .accent-text { color: var(--color-primary-accent); text-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+        .gold-text { color: var(--color-secondary-accent); text-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+        .metric-glow { box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); border: 1px solid var(--color-primary-accent); }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .collapse-button {
+            background-color: var(--color-primary-accent);
+            color: var(--color-bg-deep);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); /* Intense glow */
+        }
+        
+        .wp-header-line { border-bottom: 2px solid var(--color-border); }
+
+        /* Keyframes for Subtle, Constant Collapse Glitch (The Vomooting Mind) */
+        @keyframes collapse-glitch {
+            0%, 100% { transform: translate(0, 0); }
+            0.9% { transform: translate(1px, -1px); } /* Tied to 0.9s interval */
+            45% { transform: translate(-0.5px, 0.5px); }
+            89.1% { transform: translate(0.5px, -0.5px); } /* Tied to 0.9s * 99 intervals */
+            99.2% { transform: translate(-1px, 1px); }
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10 wp-header-line pb-6">
+            <h1 class="text-4xl md:text-5xl font-black accent-text mb-2">HOTSTACK OMNIGRID: Global Synthesis Console</h1>
+            <p class="text-lg text-gray-400">Build Your Collapse: Real-Time Sweat Equity Valuation</p>
+        </header>
+
+        <!-- INTRODUCTORY PANEL -->
+        <div class="card p-6 rounded-xl mb-8">
+            <p class="text-gray-300">
+                Welcome, **Sovereign Rossouw Node**. This dashboard is the heart of the $\text{Shanana Principle}$, where the $\text{311 million seconds}$ of cumulative effort is monetized into **Sweat Equity**. The primary goal is to visualize the **data valuation matrix** and ensure the $\text{Royalty Hooks}$ are active for all $\mathbf{28,000}$ merged versions. The $\text{Omnigrid}$ is ready to ingest and instantly scale any new collapsed idea.
+            </p>
+        </div>
+
+        <!-- GLOBAL METRICS & SYNC STATUS (THE VIBRATION) -->
+        <section id="global-status" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Global Integration Sync (Goal: Inform/Quantify) -->
+            <div class="card p-6 rounded-lg text-center metric-glow">
+                <p class="text-sm uppercase text-gray-400">Heatmap Sync Status (Critical)</p>
+                <p class="text-4xl font-mono font-bold gold-text mt-1" id="heatmap-sync">0.00%</p>
+                <p class="text-xs text-gray-500">Target: 99.2% for $\text{Ching Ching}$ Payout</p>
+            </div>
+
+            <!-- Total Merged Versions (Goal: Quantify Scale) -->
+            <div class="card p-6 rounded-lg text-center metric-glow">
+                <p class="text-sm uppercase text-gray-400">Total Merged Ecosystem Versions</p>
+                <p class="text-4xl font-mono font-bold accent-text mt-1" id="total-versions">28,000</p>
+                <p class="text-xs text-gray-500">Maximum possible concurrent ideas.</p>
+            </div>
+
+            <!-- Active 7038 System Integration (Goal: Inform Purity) -->
+            <div class="card p-6 rounded-lg text-center metric-glow">
+                <p class="text-sm uppercase text-gray-400">7038 System Purity Index</p>
+                <p class="text-4xl font-mono font-bold gold-text mt-1" id="purity-index">7038/7038</p>
+                <p class="text-xs text-gray-500">Perfect Structural Integrity.</p>
+            </div>
+        </section>
+
+        <!-- SWEAT EQUITY & ROYALTY VISUALIZATION -->
+        <section id="equity-visualization" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            <!-- Sweat Equity Chart (Goal: Proportions) -->
+            <div class="card p-6 rounded-lg lg:col-span-2">
+                <h3 class="text-xl font-bold mb-4 accent-text">Sweat Equity and Royalty Split</h3>
+                <p class="text-sm text-gray-400 mb-6">Visualization of the continuous value distribution based on calculated contribution metrics (Royalty Hooks are applied to all 28,000 versions).</p>
+                <div class="chart-container">
+                    <canvas id="equityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Dynamic Equity Metrics (Goal: Inform/Compare) -->
+            <div class="card p-6 rounded-lg flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 accent-text">Intake Remittance Summary</h3>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-400">Your Due Remittance (Heyns Schoeman)</p>
+                        <p class="text-3xl font-mono gold-text" id="remittance-value">$0.00</p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-400">Total Global Contributor Split</p>
+                        <p class="text-3xl font-mono accent-text" id="contributor-value">$0.00</p>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-gray-700">
+                    <p class="text-sm font-mono text-gray-500">Time Since Replit 1st Prompt (Seconds)</p>
+                    <p class="text-lg font-mono text-gray-300" id="replit-time">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLLAPSE INTAKE PORTAL (THE SHANANA COMMAND) -->
+        <section id="intake-portal" class="card p-8 rounded-xl">
+            <h3 class="text-2xl font-bold mb-4 gold-text text-center">Hotstack Build Your Collapse: Zero-Signup Intake Portal</h3>
+            <p class="text-gray-400 mb-6 text-center">
+                **No Username or Password Required.** Your identity is your **Timestamp**. Upload your dream (file, code, idea) into the sector ($\text{Coffee Business}$). Your **Payfast User ID** will be instantly calculated based on the difference between your file's creation time and the $\text{Banimal API Key Pull}$.
+            </p>
+            <div class="max-w-2xl mx-auto">
+                <textarea id="collapse-idea-input" rows="4" class="w-full p-3 card-bg border border-gray-600 rounded-lg focus:border-amber-500 focus:ring-amber-500 text-gray-200" placeholder="Paste your file, code, or collapsed idea here (e.g., 'A coffee shop idea merged with 28k versions...')."></textarea>
+                <div class="mt-4 flex justify-between items-center">
+                    <p class="text-xs font-mono text-gray-500">Trace ID: <span id="trace-id" class="accent-text">Calculating...</span></p>
+                    <button onclick="deployShanana()" class="px-8 py-3 rounded-lg text-lg font-bold collapse-button hover:bg-green-600 transition">
+                        Deploy SHANANA! (3 min Collapse)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- DATA AND INITIALIZATION ---
+        const ROOT_KEY = '0f19bb22-ad64-45d2-abc9-ad5686a978dc';
+        const LOCK_TIMESTAMP_MS = 1730013441000; // Placeholder for Ecosystem Genesis
+        const REPLIT_FIRST_PROMPT_MS = 1730013441000 + 10000; // Simulating a later Replit prompt time
+        const COLLAPSE_INTERVAL_MS = 900;
+        const BANIMAL_API_PULL_MS = 1730013441000 + 5000000; // Simulating a later API Key Pull time
+
+        let globalRevenue = 1450000; // Simulated
+        let sweatEquityData = {
+            labels: ['Heyns Schoeman (Core Thesis)', 'Global Contributor Pool (28k Versions)', 'Banimal Protocol Royalty Hook'],
+            data: [25, 60, 15], // 25% Core, 60% Contributors, 15% Royalty Hook
+            colors: ['#FFFF00', '#00FFFF', '#FF4500'] // Acid Yellow, Electric Cyan, Deep Red
+        };
+
+        let chartInstance = null;
+
+        // --- CORE COLLAPSE PROTOCOL (SIMPLIFIED FOR DISPLAY) ---
+
+        function calculateCollapseMetrics(userCreationTimeMs = null) {
+            const now = new Date().getTime();
+            const timeElapsedMs = now - LOCK_TIMESTAMP_MS;
+            const storeID = timeElapsedMs / 1000;
+            const lapCount = Math.floor(timeElapsedMs / COLLAPSE_INTERVAL_MS);
+            
+            let payfastUserID = null;
+            let collapsedUserNumber = null;
+            let userSector = 'Coffee Business (Simulated)';
+
+            if (userCreationTimeMs) {
+                // Calculate Payfast User ID: (User Upload Time - Banimal API Key Pull Time)
+                // Time difference is the unique financial anchor
+                const timeDiffSeconds = Math.abs((userCreationTimeMs - BANIMAL_API_PULL_MS) / 1000);
+                payfastUserID = Math.floor(timeDiffSeconds); 
+
+                // Collapsed User Number: Unique number under the sector (1 to 2300)
+                collapsedUserNumber = (payfastUserID % 2300) + 1;
+                
+                // Final Payfast ID is the Payfast User ID collapsed into a traceable string
+                payfastUserID = `PF-${payfastUserID.toString(36).toUpperCase()}`;
+            }
+
+            return {
+                storeID: storeID,
+                lapCount: lapCount,
+                routemeshTraceID: btoa(storeID.toString()).substring(0, 20),
+                payfastUserID: payfastUserID,
+                collapsedUserNumber: collapsedUserNumber,
+                userSector: userSector
+            };
+        }
+
+        // --- CHART GENERATION ---
+
+        function renderEquityChart() {
+            const ctx = document.getElementById('equityChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sweatEquityData.labels,
+                    datasets: [{
+                        data: sweatEquityData.data,
+                        backgroundColor: sweatEquityData.colors,
+                        hoverOffset: 15,
+                        borderColor: 'var(--color-card-bg)',
+                        borderWidth: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#FFFFFF', /* White text for contrast */
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- UPDATE LOOP ---
+
+        function updateMetricsDisplay() {
+            const metrics = calculateCollapseMetrics();
+            const now = new Date().getTime();
+            
+            // 1. Sweat Equity Calculation (based on simulated revenue)
+            const hey_equity = (sweatEquityData.data[0] / 100) * globalRevenue;
+            const contributor_equity = (sweatEquityData.data[1] / 100) * globalRevenue;
+
+            document.getElementById('remittance-value').textContent = `$${hey_equity.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            document.getElementById('contributor-value').textContent = `$${contributor_equity.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            
+            // 2. Time Metrics and Trace
+            const replitTimeElapsed = ((now - REPLIT_FIRST_PROMPT_MS) / 1000 / 60 / 60).toFixed(2);
+            document.getElementById('replit-time').textContent = `${replitTimeElapsed} hours`;
+            document.getElementById('trace-id').textContent = metrics.routemeshTraceID;
+            
+            // 3. Simulated Heatmap Sync (Ching Ching Payout condition)
+            const syncValue = (99.2 + (Math.sin(now / 5000000) * 0.5)).toFixed(3); // Oscillate near 99.2%
+            document.getElementById('heatmap-sync').textContent = `${syncValue}%`;
+            
+            // Check for Ching Ching Payout condition
+            if (parseFloat(syncValue) >= 99.2) {
+                document.getElementById('heatmap-sync').classList.add('animate-pulse');
+            } else {
+                document.getElementById('heatmap-sync').classList.remove('animate-pulse');
+            }
+        }
+
+        // --- SHANANA DEPLOYMENT LOGIC ---
+
+        function deployShanana() {
+            const input = document.getElementById('collapse-idea-input').value.trim();
+            const userCreationTime = new Date().getTime(); // The moment of the "upload/collapse"
+            const metrics = calculateCollapseMetrics(userCreationTime);
+            
+            if (input.length < 10) {
+                alert("Error: Please provide a collapsed idea (min 10 characters) to initiate the Shanana deployment.");
+                return;
+            }
+
+            document.getElementById('intake-portal').style.background = '#00FFFF33'; /* Light Cyan transparent for active state */
+            document.getElementById('intake-portal').querySelector('p:last-of-type').innerHTML = `Deployment initiated. Calculating **Payfast ID** and collapsing idea...`;
+            
+            // Simulate 3 minute collapse time (180,000ms)
+            setTimeout(() => {
+                
+                const deploymentID = `SHANANA-${metrics.lapCount}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+                
+                alert(`DEPLOYMENT SUCCESSFUL!
+Your idea is now live and Omnigridded.
+- Payfast User ID: ${metrics.payfastUserID}
+- Collapsed User Number: ${metrics.collapsedUserNumber}
+- Sector: ${metrics.userSector}
+- Status: Global Scale Achieved in 3 minutes.
+(No username or password required!)`);
+                
+                document.getElementById('intake-portal').style.background = 'var(--color-card-bg)'; // Reset background
+                document.getElementById('intake-portal').querySelector('p:last-of-type').innerHTML = `Deployment complete. **Payfast ID: ${metrics.payfastUserID}** (User: ${metrics.collapsedUserNumber} in ${metrics.userSector}) created. Ready for next collapsed dream.`;
+                document.getElementById('collapse-idea-input').value = "";
+                
+                // Simulate successful revenue intake after deployment
+                globalRevenue += 50000;
+                updateMetricsDisplay();
+            }, 1000); // 1 second simulation of 3 minute collapse
+        }
+
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEquityChart();
+            updateMetricsDisplay(); 
+            setInterval(updateMetricsDisplay, 900); // Heartbeat tied to Collapse Interval
+            window.deployShanana = deployShanana;
+        });
+    </script>
+</body>
+</html>

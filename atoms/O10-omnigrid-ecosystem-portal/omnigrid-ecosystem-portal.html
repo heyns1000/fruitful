@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniGridâ„¢ â€” FAA.ZONE Ecosystem Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* VaultRouter Animation */
+        .vault-router {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .vault-router::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradientFlow 8s ease infinite;
+            z-index: -1;
+            border-radius: 1rem;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Terminal Iframe Pulse */
+        .terminal-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .terminal-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 0.5rem;
+            transform: translate(-50%, -50%) scale(0);
+            animation: pulseRing 2s ease-in-out infinite;
+        }
+
+        .terminal-button.live::before {
+            animation: pulseRing 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .terminal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Treaty Grid Animation */
+        .treaty-grid-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .treaty-grid-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .treaty-status-active {
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Sector Terminal Iframe */
+        .sector-terminal {
+            width: 100%;
+            height: 500px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            background: #1a1a2e;
+        }
+
+        /* Live Indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        .live-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: liveBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes liveBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Data Stream */
+        .data-stream {
+            position: fixed;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom,
+                rgba(99, 102, 241, 0),
+                rgba(99, 102, 241, 1),
+                rgba(99, 102, 241, 0)
+            );
+            animation: streamFlow 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes streamFlow {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Stat Card */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <!-- Data Stream Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="data-stream" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="data-stream" style="left: 25%; animation-delay: 1s;"></div>
+        <div class="data-stream" style="left: 40%; animation-delay: 0.5s;"></div>
+        <div class="data-stream" style="left: 55%; animation-delay: 1.5s;"></div>
+        <div class="data-stream" style="left: 70%; animation-delay: 0.8s;"></div>
+        <div class="data-stream" style="left: 85%; animation-delay: 1.2s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        
+        <!-- Header -->
+        <header class="text-white mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-6xl font-extrabold mb-2 flex items-center gap-4">
+                        ðŸŒ OmniGridâ„¢
+                        <span class="live-indicator">LIVE</span>
+                    </h1>
+                    <p class="text-xl opacity-90">
+                        FAA.ZONEâ„¢ Ecosystem Portal â€” 7,038 Brands Across 48 Sectors
+                    </p>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold mb-1" id="pulse-score">--</div>
+                    <div class="text-sm opacity-75">Global Pulse Score</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Real-time Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card rounded-xl p-6">
+                <div class="text-white opacity-75 text-sm mb-2">Total Brands</div>
+                <div class="text-white text-4xl font-bold" id="stat-brands">7,038</div>
+                <div class="text-green-300 text-sm mt-2">â†‘ Active</div>
+            </div>
+            <div class="stat-card rounded-xl p-6">
+                <div class="text-white opacity-75 text-sm mb-2">Active Sectors</div>
+                <div class="text-white text-4xl font-bold" id="stat-sectors">48</div>
+                <div class="text-blue-300 text-sm mt-2">All systems</div>
+            </div>
+            <div class="stat-card rounded-xl p-6">
+                <div class="text-white opacity-75 text-sm mb-2">Treaty Status</div>
+                <div class="text-white text-4xl font-bold treaty-status-active">âœ“</div>
+                <div class="text-purple-300 text-sm mt-2">Compliant</div>
+            </div>
+            <div class="stat-card rounded-xl p-6">
+                <div class="text-white opacity-75 text-sm mb-2">Live Terminals</div>
+                <div class="text-white text-4xl font-bold" id="stat-terminals">12</div>
+                <div class="text-yellow-300 text-sm mt-2">Connected</div>
+            </div>
+        </div>
+
+        <!-- VaultRouter -->
+        <div class="vault-router p-8 mb-8">
+            <h2 class="text-white text-3xl font-bold mb-6 flex items-center gap-3">
+                <span>ðŸ”</span>
+                VaultRouterâ„¢ â€” System Navigation
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Terminal Buttons - All Live -->
+                <button class="terminal-button live bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('hotstack')">
+                    <div class="text-2xl mb-2">ðŸ”¥</div>
+                    <div>HotStack</div>
+                    <div class="text-xs opacity-75 mt-1">Data Intake</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('omnigrid')">
+                    <div class="text-2xl mb-2">ðŸŒ</div>
+                    <div>OmniGrid</div>
+                    <div class="text-xs opacity-75 mt-1">Brand Portal</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('seedwave')">
+                    <div class="text-2xl mb-2">ðŸŒ±</div>
+                    <div>Seedwave</div>
+                    <div class="text-xs opacity-75 mt-1">Admin Panel</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('analytics')">
+                    <div class="text-2xl mb-2">ðŸ“Š</div>
+                    <div>Analytics</div>
+                    <div class="text-xs opacity-75 mt-1">Insights</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('banimal')">
+                    <div class="text-2xl mb-2">ðŸ‘</div>
+                    <div>Banimal</div>
+                    <div class="text-xs opacity-75 mt-1">Global Brands</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('vaultpay')">
+                    <div class="text-2xl mb-2">ðŸ’³</div>
+                    <div>VaultPay</div>
+                    <div class="text-xs opacity-75 mt-1">Payments</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('vaultmesh')">
+                    <div class="text-2xl mb-2">ðŸ•¸ï¸</div>
+                    <div>VaultMesh</div>
+                    <div class="text-xs opacity-75 mt-1">Networking</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('legal')">
+                    <div class="text-2xl mb-2">ðŸ“œ</div>
+                    <div>Legal Hub</div>
+                    <div class="text-xs opacity-75 mt-1">Docs & NDAs</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('securesign')">
+                    <div class="text-2xl mb-2">âœï¸</div>
+                    <div>SecureSign</div>
+                    <div class="text-xs opacity-75 mt-1">NDA Portal</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-fuchsia-600 to-pink-600 hover:from-fuchsia-700 hover:to-pink-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('foxed')">
+                    <div class="text-2xl mb-2">ðŸ¦Š</div>
+                    <div>Foxed Mobiles</div>
+                    <div class="text-xs opacity-75 mt-1">Global Launch</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('spotify')">
+                    <div class="text-2xl mb-2">ðŸŽ¶</div>
+                    <div>Spotify</div>
+                    <div class="text-xs opacity-75 mt-1">Music Integration</div>
+                </button>
+
+                <button class="terminal-button live bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200" onclick="openTerminal('firebase')">
+                    <div class="text-2xl mb-2">ðŸ”¥</div>
+                    <div>Firebase</div>
+                    <div class="text-xs opacity-75 mt-1">Auth & DB</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Treaty Grid -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-white text-3xl font-bold mb-6 flex items-center gap-3">
+                <span>ðŸ¤</span>
+                Treaty Gridâ„¢ â€” Active Agreements
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Treaty Card 1 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">Fruitfulâ„¢ Treaty</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Core ecosystem treaty governing all FAA.ZONEâ„¢ operations
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Signatories:</span>
+                            <span class="font-semibold">7,038</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Sectors:</span>
+                            <span class="font-semibold">48</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Compliance:</span>
+                            <span class="font-semibold text-green-300">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treaty Card 2 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">VaultDNAâ„¢ Protocol</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Unique identification system for all ecosystem entities
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Records:</span>
+                            <span class="font-semibold">21M+</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Verification:</span>
+                            <span class="font-semibold text-green-300">Real-time</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Integrity:</span>
+                            <span class="font-semibold text-green-300">99.99%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treaty Card 3 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">PulseGridâ„¢ Sync</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Real-time data synchronization across all platforms
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Pulse Rate:</span>
+                            <span class="font-semibold">9s intervals</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Latency:</span>
+                            <span class="font-semibold text-green-300">&lt;50ms</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Uptime:</span>
+                            <span class="font-semibold text-green-300">99.9%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treaty Card 4 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">ClaimRootâ„¢ Verification</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Source verification and data provenance tracking
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Claims:</span>
+                            <span class="font-semibold">15.2M</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Verified:</span>
+                            <span class="font-semibold text-green-300">98.7%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Disputes:</span>
+                            <span class="font-semibold">0.3%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treaty Card 5 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">OmniSignalâ„¢ Protocol</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Cross-system communication and event broadcasting
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Signals/min:</span>
+                            <span class="font-semibold">2,450</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Reliability:</span>
+                            <span class="font-semibold text-green-300">99.95%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Coverage:</span>
+                            <span class="font-semibold">Global</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Treaty Card 6 -->
+                <div class="treaty-grid-item rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-lg">ScrollClaimâ„¢ Archive</h3>
+                        <span class="live-indicator">ACTIVE</span>
+                    </div>
+                    <p class="text-white opacity-75 text-sm mb-4">
+                        Historical data tracking and audit trail maintenance
+                    </p>
+                    <div class="text-white text-sm">
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Scrolls:</span>
+                            <span class="font-semibold">892K</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="opacity-75">Retention:</span>
+                            <span class="font-semibold">Permanent</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="opacity-75">Integrity:</span>
+                            <span class="font-semibold text-green-300">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Terminal Iframe Section -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 mb-8">
+            <h2 class="text-white text-3xl font-bold mb-6 flex items-center gap-3">
+                <span>ðŸ“º</span>
+                Live Terminal â€” <span id="terminal-title">Select a system</span>
+            </h2>
+
+            <div id="terminal-container" class="hidden">
+                <iframe id="terminal-iframe" class="sector-terminal" frameborder="0"></iframe>
+            </div>
+
+            <div id="terminal-placeholder" class="text-center py-20 text-white opacity-75">
+                <div class="text-6xl mb-4">ðŸŒ</div>
+                <div class="text-xl">Click any terminal button above to view live system</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-white text-center py-8 opacity-75">
+            <p class="mb-2">ðŸŒŠ The river flows. The data breathes. The portal opens.</p>
+            <p class="text-sm">
+                Copyright Â© 2025 Fruitful Holdingsâ„¢ â€” All Rights Reserved<br>
+                Part of the FAA.ZONEâ„¢ Vault Layer ecosystem
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Terminal URLs mapping
+        const TERMINALS = {
+            hotstack: 'https://hotstack.faa.zone/dashboard',
+            omnigrid: '/omnigrid',
+            seedwave: 'https://admin.faa.zone',
+            analytics: 'https://analytics.faa.zone',
+            banimal: '/global_brands.html',
+            vaultpay: '/legal/paypal_setup.html',
+            vaultmesh: '/legal/baobab.html',
+            legal: '/legal',
+            securesign: '/legal/securesign.html',
+            foxed: '/legal/foxed_got_mobiles_setup.html',
+            spotify: '/legal/spotify_intergration.html',
+            firebase: '/legal/firebase_core_minutes.html'
+        };
+
+        const TERMINAL_NAMES = {
+            hotstack: 'HotStack Data Intake',
+            omnigrid: 'OmniGrid Brand Portal',
+            seedwave: 'Seedwave Admin Panel',
+            analytics: 'Analytics Dashboard',
+            banimal: 'Banimal Global Brands',
+            vaultpay: 'VaultPay Payment System',
+            vaultmesh: 'VaultMesh Network',
+            legal: 'Legal Documentation Hub',
+            securesign: 'SecureSign NDA Portal',
+            foxed: 'Foxed Has Mobilesâ„¢',
+            spotify: 'Spotify Integration',
+            firebase: 'Firebase Core System'
+        };
+
+        // Open terminal function
+        function openTerminal(systemKey) {
+            const terminalContainer = document.getElementById('terminal-container');
+            const terminalPlaceholder = document.getElementById('terminal-placeholder');
+            const terminalIframe = document.getElementById('terminal-iframe');
+            const terminalTitle = document.getElementById('terminal-title');
+
+            // Update title
+            terminalTitle.textContent = TERMINAL_NAMES[systemKey];
+
+            // Set iframe source
+            terminalIframe.src = TERMINALS[systemKey];
+
+            // Show terminal, hide placeholder
+            terminalContainer.classList.remove('hidden');
+            terminalPlaceholder.classList.add('hidden');
+
+            // Scroll to terminal
+            terminalContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Load real-time stats
+        async function loadStats() {
+            try {
+                // In production, this would fetch from /api/omnigrid/stats
+                // For now, using static data with animation
+                
+                const stats = {
+                    brands: 7038,
+                    sectors: 48,
+                    pulseScore: 85,
+                    terminals: 12
+                };
+
+                // Animate pulse score
+                animateValue('pulse-score', 0, stats.pulseScore, 2000);
+                
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Animate number values
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16); // 60fps
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current);
+            }, 16);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            
+            // Refresh stats every 30 seconds
+            setInterval(loadStats, 30000);
+        });
+
+        // Add pulse effect to live indicators
+        setInterval(() => {
+            const liveButtons = document.querySelectorAll('.terminal-button.live');
+            liveButtons.forEach(button => {
+                button.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 200);
+            });
+        }, 5000);
+    </script>
+
+</body>
+</html>

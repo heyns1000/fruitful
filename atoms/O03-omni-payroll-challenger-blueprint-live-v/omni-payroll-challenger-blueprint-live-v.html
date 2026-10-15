@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA Omni-Payroll Global Challenger Blueprint (Live Version)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (e.g., login, signup) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .header {
+            background-color: #1a202c; /* Dark background for header */
+            color: #ffffff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            flex-grow: 1;
+            text-align: left;
+        }
+        .nav-links a {
+            color: #a0aec0; /* Light gray for links */
+            margin-left: 1.5rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .welcome-card, .form-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            text-align: left; /* Align form content to left */
+        }
+        .welcome-card h2, .form-card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center; /* Center headings */
+        }
+        .welcome-card p, .form-card p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center; /* Center paragraphs */
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+            outline: none;
+        }
+        .submit-button {
+            background-color: #4299e1; /* Blue */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .submit-button:hover {
+            background-color: #3182ce; /* Darker blue */
+        }
+        .footer {
+            background-color: #1a202c; /* Dark background for footer */
+            color: #a0aec0;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            margin-top: auto; /* Push footer to the bottom */
+        }
+        .footer a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer a:hover {
+            color: #ffffff;
+        }
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            z-index: 1001;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .message-box.show {
+            opacity: 1;
+        }
+        .user-info {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-right: 1rem;
+        }
+        .user-id-display {
+            background-color: #2d3748;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            color: #cbd5e0;
+            word-break: break-all; /* Allow long IDs to wrap */
+            max-width: 200px; /* Limit width for readability */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer; /* Indicate it's copyable */
+            transition: background-color 0.2s ease;
+        }
+        .user-id-display:hover {
+            background-color: #4a5568;
+        }
+        .loading-indicator {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+            .nav-links {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-links a {
+                margin: 0.5rem 0;
+            }
+            .user-info {
+                margin-top: 1rem;
+                margin-right: 0;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .welcome-card, .form-card {
+                padding: 20px;
+            }
+            .welcome-card h2, .form-card h2 {
+                font-size: 1.5rem;
+            }
+            .welcome-card p, .form-card p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>FAA Omni-Payroll Global Challenger Blueprint (Live Version)</h1>
+        <div class="flex items-center">
+            <div id="userInfo" class="user-info flex items-center gap-2">
+                <span id="authStatus">Loading...</span>
+                <span id="userIdDisplay" class="user-id-display" title="Click to copy User ID"></span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" id="companyRegLink"><i class="fas fa-building"></i> Company Registration</a>
+                <a href="#" id="employeeRegLink"><i class="fas fa-user-tie"></i> Employee Registration</a>
+                <!-- Login/Signup links will be managed by Firebase auth state -->
+                <a href="#" id="authLink"><i class="fas fa-sign-in-alt"></i> Login / Signup</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="welcome-card" id="welcomeSection">
+            <h2>Welcome to Your Payroll System</h2>
+            <p>This is the foundation for the "FAA Omni-Payroll Global Challenger Blueprint (Live Version)".</p>
+            <p>Here you will manage company and employee payroll details. Use the navigation links above to get started.</p>
+            <p>Currently, the detailed registration forms are being built out. You can now register a company and begin adding employee banking details.</p>
+        </div>
+
+        <!-- Company Registration Form -->
+        <div id="companyRegistrationSection" class="hidden form-card">
+            <h2>Company Registration</h2>
+            <p class="text-gray-600 mb-6">Please provide detailed information for your company.</p>
+            <form id="companyRegistrationForm" class="text-left">
+                <div class="form-group">
+                    <label for="companyName">Company Name:</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="companyRegNumber">Company Registration Number:</label>
+                    <input type="text" id="companyRegNumber" name="companyRegNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="taxIdNumber">Tax Identification Number:</label>
+                    <input type="text" id="taxIdNumber" name="taxIdNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="streetAddress">Street Address:</label>
+                    <input type="text" id="streetAddress" name="streetAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="province">Province (South Africa):</label>
+                    <select id="province" name="province" required>
+                        <!-- Options will be dynamically loaded -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="postalCode">Postal Code:</label>
+                    <input type="text" id="postalCode" name="postalCode" required>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-4">Contact Person Details</h3>
+                <div class="form-group">
+                    <label for="contactName">Contact Person Name:</label>
+                    <input type="text" id="contactName" name="contactName" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Contact Person Email:</label>
+                    <input type="email" id="contactEmail" name="contactEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone">Contact Person Phone:</label>
+                    <input type="tel" id="contactPhone" name="contactPhone" required>
+                </div>
+                <button type="submit" class="submit-button flex items-center justify-center">
+                    Save Company Details
+                    <div id="companySaveLoading" class="loading-indicator hidden"></div>
+                </button>
+            </form>
+            <button id="backToWelcomeFromCompany" class="mt-4 px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back to Welcome</button>
+        </div>
+
+        <!-- Employee Registration Form -->
+        <div id="employeeRegistrationSection" class="hidden form-card">
+            <h2>Employee Registration</h2>
+            <p class="text-gray-600 mb-6">Please provide detailed information for your employee, including banking details.</p>
+            <form id="employeeRegistrationForm" class="text-left">
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-4">Personal Details</h3>
+                <div class="form-group">
+                    <label for="employeeName">Employee Full Name:</label>
+                    <input type="text" id="employeeName" name="employeeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeIdNumber">ID Number:</label>
+                    <input type="text" id="employeeIdNumber" name="employeeIdNumber" required>
+                </div>
+                <!-- ... other personal details fields can go here ... -->
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-4">Employment Details</h3>
+                <div class="form-group">
+                    <label for="jobTitle">Job Title:</label>
+                    <input type="text" id="jobTitle" name="jobTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary">Annual Salary:</label>
+                    <input type="number" id="salary" name="salary" step="0.01" required>
+                </div>
+                <!-- ... other employment details fields can go here ... -->
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6 mb-4">Banking Details (South Africa)</h3>
+                <div class="form-group">
+                    <label for="bankName">Bank Name:</label>
+                    <select id="bankName" name="bankName" required>
+                        <!-- Options will be dynamically loaded -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" name="accountNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountType">Account Type:</label>
+                    <select id="accountType" name="accountType" required>
+                        <option value="">Select Account Type</option>
+                        <option value="cheque">Cheque Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="credit_card">Credit Card Account</option>
+                        <option value="transmission">Transmission Account</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button flex items-center justify-center">
+                    Save Employee Details
+                    <div id="employeeSaveLoading" class="loading-indicator hidden"></div>
+                </button>
+            </form>
+            <button id="backToWelcomeFromEmployee" class="mt-4 px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back to Welcome</button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 FAA Omni-Payroll Global Challenger Blueprint. All rights reserved.</p>
+        <p>Built with <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a> and <a href="https://firebase.google.com/" target="_blank">Firebase</a>.</p>
+    </footer>
+
+    <!-- Message box for copy confirmation -->
+    <div id="messageBox" class="message-box"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, addDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Global variables for Firebase instances
+        let app;
+        let db;
+        let auth;
+        let currentUserId = null;
+        let currentCompanyId = null; // To store the ID of the currently registered company
+
+        // Function to show a temporary message box
+        function showMessageBox(message, duration = 2000) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.add('show');
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, duration);
+        }
+
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+            textarea.style.opacity = 0;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showMessageBox('User ID copied to clipboard!');
+                } else {
+                    showMessageBox('Failed to copy User ID.');
+                }
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                showMessageBox('Failed to copy User ID.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Function to hide all main content sections and show the welcome card
+        function hideSections() {
+            document.getElementById('welcomeSection').classList.add('hidden');
+            document.getElementById('companyRegistrationSection').classList.add('hidden');
+            document.getElementById('employeeRegistrationSection').classList.add('hidden');
+            document.getElementById('welcomeSection').classList.remove('hidden'); // Show welcome card
+        }
+
+        // Function to display a specific section
+        function showSection(sectionId) {
+            hideSections(); // Hide all first
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Data for dropdowns
+        const rsaProvinces = [
+            "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal",
+            "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape"
+        ];
+
+        const rsaBanks = [
+            "ABSA Bank", "Standard Bank", "First National Bank (FNB)", "Nedbank",
+            "Capitec Bank", "Investec Bank", "African Bank", "Bidvest Bank",
+            "Mercantile Bank", "Sasfin Bank"
+        ];
+
+        // Function to populate dropdowns
+        function populateDropdown(selectElementId, optionsArray, defaultOptionText) {
+            const selectElement = document.getElementById(selectElementId);
+            if (!selectElement) {
+                console.error(`Select element with ID ${selectElementId} not found.`);
+                return;
+            }
+            selectElement.innerHTML = `<option value="">${defaultOptionText}</option>`;
+            optionsArray.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                selectElement.appendChild(opt);
+            });
+        }
+
+        // Function to save company details
+        async function saveCompanyDetails(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!currentUserId) {
+                showMessageBox('Please log in to save company details.');
+                return;
+            }
+
+            const loadingIndicator = document.getElementById('companySaveLoading');
+            loadingIndicator.classList.remove('hidden');
+
+            const companyData = {
+                companyName: document.getElementById('companyName').value,
+                companyRegNumber: document.getElementById('companyRegNumber').value,
+                taxIdNumber: document.getElementById('taxIdNumber').value,
+                address: {
+                    street: document.getElementById('streetAddress').value,
+                    city: document.getElementById('city').value,
+                    province: document.getElementById('province').value,
+                    postalCode: document.getElementById('postalCode').value
+                },
+                contact: {
+                    name: document.getElementById('contactName').value,
+                    email: document.getElementById('contactEmail').value,
+                    phone: document.getElementById('contactPhone').value
+                },
+                registeredBy: currentUserId,
+                timestamp: new Date()
+            };
+
+            try {
+                // Use addDoc to automatically generate a new document ID
+                const docRef = await addDoc(collection(db, `artifacts/${__app_id}/users/${currentUserId}/companies`), companyData);
+                currentCompanyId = docRef.id; // Store the ID of the newly created company
+                showMessageBox('Company details saved successfully!');
+                console.log("Company document written with ID: ", docRef.id);
+                // Optionally clear the form or redirect
+                document.getElementById('companyRegistrationForm').reset();
+            } catch (e) {
+                console.error("Error adding company document: ", e);
+                showMessageBox('Error saving company details. Please try again.');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        // Function to save employee details (placeholder for now)
+        async function saveEmployeeDetails(event) {
+            event.preventDefault(); // Prevent default form submission
+            if (!currentUserId) {
+                showMessageBox('Please log in to save employee details.');
+                return;
+            }
+            // In a real scenario, you might want to link employees to a specific company
+            // if (!currentCompanyId) {
+            //     showMessageBox('Please register a company first.');
+            //     return;
+            // }
+
+            const loadingIndicator = document.getElementById('employeeSaveLoading');
+            loadingIndicator.classList.remove('hidden');
+
+            const employeeData = {
+                employeeName: document.getElementById('employeeName').value,
+                employeeIdNumber: document.getElementById('employeeIdNumber').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                salary: parseFloat(document.getElementById('salary').value),
+                bankDetails: {
+                    bankName: document.getElementById('bankName').value,
+                    accountNumber: document.getElementById('accountNumber').value,
+                    accountType: document.getElementById('accountType').value
+                },
+                registeredBy: currentUserId,
+                // companyId: currentCompanyId, // Link to company if applicable
+                timestamp: new Date()
+            };
+
+            try {
+                const docRef = await addDoc(collection(db, `artifacts/${__app_id}/users/${currentUserId}/employees`), employeeData);
+                showMessageBox('Employee details saved successfully!');
+                console.log("Employee document written with ID: ", docRef.id);
+                document.getElementById('employeeRegistrationForm').reset();
+            } catch (e) {
+                console.error("Error adding employee document: ", e);
+                showMessageBox('Error saving employee details. Please try again.');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authStatus = document.getElementById('authStatus');
+            const userIdDisplay = document.getElementById('userIdDisplay');
+            const authLink = document.getElementById('authLink');
+            const companyRegLink = document.getElementById('companyRegLink');
+            const employeeRegLink = document.getElementById('employeeRegLink');
+            const backToWelcomeFromCompanyBtn = document.getElementById('backToWelcomeFromCompany');
+            const backToWelcomeFromEmployeeBtn = document.getElementById('backToWelcomeFromEmployee');
+            const companyRegistrationForm = document.getElementById('companyRegistrationForm');
+            const employeeRegistrationForm = document.getElementById('employeeRegistrationForm');
+
+            // Populate dropdowns
+            populateDropdown('province', rsaProvinces, 'Select Province');
+            populateDropdown('bankName', rsaBanks, 'Select Bank');
+
+            // Initialize Firebase
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Please ensure __firebase_config is correctly set.");
+                    authStatus.textContent = "Error: No Firebase Config";
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Authenticate user
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    // Sign in anonymously if no custom token is provided
+                    await signInAnonymously(auth);
+                }
+
+                // Listen for authentication state changes
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        authStatus.textContent = "Logged In:";
+                        userIdDisplay.textContent = currentUserId;
+                        userIdDisplay.onclick = () => copyToClipboard(currentUserId); // Make user ID clickable to copy
+                        authLink.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout`;
+                        authLink.onclick = async (e) => {
+                            e.preventDefault();
+                            await signOut(auth);
+                            showMessageBox('Logged out successfully!');
+                            hideSections(); // Go back to welcome after logout
+                        };
+                        console.log("Firebase initialized and user authenticated:", user.uid);
+
+                        // Optional: Fetch user's existing company data if any
+                        // This would be more complex for multiple companies, but for a single company per user:
+                        // const q = query(collection(db, `artifacts/${appId}/users/${currentUserId}/companies`), limit(1));
+                        // onSnapshot(q, (snapshot) => {
+                        //     if (!snapshot.empty) {
+                        //         const companyDoc = snapshot.docs[0];
+                        //         currentCompanyId = companyDoc.id;
+                        //         console.log("Existing company found:", companyDoc.data());
+                        //         // Optionally pre-fill the company form if needed
+                        //     } else {
+                        //         currentCompanyId = null;
+                        //         console.log("No existing company found for this user.");
+                        //     }
+                        // });
+
+                    } else {
+                        currentUserId = null;
+                        currentCompanyId = null;
+                        authStatus.textContent = "Not Logged In";
+                        userIdDisplay.textContent = "N/A";
+                        userIdDisplay.onclick = null; // Remove click handler if not logged in
+                        authLink.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login / Signup`;
+                        authLink.onclick = async (e) => {
+                            e.preventDefault();
+                            // For a real app, this would open a login/signup modal
+                            // For now, we'll just try anonymous sign-in again
+                            try {
+                                await signInAnonymously(auth);
+                                showMessageBox('Signed in anonymously!');
+                            } catch (error) {
+                                console.error("Error signing in anonymously:", error);
+                                showMessageBox('Failed to sign in.');
+                            }
+                        };
+                        console.log("User is logged out or not authenticated.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                authStatus.textContent = `Error: ${error.message}`;
+            }
+
+            // Navigation link event listeners
+            companyRegLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUserId) {
+                    showSection('companyRegistrationSection');
+                } else {
+                    showMessageBox('Please log in to access Company Registration.');
+                }
+            });
+
+            employeeRegLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUserId) {
+                    showSection('employeeRegistrationSection');
+                } else {
+                    showMessageBox('Please log in to access Employee Registration.');
+                }
+            });
+
+            // Back to Welcome button event listeners
+            backToWelcomeFromCompanyBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideSections();
+            });
+
+            backToWelcomeFromEmployeeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideSections();
+            });
+
+            // Form submission event listeners
+            companyRegistrationForm.addEventListener('submit', saveCompanyDetails);
+            employeeRegistrationForm.addEventListener('submit', saveEmployeeDetails);
+
+            // Initial display of welcome card
+            hideSections();
+        });
+    </script>
+</body>
+</html>

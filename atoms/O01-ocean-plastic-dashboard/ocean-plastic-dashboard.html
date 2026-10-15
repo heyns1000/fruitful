@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Ocean Plastic Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="dashboard_deforestation.html" class="">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Ocean Plastic Concentration Dashboard</h2>
+                <p class="text-gray-600 mt-1">Monitoring plastic pollution hotspots and cleanup progress worldwide.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="dashboard_deforestation.html">Deforestation</a>
+            <a href="dashboard_ocean_plastic.html" class="active">Ocean Plastic</a>
+            <a href="dashboard_wildlife_protection.html">Wildlife Protection</a>
+            <a href="dashboard_energy_optimization.html">Energy Optimization</a>
+            <a href="dashboard_resource_management.html">Resource Management</a>
+            <a href="dashboard_economic_empowerment.html">Economic Empowerment</a>
+            <a href="dashboard_community_resilience.html">Community Resilience</a>
+            <a href="dashboard_water_security.html">Water Security</a>
+            <a href="dashboard_air_quality.html">Air Quality</a>
+            <a href="dashboard_global_health.html">Global Health</a>
+            <a href="dashboard_land_degradation.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Ocean Plastic Accumulation -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Ocean Plastic Accumulation (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-line"></canvas>
+                </div>
+            </div>
+
+            <!-- Graph 2: Top 10 Countries by Plastic Waste -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Top 10 Countries by Plastic Waste</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-bar"></canvas>
+                </div>
+            </div>
+            <!-- Graph 3: Recycling Rate Distribution -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Recycling Rate Distribution</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-doughnut"></canvas>
+                </div>
+            </div>
+            <!-- Graph 4: Major River Systems Plastic Input -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Major River Systems Plastic Input</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-river-bar"></canvas>
+                </div>
+            </div>
+            <!-- Graph 5: Cleanup Operations Effectiveness -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Cleanup Operations Effectiveness</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-cleanup-scatter"></canvas>
+                </div>
+            </div>
+            <!-- Graph 6: Microplastic Levels in Marine Life -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Microplastic Levels in Marine Life</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="op-microplastic-bar"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // This globalData will contain random data for all countries and ALL thematic areas.
+    // I am including a sample here, but for the actual files, this array will be very long.
+    // For your live deployment, you would typically generate or load this data.
+    { name: "Nigeria", continent: "Africa", deforestationRate: 1.5, forestCover: 30, reforestationRate: 0.2, fireIncidents: 10, protectedForest: 15, plasticWaste: 500, recyclingRate: 10, threatenedSpecies: 80, poachingIncidents: 120, renewableEnergy: 15, energyEfficiency: 0.5, resourceConsumption: 10, circularEconomyScore: 20, povertyRate: 25, gdpGrowth: 3.5, disasterRiskIndex: 7.2, communityPreparedness: 40, waterStress: 80, cleanWaterAccess: 60, aqi: 120, pm25: 45, lifeExpectancy: 60, healthSpending: 4, soilHealth: 0.3, landDegradation: 30  },
+    { name: "USA", continent: "North America", deforestationRate: 0.2, forestCover: 33, reforestationRate: 0.3, fireIncidents: 40, protectedForest: 22, plasticWaste: 1500, recyclingRate: 30, threatenedSpecies: 50, poachingIncidents: 20, renewableEnergy: 40, energyEfficiency: 0.9, resourceConsumption: 20, circularEconomyScore: 70, povertyRate: 10, gdpGrowth: 2.1, disasterRiskIndex: 4.5, communityPreparedness: 80, waterStress: 30, cleanWaterAccess: 95, aqi: 50, pm25: 12, lifeExpectancy: 78, healthSpending: 10, soilHealth: 0.7, landDegradation: 10 },
+    { name: "Brazil", continent: "South America", deforestationRate: 1.8, forestCover: 60, reforestationRate: 0.3, fireIncidents: 30, protectedForest: 20, plasticWaste: 900, recyclingRate: 20, threatenedSpecies: 150, poachingIncidents: 80, renewableEnergy: 60, energyEfficiency: 0.7, resourceConsumption: 15, circularEconomyScore: 50, povertyRate: 15, gdpGrowth: 1.8, disasterRiskIndex: 6.8, communityPreparedness: 60, waterStress: 60, cleanWaterAccess: 85, aqi: 90, pm25: 25, lifeExpectancy: 75, healthSpending: 6, soilHealth: 0.5, landDegradation: 25 },
+    // ... add more countries for all continents and relevant data fields here for a full dataset
+    // This is a placeholder snippet to show the structure.
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('op-line', 'line', getOceanPlasticData);
+    createChart('op-bar', 'bar', getPlasticWasteData);
+    createChart('op-doughnut', 'doughnut', getRecyclingRateDistributionData);
+    createChart('op-river-bar', 'bar', getRiverPlasticInputData);
+    createChart('op-cleanup-scatter', 'scatter', getCleanupEffectivenessData); // Assuming scatter for this
+    createChart('op-microplastic-bar', 'bar', getMicroplasticLevelsData);
+
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        // Manually map config to dataFn for this page
+        let config;
+        if (id === 'op-line') config = { dataFn: getOceanPlasticData };
+        else if (id === 'op-bar') config = { dataFn: getPlasticWasteData };
+        else if (id === 'op-doughnut') config = { dataFn: getRecyclingRateDistributionData };
+        else if (id === 'op-river-bar') config = { dataFn: getRiverPlasticInputData };
+        else if (id === 'op-cleanup-scatter') config = { dataFn: getCleanupEffectivenessData };
+        else if (id === 'op-microplastic-bar') config = { dataFn: getMicroplasticLevelsData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+function getOceanPlasticData(data) {
+    const labels = Array.from({ length: 10 }, (_, i) => `Year 20${15 + i}`); // Simulated years
+    const datasetData = labels.map(() => {
+        return data.reduce((sum, item) => sum + (item.plasticWaste * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Avg. Plastic Accumulation (kilotons/year)',
+            data: datasetData,
+            borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getPlasticWasteData(data) {
+    const sortedData = [...data].sort((a, b) => b.plasticWaste - a.plasticWaste).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Plastic Waste (kilotons/year)',
+            data: sortedData.map(d => d.plasticWaste),
+            backgroundColor: '#3B82F6', borderRadius: 4
+        }]
+    };
+}
+
+function getRecyclingRateDistributionData(data) {
+    const bins = { '0-20%': 0, '21-40%': 0, '41-60%': 0, '>60%': 0 };
+    data.forEach(d => {
+        if (d.recyclingRate <= 20) bins['0-20%']++;
+        else if (d.recyclingRate <= 40) bins['21-40%']++;
+        else if (d.recyclingRate <= 60) bins['41-60%']++;
+        else bins['>60%']++;
+    });
+    return {
+        labels: Object.keys(bins),
+        datasets: [{
+            label: 'Recycling Rate Distribution',
+            data: Object.values(bins),
+            backgroundColor: ['#EF4444', '#F97316', '#FBBF24', '#10B981'],
+        }]
+    };
+}
+
+function getRiverPlasticInputData(data) {
+    const riverData = {
+        'Yangtze': 1500 + Math.random() * 500, 'Ganges': 1000 + Math.random() * 300,
+        'Mississippi': 500 + Math.random() * 100, 'Amazon': 800 + Math.random() * 200,
+        'Niger': 300 + Math.random() * 50
+    }; // Simulated river data
+
+    return {
+        labels: Object.keys(riverData),
+        datasets: [{
+            label: 'Annual Plastic Input (tons)',
+            data: Object.values(riverData),
+            backgroundColor: '#A855F7', borderRadius: 4
+        }]
+    };
+}
+
+function getCleanupEffectivenessData(data) {
+    // Simulated scatter data: x=cost, y=plastic removed
+    const scatterPoints = Array.from({ length: 10 }, (_, i) => ({
+        x: (i + 1) * 1000 + Math.random() * 500, // Cost in thousands
+        y: (i + 1) * 50 + Math.random() * 20 // Plastic removed in tons
+    }));
+    return {
+        datasets: [{
+            label: 'Plastic Removed (tons) vs. Cost ($)',
+            data: scatterPoints,
+            backgroundColor: '#EC4899',
+            pointRadius: 6,
+            pointHoverRadius: 8
+        }]
+    };
+}
+
+function getMicroplasticLevelsData(data) {
+    const sortedData = [...data].slice(0, 5); // Take top 5 for illustration
+    return {
+        labels: sortedData.map(d => d.name + ' (µg/L)'),
+        datasets: [{
+            label: 'Microplastic Levels (µg/L)',
+            data: sortedData.map(d => (Math.random() * 10 + 1).toFixed(1)), // Simulate data
+            backgroundColor: '#64748B', borderRadius: 4
+        }]
+    };
+}
+</script>
+</body>
+</html>

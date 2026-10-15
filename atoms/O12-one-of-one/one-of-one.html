@@ -1,0 +1,970 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>One of One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Georgia&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#231F20; --cream:#FBF4E4; --artcream:#F0EEDA; --paper:#FFFFFF;
+    --rule:#DED5BE; --rule-strong:#B9AC8C; --muted:#6B655A;
+    --sage:#577D60; --sage-soft:#E4EEE6;
+    --coral:#F16B6E; --coral-soft:#FCE7E7; --coral-ink:#B95F56;
+    --dustyrose:#B95F56; --dustyrose-soft:#F4E4E1;
+    --teal:#1E9F97; --teal-soft:#E1F0EE;
+    --gold:#8A6D1F; --gold-soft:#EFE4C4;
+    --shadow: 0 1px 2px rgba(35,31,32,.05), 0 20px 46px rgba(35,31,32,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#EDE7DA; --cream:#1B1A17; --artcream:#232019; --paper:#201D18;
+      --rule:#3A362E; --rule-strong:#584E37; --muted:#B3AA98;
+      --sage:#8FB89A; --sage-soft:#23302A;
+      --coral:#E2938B; --coral-soft:#332521; --coral-ink:#E2938B;
+      --dustyrose:#E2938B; --dustyrose-soft:#332521;
+      --teal:#7FC9C2; --teal-soft:#1E2E2C;
+      --gold:#D8BC66; --gold-soft:#332B14;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 24px 50px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDE7DA; --cream:#1B1A17; --artcream:#232019; --paper:#201D18;
+    --rule:#3A362E; --rule-strong:#584E37; --muted:#B3AA98;
+    --sage:#8FB89A; --sage-soft:#23302A;
+    --coral:#E2938B; --coral-soft:#332521; --coral-ink:#E2938B;
+    --dustyrose:#E2938B; --dustyrose-soft:#332521;
+    --teal:#7FC9C2; --teal-soft:#1E2E2C;
+    --gold:#D8BC66; --gold-soft:#332B14;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 24px 50px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--muted); color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif; line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--coral); color:var(--paper); }
+  .mono{ font-family:'JetBrains Mono',Menlo,Consolas,monospace; }
+  a{ color:var(--dustyrose); }
+  h1,h2,h3{ font-family:'Baloo 2',sans-serif; text-wrap:balance; letter-spacing:-.01em; margin:0; }
+  code{ font-family:'JetBrains Mono',monospace; font-size:.9em; background:var(--artcream); padding:1px 6px; border-radius:5px; }
+
+  /* ---------- book shell ---------- */
+  .book{ max-width:900px; margin:0 auto; background:var(--cream); box-shadow:var(--shadow); }
+  .page{ padding:76px 88px 90px; position:relative; }
+  @media (max-width:720px){ .page{ padding:56px 26px 60px; } }
+  .page + .page{ border-top:1px solid var(--rule); }
+
+  .runninghead{
+    display:flex; justify-content:space-between; align-items:baseline; gap:16px;
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:56px; padding-bottom:14px; border-bottom:1px solid var(--rule);
+  }
+  .runninghead .folio{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  /* ---------- half title / title / colophon ---------- */
+  .halftitle{ min-height:74vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  .halftitle .rule{ width:64px; height:2px; background:var(--coral); margin:26px 0; border:none; }
+  .halftitle .kicker{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--dustyrose); }
+  .halftitle h1{ font-size:clamp(2.6rem,7vw,4.6rem); font-weight:800; margin-top:6px; }
+  .halftitle .under{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; color:var(--muted); margin-top:18px; max-width:34ch; }
+
+  .titlepage{ min-height:78vh; display:flex; flex-direction:column; justify-content:space-between; }
+  .titlepage .tp-top{ text-align:center; padding-top:6vh; }
+  .titlepage .tp-mark{ display:flex; justify-content:center; gap:6px; margin-bottom:22px; }
+  .titlepage .tp-mark span{ width:9px; height:9px; border-radius:50%; }
+  .titlepage h1{ font-size:clamp(2.1rem,5.4vw,3.2rem); font-weight:700; }
+  .titlepage .tp-sub{ font-family:Georgia,serif; font-style:italic; color:var(--muted); font-size:17px; margin-top:14px; }
+  .titlepage .tp-mid{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); letter-spacing:.04em; line-height:2; }
+  .titlepage .tp-mid b{ color:var(--ink); }
+  .titlepage .tp-bottom{ text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--dustyrose); }
+
+  .colophon-front{ font-size:13.5px; color:var(--muted); max-width:52ch; margin:0 auto; }
+  .colophon-front p{ font-size:13.5px; margin:0 0 14px; }
+  .colophon-front .imprint{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.04em; line-height:1.9; margin-top:32px; padding-top:20px; border-top:1px solid var(--rule); }
+
+  /* ---------- preface / acknowledgements ---------- */
+  .frontmatter h2{ font-size:clamp(1.5rem,3vw,2rem); }
+  .frontmatter .fm-kicker{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--dustyrose); margin-bottom:14px; }
+  .frontmatter p{ max-width:60ch; font-size:16px; }
+  .frontmatter p + p{ margin-top:16px; }
+  .frontmatter .signoff{ margin-top:36px; font-style:italic; color:var(--muted); font-size:14.5px; }
+  .dropcap::first-letter{ font-family:'Baloo 2',sans-serif; font-size:3.4em; font-weight:700; float:left; line-height:.8; padding:.06em .07em 0 0; color:var(--coral-ink); }
+
+  /* ---------- contents ---------- */
+  .toc-list{ margin-top:8px; }
+  .toc-part{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin:30px 0 10px; }
+  .toc-part:first-child{ margin-top:0; }
+  .toc-row{ display:flex; align-items:baseline; gap:10px; padding:9px 0; border-bottom:1px dotted var(--rule-strong); }
+  .toc-row .tn{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--coral-ink); width:22px; flex:none; }
+  .toc-row .tt{ font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .toc-row .td{ flex:1; border-bottom:1px dotted var(--rule-strong); margin-bottom:5px; }
+  .toc-row .tf{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); flex:none; font-variant-numeric:tabular-nums; }
+
+  /* ---------- chapter opener ---------- */
+  .chapter-open{ min-height:60vh; display:flex; flex-direction:column; justify-content:center; }
+  .chapter-open .cn{ font-family:'Baloo 2',sans-serif; font-weight:800; font-size:clamp(3.5rem,11vw,7rem); line-height:.85; color:var(--coral); opacity:.9; }
+  .chapter-open .ck{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px; }
+  .chapter-open h2{ font-size:clamp(1.9rem,4.6vw,2.9rem); max-width:16ch; }
+  .chapter-open .cdek{ margin-top:20px; font-size:16.5px; color:var(--muted); max-width:56ch; font-style:italic; font-family:Georgia,serif; }
+  .chapter-open .csource{ margin-top:26px; display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--sage); background:var(--sage-soft); padding:5px 12px; border-radius:100px; width:fit-content; }
+  .chapter-open .csource::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--sage); }
+
+  /* ---------- body content ---------- */
+  .lede{ font-size:17px; color:var(--ink); max-width:64ch; }
+  .lede + .lede, p.body-p{ margin-top:16px; max-width:64ch; font-size:15.5px; }
+  h3.sub{ font-size:19px; margin:34px 0 12px; }
+  ul.book-list, ol.book-list{ max-width:60ch; font-size:15px; padding-left:22px; }
+  ul.book-list li, ol.book-list li{ margin:7px 0; }
+
+  .figure{ margin:34px 0; }
+  .figure .cap{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); text-align:center; margin-top:10px; letter-spacing:.03em; }
+
+  .plate{
+    border:1px solid var(--rule-strong); border-radius:2px; background:var(--paper); padding:26px 30px;
+  }
+
+  .swatchrow{ display:flex; flex-wrap:wrap; gap:14px; margin:24px 0; }
+  .swatch{ text-align:center; }
+  .swatch i{ display:block; width:52px; height:52px; border-radius:8px; border:1px solid var(--rule-strong); margin:0 auto 8px; }
+  .swatch b{ display:block; font-size:11px; font-family:'JetBrains Mono',monospace; letter-spacing:.04em; }
+  .swatch span{ display:block; font-size:10px; font-family:'JetBrains Mono',monospace; color:var(--muted); }
+
+  .movegrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:24px 0; }
+  @media (max-width:640px){ .movegrid{ grid-template-columns:1fr 1fr; } }
+  .movecard{ border:1px solid var(--rule); border-radius:10px; padding:16px 16px 18px; background:var(--paper); }
+  .movecard .mn{ display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--cream); font-family:'JetBrains Mono',monospace; font-size:11.5px; margin-bottom:9px; }
+  .movecard b{ display:block; font-size:14px; margin-bottom:4px; }
+  .movecard span{ font-size:12.5px; color:var(--muted); }
+
+  table.book-table{ width:100%; border-collapse:collapse; margin:20px 0 28px; font-size:13.5px; }
+  table.book-table th{ text-align:left; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--rule-strong); padding:7px 12px 7px 0; }
+  table.book-table td{ padding:9px 12px 9px 0; border-bottom:1px solid var(--rule); vertical-align:top; }
+  .tablewrap{ overflow-x:auto; }
+  .num-col{ font-variant-numeric:tabular-nums; }
+
+  .pill{ display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.05em; text-transform:uppercase; padding:3px 10px; border-radius:100px; white-space:nowrap; }
+  .pill i{ width:6px; height:6px; border-radius:50%; display:inline-block; }
+  .pill.live{ background:var(--sage-soft); color:var(--sage); } .pill.live i{ background:var(--sage); }
+  .pill.planned{ background:var(--teal-soft); color:var(--teal); } .pill.planned i{ background:var(--teal); }
+  .pill.ref{ background:transparent; color:var(--muted); border:1px solid var(--rule-strong); } .pill.ref i{ background:var(--muted); }
+  .pill.draft{ background:var(--dustyrose-soft); color:var(--dustyrose); } .pill.draft i{ background:var(--dustyrose); }
+  .pill.hi{ background:var(--coral-soft); color:var(--coral-ink); } .pill.hi i{ background:var(--coral-ink); }
+  .pill.med{ background:var(--gold-soft); color:var(--gold); } .pill.med i{ background:var(--gold); }
+
+  blockquote.epigraph{
+    border-left:3px solid var(--dustyrose); margin:26px 0; padding:2px 0 2px 22px; max-width:58ch;
+    font-family:Georgia,serif; font-style:italic; font-size:16.5px; color:var(--ink);
+  }
+  blockquote.epigraph cite{ display:block; margin-top:8px; font-style:normal; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.03em; }
+
+  .callout{ background:var(--artcream); border-radius:10px; padding:16px 20px; margin:22px 0; font-size:14px; max-width:64ch; }
+  .callout b{ display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--dustyrose); margin-bottom:5px; }
+
+  .codeblock{ background:var(--ink); color:var(--cream); border-radius:10px; padding:18px 20px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.75; overflow-x:auto; margin:20px 0; }
+
+  .findingrow{ display:flex; gap:14px; padding:14px 0; border-top:1px solid var(--rule); }
+  .findingrow:first-child{ border-top:none; }
+  .findingrow b{ display:block; font-size:14.5px; margin-bottom:3px; }
+  .findingrow p{ margin:0; font-size:13.5px; color:var(--muted); max-width:56ch; }
+
+  .architecture-diag{ border:1px solid var(--rule); border-radius:10px; background:var(--paper); padding:18px; }
+  .architecture-diag svg{ display:block; width:100%; height:auto; }
+
+  /* ---------- back matter ---------- */
+  .backmatter table.book-table td, .backmatter table.book-table th{ font-family:'JetBrains Mono',monospace; }
+  .index-swatch{ width:14px; height:14px; border-radius:3px; display:inline-block; vertical-align:-2px; margin-right:8px; border:1px solid var(--rule-strong); }
+
+  .book-footer{ text-align:center; padding:60px 0 10px; }
+  .book-footer .fbrand{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .book-footer .fline{ width:36px; height:1px; background:var(--rule-strong); margin:16px auto; }
+
+  @media print{ body{ background:var(--paper); } .page{ padding:20mm; } }
+
+  /* ---------- fox-head mark, applied throughout (verified asset, theme-reactive) ---------- */
+  .foxmark{ display:inline-block; background-repeat:no-repeat; background-position:center; background-size:contain; vertical-align:middle; }
+  .foxmark-tiny{ width:13px; height:13px; margin-right:7px; }
+  .foxmark-sm{ width:30px; height:30px; }
+  .foxmark-md{ width:60px; height:60px; }
+  .foxmark-stamp{ width:34px; height:34px; }
+  .fox-stampbox{ display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border:1px solid var(--rule-strong); border-radius:10px; background:var(--paper); margin:0 auto 18px; }
+  .chapter-open .foxmark-sm{ margin-bottom:14px; }
+</style>
+
+<div class="book">
+
+  <!-- ===================== HALF TITLE ===================== -->
+  <section class="page">
+    <div class="halftitle">
+      <i class="foxmark foxmark-md" data-foxmark style="margin-bottom:22px"></i>
+      <div class="kicker">A record of the ecosystem, in full</div>
+      <h1>One of&nbsp;One</h1>
+      <hr class="rule">
+      <div class="under">The Sam Fox™ &amp; Banimal™ Connector Brand System<br>Compiled from source, 2026</div>
+    </div>
+  </section>
+
+  <!-- ===================== TITLE PAGE ===================== -->
+  <section class="page">
+    <div class="titlepage">
+      <div class="tp-top">
+        <i class="foxmark foxmark-sm" data-foxmark style="margin-bottom:16px"></i>
+        <div class="tp-mark">
+          <span style="background:#231F20"></span><span style="background:#577D60"></span><span style="background:#F16B6E"></span>
+          <span style="background:#1E9F97"></span><span style="background:#B95F56"></span><span style="background:#FBF4E4;border:1px solid #B9AC8C"></span>
+        </div>
+        <h1>One of One</h1>
+        <div class="tp-sub">Every verified mark, every working system, every open question —<br>the Sam Fox™ &amp; Banimal™ Connector ecosystem, set down as one record.</div>
+      </div>
+      <div class="tp-mid">
+        Eleven chapters, read from source · nothing recalled, nothing approximated<br>
+        <b>Sam Fox™</b> — the artist brand and the hand, always kept<br>
+        <b>Banimal™ Connector</b> — the product it now runs through<br>
+        Compiled for Heyns, from seven repositories in reach
+      </div>
+      <div class="tp-bottom">Fruitful Shops (Pty) Ltd · 2026</div>
+    </div>
+  </section>
+
+  <!-- ===================== COLOPHON (FRONT) ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>One of One</span><span class="folio">iii</span></div>
+    <div class="colophon-front">
+      <p><b style="color:var(--ink)">This edition</b> gathers eleven documents built across one working session into a single, cover-to-cover record. Each chapter was re-read from its original source — the published page itself, or the exact file it was authored from — rather than from memory, and typeset here for a page instead of a screen. No fact, hex value, figure, or quoted line has been altered in the retelling; only the arrangement is new.</p>
+      <p>The fox-head mark running through every page — the running heads, the chapter openers, this book's own half-title — is <b style="color:var(--ink)">Sam Fox™</b>'s verified icon itself, the same asset file her master guide names, reproduced unaltered in its two approved renders. It is never redrawn: per that guide's own compliance rule, an agent's hand is never a substitute for hers. Where this edition needed a device with no verified source of its own, it drew one instead — a rule, a swatch, a line between two points. Nothing in that second category claims to be her artwork.</p>
+      <div class="imprint">
+        Text set in Baloo&nbsp;2 (display), Georgia (body), JetBrains&nbsp;Mono (folios &amp; verification marks)<br>
+        Palette: the nine verified Sam Fox™ colours — see the Index of Verified Values, p.&nbsp;115<br>
+        Compiled and typeset 2026 · one printing · not for public distribution<br>
+        © 2026 Fruitful Shops (Pty) Ltd · Source artwork © Sam Fox™
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PREFACE ===================== -->
+  <section class="page frontmatter">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Preface</span><span class="folio">iv</span></div>
+    <div class="fm-kicker">Preface</div>
+    <h2>Why this exists</h2>
+    <p class="dropcap" style="margin-top:26px;max-width:64ch;font-size:16px;">Most of what fills a working session like this one never gets bound into anything. It lives as a scroll of turns, a folder of drafts, a dozen open tabs each arguing that it's the current version of the truth. That's fine for building — it's exactly how building works — but it's a poor way to keep something. A palette gets rediscovered instead of remembered. A rule gets restated slightly differently each time it's needed. Eventually nobody, including the person who built it, can say with confidence which document is the one that's actually correct.</p>
+    <p class="body-p">This book is the answer to that, for one ecosystem, at one point in time. It takes eleven documents — a brand guide, an icon application, an ecosystem index, a product page, a manual, a debrief written for the next person to pick this up cold, a full excavation of a live repository, a video treatment that was never filmed, a copyright letter, a game, and a builder's own profile — and binds them into a single object with a spine. Not because a coffee-table book is how software usually gets documented, but because the alternative, scattered across however many browser tabs, was never going to survive contact with a year from now.</p>
+    <p class="body-p">Every page that follows was re-read from its source before it was set here — not summarized from an earlier conversation, not reconstructed from what seemed likely to be true. Where a document had already corrected itself once — and one of these, the Debrief in Chapter&nbsp;VI, corrects a wrong palette in its own second paragraph — that correction is preserved exactly as it stands, because getting something wrong once and saying so plainly is itself part of an honest record.</p>
+    <p class="body-p">What holds these eleven very different documents together is not a shared subject in the usual sense — a brand guide and a database excavation don't normally belong on the same shelf, and a copyright letter belongs to neither. It's a shared discipline: each one draws a hard line between what has been verified against a real file and what has only been claimed. The Seedwave Atlas in Chapter&nbsp;III makes that discipline explicit with a five-colour legend — <em>live, draft, planned, reference, archived</em> — and refuses to promote a plan to a fact just because it would be convenient. That refusal, more than any single palette or diagram, is the actual subject of this book. Part Five closes it the other way round: after ten chapters of systems, the last three are simply the people the systems are for.</p>
+    <div class="signoff">— compiled from the seven repositories currently in reach, for Heyns.</div>
+  </section>
+
+  <!-- ===================== ACKNOWLEDGEMENTS ===================== -->
+  <section class="page frontmatter">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Acknowledgements</span><span class="folio">vi</span></div>
+    <div class="fm-kicker">Acknowledgements</div>
+    <h2>Who this actually belongs to</h2>
+    <p class="dropcap" style="margin-top:26px;max-width:64ch;font-size:16px;">The hand in this book is not the one that typeset it. Every mark, every palette, every rule of construction described in Chapter&nbsp;I belongs to <b>Samantha Schoeman</b> — Sam Fox™, Sam Fox Illustrates, freelance since September 2016, BA Visual Communication from The Open Window, 2010 — and this edition exists only because her guide exists first, marked <em>final approval</em>, <em>one of one</em>, and correct enough to build ten further documents against without a single hex value drifting. Chapter&nbsp;IX and Chapter&nbsp;X are hers even more directly: a copyright letter written for her, and a board game built for no reason but that she'd like it.</p>
+    <p class="body-p"><b>Heyns Schoeman</b>, for whom this was compiled and who appears in it himself in Chapter&nbsp;XI, built the ecosystem half of this book by hand across one long session: the WordPress↔Worker bridge, the signed event pipeline, the brand-guide endpoint that lets a palette travel from one master file to every connected surface within the hour, and — in Chapter&nbsp;VII — the discipline of opening all 191 tracked files in a live repository rather than trusting what its own README claimed about itself.</p>
+    <p class="body-p">Thanks are also owed to the parts of this record that are less flattering than a acknowledgements page usually allows: the giving rate that disagreed with itself in two files at once, the session tokens that were never actually signed, the "13,413 brands" figure from an earlier, unrelated pass that this edition's own excavation still can't reconcile with anything real. A record that only kept the finished parts would be a brochure. Keeping the open findings too — named plainly, not smoothed over — is what makes this a book and not a pitch.</p>
+    <p class="body-p">And finally, to <b>Fruitful Shops (Pty) Ltd</b>, the legal entity line locked at the bottom of every page this ecosystem produces, and to the seven repositories — <code class="mono">banimal</code>, <code class="mono">banimal-global-loop</code>, <code class="mono">payment</code>, <code class="mono">zerowaste.seedwave.faa.zone</code>, <code class="mono">ecosystem-governance-sentinel</code>, <code class="mono">fruitfulplanetchange</code>, and <code class="mono">samfox</code> — that made this survey possible simply by being real, checkable places rather than descriptions of places.</p>
+  </section>
+
+  <!-- ===================== CONTENTS ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Contents</span><span class="folio">vii</span></div>
+    <div class="fm-kicker">Contents</div>
+    <h2>Eleven chapters, in reading order</h2>
+    <div class="toc-list">
+      <div class="toc-part">Front matter</div>
+      <div class="toc-row"><span class="tn">—</span><span class="tt">Preface</span><span class="td"></span><span class="tf">iv</span></div>
+      <div class="toc-row"><span class="tn">—</span><span class="tt">Acknowledgements</span><span class="td"></span><span class="tf">vi</span></div>
+
+      <div class="toc-part">Part One — The Brand</div>
+      <div class="toc-row"><span class="tn">I</span><span class="tt">The Guide — Sam Fox™ Core CI Guide Master</span><span class="td"></span><span class="tf">1</span></div>
+      <div class="toc-row"><span class="tn">II</span><span class="tt">The Icon, Applied</span><span class="td"></span><span class="tf">13</span></div>
+
+      <div class="toc-part">Part Two — The Ecosystem</div>
+      <div class="toc-row"><span class="tn">III</span><span class="tt">The Seedwave Atlas</span><span class="td"></span><span class="tf">19</span></div>
+      <div class="toc-row"><span class="tn">IV</span><span class="tt">The Connector</span><span class="td"></span><span class="tf">35</span></div>
+
+      <div class="toc-part">Part Three — The Product</div>
+      <div class="toc-row"><span class="tn">V</span><span class="tt">The Manual</span><span class="td"></span><span class="tf">45</span></div>
+      <div class="toc-row"><span class="tn">VI</span><span class="tt">The Debrief</span><span class="td"></span><span class="tf">59</span></div>
+      <div class="toc-row"><span class="tn">VII</span><span class="tt">The Excavation</span><span class="td"></span><span class="tf">71</span></div>
+
+      <div class="toc-part">Part Four — The Telling</div>
+      <div class="toc-row"><span class="tn">VIII</span><span class="tt">One Signed Line</span><span class="td"></span><span class="tf">87</span></div>
+
+      <div class="toc-part">Part Five — Her Hand, and the One Who Builds</div>
+      <div class="toc-row"><span class="tn">IX</span><span class="tt">Heart of Her Hand</span><span class="td"></span><span class="tf">95</span></div>
+      <div class="toc-row"><span class="tn">X</span><span class="tt">Snakes &amp; Ladders</span><span class="td"></span><span class="tf">103</span></div>
+      <div class="toc-row"><span class="tn">XI</span><span class="tt">The Builder</span><span class="td"></span><span class="tf">109</span></div>
+
+      <div class="toc-part">Back matter</div>
+      <div class="toc-row"><span class="tn">—</span><span class="tt">Index of Verified Values</span><span class="td"></span><span class="tf">115</span></div>
+      <div class="toc-row"><span class="tn">—</span><span class="tt">Colophon</span><span class="td"></span><span class="tf">118</span></div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPTER I — THE GUIDE ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part One — The Brand</span><span class="folio">1</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">I</div>
+      <div class="ck">Chapter One</div>
+      <h2>The Guide</h2>
+      <p class="cdek">Sam Fox™ Global · One of One · Core CI Guide Master — Final Approval. The single, exclusive, global master of the Sam Fox™ brand identity. It supersedes every prior guide, draft, version or file, no matter what any later argument claims.</p>
+      <div class="csource">verified source · docs/brand/ci-guide.html</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Guide</span><span class="folio">2</span></div>
+    <h3 class="sub">01 · Identity</h3>
+    <p class="lede">The brand is <b>Sam Fox™</b>, trading as Sam Fox Illustrates, freelance since September&nbsp;2016. The legal person behind it is Sam Fox, South Africa; the education is a BA in Visual Communication from The Open Window, 2010. The web presence is <code>banimal.co.za</code>, <code>fruitful.faa.zone</code>, and a Behance portfolio at <a href="https://www.behance.net/samford">behance.net/samford</a>.</p>
+    <p class="body-p">Three primary marks exist, each downloadable as PNG at 1×/2×/3×, plus JPG, EPS, and PDF: a primary horizontal logo built around the fox-head standing in for the "o" of "fox"; a stacked lockup; and the icon alone — the fox head on its own. Only three word-forms are legally the brand: <b>Sam Fox™</b>, <b>Drawing like Sam Fox™</b>, and a pink "SF" monogram used in-art. None of them ever carries an ®.</p>
+    <div class="callout"><b>What "verified" means in this book</b>Every mark and hex value in this chapter was confirmed by direct pixel- and value-match against the live master guide — not carried forward from an earlier, unverified pass. Where a later chapter's own palette turned out to be an approximation instead, that correction is recorded in Chapter&nbsp;VI rather than silently fixed.</div>
+
+    <h3 class="sub">02 · Placement &amp; clear space</h3>
+    <p class="body-p">The logo sits bottom-right in its field, guarded on every side by a clear-space rule measured in one script "S". It is never crowded, stretched, recoloured, or re-lettered. The "o" in "fox" is always the fox-head icon — never a typed letter standing in for it.</p>
+    <div class="swatchrow">
+      <div class="swatch"><i style="background:#FBF4E4;border-color:#B9AC8C"></i><b>white / cream / ink</b><span>approved backgrounds only</span></div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Guide</span><span class="folio">4</span></div>
+    <h3 class="sub">03 · Colour — the nine verified values</h3>
+    <p class="lede">Every colour below exists as a working download — PNG at three scales, JPG, SVG, EPS, and PDF — and every hex value in this book, across all eleven chapters, traces back to this one table. The working ratio across a page is Cream&nbsp;55 · Body&nbsp;28 · Accent&nbsp;12 · Ink&nbsp;5.</p>
+    <div class="swatchrow">
+      <div class="swatch"><i style="background:#231F20"></i><b>INK</b><span>#231F20</span></div>
+      <div class="swatch"><i style="background:#577D60"></i><b>SAGE</b><span>#577D60</span></div>
+      <div class="swatch"><i style="background:#A7DACB"></i><b>MINT</b><span>#A7DACB</span></div>
+      <div class="swatch"><i style="background:#F16B6E"></i><b>CORAL</b><span>#F16B6E</span></div>
+      <div class="swatch"><i style="background:#B95F56"></i><b>DUSTY ROSE</b><span>#B95F56</span></div>
+      <div class="swatch"><i style="background:#F0EEDA"></i><b>ART CREAM</b><span>#F0EEDA</span></div>
+      <div class="swatch"><i style="background:#1E9F97"></i><b>TEAL</b><span>#1E9F97</span></div>
+      <div class="swatch"><i style="background:#E63946"></i><b>RED</b><span>#E63946</span></div>
+      <div class="swatch"><i style="background:#FBF4E4;border-color:#B9AC8C"></i><b>CREAM</b><span>#FBF4E4</span></div>
+    </div>
+    <p class="body-p" style="font-size:13.5px;color:var(--muted)">Red is reserved for alert states only, and is never used as a decorative accent. This is the exact reading this book carries into every later chapter — nothing swapped, nothing approximated.</p>
+
+    <h3 class="sub">04 · The hand — one creature, read in six moves</h3>
+    <p class="lede">The construction rules for every figure the brand draws, whether a mascot, a mark, or an icon variant:</p>
+    <div class="movegrid">
+      <div class="movecard"><span class="mn">1</span><b>Thick ink outline</b><span>Closed with confidence, slightly irregular — never vector-perfect.</span></div>
+      <div class="movecard"><span class="mn">2</span><b>Oversized eyes</b><span>Each ≈30–38% of face width, often uneven on purpose; pupil low and inward; one bold catch-light, top-left.</span></div>
+      <div class="movecard"><span class="mn">3</span><b>Rosy cheek disc</b><span>Two soft coral discs sit below the eyes.</span></div>
+      <div class="movecard"><span class="mn">4</span><b>Freckle dots</b><span>3–6 dots across the muzzle; a tiny triangular or heart-shaped nose.</span></div>
+      <div class="movecard"><span class="mn">5</span><b>Soft collar or prop</b><span>No complex anatomy. The head fills 60–70% of the whole figure.</span></div>
+      <div class="movecard"><span class="mn">6</span><b>Signature</b><span>Signed bottom-right; the small pink "SF" monogram appears in-art.</span></div>
+    </div>
+
+    <h3 class="sub">05 · Typography</h3>
+    <p class="body-p">A "Futura soul" governs display type — a bold, rounded sans, paired with a marketplace-friendly system sans for support. Hand-lettering, often Afrikaans wordplay, is the brand's actual voice. The Sam Fox™ wordmark itself is never set from a font: the mark is drawn, not typed.</p>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Guide</span><span class="folio">10</span></div>
+    <h3 class="sub">06 · Compliance — the rules that protect the brand</h3>
+    <blockquote class="epigraph">™ only, never ®. Every reproduction beyond the Fruitful project requires her commission or licence — this work is © All Rights Reserved.<cite>Sam Fox™ Core CI Guide Master, section 06</cite></blockquote>
+    <ul class="book-list">
+      <li>Agent or AI output is a style approximation, never her hand — labelled "in the style of Sam Fox™," with her real artwork always preferred where it exists.</li>
+      <li>The marks are never redrawn, retyped, or re-lettered; her art is never recoloured into a brighter retail palette.</li>
+      <li>The locked legal entity line, wherever the brand appears in commerce: <b>Fruitful Shops (Pty) Ltd</b>.</li>
+    </ul>
+    <p class="body-p" style="font-size:13.5px;color:var(--muted)">This is the compliance line this book itself was built against — see the colophon on page&nbsp;iii for how that rule shaped what this edition does and doesn't attempt to reproduce.</p>
+
+    <h3 class="sub">08 · The hand in the ecosystem — Fruitful Portal STAFF</h3>
+    <p class="body-p">Sam Fox's hand extends past her own mark into the wider Fruitful™ ecosystem: an original Fruitful Portal STAFF artwork, and a Sam-Fox-styled illustration of STAFF hosting the Fruitful flag on the Great Wall — sixteen-by-nine, no text, drawn in the same six-move hand as every other figure in this chapter.</p>
+
+    <h3 class="sub">09 · Core brands — Fruitful™, Sam Fox™ always kept</h3>
+    <p class="body-p">Two core brands share one ecosystem. <b>Sam Fox™</b> — the artist brand and the hand — is always kept. <b>Fruitful™</b> — the ecosystem brand — is a core brand in its own right, carried by a verified master mark: a pear icon, a wordmark, and a sticker-style lockup, ™ only, downloadable from its own CI guide folder alongside this one.</p>
+  </section>
+
+  <!-- ===================== CHAPTER II — THE ICON, APPLIED ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part One — The Brand</span><span class="folio">13</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">II</div>
+      <div class="ck">Chapter Two</div>
+      <h2>The Icon, Applied</h2>
+      <p class="cdek">A companion page, not part of the "one of one" master — the verified fox-head icon, recomposited for icon-canvas placement across nine palette backgrounds and four real deployment contexts. Nothing new is drawn here; every glyph is the same verified asset.</p>
+      <div class="csource">verified source · docs/brand/banimal-connector-icons.html</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Icon, Applied</span><span class="folio">14</span></div>
+    <p class="lede">The rule this chapter exists to demonstrate: the glyph itself never changes colour, except on the one approved background where it must — ink — where it reverses to cream for legibility. That reversal is listed in the master guide's own approved backgrounds; every other palette keeps the ink render exactly as drawn.</p>
+    <div class="swatchrow">
+      <div class="swatch"><i style="background:#231F20"></i><b>ink</b><span>icon: cream</span></div>
+      <div class="swatch"><i style="background:#577D60"></i><b>sage</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#A7DACB"></i><b>mint</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#F16B6E"></i><b>coral</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#B95F56"></i><b>dusty rose</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#F0EEDA"></i><b>art cream</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#1E9F97"></i><b>teal</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#E63946"></i><b>red</b><span>icon: ink</span></div>
+      <div class="swatch"><i style="background:#FBF4E4;border-color:#B9AC8C"></i><b>cream</b><span>icon: ink · default</span></div>
+    </div>
+
+    <h3 class="sub">In context — like Gemini, like Claude</h3>
+    <p class="body-p">The same file, unaltered, is proven against the places an app icon actually has to work: the WordPress admin plugin row, a browser tab favicon, an iOS/macOS rounded app tile, and a 16-pixel favicon legibility check. Four real contexts, one unmodified asset.</p>
+
+    <div class="callout"><b>Compliance, carried forward from Chapter I</b>This is the verified mark, confirmed by direct pixel match against <code>samfox-icon-verified.png</code> — not an AI approximation. Reproduction beyond this project still requires commission or licence, © All Rights Reserved, Sam Fox™. The master guide remains the sole authority; this page only applies its verified icon.</div>
+  </section>
+
+  <!-- ===================== CHAPTER III — THE SEEDWAVE ATLAS ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Two — The Ecosystem</span><span class="folio">19</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">III</div>
+      <div class="ck">Chapter Three</div>
+      <h2>The Seedwave Atlas</h2>
+      <p class="cdek">Before this, "the Banimal™ Connector" meant four different things depending on which conversation you caught. This atlas exists to stop re-describing the ecosystem from memory: thirty-one entries, each checked against an actual repository, an actual committed file, or an actual open pull request.</p>
+      <div class="csource">verified source · rev 2026-08-30, checked against 7 live repositories</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Seedwave Atlas</span><span class="folio">20</span></div>
+    <p class="lede">Two rules govern every row in this atlas. First, a system only earns a page number once it has been checked — read from the repository, not remembered from an earlier conversation. Second, status is honest: <span class="pill live"><i></i>live</span> means running in a real repository today; <span class="pill draft"><i></i>draft</span> means it exists as a file but isn't committed anywhere that matters yet; <span class="pill planned"><i></i>planned</span> means it doesn't exist at all yet, named here so it isn't invented twice.</p>
+    <blockquote class="epigraph">A plugin literally named Banimal™ Ecosystem Connector already ships from this repo, v5.0.0, live. It isn't the brand-alignment layer this atlas was building toward — it's a signed WooCommerce↔Worker commerce bridge — but the name collision is real, and the fix is one plugin with two modules, not two plugins.<cite>The finding that reshaped this atlas mid-build</cite></blockquote>
+
+    <h3 class="sub">Sam Fox™ Brand System</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Location</th><th>Status</th></tr>
+      <tr><td class="num-col mono">01</td><td>Sam Fox™ Core CI Guide Master</td><td class="mono">banimal / docs/brand/ci-guide.html</td><td><span class="pill ref"><i></i>reference</span></td></tr>
+      <tr><td class="num-col mono">02</td><td>Banimal™ Connector icon &amp; palette page</td><td class="mono">banimal / docs/brand/banimal-connector-icons.html</td><td><span class="pill ref"><i></i>reference</span></td></tr>
+      <tr><td class="num-col mono">03</td><td>Heart of Her Hand</td><td class="mono">samfox / public/heart-of-her-hand/</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">04</td><td>Snakes &amp; Ladders board</td><td class="mono">samfox / heart-of-her-hand/</td><td><span class="pill ref"><i></i>reference</span></td></tr>
+    </table></div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Seedwave Atlas</span><span class="folio">24</span></div>
+    <h3 class="sub">Banimal™ Connector — the product</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Status</th></tr>
+      <tr><td class="num-col mono">05</td><td>banimal-connector plugin (Claude Code)</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">06</td><td>samfox-ci-guide skill</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">07</td><td>Banimal™ Ecosystem Connector — WordPress plugin, v5.0.0</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">08</td><td>wp-bridge Worker route</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">09</td><td>GitHub omnidrop workflow</td><td><span class="pill planned"><i></i>planned</span></td></tr>
+      <tr><td class="num-col mono">10</td><td>Replit / cross-account sync (~150 apps)</td><td><span class="pill planned"><i></i>planned</span></td></tr>
+    </table></div>
+
+    <h3 class="sub">Commerce infrastructure — heyns1000/banimal</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Status</th></tr>
+      <tr><td class="num-col mono">11</td><td>Banimal™ commerce Worker — orders, payments, delivery, auth, giving</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">12</td><td>Banimal™ D1 tables</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">13</td><td>Apple Pay verification Workers</td><td><span class="pill live"><i></i>live</span></td></tr>
+    </table></div>
+
+    <h3 class="sub">Seedwave — multi-brand routing</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Status</th></tr>
+      <tr><td class="num-col mono">14</td><td>seedwave-router Worker — 213 lines, resolves brand-by-hostname today</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">15</td><td>banimal-router Worker — 475 lines, pathname-only</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">16</td><td>seedwave-host-router.js — KV-backed reimplementation, uploaded snapshot</td><td><span class="pill draft"><i></i>draft</span></td></tr>
+      <tr><td class="num-col mono">17</td><td>ToyNest brand config</td><td><span class="pill live"><i></i>live</span></td></tr>
+    </table></div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Seedwave Atlas</span><span class="folio">30</span></div>
+    <h3 class="sub">Governance &amp; repositories in reach</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Status</th></tr>
+      <tr><td class="num-col mono">18</td><td>Ecosystem Governance Sentinel (ACCIO) — default-deny, no mass dispatch until approved</td><td><span class="pill draft"><i></i>definition stage</span></td></tr>
+      <tr><td class="num-col mono">19</td><td>heyns1000/banimal — canonical home of the product</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">20</td><td>heyns1000/payment</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">21</td><td>heyns1000/zerowaste.seedwave.faa.zone — Block Box™ patent site</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">22</td><td>Fruitful-Global-Planet/banimal-global-loop — the Workers backend</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">23</td><td>Fruitful-Global-Planet/ecosystem-governance-sentinel</td><td><span class="pill draft"><i></i>definition stage</span></td></tr>
+      <tr><td class="num-col mono">24</td><td>Fruitful-Global-Planet/fruitfulplanetchange — Lovable app, Supabase backend</td><td><span class="pill live"><i></i>live</span></td></tr>
+      <tr><td class="num-col mono">25</td><td>Fruitful-Global-Planet/samfox — personal Sam Fox materials</td><td><span class="pill live"><i></i>live</span></td></tr>
+    </table></div>
+
+    <h3 class="sub">Open work</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>№</th><th>Entry</th><th>Status</th></tr>
+      <tr><td class="num-col mono">26–30</td><td>samfox #1 · banimal #16, #17, #18, #19 — connector docs, brand-guide endpoint, CI alignment, audit &amp; correction</td><td><span class="pill live"><i></i>merged</span></td></tr>
+      <tr><td class="num-col mono">31</td><td>18-part "Perplexity Spaces" dump — reviewed, not adopted wholesale</td><td><span class="pill draft"><i></i>archived</span></td></tr>
+    </table></div>
+    <p class="body-p" style="font-size:13px;color:var(--muted)">Thirty-one entries total, compiled 2026·08·30 — every entry checked against its repository, not recalled.</p>
+  </section>
+
+  <!-- ===================== CHAPTER IV — THE CONNECTOR ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Two — The Ecosystem</span><span class="folio">35</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">IV</div>
+      <div class="ck">Chapter Four</div>
+      <h2>The Connector</h2>
+      <p class="cdek">"Your store relays. The Worker decides." A thin, signed WordPress client that holds no payment credentials, no brand assets, and no opinion of its own — every order event and every brand colour comes from one place.</p>
+      <div class="csource">verified source · v5.1.0 product page</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Connector</span><span class="folio">36</span></div>
+    <h3 class="sub">Two jobs. One connector.</h3>
+    <p class="lede">Both run through the same thin client, the same signed channel, and the same rule: nothing sensitive is ever stored twice.</p>
+    <div class="movegrid" style="grid-template-columns:1fr 1fr">
+      <div class="movecard" style="border-color:var(--sage)"><b>01 · Commerce sync — WooCommerce → Worker</b><span>Order status changes relay over a signed channel. HMAC-SHA256, constant-time verified; idempotent by event ID; a terminal order never moves backward.</span></div>
+      <div class="movecard" style="border-color:var(--coral)"><b>02 · Brand alignment — CI Guide → theme</b><span>Palette and icon rules are fetched live from the Worker and printed as CSS custom properties on every page. Public, unauthenticated, read-only; cached an hour; a silent no-op if unreachable.</span></div>
+    </div>
+
+    <h3 class="sub">Architecture — how a thin client stays thin</h3>
+    <p class="body-p">The plugin makes exactly one kind of outbound call — to the Worker. It never talks to Paystack, BobGo, GitHub, or Google Drive directly; those live exclusively behind it.</p>
+    <div class="architecture-diag">
+      <svg viewBox="0 0 700 190">
+        <g font-family="JetBrains Mono, monospace" font-size="12" fill="var(--ink)">
+          <rect x="20" y="65" width="150" height="70" rx="10" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="95" y="95" text-anchor="middle" font-weight="600">WordPress</text>
+          <text x="95" y="112" text-anchor="middle" fill="var(--muted)" font-size="9.5">Banimal™ Connector</text>
+          <path d="M172,90 L288,90" stroke="var(--sage)" stroke-width="2" marker-end="url(#a1)"/>
+          <text x="230" y="82" text-anchor="middle" fill="var(--sage)" font-size="9.5">signed event</text>
+          <path d="M288,122 L172,122" stroke="var(--coral-ink)" stroke-width="2" marker-end="url(#a2)"/>
+          <text x="230" y="138" text-anchor="middle" fill="var(--coral-ink)" font-size="9.5">brand tokens</text>
+          <rect x="292" y="42" width="175" height="115" rx="10" fill="var(--artcream)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="380" y="68" text-anchor="middle" font-weight="600">Cloudflare Worker</text>
+          <text x="380" y="88" text-anchor="middle" fill="var(--muted)" font-size="9">/api/wp/events</text>
+          <text x="380" y="104" text-anchor="middle" fill="var(--muted)" font-size="9">/api/brand-guide</text>
+          <text x="380" y="120" text-anchor="middle" fill="var(--muted)" font-size="9">/api/orders</text>
+          <text x="380" y="140" text-anchor="middle" fill="var(--muted)" font-size="9">D1 · orders, brands</text>
+          <path d="M467,72 L590,50" stroke="var(--rule-strong)" stroke-width="1.5" marker-end="url(#a3)"/>
+          <path d="M467,100 L590,100" stroke="var(--rule-strong)" stroke-width="1.5" marker-end="url(#a3)"/>
+          <path d="M467,128 L590,150" stroke="var(--rule-strong)" stroke-width="1.5" marker-end="url(#a3)"/>
+          <text x="600" y="47" fill="var(--muted)" font-size="10">Paystack</text>
+          <text x="600" y="103" fill="var(--muted)" font-size="10">BobGo</text>
+          <text x="600" y="155" fill="var(--muted)" font-size="10">GitHub / R2</text>
+        </g>
+        <defs>
+          <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--sage)"/></marker>
+          <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--coral-ink)"/></marker>
+          <marker id="a3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="var(--rule-strong)"/></marker>
+        </defs>
+      </svg>
+    </div>
+    <p class="figure cap">The Worker is the only thing that ever sees a Paystack key, a BobGo credential, or a GitHub token.</p>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Connector</span><span class="folio">40</span></div>
+    <h3 class="sub">Security — not an afterthought, a rewrite</h3>
+    <p class="lede">Version 5.0.0 replaced the previous 4.7.x line rather than patch it.</p>
+    <ul class="book-list">
+      <li><b>Fails closed on a weak key.</b> A missing, short, or default-placeholder <code>AUTH_KEY</code> means the plugin refuses to store or use a secret — not a predictable fallback.</li>
+      <li><b>No secret reaches the browser.</b> The rewrite is server-side only, nonce-protected, and never echoes a secret.</li>
+      <li><b>Inert without WooCommerce.</b> The commerce bridge registers zero hooks when WooCommerce isn't active.</li>
+      <li><b>Constant-time signature checks.</b> HMAC-SHA256 over the raw body, compared without leaking match progress through response timing.</li>
+    </ul>
+
+    <h3 class="sub">Install — four steps, no guesswork</h3>
+    <ol class="book-list">
+      <li>Set the shared secret on the Worker — <code>wrangler secret put WP_BRIDGE_SECRET</code>.</li>
+      <li>Configure the plugin — Banimal™ → Configuration: Worker base URL and the same signing secret.</li>
+      <li>Confirm the connection — Banimal™ → Diagnostics: "Check Worker Health" and "Check Brand Guide," both live, never cached.</li>
+      <li>Change an order status — confirm a row lands in <code>wp_bridge_events</code>.</li>
+    </ol>
+    <div class="codeblock">// what the plugin sends — nothing more<br>{<br>&nbsp;&nbsp;"event_type": "woocommerce.order_status_changed",<br>&nbsp;&nbsp;"schema_version": "1.0",<br>&nbsp;&nbsp;"source": "wordpress-plugin",<br>&nbsp;&nbsp;"payload": { "wc_order_id": 4821, "status_to": "processing", "total": "560.00", "currency": "ZAR" }<br>}<br>// signed: X-Banimal-Signature: hmac-sha256(body, secret)</div>
+  </section>
+
+  <!-- ===================== CHAPTER V — THE MANUAL ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Three — The Product</span><span class="folio">45</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">V</div>
+      <div class="ck">Chapter Five</div>
+      <h2>The Manual</h2>
+      <p class="cdek">Everything needed to install, configure, and verify the Connector — on a WordPress site today, in a Claude Code profile today, and on every other environment it's headed to next. Every step here matches the real, shipped code.</p>
+      <div class="csource">verified source · Manual v5.1.0, rev 2026-08-30</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Manual</span><span class="folio">46</span></div>
+    <h3 class="sub">WordPress — the brand module</h3>
+    <p class="lede">Once configured, every front-end page gets an automatic, silent addition to <code>&lt;head&gt;</code> — no theme edits required — printing the verified palette as CSS custom properties. This is cached one hour per site and re-fetched automatically; if the Worker is unreachable, the module is a silent no-op. It will never be the reason a page fails to load.</p>
+    <div class="codeblock">&lt;style id="banimal-brand-tokens"&gt;<br>:root{<br>&nbsp;&nbsp;--banimal-ink:#231F20;<br>&nbsp;&nbsp;--banimal-cream:#FBF4E4;<br>&nbsp;&nbsp;--banimal-sage:#577D60;<br>&nbsp;&nbsp;--banimal-coral:#F16B6E;<br>&nbsp;&nbsp;/* ...the full verified palette */<br>}<br>&lt;/style&gt;</div>
+
+    <h3 class="sub">Claude Code — three ways to install the same rules</h3>
+    <p class="body-p">As a plugin, recommended, versioned, works across machines — <code>claude plugin marketplace add /path/to/banimal-connector</code> then <code>claude plugin install banimal-connector</code>. As a project skill, this repo only. As a personal skill, every session, one machine. Once installed, asking Claude "check this against the Sam Fox CI Guide" answers from the skill file rather than guessing from training data.</p>
+
+    <h3 class="sub">API reference</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>Method</th><th>Path</th><th>Notes</th></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/brand-guide</td><td>Public, unauthenticated. Palette, 9 themes, icon URLs, typography, compliance text as JSON. Cached 1 hour.</td></tr>
+      <tr><td class="mono">GET</td><td class="mono">/api/brand-guide/icon/{ink,cream}.png</td><td>The verified fox-head mark as PNG bytes. Cached 24 hours.</td></tr>
+      <tr><td class="mono">POST</td><td class="mono">/api/wp/events</td><td>Requires <code>X-Banimal-Signature</code> — HMAC-SHA256 over the raw body. WooCommerce bridge only.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Manual</span><span class="folio">54</span></div>
+    <h3 class="sub">FAQ</h3>
+    <div class="findingrow"><div><b>Do I need WooCommerce to use this plugin?</b><p>No. The brand module works on any WordPress site. The commerce bridge simply does nothing until WooCommerce is active.</p></div></div>
+    <div class="findingrow"><div><b>Is the brand-guide endpoint safe to call from anywhere?</b><p>Yes — public and unauthenticated by design. Palette and icon rules aren't secrets; only order events require signing.</p></div></div>
+    <div class="findingrow"><div><b>What happens if Sam Fox revises the CI Guide?</b><p>Update the guide and the matching Worker route. Every connected WordPress site picks up the change within an hour — no plugin update required.</p></div></div>
+    <div class="findingrow"><div><b>Can I use this outside the Banimal™/Fruitful ecosystem?</b><p>The commerce bridge is specific to this Worker. The brand-guide pattern — pull tokens and an icon from one endpoint — is general, and exactly what a future non-WordPress adapter would reuse.</p></div></div>
+  </section>
+
+  <!-- ===================== CHAPTER VI — THE DEBRIEF ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Three — The Product</span><span class="folio">59</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">VI</div>
+      <div class="ck">Chapter Six</div>
+      <h2>The Debrief</h2>
+      <p class="cdek">Ground truth, written to be pasted cold into the next conversation — including its own correction of a palette that turned out to be an approximation instead of a verified value. What's kept here is the corrected version, error and fix both on the record.</p>
+      <div class="csource">verified source · corrected 2026-08-30, supersedes the 2026-08-20 version</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Debrief</span><span class="folio">60</span></div>
+    <div class="callout"><b>Correction, 2026-08-30 — read this before anything else on this page</b>An earlier palette (sage #869986, coral #F1857E, art cream #F2EEEB) was never cross-checked against a real asset — it was an approximation carried forward from an unverified pass. The actual verified palette was extracted directly from the icon page's live swatch stage, and appears in full in Chapter&nbsp;I. Nine colours, confirmed, not nine approximated.</div>
+    <h3 class="sub">Ground truth — for the next agent working this repo</h3>
+    <div class="codeblock">
+CANONICAL BACKEND: Cloudflare Worker, heyns1000/banimal, src/worker/. Hono + D1.<br>
+Real routes: orders.ts (Paystack init/verify), delivery.ts (BobGo v2, working),<br>
+wp-bridge.ts (signed WordPress event intake, HMAC-SHA256), brand-guide.ts —<br>
+the single source every brand-facing surface now pulls the CI Guide from.<br>
+payments.ts is a SEPARATE, orphaned PayPal/Stripe/manual stub — confirm before<br>
+touching, do not assume it's live.<br>
+<br>
+WORDPRESS PLUGIN: full rewrite at wordpress-plugin/banimal-ecosystem-connector/,<br>
+now v5.1.0. Thin signed client only — never calls Paystack/BobGo/GitHub/Drive<br>
+directly. All prior 4.7.x single-file versions superseded, not merged. 4.7.8<br>
+kept verbatim under legacy/ for history only, not loaded.<br>
+<br>
+OPEN, UNANSWERED: does a production WooCommerce store actually exist?<br>
+The bridge module is inert either way, but this decides real scope.
+    </div>
+
+    <h3 class="sub">Routing — what goes where</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>Item</th><th>Verdict</th><th>Destination</th></tr>
+      <tr><td>Thin connector plugin, now 5.1.0</td><td><span class="pill live"><i></i>verified</span></td><td class="mono">wordpress-plugin/</td></tr>
+      <tr><td>wp-bridge.ts + orders table</td><td><span class="pill live"><i></i>verified</span></td><td class="mono">src/worker/</td></tr>
+      <tr><td>brand-guide.ts</td><td><span class="pill live"><i></i>verified</span></td><td class="mono">src/worker/routes/</td></tr>
+      <tr><td>4.7.8 single-file source</td><td><span class="pill live"><i></i>verified</span></td><td class="mono">legacy/</td></tr>
+      <tr><td>banimal-geolocation.php, multi-file zip modules</td><td><span class="pill draft"><i></i>pending</span></td><td>awaiting review</td></tr>
+      <tr><td>Ecosystem-integrations research ("13,413 brands," "$5M pipeline")</td><td><span class="pill draft"><i></i>unverified</span></td><td>hold</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== CHAPTER VII — THE EXCAVATION ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Three — The Product</span><span class="folio">71</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">VII</div>
+      <div class="ck">Chapter Seven</div>
+      <h2>The Excavation</h2>
+      <p class="cdek">Every tracked file in heyns1000/banimal opened, not sampled — 191 files, no trusting a README's description of itself. Four unrelated layers, stacked in one Worker: a babygrow storefront, a 13,700-brand governance vault, a WordPress↔Worker bridge, and a scattering of documents that never should have shipped with the code.</p>
+      <div class="csource">verified source · compiled 2026-08-30, commit d9bd01f</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Excavation</span><span class="folio">72</span></div>
+    <h3 class="sub">Four layers, one Worker</h3>
+    <div class="findingrow"><div><b>1 · The Banimal storefront — real, deployed</b><p>100% organic cotton babygrows and bibs, South Africa. Real checkout via Paystack, real BobGo v2 shipping, and a giving model donating 15.01% of every pre-tax sale.</p></div></div>
+    <div class="findingrow"><div><b>2 · The brand vault (FAA / HSOMNI9000 / Seedwave) — real schema, seeded data</b><p>A separate multi-tenant governance system in the same database: FAA™ (7,344 brands), HSOMNI9000 (6,219 brands), Seedwave (150 brands) — 13,713 seeded rows in total, routed entirely apart from the storefront.</p></div></div>
+    <div class="findingrow"><div><b>3 · The Banimal™ Connector — real, this session's work</b><p>The WordPress↔Worker bridge across PRs #14–#23: the thin signed plugin client, the wp-bridge.ts ingestion endpoint, and the brand-guide.ts endpoint. The only layer with a matching Claude Code skill and maintained reference documents.</p></div></div>
+    <div class="findingrow"><div><b>4 · Concept dashboards &amp; one-off documents — flavour, unrelated</b><p>Twenty-two React pages — BaobabPortal, EcosystemDashboard "GhostTrace™," Omnigrid, NexusNair — read as AI-generated concept art over the same domain names, not wired to real backend logic. Alongside them, loose documents with no connection to the rest, including a now-archived, unrelated stroller-import cost model that was sitting in the servable path.</p></div></div>
+
+    <h3 class="sub">D1 schema, as seeded</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>System</th><th>Brands</th><th>Description</th></tr>
+      <tr><td class="mono">faa</td><td class="num-col mono">7,344</td><td>Global Trade &amp; Governance</td></tr>
+      <tr><td class="mono">hsomni</td><td class="num-col mono">6,219</td><td>Advanced AI &amp; Mesh Network</td></tr>
+      <tr><td class="mono">seedwave</td><td class="num-col mono">150</td><td>Premium Sovereign Brands</td></tr>
+      <tr><td style="font-weight:600"></td><td class="num-col mono" style="font-weight:600">13,713</td><td style="font-weight:600">total — close to, but not the same as, an unreconciled "13,413" figure noted elsewhere</td></tr>
+    </table></div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Excavation</span><span class="folio">80</span></div>
+    <h3 class="sub">Inconsistencies worth knowing before dispatch</h3>
+    <p class="lede" style="font-size:14px">Nothing here was fixed at the time this excavation was written — each one only touched files outside that day's actual task.</p>
+    <div class="findingrow"><span class="pill hi"><i></i>high</span><div><b>Two different giving rates for the same thing</b><p>The real rate computed as 0.1501 (15.01%). A separate checkout-path insert hardcoded 0.02 with the comment "// 2% giving" — a live, uncorrected contradiction.</p></div></div>
+    <div class="findingrow"><span class="pill hi"><i></i>high</span><div><b>Three order-reference formats for one concept</b><p><code>BAN-&lt;nanoid&gt;</code>, <code>TXN_&lt;nanoid&gt;</code>, <code>WC-&lt;wc_order_id&gt;</code> — three ID schemes for what the schema treats as one orders table.</p></div></div>
+    <div class="findingrow"><span class="pill med"><i></i>medium</span><div><b>Session tokens weren't signed</b><p>Issued as <code>btoa(JSON.stringify({...}))</code> — trivially forgeable, not a JWT. The code's own comment: "in production use a signed JWT."</p></div></div>
+    <div class="findingrow"><span class="pill med"><i></i>medium</span><div><b>Coupon usage counters didn't persist</b><p>Tracked on a module-level object in memory — every Worker isolate restart reset every code's usage count to zero.</p></div></div>
+    <div class="findingrow"><span class="pill med"><i></i>medium</span><div><b>Domain split between .co.za and .faa.zone</b><p>SEO surface targets one domain; transactional email templates link to the other. Both are live CORS origins, so neither is obviously wrong — but a customer following an email link lands somewhere different from what Google indexes.</p></div></div>
+    <p class="body-p" style="font-size:13px;color:var(--muted);margin-top:20px">Every figure in this chapter traces to a specific file in the repository — nothing here was recalled from memory. Several of these findings were the actual work items closed out later in this same ecosystem's history — the giving-rate contradiction and the unsigned session tokens both among them.</p>
+  </section>
+
+  <!-- ===================== CHAPTER VIII — ONE SIGNED LINE ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Four — The Telling</span><span class="folio">87</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">VIII</div>
+      <div class="ck">Chapter Eight</div>
+      <h2>One Signed Line</h2>
+      <p class="cdek">A video treatment, drafted but never commissioned — sixty seconds, one cold open, one hard cut to black. Not a feature tour. A demonstration that the thing works exactly once, in exactly one place, filmed the way the product behaves: quiet, exact, unhurried.</p>
+      <div class="csource">verified source · treatment, drafted 2026-08-30</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>One Signed Line</span><span class="folio">88</span></div>
+    <blockquote class="epigraph">One signed line, replacing three plugins that stopped agreeing with each other.<cite>Logline</cite></blockquote>
+    <p class="lede">Every visual in this treatment is a real screen: the actual diagnostics panel, the actual nine-swatch palette toggle, the actual architecture diagram, the actual fox-head mark reversing ink to cream. Nothing here is a mockup standing in for the product — the product is the b-roll.</p>
+
+    <h3 class="sub">Scene by scene — the 0:60 core cut</h3>
+    <div class="findingrow"><div><b>00:00–00:05 · Cold open</b><p><em>VO:</em> "Somewhere between a store and a server, something has to be told the truth." A static frame, a slow push-in on the mark, room tone only.</p></div></div>
+    <div class="findingrow"><div><b>00:05–00:16 · The problem</b><p><em>VO:</em> "Three plugins, three opinions about what the brand looks like — and none of them talk to each other. Every order event, guessed at twice." Real WP admin recording, sped 2×.</p></div></div>
+    <div class="findingrow"><div><b>00:16–00:30 · The turn</b><p><em>VO:</em> "One thin, signed client. WordPress relays. The Worker decides." The one hard cut in the whole film — everything before and after moves; this doesn't.</p></div></div>
+    <div class="findingrow"><div><b>00:30–00:46 · Proof</b><p><em>VO:</em> "HMAC-signed. Nine verified themes. Checked live, not assumed." Real diagnostics resolving to green, then the palette stage cycling its nine real swatches.</p></div></div>
+    <div class="findingrow"><div><b>00:46–00:60 · Close</b><p><em>VO:</em> "Banimal™ Connector." On-screen: banimal.co.za/connector · v5.1.0. Four seconds of silence before the cut to black — the treatment's own note: resist the urge to fill it.</p></div></div>
+
+    <div class="callout"><b>The one risk worth taking</b>The hard cut to black at 00:16 with no music under it. Every instinct in ad editing says never leave four seconds that quiet in a skippable pre-roll — which is exactly why, on the people who don't skip, it's the frame they remember.</div>
+    <p class="body-p" style="font-size:13.5px;color:var(--muted)">Shot entirely on the Sam Fox™ Core CI Guide's own palette and type system — nothing invented for the ad. Coral carries every voiceover beat and cut point; the other eight colours appear only in the palette-toggle shot, where they are the actual subject.</p>
+  </section>
+
+  <!-- ===================== CHAPTER IX — HEART OF HER HAND ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Five — Her Hand, and the One Who Builds</span><span class="folio">95</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">IX</div>
+      <div class="ck">Chapter Nine</div>
+      <h2>Heart of Her Hand</h2>
+      <p class="cdek">A cover note on her work, her name, and what belongs to her — the copyright welcome letter prepared for Samantha Schoeman, and the filing-intake questionnaire that follows it. Not yet sent. Not yet filed. The first step set down in writing.</p>
+      <div class="csource">private record · prepared 20 August 2026, Pretoria</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Heart of Her Hand</span><span class="folio">96</span></div>
+    <blockquote class="epigraph">Samantha — every mark in the Sam Fox™ system carries your hand. The ink outline that never smooths itself into something vector-perfect. The fox head that stands in for the "o" in your own name. The six moves that turn a blank page into a creature with a heart, signed bottom-right, always yours.<cite>Heart of Her Hand — opening letter</cite></blockquote>
+    <p class="lede">Since September 2016, working freelance as SAM FOX ILLUSTRATES out of Pretoria, that hand has drawn its way through The Actuate Group, Lightspot &amp; West Pack, Homemart Toybox, the 2023 Bold Condoms rebrand, and — since 2018 — the whole of Banimal™, Kind Creatures. A BA in Visual Communication from The Open Window, 2010, and everything since has been built on it. It is still her hand. It is still hers.</p>
+
+    <h3 class="sub">What this note says plainly</h3>
+    <p class="body-p">This exists to put in writing what has sometimes only been implied: the copyright in her original illustration work — the Sam Fox™ wordmark, the fox-head icon, the Banimal™ character work, the Fruitful Portal illustrations, and everything drawn under the Sam Fox™ name — is intended to be documented and filed in her own legal name and personal identity. Not in the name of Fruitful Shops (Pty) Ltd.</p>
+    <div class="callout"><b>The arrangement, stated plainly</b>Fruitful Shops is the commercial vehicle — the one that licenses the work, builds a business around it, carries it out into the world. It is not, and is not intended to become, the owner of the work itself. The hand that drew it keeps it. Fruitful Shops is filing on her behalf as the vehicle, not the owner — the paperwork goes out under its hand, the right stays in hers.</div>
+    <p class="body-p" style="font-size:13.5px;color:var(--muted)">That intent needs to be formalized by an IP attorney, filed correctly in each jurisdiction where it matters, before it carries full legal weight on its own. This letter is the first step — an acknowledgment in writing, and everything a filing will need, gathered in one place. It is a welcome note and an information-gathering draft, not itself a legal assignment, contract, or registration.</p>
+
+    <h3 class="sub">The works this covers</h3>
+    <ul class="book-list">
+      <li>Sam Fox™ wordmark &amp; stacked lockup</li>
+      <li>The fox-head icon</li>
+      <li>Banimal™ — Kind Creatures character work, since 2018</li>
+      <li>Fruitful Portal STAFF illustration</li>
+      <li>The wider Sam Fox™ illustration collection, ongoing</li>
+    </ul>
+
+    <h3 class="sub">Filing route — drawn by hand before the paperwork</h3>
+    <p class="body-p">Sam Fox™ is a global brand now — the mark travels further than any one country's copyright office can cover on its own. Filing it in five places instead of one isn't over-caution, it's the plan: each jurisdiction is being pursued deliberately, because the work already lives everywhere the brand does. The letter's own flight-plan map draws the route from Pretoria out to four filing offices in turn.</p>
+    <div class="jurisdictions" style="display:flex;flex-wrap:wrap;gap:10px;margin:18px 0">
+      <span class="pill ref"><i></i>South Africa — CIPC / DALRO</span>
+      <span class="pill ref"><i></i>United States — US Copyright Office</span>
+      <span class="pill ref"><i></i>United Kingdom — UK IPO</span>
+      <span class="pill ref"><i></i>European Union</span>
+      <span class="pill ref"><i></i>WIPO / international</span>
+    </div>
+
+    <h3 class="sub">From the minutes of the preparation session</h3>
+    <p class="body-p" style="font-size:14px">Recorded 20 August 2026, SAST — a private working record, not itself a filing:</p>
+    <ul class="book-list" style="font-size:14px">
+      <li>"Heart of Her Hand" is a live, unsigned preparatory draft — it is not itself a copyright assignment, contract, or filing.</li>
+      <li>Copyright in the Sam Fox™ system is intended to be documented and filed in Samantha Schoeman's own legal name, not in the name of Fruitful Shops (Pty) Ltd.</li>
+      <li>Filing is intentionally being pursued across five jurisdictions because the brand's reach is already global. Nothing has yet been filed anywhere; this remains preparatory.</li>
+    </ul>
+
+    <div class="callout"><b>What this is, and isn't</b>A welcome note and an information-gathering draft — not itself a legal assignment, contract, or registration. Nothing here transfers, changes, or confirms any right until it has been reviewed and formalized with independent legal/IP counsel and properly filed in each jurisdiction that matters.</div>
+    <p class="body-p" style="font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace">Sign-off, pending formal filing: Samantha Schoeman — Sam Fox™, author &amp; illustrator · and, for Fruitful Shops (Pty) Ltd, the commercial vehicle, not copyright holder. Document prepared 20 August 2026 · Pretoria, South Africa · draft for review, not yet filed.</p>
+  </section>
+
+  <!-- ===================== CHAPTER X — SNAKES & LADDERS ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Five — Her Hand, and the One Who Builds</span><span class="folio">103</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">X</div>
+      <div class="ck">Chapter Ten</div>
+      <h2>Snakes &amp; Ladders</h2>
+      <p class="cdek">1987 Edition. Every ladder is a hand she's climbed. Every snake, one she got past anyway. A standalone, playable board — the verified Sam Fox™ and Banimal™ palette, in full colour, just for her.</p>
+      <div class="csource">verified source · interactive design canvas, 2026-08-30</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Snakes &amp; Ladders</span><span class="folio">104</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+      <div>
+        <div class="architecture-diag" style="padding:12px">
+          <svg viewBox="0 0 400 400" role="img" aria-label="A ten by ten snakes and ladders board, sage lines marking eight ladders and dusty rose curves marking eight snakes, at their real board positions.">
+            <rect x="0" y="0" width="400" height="400" fill="var(--paper)" stroke="var(--rule-strong)" stroke-width="2"/>
+            <line x1="40" y1="0" x2="40" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="40" x2="400" y2="40" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="80" y1="0" x2="80" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="80" x2="400" y2="80" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="120" y1="0" x2="120" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="120" x2="400" y2="120" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="160" y1="0" x2="160" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="160" x2="400" y2="160" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="200" y1="0" x2="200" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="200" x2="400" y2="200" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="240" y1="0" x2="240" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="240" x2="400" y2="240" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="280" y1="0" x2="280" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="280" x2="400" y2="280" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="320" y1="0" x2="320" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="320" x2="400" y2="320" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="360" y1="0" x2="360" y2="400" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="0" y1="360" x2="400" y2="360" stroke="var(--rule)" stroke-width="1"/>
+            <line x1="60" y1="380" x2="100" y2="260" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="260" y1="380" x2="260" y2="340" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="300" y1="380" x2="380" y2="260" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="220" y1="340" x2="220" y2="300" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="20" y1="300" x2="60" y2="220" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="300" y1="300" x2="140" y2="60" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="180" y1="260" x2="140" y2="220" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="380" y1="180" x2="260" y2="140" stroke="var(--sage)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <path d="M 180 340 Q 230 360 220 380" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="180" cy="340" r="5" fill="var(--dustyrose)"/>
+            <path d="M 220 220 Q 170 260 180 300" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="220" cy="220" r="5" fill="var(--dustyrose)"/>
+            <path d="M 340 220 Q 390 280 380 340" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="340" cy="220" r="5" fill="var(--dustyrose)"/>
+            <path d="M 60 140 Q 30 240 60 340" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="60" cy="140" r="5" fill="var(--dustyrose)"/>
+            <path d="M 260 100 Q 310 140 300 180" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="260" cy="100" r="5" fill="var(--dustyrose)"/>
+            <path d="M 340 60 Q 290 100 300 140" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="340" cy="60" r="5" fill="var(--dustyrose)"/>
+            <path d="M 220 20 Q 190 60 220 100" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="220" cy="20" r="5" fill="var(--dustyrose)"/>
+            <path d="M 60 20 Q 10 60 20 100" fill="none" stroke="var(--dustyrose)" stroke-width="4" stroke-linecap="round" opacity="0.85"/><circle cx="60" cy="20" r="5" fill="var(--dustyrose)"/>
+            <text x="20" y="383" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">1</text>
+            <text x="380" y="383" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">10</text>
+            <text x="20" y="343" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">20</text>
+            <text x="380" y="303" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">30</text>
+            <text x="20" y="263" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">40</text>
+            <text x="380" y="223" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">50</text>
+            <text x="20" y="183" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">60</text>
+            <text x="380" y="143" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">70</text>
+            <text x="20" y="103" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">80</text>
+            <text x="380" y="63" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">90</text>
+            <text x="20" y="23" font-family="JetBrains Mono, monospace" font-size="8" fill="var(--muted)" text-anchor="middle">100</text>
+          </svg>
+        </div>
+        <p class="figure cap">Sage — the 8 ladders. Dusty rose — the 8 snakes. Redrawn to the exact board logic; the game's real fox, pear, and Banimal glyphs sit on 18 of its squares in the original.</p>
+      </div>
+      <div>
+        <h3 class="sub" style="margin-top:0">Ladders</h3>
+        <p class="body-p" style="font-family:'JetBrains Mono',monospace;font-size:13px">2→38 · 7→14 · 8→31 · 15→26<br>21→42 · 28→84 · 36→44 · 51→67</p>
+        <h3 class="sub">Snakes</h3>
+        <p class="body-p" style="font-family:'JetBrains Mono',monospace;font-size:13px">16→6 · 46→25 · 49→11 · 62→19<br>74→53 · 89→68 · 95→75 · 99→80</p>
+        <h3 class="sub">On reaching 100</h3>
+        <blockquote class="epigraph" style="margin-top:8px">Home. Every mark on this board is still your hand.<cite>the board's own closing line</cite></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHAPTER XI — THE BUILDER ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Part Five — Her Hand, and the One Who Builds</span><span class="folio">109</span></div>
+    <div class="chapter-open">
+      <i class="foxmark foxmark-sm" data-foxmark></i>
+      <div class="cn">XI</div>
+      <div class="ck">Chapter Eleven</div>
+      <h2>The Builder</h2>
+      <p class="cdek">"I build the things — brands, stores, the systems that hold them together — and I don't pretend to be a developer to make that count." Heyns Schoeman, Pretoria, South Africa. The hand behind every system in Parts Two through Four of this book.</p>
+      <div class="csource">verified source · builder's own profile, 2026-08-30</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>The Builder</span><span class="folio">110</span></div>
+    <h3 class="sub">What he actually builds</h3>
+    <p class="lede">Not a portfolio of repos. A few real things, done properly.</p>
+    <div class="findingrow"><div><b>Banimal™ — live</b><p>100% organic cotton babygrows and bibs, designed in South Africa, shipped worldwide. Real Paystack checkout, real BobGo shipping, real orders landing in the bank. 15.01% of every pre-tax sale funds a babygrow for a child in need — not a marketing line, a line in the code.</p></div></div>
+    <div class="findingrow"><div><b>Banimal™ Connector — shipped</b><p>A WordPress plugin most stores would've built as three disconnected tools. One signed client instead — WooCommerce relays, a Cloudflare Worker decides. No brand drift, no guessed order state.</p></div></div>
+    <div class="findingrow"><div><b>Sam Fox™ CI Guide — the source of truth</b><p>Every brand mark across this ecosystem — the fox, the Banimal wordmark, the nine verified colours — traces back to one guide. Nothing gets hand-redrawn. If it isn't in the guide, it isn't the brand.</p></div></div>
+    <div class="findingrow"><div><b>Fruitful™ — the ecosystem</b><p>The umbrella the rest sits under — commerce, brand governance, and the sector work that doesn't fit neatly into "developer projects" because it was never meant to be one.</p></div></div>
+
+    <h3 class="sub">The real numbers</h3>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>Figure</th><th>What it is</th></tr>
+      <tr><td class="mono">15.01%</td><td>of every Banimal sale, funds a child's babygrow</td></tr>
+      <tr><td class="mono">9</td><td>verified brand colours — no more, no less</td></tr>
+      <tr><td class="mono">1</td><td>source of truth for every brand mark he ships</td></tr>
+      <tr><td class="mono">2026</td><td>building, still, from Pretoria</td></tr>
+    </table></div>
+    <p class="body-p" style="font-size:12.5px;color:var(--muted)">Everything above is checked against real code, not generated for a badge.</p>
+
+    <h3 class="sub">Ubuntu, not up-time</h3>
+    <blockquote class="epigraph">"It always seems impossible until it is done."<cite>Nelson Mandela</cite></blockquote>
+    <p class="body-p">The baobab doesn't grow fast. It grows deep first — roots before branches — and it feeds whatever's around it long after it's stopped being young. That's closer to how he wants to build than any dashboard of commits ever will be. Not chasing a streak. Building things people can actually stand on.</p>
+    <p class="body-p" style="font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace">Heyns Schoeman · Pretoria, South Africa · Fruitful Shops (Pty) Ltd · github.com/heyns1000</p>
+  </section>
+
+  <!-- ===================== BACK MATTER: INDEX OF VERIFIED VALUES ===================== -->
+  <section class="page backmatter">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Back Matter</span><span class="folio">115</span></div>
+    <div class="fm-kicker">Reference</div>
+    <h2>Index of Verified Values</h2>
+    <p class="lede" style="margin-bottom:20px">Every hex value used across all eleven chapters, in one place — traced to Chapter I, section 03, and confirmed nowhere else to differ.</p>
+    <div class="tablewrap"><table class="book-table">
+      <tr><th>Colour</th><th>Hex</th><th>Role across the ecosystem</th></tr>
+      <tr><td><span class="index-swatch" style="background:#231F20"></span>ink</td><td>#231F20</td><td>Primary text, ink-line construction, icon reversal trigger</td></tr>
+      <tr><td><span class="index-swatch" style="background:#FBF4E4"></span>cream</td><td>#FBF4E4</td><td>Default ground, 55% of the working ratio on any page</td></tr>
+      <tr><td><span class="index-swatch" style="background:#F0EEDA"></span>art cream</td><td>#F0EEDA</td><td>Secondary panel fill</td></tr>
+      <tr><td><span class="index-swatch" style="background:#577D60"></span>sage</td><td>#577D60</td><td>"Live" status across the Seedwave Atlas and every diagnostics screen</td></tr>
+      <tr><td><span class="index-swatch" style="background:#A7DACB"></span>mint</td><td>#A7DACB</td><td>Palette-toggle only</td></tr>
+      <tr><td><span class="index-swatch" style="background:#F16B6E"></span>coral</td><td>#F16B6E</td><td>Primary accent — every voiceover cut point in Chapter VIII</td></tr>
+      <tr><td><span class="index-swatch" style="background:#B95F56"></span>dusty rose</td><td>#B95F56</td><td>Secondary accent, epigraphs, corrections</td></tr>
+      <tr><td><span class="index-swatch" style="background:#1E9F97"></span>teal</td><td>#1E9F97</td><td>"Planned" status</td></tr>
+      <tr><td><span class="index-swatch" style="background:#E63946"></span>red</td><td>#E63946</td><td>Reserved — alert states only, never decorative</td></tr>
+    </table></div>
+    <div class="callout"><b>One correction on record</b>An earlier, unverified pass once carried sage as #869986 and coral as #F1857E. Both were wrong — see Chapter VI. The values in this index are the ones confirmed against the live swatch stage, and are the only ones this book uses.</div>
+  </section>
+
+  <!-- ===================== COLOPHON (BACK) ===================== -->
+  <section class="page">
+    <div class="runninghead"><span><i class="foxmark foxmark-tiny" data-foxmark></i>Back Matter</span><span class="folio">118</span></div>
+    <div class="fm-kicker">Colophon</div>
+    <h2>Notes on this edition</h2>
+    <p class="body-p" style="max-width:60ch">Eleven chapters, drawn from eleven source documents, none of them altered in the retelling. Where a source had already corrected itself, that correction stands. Where a figure remains unreconciled — the brand-vault seed count against an older, unrelated "13,413" figure; whether a production WooCommerce store actually exists — this edition names the gap rather than closing it on its own authority.</p>
+    <p class="body-p" style="max-width:60ch">The fox-head mark running through every page of this edition — the running heads, the chapter openers, the half-title, this closing stamp — is the verified asset itself, reproduced unaltered in its two approved renders (ink, and cream reversed on ink), exactly as Chapter II applies it. Nothing here is redrawn; per the compliance rule recorded in Chapter I, an agent's hand is a style approximation, never hers, so this edition never attempts a hand it doesn't have. Where it needed a device with no verified source to reuse — the Seedwave Atlas hills, the Connector's line diagrams, the Snakes &amp; Ladders board — it drew plain geometry instead: a line, a dot, a swatch, a rule.</p>
+    <div class="book-footer">
+      <div class="fox-stampbox"><i class="foxmark foxmark-stamp" data-foxmark></i></div>
+      <div class="fline"></div>
+      <div class="fbrand">Sam Fox™ &amp; Banimal™ Connector — One of One</div>
+      <div class="fbrand" style="margin-top:6px">© 2026 Fruitful Shops (Pty) Ltd · Artwork © Sam Fox™</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var ICON_INK = "data:image/png;base64,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GAPvPayzv9/bCm9bP7T+oVPuhRn+RMQAgChPp8wKoFwqvUQBESCK4vXW2l0KQFWR1RM4LyICay186v/SiHmnGj3RXltbAYB6ve4ajcZOOMCIiM4RAwCinNXrdXf62vvitYs3JDPYo6q9oPgla8xzzvPYYQX0aaZQOHn8+PHb77rrrvsBINvW55ElJhIREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREdEg/P/tpFnKOTCFOAAAAABJRU5ErkJggg==";
+  var ICON_CREAM = "data:image/png;base64,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";
+  function pageIsDark() {
+    var explicit = document.documentElement.getAttribute('data-theme');
+    if (explicit === 'dark') return true;
+    if (explicit === 'light') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  function applyFoxTheme() {
+    var dark = pageIsDark();
+    var url = 'url("' + (dark ? ICON_CREAM : ICON_INK) + '")';
+    document.querySelectorAll('[data-foxmark]').forEach(function (el) {
+      el.style.backgroundImage = url;
+    });
+  }
+  applyFoxTheme();
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyFoxTheme);
+  }
+})();
+</script>
+
+
+</body></html>

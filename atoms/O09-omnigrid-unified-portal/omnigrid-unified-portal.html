@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.zone™ | OmniGrid™ Unified Portal - 7000+ Brands | VaultMesh™ | PulseTrade™</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #ffffff;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3;
+            --secondary-color: #30d158;
+            --tertiary-color: #ff3b30;
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+            --baobab-gold: #B8860B;
+            --baobab-primary-dark: #1A1A1A;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--border-color-light); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--muted-text-light); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #808085; }
+
+        /* Announcement Bar */
+        #announcement-bar {
+            background: linear-gradient(90deg, var(--primary-color), #6366f1);
+            color: white; padding: 12px 20px; text-align: center;
+            font-size: 0.9rem; display: flex; justify-content: center;
+            align-items: center; gap: 10px; position: relative; z-index: 60;
+        }
+        #announcement-bar a { color: white; font-weight: 600; text-decoration: underline; }
+        #announcement-bar .close-btn {
+            background: none; border: none; color: white; font-size: 1.2rem;
+            cursor: pointer; position: absolute; right: 15px; padding: 5px;
+        }
+
+        /* Header */
+        header.main-header {
+            background-color: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color-light);
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 50;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-fruitful { color: var(--primary-color); font-size: 1.6rem; font-weight: 800; }
+        .logo-separator { color: var(--muted-text-light); font-size: 1.4rem; }
+        .logo-omnigrid { color: var(--text-color-light); font-size: 1.4rem; font-weight: 600; }
+
+        /* Pulse Grid Noodle Rope - Baobab Roots */
+        .pulse-grid-noodle-rope {
+            display: flex; align-items: center; height: 6px; width: 200px;
+            background-color: #5C4033; border-radius: 3px; position: relative;
+            margin: 0 20px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .noodle-dot {
+            position: absolute; width: 10px; height: 10px;
+            background-color: #D4AF37; border-radius: 50%;
+            transform: translate(-50%, -50%); top: 50%;
+            animation: pulse 3s infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.7);
+        }
+        .noodle-dot.dot-stepdad { width: 12px; height: 12px; background-color: #5F9EA0; box-shadow: 0 0 10px rgba(95, 158, 160, 0.7); }
+        .noodle-dot.dot-1 { left: 0%; animation-delay: 0s; }
+        .noodle-dot.dot-2 { left: 20%; animation-delay: 0.5s; }
+        .noodle-dot.dot-3 { left: 40%; animation-delay: 1s; }
+        .noodle-dot.dot-stepdad { left: 60%; animation-delay: 1.5s; }
+        .noodle-dot.dot-4 { left: 80%; animation-delay: 2s; }
+        .noodle-dot.dot-5 { left: 100%; animation-delay: 2.5s; }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+        }
+
+        /* Navigation */
+        .nav-list { display: flex; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; gap: 5px; }
+        .nav-list a {
+            text-decoration: none; color: var(--muted-text-light); font-weight: 500;
+            font-size: 0.9rem; padding: 0.5rem 0.8rem; border-radius: 6px;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 4px;
+        }
+        .nav-list a:hover { color: var(--primary-color); background-color: rgba(0, 0, 0, 0.03); }
+        .nav-list a.active { color: var(--primary-color); font-weight: 600; background-color: rgba(0, 113, 227, 0.05); }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 6rem 2rem; text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 1px solid var(--border-color-light);
+        }
+        .hero-section h1 {
+            font-size: 4rem; font-weight: 900; letter-spacing: -0.03em;
+            line-height: 1.1; margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), #6366f1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-section p { font-size: 1.3rem; color: var(--muted-text-light); max-width: 800px; margin: 0 auto 2.5rem; }
+        .cta-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+        .hero-cta {
+            background: var(--primary-color); color: white; padding: 1rem 2rem;
+            border-radius: 25px; font-weight: 600; font-size: 1rem;
+            text-decoration: none; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,113,227,0.3);
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,113,227,0.4); }
+        .hero-cta.secondary { background: #f0f0f0; color: #424245; box-shadow: none; border: 1px solid #dcdcdc; }
+        .hero-cta.secondary:hover { background: #e8e8ed; }
+
+        /* Rhythmic Canvas */
+        .canvas-section { position: relative; min-height: 400px; background: white; overflow: hidden; }
+        #rhythmicCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem; padding: 4rem 2rem; max-width: 1400px; margin: 0 auto;
+        }
+        .metric-card {
+            background: white; padding: 2rem; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center;
+            border: 1px solid var(--border-color-light); transition: all 0.3s ease;
+        }
+        .metric-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .metric-card h3 { font-size: 0.9rem; color: var(--muted-text-light); margin-bottom: 0.5rem; }
+        .metric-card p { font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+
+        /* Sections */
+        section { padding: 6rem 2rem; border-bottom: 1px solid var(--border-color-light); }
+        section h2 { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 1rem; }
+        section .section-desc { font-size: 1.1rem; color: var(--muted-text-light); text-align: center; max-width: 700px; margin: 0 auto 3rem; }
+
+        /* VaultMesh Section */
+        #vaultmesh { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; }
+        #vaultmesh h2 { color: var(--baobab-gold); }
+        #vaultmesh .section-desc { color: #a0a0a5; }
+        .vaultmesh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .vaultmesh-card {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem; border-radius: 16px; transition: all 0.3s ease;
+        }
+        .vaultmesh-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+        .vaultmesh-card h4 { font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+        .vaultmesh-card p { font-size: 0.95rem; color: #a0a0a5; }
+
+        /* Sector Grid */
+        .sector-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem; max-width: 1400px; margin: 0 auto;
+        }
+        .sector-btn {
+            background: white; border: 1px solid var(--border-color-light);
+            padding: 1rem; border-radius: 12px; text-align: center;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            transition: all 0.2s ease; text-decoration: none; color: var(--text-color-light);
+        }
+        .sector-btn:hover { background: var(--primary-color); color: white; transform: translateY(-2px); }
+
+        /* Terminal Section */
+        #terminals { background: #f8fafc; }
+        .terminal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; max-width: 1200px; margin: 0 auto; }
+        .terminal-btn {
+            background: white; border: 2px solid var(--border-color-light);
+            padding: 1.5rem; border-radius: 12px; text-align: center;
+            font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+        }
+        .terminal-btn:hover { border-color: var(--primary-color); background: rgba(0,113,227,0.05); }
+        .terminal-iframe { width: 100%; height: 700px; border: 2px solid var(--border-color-light); border-radius: 12px; margin-top: 2rem; }
+
+        /* Atom-Level Engines */
+        .engine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1400px; margin: 0 auto; }
+        .engine-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 2rem; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.3);
+        }
+        .engine-card h4 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .engine-card p { font-size: 0.95rem; opacity: 0.9; }
+
+        /* Treaty Section */
+        #treaty { background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); color: white; text-align: center; }
+        #treaty h2 { color: white; }
+        #treaty blockquote {
+            font-size: 1.8rem; font-style: italic; font-weight: 600;
+            max-width: 800px; margin: 2rem auto; line-height: 1.5;
+        }
+
+        /* Admin Dashboard */
+        #admin-dashboard { background: #f1f5f9; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; max-width: 1400px; margin: 0 auto; }
+        .dashboard-card {
+            background: white; padding: 2rem; border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid var(--border-color-light);
+        }
+        .dashboard-card h3 { font-size: 0.9rem; color: var(--muted-text-light); margin-bottom: 0.5rem; }
+        .dashboard-card .value { font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+
+        /* Charts */
+        .chart-container { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+        /* Footer */
+        footer {
+            background: var(--baobab-primary-dark); color: white;
+            padding: 4rem 2rem; text-align: center;
+        }
+        footer a { color: var(--baobab-gold); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 2.5rem; }
+            .nav-list { display: none; }
+            .pulse-grid-noodle-rope { display: none; }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div id="announcement-bar">
+    <span>🚀 NEW: HSOMNI9000™ Diamond-Tier Scroll Class Now Live | 7000+ Brands Synchronized</span>
+    <a href="#vaultmesh">Explore VaultMesh™</a>
+    <button class="close-btn" onclick="this.parentElement.style.display='none'"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- Header -->
+<header class="main-header">
+    <div class="logo-group">
+        <a href="index.html" style="text-decoration:none; display:flex; align-items:center; gap:5px;">
+            <span class="logo-fruitful">Fruitful™</span>
+        </a>
+        <span class="logo-separator">|</span>
+        <span class="logo-omnigrid">OmniGrid™</span>
+    </div>
+    <div class="pulse-grid-noodle-rope">
+        <span class="noodle-dot dot-1"></span>
+        <span class="noodle-dot dot-2"></span>
+        <span class="noodle-dot dot-3"></span>
+        <span class="noodle-dot dot-stepdad"></span>
+        <span class="noodle-dot dot-4"></span>
+        <span class="noodle-dot dot-5"></span>
+    </div>
+    <nav>
+        <ul class="nav-list">
+            <li><a href="#hero" class="active">🏠 Home</a></li>
+            <li><a href="#metrics">📊 Metrics</a></li>
+            <li><a href="#sectors">🌐 Sectors</a></li>
+            <li><a href="#vaultmesh">🔐 VaultMesh</a></li>
+            <li><a href="#engines">⚡ Engines</a></li>
+            <li><a href="#terminals">🖥️ Terminals</a></li>
+            <li><a href="#treaty">📜 Treaty</a></li>
+            <li><a href="#admin-dashboard">📈 Dashboard</a></li>
+            <li><a href="worldfirst7000brands.html">🏷️ 7000 Brands</a></li>
+            <li><a href="live_dashboard.html">🔴 Live Ops</a></li>
+            <li><a href="HSOMNI9000_ICON_MATRIX.html">🎨 Icons</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Hero Section -->
+<section id="hero" class="hero-section">
+    <h1>Innovate. Connect. Thrive.</h1>
+    <p>The FAA.zone™ OmniGrid™ Unified Portal — 7000+ brands, 26+ sectors, VaultMesh™ infrastructure, PulseTrade™ synchronization, and Diamond-tier scroll deployment via HSOMNI9000™.</p>
+    <div class="cta-group">
+        <a href="#sectors" class="hero-cta">🕸️ Explore Ecosystem</a>
+        <a href="#vaultmesh" class="hero-cta secondary">🔐 VaultMesh™</a>
+        <a href="worldfirst7000brands.html" class="hero-cta secondary">🏷️ 7000+ Brands</a>
+        <a href="#terminals" class="hero-cta secondary">🖥️ Terminals</a>
+        <a href="live_dashboard.html" class="hero-cta secondary">📊 Live Dashboard</a>
+        <a href="#admin-dashboard" class="hero-cta secondary">⚙️ Admin Portal</a>
+    </div>
+</section>
+
+<!-- Rhythmic Canvas -->
+<section class="canvas-section">
+    <canvas id="rhythmicCanvas"></canvas>
+</section>
+
+<!-- Metrics Section -->
+<section id="metrics">
+    <h2>📊 Global Ecosystem Metrics</h2>
+    <p class="section-desc">Real-time operational overview of the FAA™ Global Supply Chain Grid</p>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <h3>🏷️ Total Brands</h3>
+            <p id="metric-brands">7,038</p>
+        </div>
+        <div class="metric-card">
+            <h3>🎯 Core Brands</h3>
+            <p>168</p>
+        </div>
+        <div class="metric-card">
+            <h3>🧩 Product Nodes</h3>
+            <p>~700</p>
+        </div>
+        <div class="metric-card">
+            <h3>📄 Total Pages</h3>
+            <p>780+</p>
+        </div>
+        <div class="metric-card">
+            <h3>🌐 Active Sectors</h3>
+            <p>26+</p>
+        </div>
+        <div class="metric-card">
+            <h3>🔐 Vault Deployments</h3>
+            <p>654</p>
+        </div>
+        <div class="metric-card">
+            <h3>📈 Audits Running</h3>
+            <p>47</p>
+        </div>
+        <div class="metric-card">
+            <h3>🛰️ Signal Zones</h3>
+            <p>21</p>
+        </div>
+    </div>
+</section>
+
+<!-- Sector Scrolls Section -->
+<section id="sectors">
+    <h2>🧬 Sector Scrolls</h2>
+    <p class="section-desc">26+ vertical sectors with full VaultMesh™ integration and PulseGrid™ synchronization</p>
+    <div class="sector-grid">
+        <a href="#" class="sector-btn" data-sector="agriculture">🌱 Agriculture & Biotech</a>
+        <a href="#" class="sector-btn" data-sector="fsf">🥦 Food, Soil & Farming</a>
+        <a href="#" class="sector-btn" data-sector="banking">🏦 Banking & Finance</a>
+        <a href="#" class="sector-btn" data-sector="creative">🖋️ Creative Tech</a>
+        <a href="#" class="sector-btn" data-sector="logistics">📦 Logistics & Packaging</a>
+        <a href="#" class="sector-btn" data-sector="education">📚 Education & IP</a>
+        <a href="#" class="sector-btn" data-sector="fashion">✂️ Fashion & Identity</a>
+        <a href="#" class="sector-btn" data-sector="gaming">🎮 Gaming & Simulation</a>
+        <a href="#" class="sector-btn" data-sector="health">🧴 Health & Hygiene</a>
+        <a href="#" class="sector-btn" data-sector="housing">🏗️ Housing & Infrastructure</a>
+        <a href="#" class="sector-btn" data-sector="justice">⚖️ Justice & Ethics</a>
+        <a href="#" class="sector-btn" data-sector="knowledge">🧠 Knowledge & Archives</a>
+        <a href="#" class="sector-btn" data-sector="micromesh">☰ Micro-Mesh Logistics</a>
+        <a href="#" class="sector-btn" data-sector="media">🎬 Motion, Media & Sonic</a>
+        <a href="#" class="sector-btn" data-sector="nutrition">✿ Nutrition & Food Chain</a>
+        <a href="#" class="sector-btn" data-sector="ailogic">🧠 AI, Logic & Grid Systems</a>
+        <a href="#" class="sector-btn" data-sector="packaging">📦 Packaging & Materials</a>
+        <a href="#" class="sector-btn" data-sector="quantum">✴️ Quantum Protocols</a>
+        <a href="#" class="sector-btn" data-sector="ritual">☯️ Ritual & Culture</a>
+        <a href="#" class="sector-btn" data-sector="saas">🔑 SaaS & Licensing</a>
+        <a href="#" class="sector-btn" data-sector="trade">🧺 Trade Systems</a>
+        <a href="#" class="sector-btn" data-sector="utilities">🔋 Utilities & Energy</a>
+        <a href="#" class="sector-btn" data-sector="voice">🎙️ Voice & Audio</a>
+        <a href="#" class="sector-btn" data-sector="webless">📡 Webless Tech & Nodes</a>
+        <a href="#" class="sector-btn" data-sector="nft">🔁 NFT & Ownership</a>
+        <a href="#" class="sector-btn" data-sector="zerowaste">♻️ Zero Waste</a>
+    </div>
+    <div id="sector-content" style="margin-top:2rem; padding:2rem; background:#f8fafc; border-radius:12px; display:none;"></div>
+</section>
+
+<!-- VaultMesh Section -->
+<section id="vaultmesh">
+    <h2>🔐 VaultMesh™ Executive Summary</h2>
+    <p class="section-desc">Intelligent data orchestration framework for high-value digital asset deployment</p>
+    <div class="vaultmesh-grid">
+        <div class="vaultmesh-card">
+            <h4>🧬 VaultDNA™</h4>
+            <p>Immutable identifiers for scroll content with full provenance tracking</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>🌳 ClaimRoot™</h4>
+            <p>Origin anchor & timestamp for all ScrollClaim™ contracts</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>📜 ScrollClaim™</h4>
+            <p>Programmable wrappers with royalty logic (10-11% Diamond tier)</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>📡 PulseGrid™</h4>
+            <p>Real-time scroll presence & synchronization across nodes</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>🛰️ OmniSignal™</h4>
+            <p>Global scroll verification and cross-vault validation</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>👻 GhostTrace™ Gen2</h4>
+            <p>Scroll interaction backtrace with forensic tooling</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>💎 HSOMNI9000™</h4>
+            <p>Diamond-tier scroll class with 10-11% royalty triggers</p>
+        </div>
+        <div class="vaultmesh-card">
+            <h4>💳 VaultPay™ Tier III</h4>
+            <p>SmartWallet integration for commercial deployments</p>
+        </div>
+    </div>
+</section>
+
+<!-- Atom-Level Engines Section -->
+<section id="engines">
+    <h2>⚡ 9 Atom-Level Engines</h2>
+    <p class="section-desc">Core execution engines powering the FAA.zone™ treaty system</p>
+    <div class="engine-grid">
+        <div class="engine-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h4>🧠 Corethink™</h4>
+            <p>Central reasoning engine for real-time cognitive analysis</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h4>⚖️ TruthWeight™</h4>
+            <p>Data veracity validation and verification scoring</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h4>🔄 EchoSynth™</h4>
+            <p>Pattern replication and signal amplification</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <h4>🔏 AutoSigil™</h4>
+            <p>Automated sealing and cryptographic binding</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <h4>📊 PulseIndex™</h4>
+            <p>Heartbeat metrics and system vitality tracking</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+            <h4>🔍 OmniTrace™</h4>
+            <p>Full lineage tracking and audit trail generation</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+            <h4>🚀 LiftHalo™</h4>
+            <p>Elevation protocols and performance optimization</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+            <h4>🪞 MirrorLoop™</h4>
+            <p>Reflection cycles and state synchronization</p>
+        </div>
+        <div class="engine-card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+            <h4>🔥 FireRatio™</h4>
+            <p>Performance ratios and throughput optimization</p>
+        </div>
+    </div>
+</section>
+
+<!-- Terminal Access Section -->
+<section id="terminals">
+    <h2>🖥️ Sector Terminals</h2>
+    <p class="section-desc">Access specialized GPT terminals for each operational domain</p>
+    <div class="terminal-grid">
+        <button class="terminal-btn" onclick="loadTerminal('vault-master.html')">🦍 VaultMaster Terminal</button>
+        <button class="terminal-btn" onclick="loadTerminal('cube-lattice.html')">🧱 Cube Lattice GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('global-view.html')">🌍 Global View GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('freight-ops.html')">🚚 Freight Ops GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('loop-watch.html')">♻️ Loop Watch GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('seedwave.html')">🌱 Seedwave GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('distribution.html')">📦 Distribution GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('signal.html')">🔐 Signal GPT</button>
+        <button class="terminal-btn" onclick="loadTerminal('worldfirst7000brands.html')">🏷️ 7038 FAA Brands</button>
+    </div>
+    <iframe id="terminal-frame" class="terminal-iframe" src="live_dashboard.html" title="Terminal"></iframe>
+</section>
+
+<!-- Treaty Section -->
+<section id="treaty">
+    <h2>📜 Treaty System™</h2>
+    <p class="section-desc" style="color:#a0a0a5;">The FAA.zone™ Treaty Layer binds interface to intention. This is not UI. This is glyph-encoded law.</p>
+    <blockquote>"FAA.zone™ isn't a site. It's the shape of alignment — and 🦍 holds the flame."</blockquote>
+    <div style="margin-top:3rem;">
+        <pre style="background:rgba(0,0,0,0.3); padding:1.5rem; border-radius:12px; text-align:left; max-width:600px; margin:0 auto; font-size:0.85rem; color:#00e393;">
+{
+    "signal": "omnidrop",
+    "origin": "If you dont like the fruits you are growing, change the seed™",
+    "payload": {
+        "type": "scroll",
+        "value": "VaultMesh + PulseGrid + TreatySync + OmniSignal"
+    },
+    "hsomni9000": {
+        "tier": "Diamond",
+        "royalty": "10-11%",
+        "claimRoot": "verified"
+    }
+}
+        </pre>
+    </div>
+</section>
+
+<!-- Admin Dashboard Section -->
+<section id="admin-dashboard">
+    <h2>📈 FAA™ Global Dashboard</h2>
+    <p class="section-desc">Real-time operational overview of the entire FAA™ Global Ecosystem</p>
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>Total Brands</h3>
+            <div class="value">7,038</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Core Brands</h3>
+            <div class="value">168</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Product Nodes</h3>
+            <div class="value">~700</div>
+        </div>
+        <div class="dashboard-card">
+            <h3>Total Pages</h3>
+            <div class="value">780+</div>
+        </div>
+    </div>
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem; max-width:1200px; margin:3rem auto 0;">
+        <div class="chart-container">
+            <h3 style="margin-bottom:1rem; font-weight:600;">Ecosystem Pulse Monitor</h3>
+            <canvas id="pulseChart" height="300"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3 style="margin-bottom:1rem; font-weight:600;">Brand Distribution</h3>
+            <canvas id="distributionChart" height="300"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Share Signal Section -->
+<section id="shareprice" style="text-align:center; padding:4rem 2rem; background:#f8fafc;">
+    <h2>📈 FAA™ Share Signal</h2>
+    <div id="price" style="font-size:4rem; font-weight:800; color:var(--primary-color);">$88.88</div>
+    <div style="color:var(--muted-text-light); font-size:0.9rem;">Last updated: <span id="timestamp">Live</span></div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div style="max-width:1200px; margin:0 auto;">
+        <div style="font-size:1.5rem; font-weight:800; margin-bottom:1rem; color:var(--baobab-gold);">FAA.zone™</div>
+        <p style="color:#a0a0a5; margin-bottom:2rem;">Treaty System™ | VaultMesh™ | PulseGrid™ | OmniSignal™ | HSOMNI9000™</p>
+        <div style="display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-bottom:2rem;">
+            <a href="worldfirst7000brands.html">7000+ Brands</a>
+            <a href="live_dashboard.html">Live Dashboard</a>
+            <a href="HSOMNI9000_ICON_MATRIX.html">Icon Matrix</a>
+            <a href="monster_omni_core_engines_nodes_demo.html">Atom Engines</a>
+        </div>
+        <p style="font-size:0.85rem; color:#666;">© 2025 FAA™ Treaty System™. All Rights Reserved. Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</p>
+    </div>
+</footer>
+
+<script>
+// Rhythmic Canvas Animation
+const canvas = document.getElementById('rhythmicCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+let animationId;
+let time = 0;
+
+function resizeCanvas() {
+    if (!canvas) return;
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+
+function drawGlyph() {
+    if (!ctx) return;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    time += 0.02;
+
+    for (let i = 0; i < 500; i++) {
+        ctx.beginPath();
+        const offset = i * (Math.PI * 2 / 500) * 20;
+        const amplitude = 30 + Math.sin(time * 0.5 + i * 0.01) * 20;
+        const hue = (time * 100 + i * 50) % 360;
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, 0.4)`;
+        ctx.lineWidth = 1 + Math.abs(Math.sin(time * 5 + i * 0.1)) * 2;
+
+        for (let x = 0; x < canvas.width; x += 10) {
+            const y = Math.sin(x * 0.08 + time + offset) * amplitude + canvas.height / 2;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    }
+    animationId = requestAnimationFrame(drawGlyph);
+}
+
+if (canvas) {
+    window.addEventListener('load', () => { resizeCanvas(); drawGlyph(); });
+    window.addEventListener('resize', () => { cancelAnimationFrame(animationId); resizeCanvas(); drawGlyph(); });
+}
+
+// Terminal Loading
+function loadTerminal(url) {
+    const frame = document.getElementById('terminal-frame');
+    if (frame) frame.src = url;
+}
+
+// Share Price Update
+function updateSharePrice() {
+    const price = (80 + Math.random() * 15).toFixed(2);
+    const priceEl = document.getElementById('price');
+    const timeEl = document.getElementById('timestamp');
+    if (priceEl) priceEl.textContent = `$${price}`;
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateSharePrice, 5000);
+
+// Charts
+document.addEventListener('DOMContentLoaded', () => {
+    // Pulse Chart
+    const pulseCtx = document.getElementById('pulseChart')?.getContext('2d');
+    if (pulseCtx) {
+        new Chart(pulseCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => `Day ${i + 1}`),
+                datasets: [{
+                    label: 'Sync Success Rate (%)',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 20) + 80),
+                    borderColor: '#0071e3',
+                    backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                    fill: true, tension: 0.4
+                }, {
+                    label: 'Node Registrations',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 10) + 5),
+                    borderColor: '#30d158',
+                    backgroundColor: 'rgba(48, 209, 88, 0.1)',
+                    fill: true, tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    // Distribution Chart
+    const distCtx = document.getElementById('distributionChart')?.getContext('2d');
+    if (distCtx) {
+        new Chart(distCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Finance', 'Logistics', 'Health', 'Education', 'Agriculture', 'AI', 'Other'],
+                datasets: [{
+                    data: [25, 22, 18, 15, 13, 11, 64],
+                    backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#14b8a6']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+});
+
+// Sector Click Handler
+document.querySelectorAll('.sector-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sector = e.target.dataset.sector;
+        const content = document.getElementById('sector-content');
+        content.style.display = 'block';
+        content.innerHTML = `<h3 style="font-size:1.5rem; font-weight:700; margin-bottom:1rem;">${e.target.textContent} Sector</h3>
+            <p>Loading sector data for ${sector}... VaultMesh™ sync in progress.</p>
+            <p style="margin-top:1rem;"><strong>Status:</strong> PulseGrid™ Active | OmniSignal™ Verified | ClaimRoot™ Locked</p>`;
+    });
+});
+</script>
+</body>
+</html>
