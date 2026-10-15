@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FSF | CodeNest™ Dashboard - Food, Soil & Farming (AI Enhanced)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Define FSF Color Palette and Base Styles */
+        :root {
+            /* Dark Mode Defaults */
+            --primary-color: #22c55e; /* FSF Green */
+            --secondary-color: #84cc16; /* Lime Green */
+            --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+            --text-color-dark: #1d1d1f; /* Dark text on light backgrounds */
+            --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+            --card-bg-dark: #2a2a2e; /* Darker grey for dark cards */
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
+            --accent-gold: #ca8a04; /* Earthy Gold/Ochre */
+            --status-active: #22c55e; /* Green for active */
+            --status-pending: #f59e0b; /* Amber for pending */
+            --status-draft: #6e6e73; /* Gray for draft */
+            --status-error: #ef4444; /* Red for error */
+
+            /* Light Mode Variables */
+            --light-primary-color: #16a34a;
+            --light-secondary-color: #65a30d;
+            --light-text-color-light: #1d1d1f;
+            --light-text-color-dark: #1d1d1f;
+            --light-bg-color-dark: #f7f7f7; /* Slightly off-white */
+            --light-card-bg-dark: #ffffff;
+            --light-border-color-dark: #e8e8ed;
+        }
+
+        /* Base Body Styling - Defaults to dark mode */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+            min-height: 100vh;
+            display: flex;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Light Mode specific overrides */
+        body.light-mode {
+            background-color: var(--light-bg-color-dark);
+            color: var(--light-text-color-light);
+        }
+        body.light-mode .sidebar,
+        body.light-mode .panel,
+        body.light-mode .metric-card,
+        body.light-mode .project-card,
+        body.light-mode .chart-container,
+        body.light-mode .custom-modal-content,
+        body.light-mode .company-select-card {
+            background-color: var(--light-card-bg-dark);
+            border-color: var(--light-border-color-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        body.light-mode .sidebar-header .logo-text {
+            color: var(--light-text-color-light);
+        }
+        body.light-mode .nav-list a {
+            color: var(--light-text-color-dark);
+        }
+        body.light-mode .nav-list a:hover {
+            background-color: rgba(34, 197, 94, 0.05);
+            color: var(--light-primary-color);
+        }
+        body.light-mode .nav-list a.active {
+            background-color: var(--light-primary-color);
+            color: white;
+        }
+        body.light-mode .panel h3,
+        body.light-mode .panel h4 {
+            color: var(--accent-gold);
+        }
+        body.light-mode .panel p,
+        body.light-mode .project-card p,
+        body.light-mode .api-key-value,
+        body.light-mode .form-control label,
+        body.light-mode .form-control input,
+        body.light-mode .form-control select,
+        body.light-mode .form-control textarea,
+        body.light-mode .copy-square pre,
+        body.light-mode .toggle-section-btn span,
+        body.light-mode .settings-tab-btn {
+            color: var(--light-text-color-dark);
+        }
+        body.light-mode .form-control input,
+        body.light-mode .form-control select,
+        body.light-mode .form-control textarea {
+            background-color: #f0f0f0;
+            border-color: #d1d1d1;
+        }
+        body.light-mode .api-key-table th {
+            background-color: #e8e8ed;
+        }
+        body.light-mode .api-key-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        body.light-mode .template-preview-body {
+            color: var(--text-color-dark);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 280px;
+            background-color: var(--card-bg-dark);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--border-color-dark);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .sidebar-header .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        body.light-mode .sidebar-header .theme-toggle {
+             color: var(--light-text-color-dark);
+        }
+        .sidebar-header .theme-toggle:hover {
+            color: var(--primary-color);
+        }
+        .sidebar-header .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+        .sidebar-header .logo-text span {
+            color: var(--accent-gold);
+            font-size: 0.8em;
+            letter-spacing: -0.02em;
+        }
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            color: var(--text-color-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-list a:hover {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--primary-color);
+        }
+        .nav-list a.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+        }
+        .nav-list a.active .nav-icon {
+            color: white;
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            transition: color 0.2s ease;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        /* General Panel Styling */
+        .panel {
+            background-color: var(--card-bg-dark);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border-color-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .panel h3, .panel h4 {
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        .panel h3 { font-size: 1.8rem; }
+        .panel h4 { font-size: 1.4rem; }
+
+        /* Metric Cards */
+        .metric-card {
+            background-color: var(--card-bg-dark);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color-dark);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .metric-card h4 {
+            font-size: 1rem;
+            color: var(--text-color-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        body.light-mode .metric-card h4 {
+            color: var(--text-color-dark);
+        }
+        .metric-card p {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        /* Utility for hidden views */
+        .view-hidden { display: none; }
+        
+        /* Form styling */
+        .form-control { margin-bottom: 1.5rem; text-align: left; }
+        .form-control label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-control input, .form-control select, .form-control textarea {
+            width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color-dark);
+            background-color: #3a3a3e; color: var(--text-color-light); font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-control input:focus, .form-control select:focus, .form-control textarea:focus {
+            outline: none; border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+        }
+        .form-action-button {
+            background-color: var(--secondary-color); color: #1a1a1c; padding: 0.8rem 1.5rem;
+            border-radius: 8px; font-weight: 600; font-size: 1rem;
+            transition: all 0.2s ease; border: none; cursor: pointer;
+        }
+        .form-action-button:hover {
+            filter: brightness(1.1); transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(132, 204, 22, 0.3);
+        }
+        .form-action-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .form-action-button.secondary { background-color: var(--status-draft); color: white; }
+        .form-action-button.secondary:hover { background-color: #525257; box-shadow: 0 2px 8px rgba(110, 110, 115, 0.3); }
+
+        /* Ecosystem Map Styling */
+        .copy-square {
+            position: relative; background-color: #3a3a3e; border-radius: 8px;
+            padding: 0.75rem 1rem; margin-top: 0.75rem; border: 1px solid var(--border-color-dark);
+        }
+        body.light-mode .copy-square { background-color: #f0f0f0; border-color: #d1d1d1; }
+        .copy-square .copy-button {
+            position: absolute; top: 0.5rem; right: 0.5rem; background-color: var(--primary-color);
+            color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem;
+            font-weight: 500; cursor: pointer; border: none; opacity: 0; transition: opacity 0.2s ease;
+        }
+        .copy-square:hover .copy-button { opacity: 1; }
+        .copy-square pre {
+            background: none; border: none; padding: 0; margin: 0; font-size: 0.85rem;
+            white-space: pre-wrap; word-break: break-all; padding-right: 40px;
+        }
+        .toggle-section-btn {
+            background-color: transparent; border: none; cursor: pointer; width: 100%;
+            text-align: left; padding: 0.5rem 0; display: flex; justify-content: space-between;
+            align-items: center; font-size: 1.1rem; font-weight: 600; color: var(--primary-color);
+        }
+        body.light-mode .toggle-section-btn { color: var(--light-primary-color); }
+        .toggle-section-btn i { transition: transform 0.2s ease; }
+        .toggle-section-btn i.fa-chevron-up { transform: rotate(180deg); }
+        .repo-content-section { padding-left: 1rem; border-left: 2px solid var(--border-color-dark); margin-top: 1rem; }
+        body.light-mode .repo-content-section { border-color: var(--light-border-color-dark); }
+        #ecosystem-map-view .section-title { color: var(--accent-gold); font-size: 2.2rem; font-weight: 800; }
+        #ecosystem-map-view .section-intro { text-align: center; font-size: 1.1rem; max-width: 800px; margin: 0 auto; }
+        body.light-mode #ecosystem-map-view .section-intro { color: var(--light-text-color-dark); }
+        
+        /* Custom Modal Styling */
+        .custom-modal-overlay {
+            position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.75); display: flex;
+            align-items: center; justify-content: center; padding: 1rem; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.active { opacity: 1; visibility: visible; }
+        .custom-modal-content {
+            background-color: var(--card-bg-dark); color: var(--text-color-light); padding: 0;
+            border-radius: 12px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); text-align: left;
+            max-width: 95%; width: 500px; border: 1px solid var(--border-color-dark);
+            transform: translateY(-20px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .custom-modal-overlay.active .custom-modal-content { transform: translateY(0); opacity: 1; }
+        .template-preview-header {
+            background-color: var(--primary-color); color: white; padding: 1rem 1.5rem;
+            border-top-left-radius: 12px; border-top-right-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .template-preview-header h3 { color: white; margin: 0; }
+        .close-preview-btn {
+            background: none; border: none; font-size: 1.5rem; color: white;
+            cursor: pointer; transition: transform 0.2s ease;
+        }
+        .template-preview-body { padding: 1.5rem; }
+        .template-preview-actions { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+        
+        /* Settings Tab Navigation */
+        .settings-tab-btn {
+            padding: 0.75rem 1.25rem; background-color: transparent; border: none;
+            color: var(--text-color-light); font-weight: 500; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s ease;
+        }
+        .settings-tab-btn:hover {
+            color: var(--primary-color); border-color: rgba(34, 197, 94, 0.5);
+        }
+        .settings-tab-btn.active {
+            color: var(--primary-color); border-color: var(--primary-color); font-weight: 600;
+        }
+        .api-key-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; text-align: left; }
+        .api-key-table th, .api-key-table td { padding: 0.8rem; border-bottom: 1px solid var(--border-color-dark); }
+        .api-key-table th { background-color: #1a1a1a; color: var(--accent-gold); font-weight: 600; }
+        .api-key-table tr:hover { background-color: #3a3a3e; }
+        body.light-mode .api-key-table th, body.light-mode .api-key-table td { border-color: var(--light-border-color-dark); }
+        body.light-mode .api-key-table th { background-color: #e8e8ed; }
+
+        /* Responsive Mobile Layout */
+        @media (max-width: 767px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%; height: auto; padding: 1rem; border-right: none;
+                border-bottom: 1px solid var(--border-color-dark); flex-direction: row;
+                justify-content: space-around; flex-wrap: wrap; position: sticky; top: 0; z-index: 40;
+            }
+            .sidebar-header {
+                width: 100%; margin-bottom: 1rem; display: flex;
+                justify-content: center; align-items: center;
+            }
+            .sidebar-header .theme-toggle { position: relative; margin-left: 1rem; }
+            .sidebar-header .logo-text { font-size: 1.5rem; }
+            .nav-list { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; }
+            .nav-list a {
+                margin: 0.2rem 0.3rem; padding: 0.5rem 0.6rem; font-size: 0.75rem;
+                gap: 0.5rem; flex-grow: 1; justify-content: center;
+            }
+            .nav-list a .nav-icon { font-size: 0.9rem; margin-right: 0.2rem; }
+            .main-content { padding: 1.5rem; }
+            .panel { padding: 1.5rem; }
+            .panel h3 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo-text">FSF™ | <span>CodeNest™</span></h2>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+        <nav class="nav-list">
+            <a href="#dashboard" class="active" data-view="dashboard"><i class="fas fa-seedling nav-icon"></i> Dashboard</a>
+            <a href="#projects" data-view="projects"><i class="fas fa-tractor nav-icon"></i> FSF Projects</a>
+            <a href="#new-project" data-view="new-project"><i class="fas fa-plus-circle nav-icon"></i> New Project</a>
+            <a href="#ecosystem-map" data-view="ecosystem-map"><i class="fas fa-sitemap nav-icon"></i> Ecosystem Map</a>
+            <a href="#analytics" data-view="analytics"><i class="fas fa-chart-bar nav-icon"></i> Analytics</a>
+            <a href="#settings" data-view="settings"><i class="fas fa-cog nav-icon"></i> Settings</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Dashboard Home View -->
+        <section id="dashboard-view" class="view">
+            <div class="panel">
+                <h3>Welcome Back, FSF Creator!</h3>
+                <p class="mb-4">Your FSF CodeNest™ portal provides tools to cultivate, license, and deploy Food, Soil & Farming projects across the Fruitful Global Treaty Grid.</p>
+                <button class="form-action-button" onclick="showView('new-project')">
+                    <i class="fas fa-plus-circle mr-2"></i> Start New FSF Project
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                <div class="metric-card">
+                    <h4>Total Projects</h4>
+                    <p id="totalProjectsCount">0</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Active Soil Nodes</h4>
+                    <p id="liveScrollsCount">0</p>
+                </div>
+                 <div class="metric-card">
+                    <h4>Total Brands</h4>
+                    <p id="totalBrandsCount">0</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Total Sub-Nodes</h4>
+                    <p id="totalSubNodesCount">0</p>
+                </div>
+                <div class="metric-card">
+                    <h4>Yield Royalties</h4>
+                    <p id="monthlyRoyalties">$0.00</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="panel">
+                    <h3>FSF System Health Overview</h3>
+                    <div class="chart-container" style="height:300px;">
+                        <canvas id="systemHealthChart"></canvas>
+                    </div>
+                </div>
+                 <div class="panel">
+                    <h3>Project Distribution</h3>
+                    <div class="chart-container" style="height:300px;">
+                        <canvas id="projectDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects View -->
+        <section id="projects-view" class="view view-hidden">
+            <div class="panel">
+                <h3>Your FSF Projects</h3>
+                 <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- FSF Projects will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- New Project View -->
+        <section id="new-project-view" class="view view-hidden">
+            <div class="panel">
+                <h3><i class="fas fa-plus-circle mr-2"></i> Start a New FSF Project</h3>
+                <form id="newProjectForm">
+                    <div class="form-control">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" name="projectName" placeholder="e.g. SoilHealth Yield Monitor" required>
+                    </div>
+                     <div class="form-control">
+                        <label for="projectConcept">High-Level Project Concept (for AI)</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="projectConcept" placeholder="e.g., An app to track nutrient density in soil">
+                             <button type="button" id="generateProjectIdeaBtn" class="form-action-button text-xs px-3 py-2">
+                                ✨ AI Project Idea
+                            </button>
+                        </div>
+                         <p id="projectIdeaStatus" class="text-xs text-gray-400 mt-1"></p>
+                    </div>
+                    <div class="form-control">
+                        <label for="template">Choose FSF Template</label>
+                        <select id="template" name="template" required>
+                            <option value="">Loading templates...</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="description">Project Description</label>
+                         <div class="flex items-center space-x-2">
+                            <textarea id="description" name="description" rows="4" class="flex-grow" placeholder="Describe your project goals..."></textarea>
+                            <button type="button" id="generateDescriptionBtn" class="form-action-button text-xs px-3 py-2">
+                                ✨ AI Generate
+                            </button>
+                        </div>
+                        <p id="descriptionStatus" class="text-xs text-gray-400 mt-1"></p>
+                    </div>
+                    <button type="submit" class="form-action-button">Create Project</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Ecosystem Map View -->
+        <section id="ecosystem-map-view" class="view view-hidden">
+            <div class="panel">
+                <h2 class="section-title text-center mb-6">FSF Global Repository & Routing Structure</h2>
+                <p class="section-intro mb-8">This map illustrates the precise, templated file path and repository structure for the entire Food, Soil & Farming (FSF) ecosystem. This structure guarantees consistency and automated deployment across all 77 brands and their subnodes.</p>
+                
+                <div id="sectorContainer" class="max-w-5xl mx-auto bg-gray-900 p-6 rounded-lg shadow-2xl text-left">
+                    <!-- Dynamic sector-brand-subnode structure will be rendered here by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics View -->
+        <section id="analytics-view" class="view view-hidden">
+            <div class="panel">
+                <h3><i class="fas fa-chart-bar mr-2"></i> FSF Performance Analytics</h3>
+                <p class="mb-4 text-gray-400">Insights into your deployed FSF projects and ecosystem engagement.</p>
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="chart-container relative" style="height:300px;">
+                        <h4 class="text-center mb-2">Crop Yield Analysis (tons)</h4>
+                        <canvas id="deploymentTrendsChart"></canvas>
+                    </div>
+                    <div class="chart-container relative" style="height:300px;">
+                        <h4 class="text-center mb-2">Nutrient Distribution</h4>
+                        <canvas id="royaltyDistributionChart"></canvas>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h4>✨ AI-Powered Analytics Summary</h4>
+                    <p id="analyticsSummaryStatus" class="text-xs text-gray-400 my-2"></p>
+                    <div id="analyticsSummaryOutput" class="text-gray-300 whitespace-pre-wrap leading-relaxed">Click the button to generate an AI summary of your analytics data.</div>
+                    <button id="generateAnalyticsSummaryBtn" class="form-action-button mt-4">✨ Generate Insights</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Settings View -->
+        <section id="settings-view" class="view view-hidden">
+             <div class="panel">
+                <h3><i class="fas fa-cog mr-2"></i> Settings</h3>
+                <div class="flex border-b border-gray-700 mb-6">
+                    <button class="settings-tab-btn active" onclick="showSettingsTab('domains')">Domains & Email</button>
+                    <button class="settings-tab-btn" onclick="showSettingsTab('profile')">Profile</button>
+                </div>
+                <!-- Profile Sub-view -->
+                <div id="settings-profile" class="settings-sub-view hidden">
+                    <p>Manage your profile settings here.</p>
+                </div>
+                 <!-- Domain & Cloud Services Sub-view -->
+                <div id="settings-domains" class="settings-sub-view">
+                     <section class="panel bg-gray-900/50 border border-gray-700 mb-6">
+                        <h4><i class="fas fa-globe mr-2"></i> DNS Zone Management</h4>
+                        <table class="api-key-table mb-4">
+                            <thead><tr><th>Type</th><th>Name</th><th>Value</th></tr></thead>
+                            <tbody id="dnsRecordsTableBody"></tbody>
+                        </table>
+                         <div class="flex flex-wrap items-center gap-2">
+                            <input type="text" id="dnsRecordTypeInput" placeholder="e.g., A, CNAME, MX" class="p-2 rounded-md bg-gray-700 border border-gray-600 text-white text-xs max-w-[200px]">
+                            <button class="form-action-button text-sm px-3 py-2" id="explainDnsBtn">✨ Explain DNS Type</button>
+                        </div>
+                        <p id="dnsExplainStatus" class="text-xs text-gray-400 mt-2"></p>
+                        <div id="dnsExplanationOutput" class="w-full p-3 border border-gray-600 rounded-md bg-gray-800 text-white mt-2 hidden whitespace-pre-wrap"></div>
+                    </section>
+                    <section class="panel bg-gray-900/50 border border-gray-700">
+                        <h4><i class="fas fa-envelope mr-2"></i> Email Accounts (Powered by Zoho Mail)</h4>
+                        <table class="api-key-table">
+                             <thead><tr><th>Email Address</th><th>Status</th><th>Actions</th></tr></thead>
+                             <tbody id="emailAccountsTableBody"></tbody>
+                        </table>
+                    </section>
+                </div>
+             </div>
+        </section>
+
+    </main>
+    
+    <!-- Modals -->
+    <div id="standardModal" class="custom-modal-overlay">
+        <div class="custom-modal-content" style="text-align:center; padding: 2rem;">
+            <p id="standardModalMessage"></p>
+        </div>
+    </div>
+    
+    <div id="projectIdeaModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="template-preview-header">
+                <h3>AI Project Idea</h3>
+                <button class="close-preview-btn" onclick="hideModal('projectIdeaModal')">&times;</button>
+            </div>
+            <div class="template-preview-body text-left">
+                <p class="text-gray-400 text-sm mb-2">Review the AI-generated idea below:</p>
+                <div class="bg-gray-800 p-4 rounded-md border border-gray-700">
+                    <p class="text-gray-200 mb-2"><strong>Project Name:</strong> <span id="ideaProjectName"></span></p>
+                    <p class="text-gray-200 mb-2"><strong>Description:</strong> <span id="ideaProjectDescription"></span></p>
+                    <p class="text-gray-200"><strong>Suggested Template:</strong> <span id="ideaSuggestedTemplate"></span></p>
+                </div>
+                <div class="template-preview-actions">
+                    <button class="form-action-button" id="applyProjectIdeaBtn"><i class="fas fa-check-circle mr-2"></i> Apply to Form</button>
+                    <button class="form-action-button secondary" onclick="hideModal('projectIdeaModal')">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="projectSummaryModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="template-preview-header">
+                <h3 id="projectSummaryTitle">Project Summary</h3>
+                <button class="close-preview-btn" onclick="hideModal('projectSummaryModal')">&times;</button>
+            </div>
+            <div class="template-preview-body">
+                <p id="projectSummaryText" class="whitespace-pre-wrap leading-relaxed"></p>
+                <div class="template-preview-actions">
+                    <button class="form-action-button secondary" onclick="hideModal('projectSummaryModal')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="emailDraftModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+             <div class="template-preview-header">
+                <h3 id="emailDraftTitle">Draft Email</h3>
+                <button class="close-preview-btn" onclick="hideModal('emailDraftModal')">&times;</button>
+            </div>
+            <div class="template-preview-body text-left">
+                 <p class="text-gray-400 text-sm mb-2">To: <span id="emailDraftTo"></span></p>
+                <div class="form-control">
+                    <label for="emailPurposeInput" class="text-sm mb-1">Purpose of Email</label>
+                    <input type="text" id="emailPurposeInput" placeholder="e.g., Welcome new farmer, Support for sensor issue" class="w-full p-2 text-sm">
+                </div>
+                 <div class="form-control">
+                    <label for="customerQueryInput" class="text-sm mb-1">Customer Query/Issue (for Support)</label>
+                    <textarea id="customerQueryInput" rows="2" placeholder="e.g., My SoilSync sensor is offline." class="w-full p-2 text-sm"></textarea>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="generateEmailDraftBtn" class="form-action-button text-xs px-3 py-2">✨ General Draft</button>
+                    <button type="button" id="generateSupportResponseBtn" class="form-action-button text-xs px-3 py-2">✨ Support Response</button>
+                </div>
+                <p id="emailDraftStatus" class="text-xs text-gray-400 mt-2"></p>
+                <textarea id="generatedEmailDraftOutput" rows="8" class="w-full p-2 border border-gray-600 rounded-md bg-gray-800 text-white mt-2" placeholder="AI-generated email draft will appear here..." readonly></textarea>
+                <div class="template-preview-actions">
+                    <button class="form-action-button secondary" onclick="hideModal('emailDraftModal')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Centralized Data Store for FSF Dashboard ---
+        const fsfBrands = ['AgriCore', 'SoilHealth', 'FarmFresh', 'CropCircle', 'HarvestHub', 'TerraNova', 'GreenSprout', 'AgroLife','BioFarm', 'EcoHarvest', 'SeedLink', 'SoilSmart', 'FarmWise', 'CropGuard', 'HarvestEase', 'TerraGrow','GreenField', 'AgroTech', 'BioYield', 'EcoFarm', 'AgriPulse', 'BioCrop', 'FarmLink', 'SoilGuard', 'GreenHarvest','TerraFarm', 'SeedSmart', 'CropCare', 'HarvestPro', 'SoilSense', 'FarmVision', 'AgroTech', 'BioSoil','CropTrack', 'HarvestLink', 'SoilLab', 'FarmManage', 'AgriData', 'BioGrow', 'EcoFarm', 'CropMesh', 'SeedRoot','SoilVault', 'PlantCast', 'YieldNode', 'FarmBeacon', 'BioSprout', 'SoilTrace', 'HarvestCore', 'PlantLink','TerraLoop', 'SoilPulse', 'GreenPatch', 'FarmSync', 'RootMesh', 'BioCluster', 'SproutIndex', 'MoistureMap','EcoZone', 'CropRelay', 'FarmCloud', 'SoilFrame', 'HarvestPing', 'CropCode', 'AgroNode', 'SeedNest', 'TraceFarm','SproutChain', 'SoilStack', 'AgriPanel', 'RootClaim', 'MoistureNode', 'CrateFarm', 'PlantPing', 'AgroLoop','CropGrid', 'VendorSprout', 'BioPing', 'EcoFarmGrid', 'TerraCode', 'HarvestVault', 'CropBinder', 'SoilCertify'];
+        const fsfSubNodes = [['SoilSync','CropTrack','FarmLink','HarvestNet'],['BioBoost','NutrientFlow','EarthGuard','RootMax'],['OrganicGrow','PureHarvest','GreenCycle','EcoFarm'],['YieldMap','PlantPulse','GrowthScan','FieldSense'],['GrainGate','ProducePath','MarketLink','FarmFlow'],['LandRevive','SoilBalance','EcoTill','AgroRenew'],['SeedStart','PlantBoost','GrowTrack','EcoRoot'],['FarmVital','CropCare','SoilSense','HarvestEase'],['EcoGrow','NaturalYield','SoilPure','PlantHealth'],['GreenField','CropCycle','SoilNurture','FarmSustain'],['GerminatePro','PlantConnect','GrowNet','RootLink'],['NutrientTrack','EarthMonitor','SoilScan','FertilEase'],['AgriPlan','CropManage','FieldGuide','HarvestLogic'],['PestShield','DiseaseControl','PlantProtect','YieldSecure'],['GrainFlow','ProduceEase','MarketAccess','FarmSimplify'],['LandEnrich','SoilEnhance','EcoFert','AgroBoost'],['SeedSelect','PlantOptimize','GrowManage','EcoCultivate'],['FarmInnovate','CropTech','SoilAdvance','HarvestTech'],['EcoProduce','NaturalHarvest','SoilRich','PlantGain'],['GreenCultivate','CropSustain','SoilCare','FarmEco'],['SoilMonitor','CropSensor','FieldData','HarvestAlert'],['OrganicSeed','PlantHealth','GrowthTrack','EcoYield'],['AgriConnect','FieldNet','CropShare','HarvestSync'],['NutrientShield','ErosionControl','pHBalance','RootProtect'],['EcoCrop','SustainableYield','BioFertilizer','FarmSustain'],['LandOptimize','SoilEnhance','CropBoost','AgroManage'],['GerminationTrack','PlantMap','GrowthPredict','YieldForecast'],['PestMonitor','DiseaseAlert','PlantHealthCheck','YieldSecure'],['GrainQuality','ProduceSorting','MarketAccess','FarmLogistics'],['MoistureDetect','NutrientMap','SoilProfile','FertilityIndex'],['SatelliteImagery','CropAnalysis','FieldMapping','YieldEstimation'],['PrecisionFarming','SmartIrrigation','DroneSurvey','DataAnalytics'],['MicrobeEnhance','OrganicMatter','SoilRegen','EcoBalance'],['PlantGrowthMonitor','FieldProgress','HarvestTimeline','YieldReport'],['SupplyChainConnect','ProduceTrace','MarketIntegration','FarmNetwork'],['pHTesting','NutrientAnalysis','SoilSampling','FertilityReport'],['TaskScheduler','ResourceAllocation','LaborTracking','EquipmentMonitor'],['CropRecords','FieldHistory','YieldAnalytics','FarmReports'],['OrganicInputs','PlantNutrition','GrowthEnhancer','EcoSolutions'],['SustainablePractices','RenewableEnergy','WasteManagement','Biodiversity'],['FieldNet','SoilGrid','YieldLink','NodeTrace'],['GermCode','SeedID','RootLink','GrowthStart'],['VaultSoil','SampleSecure','LabLink','ResultSync'],['GrowthSignal','WeatherFeed','PlantAlert','FieldNotify'],['NodePath','HarvestTrace','ScrollYield','CropGrid'],['ZonePing','CropAlert','SignalYield','TraceLight'],['EcoSeed','VitalTrace','GreenMap','GrowStream'],['SampleLink','DataStream','FertilMap','FieldTest'],['HarvestPing','VendorClaim','YieldPoint','CrateDrop'],['PlantID','CrossNode','ZoneSync','QRRoot'],['AgriCycle','SoilWave','CropSync','EcoChain'],['PulseCheck','GrowthWave','DepthTrace','FieldFlow'],['ZoneGrid','OrganicNode','FarmSquare','PlantDrop'],['SyncPoint','CropMerge','LandSplit','VendorMesh'],['NodeSeed','GridSprout','PathFert','MicroPulse'],['CropGroup','FieldChain','VendorLoop','YieldRing'],['ZoneScan','PlantGrid','GrowthMeter','SeedSync'],['AquaNode','RootHumidity','DepthScan','FieldAqua'],['GreenClaim','NaturalPath','FarmMesh','ZoneCert'],['YieldSync','VendorCast','CrateSend','RouteField'],['ScrollFarm','VendorPanel','YieldDash','FieldUpload'],['FrameID','EarthLine','GridSoil','TestPath'],['PingGrid','DropYield','ClaimNode','AlertField'],['BarcodeRoot','GrowthTag','ScrollField','LabelGrow'],['LandID','CropNode','FieldLink','SoilRoute'],['NestCode','SproutDrop','GrowthLog','FarmBase'],['FarmScan','VendorLink','HarvestLedger','ScrollProof'],['ChainGrow','YieldLink','NodeDrop','EcoSprout'],['StackClaim','DepthScan','FertilRow','SoilVault'],['PanelSync','ScrollDash','CropView','VendorControl'],['ClaimTrace','RootID','VendorStamp','FieldLock'],['HydrateLink','DepthSync','MoistPulse','NodeRain'],['CrateLedger','DropPanel','MarketNode','VendorCrate'],['AlertRoot','ScanGrow','PlantTrace','PingField'],['LoopClaim','SoilCycle','FarmMesh','GrowthPath'],['GridYield','MapTrack','HarvestView','CropLink'],['VendorID','FarmStart','ClaimMap','SproutVault'],['MicroScan','HealthAlert','GrowthWatch','RootPath'],['EcoPlot','FarmJoin','GreenPanel','ZoneMesh'],['SoilDNA','SeedLog','CropCodeX','ScanTag'],['VaultDrop','CrateClaim','PayoutLock','FieldSecure'],['BinderLoop','VendorTrace','ScrollTag','FarmCode'],['TestLog','ResultPath','QRProof','SoilPass']];
+
+        const fsfSectorsData = {
+            "fsf-core": {
+                name: "🥦 Food, Soil & Farming Core",
+                repoName: "fsf-core-seedwave-admin",
+                baseUrl: "fsf.seedwave.faa.zone",
+                brands: fsfBrands.map((brandName, index) => ({
+                    name: brandName,
+                    subnodes: fsfSubNodes[index] || []
+                }))
+            }
+        };
+
+        const appData = {
+            dashboard: {
+                totalProjects: 124, liveScrolls: 98, monthlyRoyalties: 8450.25,
+                systemHealth: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Soil Health Index', data: [78, 82, 85, 83, 88, 91],
+                        borderColor: 'rgba(34, 197, 94, 0.8)', backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true, tension: 0.4
+                    }, {
+                        label: 'Water Usage (kL)', data: [150, 145, 160, 140, 135, 130],
+                        borderColor: 'rgba(59, 130, 246, 0.8)', backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true, tension: 0.4
+                    }]
+                }
+            },
+            projects: [],
+            templates: [
+                { name: 'Soil Analysis Dashboard', description: 'Template for visualizing soil nutrient data, pH levels, and moisture content.' },
+                { name: 'Crop Rotation Planner', description: 'An interactive scroll to plan and track crop rotation schedules for multiple fields.' },
+                { name: 'Farm-to-Table Marketplace', description: 'A storefront template for connecting local farms directly with consumers.' },
+                { name: 'Harvest & Yield Log', description: 'A data-entry focused scroll for logging daily harvest quantities and tracking yield over time.' }
+            ],
+            analytics: {
+                deploymentTrends: {
+                    labels: ['Wheat', 'Corn', 'Soybeans', 'Tomatoes', 'Potatoes'],
+                    datasets: [{
+                        label: 'Yield (tons)', data: [450, 620, 550, 300, 710],
+                        backgroundColor: ['#22c55e', '#84cc16', '#f59e0b', '#ef4444', '#ca8a04'],
+                    }]
+                },
+                royaltyDistribution: {
+                    labels: ['Nitrogen', 'Phosphorus', 'Potassium', 'Organic Matter'],
+                    datasets: [{
+                        data: [40, 25, 25, 10],
+                        backgroundColor: ['#22c55e', '#84cc16', '#facc15', '#a16207'],
+                        hoverOffset: 4
+                    }]
+                },
+                projectDistribution: {
+                     labels: ['Soil & Data', 'Marketplace', 'Logistics', 'Crop Management'],
+                     datasets: [{
+                        data: [45, 25, 15, 15],
+                        backgroundColor: ['#ca8a04', '#16a34a', '#f59e0b', '#84cc16'],
+                        hoverOffset: 4
+                    }]
+                }
+            },
+            dnsRecords: [
+                { type: 'A', name: '@', value: '76.76.21.21' },
+                { type: 'CNAME', name: 'www', value: 'fsf.seedwave.faa.zone' },
+                { type: 'MX', name: '@', value: 'mx.zoho.com (P:10)' },
+                { type: 'TXT', name: '@', value: 'v=spf1 include:zoho.com ~all' }
+            ],
+            emailAccounts: [
+                { email: 'ops@terranova.farm', status: 'Active' },
+                { email: 'support@soilhealth.ag', status: 'Active' },
+                { email: 'billing@agricore.io', status: 'Suspended' }
+            ],
+            colors: {}
+        };
+        
+        // --- Utility Functions ---
+        window.showModal = function(modalId, autoDismiss = false) {
+            const modal = document.getElementById(modalId);
+            if(modal) modal.classList.add('active');
+            if(autoDismiss) setTimeout(() => hideModal(modalId), 3000);
+        };
+        window.hideModal = function(modalId) {
+            document.getElementById(modalId)?.classList.remove('active');
+        };
+        window.showStandardModal = function(title, message, autoDismiss = true) {
+            const modalMessage = document.getElementById('standardModalMessage');
+            if (modalMessage) {
+                 modalMessage.innerHTML = `<strong>${title}</strong><br>${message}`;
+                 showModal('standardModal', autoDismiss);
+            }
+        };
+        
+        // --- Gemini API Call Function ---
+        async function callGeminiAPI(prompt, statusElementId, buttonElement, parseJson = false) {
+            const statusEl = document.getElementById(statusElementId);
+            const originalButtonHtml = buttonElement.innerHTML;
+            
+            if (statusEl) { statusEl.textContent = "Generating..."; statusEl.classList.remove('hidden'); }
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="inline-block border-2 border-t-green-400 border-gray-600 rounded-full w-4 h-4 animate-spin"></span>`;
+
+            try {
+                const apiKey = ""; // Canvas will provide key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] })
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const result = await response.json();
+                
+                if (statusEl) statusEl.textContent = "Generation complete!";
+                
+                const text = result.candidates[0]?.content?.parts[0]?.text;
+                if (!text) throw new Error("No content in API response.");
+
+                if (parseJson) {
+                    return JSON.parse(text.replace(/```json\n?/, "").replace(/```$/, ""));
+                }
+                return text;
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                if (statusEl) statusEl.textContent = `Error: ${error.message}`;
+                return null;
+            } finally {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalButtonHtml;
+                if (statusEl) setTimeout(() => { statusEl.classList.add('hidden'); }, 4000);
+            }
+        }
+
+
+        // --- View Management ---
+        let currentChartInstances = {};
+
+        function showView(viewId) {
+            window.location.hash = viewId;
+            document.querySelectorAll('.main-content .view').forEach(view => view.classList.add('view-hidden'));
+            document.getElementById(`${viewId}-view`)?.classList.remove('view-hidden');
+            
+            document.querySelectorAll('.sidebar .nav-list a').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('data-view') === viewId);
+            });
+            renderViewContent(viewId);
+        }
+
+        function renderViewContent(viewId) {
+            Object.values(currentChartInstances).forEach(chart => chart?.destroy());
+
+            if (viewId === 'dashboard') { 
+                updateDashboardMetrics(); 
+                renderSystemHealthChart(); 
+                renderProjectDistributionChart();
+            } 
+            else if (viewId === 'projects') { renderProjects(); } 
+            else if (viewId === 'ecosystem-map') { renderEcosystemMap(); } 
+            else if (viewId === 'analytics') { renderAnalyticsCharts(); }
+            else if (viewId === 'settings') { showSettingsTab('domains'); }
+        }
+
+        // --- Dashboard Specific Logic ---
+        function updateDashboardMetrics() {
+            document.getElementById('totalProjectsCount').textContent = appData.dashboard.totalProjects;
+            document.getElementById('liveScrollsCount').textContent = appData.dashboard.liveScrolls;
+            document.getElementById('monthlyRoyalties').textContent = `$${appData.dashboard.monthlyRoyalties.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+            document.getElementById('totalBrandsCount').textContent = fsfBrands.length;
+            document.getElementById('totalSubNodesCount').textContent = fsfSubNodes.flat().length;
+        }
+        
+        function renderChart(canvasId, type, data, options) {
+            const ctx = document.getElementById(canvasId)?.getContext('2d');
+            if (ctx) {
+                const isLight = document.body.classList.contains('light-mode');
+                const defaultOptions = {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: isLight ? appData.colors.textDark : appData.colors.textLight } } },
+                    scales: {
+                        x: { ticks: { color: isLight ? appData.colors.textDark : appData.colors.textLight }, grid: { color: 'rgba(128,128,128,0.1)' } },
+                        y: { ticks: { color: isLight ? appData.colors.textDark : appData.colors.textLight }, grid: { color: 'rgba(128,128,128,0.1)' } }
+                    }
+                };
+                // For pie/doughnut charts, we don't need scales.
+                if (type === 'pie' || type === 'doughnut') {
+                    delete defaultOptions.scales;
+                }
+                currentChartInstances[canvasId] = new Chart(ctx, { type, data, options: { ...defaultOptions, ...options } });
+            }
+        }
+
+        function renderSystemHealthChart() { renderChart('systemHealthChart', 'line', appData.dashboard.systemHealth, {}); }
+        function renderProjectDistributionChart() { 
+            renderChart('projectDistributionChart', 'pie', appData.analytics.projectDistribution, {
+                 plugins: { legend: { position: 'right' } } 
+            }); 
+        }
+
+        function renderAnalyticsCharts() {
+            renderChart('deploymentTrendsChart', 'bar', appData.analytics.deploymentTrends, { scales: { y: { beginAtZero: true } } });
+            renderChart('royaltyDistributionChart', 'doughnut', appData.analytics.royaltyDistribution, { plugins: { legend: { position: 'right' } } });
+        }
+
+        // --- Projects Logic ---
+        function generateMockProjects() {
+            if (appData.projects.length > 0) return;
+            const projectTypes = ['Soil Analysis', 'Crop Monitoring', 'Marketplace', 'Yield Tracker'];
+            for (let i = 0; i < 20; i++) {
+                const brand = fsfBrands[i % fsfBrands.length];
+                const type = projectTypes[i % projectTypes.length];
+                appData.projects.push({
+                    id: `FSF-${1000 + i}`, name: `${brand} ${type}`, status: ['live', 'draft', 'pending'][i % 3],
+                    lastActivity: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                });
+            }
+        }
+        function renderProjects() {
+            const container = document.getElementById('projectsList');
+            if (!container) return;
+            generateMockProjects();
+            container.innerHTML = appData.projects.map(p => `
+                <div class="project-card p-5 rounded-lg border transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style="background-color: var(--card-bg-dark); border-color: var(--border-color-dark);">
+                    <h4 class="font-bold text-lg mb-2" style="color: var(--primary-color);">${p.name}</h4>
+                    <p class="text-sm"><strong>ID:</strong> ${p.id}</p>
+                    <span class="mt-3 inline-block text-xs font-semibold px-2 py-1 rounded-full text-white status-${p.status}" style="background-color: var(--status-${p.status});">${p.status.toUpperCase()}</span>
+                     <div class="mt-4 pt-4 border-t border-gray-700 flex flex-wrap gap-2">
+                        <button onclick="summarizeProject('${p.id}', this)" class="form-action-button secondary text-xs px-2 py-1">✨ Summarize</button>
+                        <button onclick="generateMarketingCopy('${p.id}', this)" class="form-action-button secondary text-xs px-2 py-1">✨ Marketing Copy</button>
+                    </div>
+                    <p id="project-status-${p.id}" class="text-xs text-gray-400 mt-2 h-4"></p>
+                </div>
+            `).join('');
+        }
+        
+        // --- Project AI Features ---
+        async function summarizeProject(projectId, buttonEl) {
+            const project = appData.projects.find(p => p.id === projectId);
+            if(!project) return;
+            const prompt = `Summarize the following FSF project details into a single paragraph: Name: ${project.name}, Status: ${project.status}, Last Activity: ${project.lastActivity}.`;
+            const summary = await callGeminiAPI(prompt, `project-status-${projectId}`, buttonEl);
+            if(summary) {
+                document.getElementById('projectSummaryTitle').textContent = `${project.name} Summary`;
+                document.getElementById('projectSummaryText').textContent = summary;
+                showModal('projectSummaryModal');
+            }
+        }
+        async function generateMarketingCopy(projectId, buttonEl) {
+            const project = appData.projects.find(p => p.id === projectId);
+            if(!project) return;
+            const prompt = `Generate 3 short, catchy marketing taglines for an agritech project named "${project.name}".`;
+            const copy = await callGeminiAPI(prompt, `project-status-${projectId}`, buttonEl);
+            if(copy) {
+                document.getElementById('projectSummaryTitle').textContent = `Marketing Copy for ${project.name}`;
+                document.getElementById('projectSummaryText').textContent = copy;
+                showModal('projectSummaryModal');
+            }
+        }
+
+        // --- Ecosystem Map Logic ---
+        function renderEcosystemMap() {
+            const container = document.getElementById('sectorContainer');
+            if (!container) return;
+            container.innerHTML = Object.keys(fsfSectorsData).map(sectorKey => {
+                const sector = fsfSectorsData[sectorKey];
+                return `<div class="border border-gray-700 rounded-lg p-4 mb-4 bg-gray-800/50">
+                    <button class="toggle-section-btn w-full" onclick="toggleSection('sector-${sectorKey}')">
+                        <span class="text-green-400 text-xl font-bold">${sector.name}</span>
+                        <span><i class="fas fa-chevron-down text-gray-400"></i></span>
+                    </button>
+                    <div id="sector-${sectorKey}" class="repo-content-section hidden mt-4">
+                        ${sector.brands.map(brand => `<div class="border border-gray-600 rounded-md p-3 my-2 bg-gray-700/50">
+                            <button class="toggle-section-btn w-full text-lg" onclick="toggleSection('brand-${sectorKey}-${brand.name.replace(/\\s+/g, '-')}')">
+                                <span class="text-white font-medium">${brand.name}</span>
+                                <span><i class="fas fa-chevron-down text-gray-500"></i></span>
+                            </button>
+                            <div id="brand-${sectorKey}-${brand.name.replace(/\\s+/g, '-')}" class="repo-content-section !border-none hidden mt-2">
+                                <div class="copy-square"><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><pre>${sector.baseUrl}/sectors/${brand.name.toLowerCase()}/index</pre></div>
+                                ${brand.subnodes.map(subnode => `<div class="copy-square ml-4 mt-2"><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><pre>${sector.baseUrl}/sectors/${brand.name.toLowerCase()}/${subnode.toLowerCase()}/index</pre></div>`).join('')}
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        window.toggleSection = function(id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            const icon = element.previousElementSibling.querySelector('i');
+            element.classList.toggle('hidden');
+            icon?.classList.toggle('fa-chevron-down');
+            icon?.classList.toggle('fa-chevron-up');
+        };
+        window.copyToClipboard = function(buttonElement) {
+            const pre = buttonElement.nextElementSibling;
+            if (pre && pre.tagName === 'PRE') {
+                navigator.clipboard.writeText(pre.textContent.trim())
+                    .then(() => showStandardModal('Copied!', 'Path copied to clipboard.', true))
+                    .catch(err => console.error('Failed to copy:', err));
+            }
+        };
+        
+        // --- Settings Logic ---
+        function showSettingsTab(tabId) {
+            document.querySelectorAll('.settings-sub-view').forEach(view => view.classList.add('hidden'));
+            document.getElementById(`settings-${tabId}`)?.classList.remove('hidden');
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes(tabId)));
+            if(tabId === 'domains') { renderDnsRecords(); renderEmailAccounts(); }
+        }
+        function renderDnsRecords() {
+            const body = document.getElementById('dnsRecordsTableBody');
+            if(body) body.innerHTML = appData.dnsRecords.map(r => `<tr><td>${r.type}</td><td>${r.name}</td><td>${r.value}</td></tr>`).join('');
+        }
+        function renderEmailAccounts() {
+            const body = document.getElementById('emailAccountsTableBody');
+            if(body) body.innerHTML = appData.emailAccounts.map(a => `<tr><td>${a.email}</td><td><span class="${a.status === 'Active' ? 'text-green-400' : 'text-yellow-400'}">${a.status}</span></td><td class="text-right"><button class="form-action-button secondary text-xs px-2 py-1" onclick="openEmailDraftModal('${a.email}')">✨ Draft Email</button></td></tr>`).join('');
+        }
+        
+        let currentEmailForDraft = '';
+        function openEmailDraftModal(email) {
+            currentEmailForDraft = email;
+            document.getElementById('emailDraftTo').textContent = email;
+            document.getElementById('emailPurposeInput').value = '';
+            document.getElementById('customerQueryInput').value = '';
+            document.getElementById('generatedEmailDraftOutput').value = '';
+            document.getElementById('emailDraftStatus').classList.add('hidden');
+            showModal('emailDraftModal');
+        }
+
+        function populateTemplateSelects() {
+            const select = document.querySelector('#new-project-view #template');
+            if (select) {
+                select.innerHTML = '<option value="">Select a template...</option>' + 
+                                   appData.templates.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+            }
+        }
+
+        // --- Initial Setup & Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const rootStyles = getComputedStyle(document.documentElement);
+            appData.colors = {
+                primary: rootStyles.getPropertyValue('--primary-color').trim(),
+                secondary: rootStyles.getPropertyValue('--secondary-color').trim(),
+                textLight: rootStyles.getPropertyValue('--text-color-light').trim(),
+                textDark: rootStyles.getPropertyValue('--text-color-dark').trim()
+            };
+
+            document.querySelectorAll('.sidebar .nav-list a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showView(e.currentTarget.getAttribute('data-view'));
+                });
+            });
+
+            const themeToggleBtn = document.getElementById('themeToggle');
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLightMode = document.body.classList.contains('light-mode');
+                themeToggleBtn.innerHTML = isLightMode ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                renderViewContent(window.location.hash.substring(1) || 'dashboard');
+            });
+
+            // New Project Form AI Listeners
+            document.getElementById('generateDescriptionBtn')?.addEventListener('click', async (e) => {
+                const name = document.getElementById('projectName').value;
+                const template = document.getElementById('template').value;
+                if(!name || !template) { showStandardModal('Input Required', 'Please provide a project name and select a template.', true); return; }
+                const prompt = `Generate a concise and engaging project description for a new Food, Soil & Farming (FSF) project. Name: "${name}". Template: "${template}". Focus on the benefits for farmers or the food ecosystem.`;
+                const description = await callGeminiAPI(prompt, 'descriptionStatus', e.target);
+                if(description) document.getElementById('description').value = description;
+            });
+            document.getElementById('generateProjectIdeaBtn')?.addEventListener('click', async (e) => {
+                const concept = document.getElementById('projectConcept').value;
+                if(!concept) { showStandardModal('Input Required', 'Please provide a project concept.', true); return; }
+                const prompt = `Based on the concept "${concept}", generate a new FSF project idea. Respond with a JSON object containing: "projectName" (string), "projectDescription" (string), and "suggestedTemplate" (one of: ${appData.templates.map(t=>t.name).join(', ')}).`;
+                const idea = await callGeminiAPI(prompt, 'projectIdeaStatus', e.target, true);
+                if(idea) {
+                    document.getElementById('ideaProjectName').textContent = idea.projectName;
+                    document.getElementById('ideaProjectDescription').textContent = idea.projectDescription;
+                    document.getElementById('ideaSuggestedTemplate').textContent = idea.suggestedTemplate;
+                    showModal('projectIdeaModal');
+                }
+            });
+            document.getElementById('applyProjectIdeaBtn')?.addEventListener('click', () => {
+                document.getElementById('projectName').value = document.getElementById('ideaProjectName').textContent;
+                document.getElementById('description').value = document.getElementById('ideaProjectDescription').textContent;
+                document.getElementById('template').value = document.getElementById('ideaSuggestedTemplate').textContent;
+                hideModal('projectIdeaModal');
+            });
+            
+            // Analytics AI Listener
+            document.getElementById('generateAnalyticsSummaryBtn')?.addEventListener('click', async (e) => {
+                const prompt = `Summarize the following FSF analytics data. Crop Yields (in tons): ${JSON.stringify(appData.analytics.deploymentTrends.datasets[0].data.map((d, i) => `${appData.analytics.deploymentTrends.labels[i]}: ${d}`))} and Nutrient Distribution percentages: ${JSON.stringify(appData.analytics.royaltyDistribution.datasets[0].data.map((d, i) => `${appData.analytics.royaltyDistribution.labels[i]}: ${d}%`))}. Provide key insights and potential actions.`;
+                const summary = await callGeminiAPI(prompt, 'analyticsSummaryStatus', e.target);
+                if(summary) document.getElementById('analyticsSummaryOutput').textContent = summary;
+            });
+            
+            // Settings AI Listeners
+            document.getElementById('explainDnsBtn')?.addEventListener('click', async (e) => {
+                const type = document.getElementById('dnsRecordTypeInput').value;
+                if(!type) { showStandardModal('Input Required', 'Please enter a DNS record type.', true); return; }
+                const prompt = `Explain a "${type}" DNS record in simple terms.`;
+                const explanation = await callGeminiAPI(prompt, 'dnsExplainStatus', e.target);
+                if(explanation) {
+                    document.getElementById('dnsExplanationOutput').textContent = explanation;
+                    document.getElementById('dnsExplanationOutput').classList.remove('hidden');
+                }
+            });
+            document.getElementById('generateEmailDraftBtn')?.addEventListener('click', async (e) => {
+                const purpose = document.getElementById('emailPurposeInput').value;
+                if(!purpose) { showStandardModal('Input Required', 'Please enter an email purpose.', true); return; }
+                const prompt = `Draft a professional email from "${currentEmailForDraft}" for the purpose of: "${purpose}".`;
+                const draft = await callGeminiAPI(prompt, 'emailDraftStatus', e.target);
+                if(draft) document.getElementById('generatedEmailDraftOutput').value = draft;
+            });
+            document.getElementById('generateSupportResponseBtn')?.addEventListener('click', async (e) => {
+                const query = document.getElementById('customerQueryInput').value;
+                if(!query) { showStandardModal('Input Required', 'Please enter a customer query.', true); return; }
+                const prompt = `Draft a helpful and empathetic customer support response from "${currentEmailForDraft}" to the following query: "${query}".`;
+                const draft = await callGeminiAPI(prompt, 'emailDraftStatus', e.target);
+                if(draft) document.getElementById('generatedEmailDraftOutput').value = draft;
+            });
+
+            // Initial Load
+            populateTemplateSelects();
+            showView(window.location.hash.substring(1) || 'dashboard');
+        });
+    </script>
+</body>
+</html>

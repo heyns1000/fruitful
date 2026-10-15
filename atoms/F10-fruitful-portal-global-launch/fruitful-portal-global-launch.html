@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fruitful™ — Global Portal Launch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,900;1,700;1,800;1,900&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#1E9F97; --teal-bright:#47B3A8; --teal-deep:#0E7C74;
+  --red:#E63946; --red-deep:#C42B37;
+  --amber:#FCB915; --amber-deep:#E29A00;
+  --cream:#FBF4E4; --cream-soft:#FDF9EF; --sand:#F3E7CE;
+  --ink:#3A2A1B; --ink-soft:#6E5A45;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink); font-family:'Inter',sans-serif; color:var(--ink)}
+.page{max-width:1120px; margin:0 auto; background:var(--cream)}
+section{padding:80px 64px}
+.eyebrow{
+  font-family:'Fira Code',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.eyebrow .line{width:30px; height:1px; opacity:.55}
+.title-xl{font-style:italic; font-weight:900; text-transform:uppercase; line-height:.94; letter-spacing:-.01em}
+.label{font-family:'Fira Code',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft)}
+
+.navdots{position:fixed; right:24px; top:50%; transform:translateY(-50%); z-index:50; display:flex; flex-direction:column; gap:14px;}
+.navdots a{width:9px; height:9px; border-radius:50%; background:rgba(58,42,27,.25); display:block; transition:.2s}
+.navdots a:hover, .navdots a.on{background:var(--red); transform:scale(1.3)}
+
+.hero{background:var(--ink); color:var(--cream); position:relative; overflow:hidden; min-height:92vh; display:flex; flex-direction:column; justify-content:center;}
+.hero::before{content:''; position:absolute; top:-220px; right:-180px; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, var(--teal) 0%, transparent 70%); opacity:.4;}
+.hero::after{content:''; position:absolute; bottom:-260px; left:-200px; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle, var(--red) 0%, transparent 70%); opacity:.22;}
+.hero-inner{position:relative; z-index:2}
+.eyebrow.on-dark{color:var(--amber)}
+.eyebrow.on-dark .line{background:var(--amber)}
+.logo-row{display:flex; align-items:center; gap:12px; margin-bottom:38px}
+.logo-mark{width:46px; height:46px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; flex:none}
+.logo-mark svg{width:27px; height:27px}
+.logo-word{font-style:italic; font-weight:900; font-size:25px; color:#fff}
+.logo-word .tm{font-size:11px; vertical-align:super; opacity:.7}
+h1.hero-title{font-size:clamp(46px,7.5vw,88px); color:#fff; max-width:820px}
+h1.hero-title .r{color:var(--red)}
+h1.hero-title .t{color:var(--teal-bright)}
+.hero-sub{max-width:560px; margin-top:24px; font-size:17px; line-height:1.65; color:var(--cream); opacity:.85; font-weight:500}
+.master-tag{margin-top:34px; display:inline-block; font-style:italic; font-weight:900; text-transform:uppercase; font-size:14px; color:var(--ink); background:var(--amber); padding:12px 22px; border-radius:999px;}
+.hero-stats{display:flex; gap:44px; margin-top:56px; flex-wrap:wrap}
+.hstat .n{font-family:'Fira Code',monospace; font-weight:700; font-size:26px; color:#fff}
+.hstat .l{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--cream); opacity:.65; margin-top:4px}
+
+.insight-band{background:var(--teal); color:#fff; padding:26px 64px; font-size:15px; font-weight:600; line-height:1.55}
+.insight-band b{font-style:italic; font-weight:900; text-transform:uppercase}
+
+.pillars-title{font-size:clamp(30px,4vw,42px); margin-bottom:16px}
+.pillars-sub{max-width:560px; font-size:15px; line-height:1.6; color:var(--ink-soft); margin-bottom:48px}
+.pillar{display:grid; grid-template-columns:64px 1fr; gap:24px; padding:36px 0; border-top:2px solid var(--sand);}
+.pillar:last-child{border-bottom:2px solid var(--sand)}
+.pillar .num{font-family:'Fira Code',monospace; font-weight:700; font-size:15px; color:#fff; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+.pillar h3{font-style:italic; font-weight:900; text-transform:uppercase; font-size:24px; margin-bottom:10px}
+.pillar p{font-size:14.5px; line-height:1.65; color:var(--ink-soft); max-width:600px}
+.pillar .tags{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
+.pillar .tag{font-family:'Fira Code',monospace; font-size:10.5px; padding:5px 11px; border-radius:999px; background:var(--cream-soft); border:1px solid var(--sand); color:var(--ink-soft);}
+
+.portal-sec{background:var(--cream-soft)}
+.portal-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:44px; align-items:start}
+.kiosk-diagram{background:var(--ink); border-radius:24px; padding:32px; display:flex; flex-direction:column; align-items:center; gap:0;}
+.kiosk-shape{width:200px; margin:0 auto}
+.kiosk-shape .body{background:var(--teal-bright); border-radius:16px 16px 60px 60px / 16px 16px 40px 40px; height:230px; position:relative}
+.kiosk-shape .roof{background:var(--red); height:44px; border-radius:100px 100px 0 0; margin-bottom:-6px}
+.kiosk-shape .screen1{position:absolute; top:14px; left:20px; right:20px; height:40px; background:var(--ink); border-radius:6px; opacity:.85}
+.kiosk-shape .screen2{position:absolute; top:64px; left:30px; right:30px; height:34px; background:var(--ink); border-radius:6px; opacity:.7}
+.kiosk-shape .shelf{position:absolute; bottom:38px; left:14px; right:14px; height:4px; background:rgba(0,0,0,.2); border-radius:2px}
+.kiosk-shape .goods{position:absolute; bottom:8px; left:14px; right:14px; height:26px; border:2px solid rgba(0,0,0,.15); border-radius:4px}
+.kiosk-caption{font-family:'Fira Code',monospace; font-size:10.5px; color:var(--cream); opacity:.6; margin-top:20px; text-align:center; letter-spacing:.04em}
+.portal-features{display:flex; flex-direction:column; gap:20px}
+.pf-item{display:flex; gap:14px; align-items:flex-start}
+.pf-dot{width:10px; height:10px; border-radius:50%; margin-top:6px; flex:none}
+.pf-item .t{font-weight:800; font-size:14.5px}
+.pf-item .d{font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:3px}
+
+.apps-sec{background:var(--ink); color:var(--cream)}
+.apps-sec .pillars-sub{color:var(--cream); opacity:.7}
+.route-strip{display:flex; gap:10px; flex-wrap:wrap; margin-top:36px}
+.route-chip{font-family:'Fira Code',monospace; font-size:11.5px; padding:9px 15px; border-radius:10px; border:1px solid rgba(251,244,228,.2); color:var(--cream); background:rgba(251,244,228,.04);}
+.route-chip.live{background:var(--teal); color:#fff; border-color:var(--teal); font-weight:700}
+.apps-quote{margin-top:44px; border-left:3px solid var(--amber); padding-left:24px; font-style:italic; font-size:20px; font-weight:700; line-height:1.4; max-width:520px;}
+
+.eco-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:44px}
+.eco-card{background:var(--cream-soft); border:2px solid var(--sand); border-radius:18px; padding:24px}
+.eco-card .icon{width:36px; height:36px; border-radius:10px; margin-bottom:14px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:15px}
+.eco-card h4{font-style:italic; font-weight:900; text-transform:uppercase; font-size:15px; margin-bottom:8px}
+.eco-card p{font-size:12.5px; line-height:1.55; color:var(--ink-soft)}
+.eco-card .stat{display:block; margin-top:12px; font-family:'Fira Code',monospace; font-size:11px; font-weight:700; color:var(--teal-deep)}
+
+.map-sec{background:var(--cream-soft)}
+.loc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:44px}
+.loc-card{background:#fff; border:2px solid var(--sand); border-radius:14px; padding:16px; text-align:center;}
+.loc-card.flagship{background:var(--red); border-color:var(--red); color:#fff}
+.loc-card.opening{border-style:dashed; opacity:.75}
+.loc-card .city{font-weight:800; font-size:13.5px}
+.loc-card .status{font-family:'Fira Code',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; margin-top:5px; opacity:.7}
+
+.ticker-sec{background:var(--amber); padding:56px 64px; text-align:center}
+.ticker-sec .label{color:var(--ink); opacity:.7}
+.ticker-num{font-family:'Fira Code',monospace; font-weight:900; font-size:clamp(46px,8vw,80px); color:var(--ink); line-height:1}
+.ticker-sub{font-style:italic; font-weight:800; text-transform:uppercase; font-size:18px; color:var(--ink); margin-top:8px}
+
+.cta-sec{background:var(--red); color:#fff; text-align:center; padding:90px 64px}
+.cta-sec .title-xl{font-size:clamp(38px,6vw,60px); color:#fff}
+.cta-sec p{max-width:520px; margin:20px auto 0; font-size:15px; line-height:1.6; opacity:.9}
+.cta-btn{display:inline-block; margin-top:32px; background:var(--ink); color:var(--cream); font-style:italic; font-weight:900; text-transform:uppercase; font-size:15px; padding:18px 40px; border-radius:999px;}
+
+.foot{background:var(--ink); color:var(--cream); padding:32px 64px; font-family:'Fira Code',monospace; font-size:10.5px; text-align:center; line-height:1.8; opacity:.75}
+.foot .tm{color:var(--amber)}
+
+@media(max-width:760px){
+  section{padding:56px 24px}
+  .portal-grid, .eco-grid, .loc-grid{grid-template-columns:1fr 1fr}
+  .navdots{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="navdots">
+  <a href="#hero" class="on"></a><a href="#portal"></a><a href="#apps"></a><a href="#ecosystem"></a><a href="#global"></a><a href="#launch"></a>
+</div>
+
+<div class="page">
+
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div class="eyebrow on-dark"><span class="line"></span>GLOBAL LAUNCH — FRUITFUL PORTAL</div>
+      <div class="logo-row">
+        <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 0-6 3-6 7a6 6 0 0012 0c0-4-3-7-6-7z" stroke="white" stroke-width="2" stroke-linejoin="round"/><circle cx="9.8" cy="11" r="0.9" fill="white"/><circle cx="14.2" cy="11" r="0.9" fill="white"/><path d="M9 13.5c0.8 1 2.2 1 3 0" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <div class="logo-word">fruitful<span class="tm">™</span></div>
+      </div>
+      <h1 class="hero-title">One counter.<br>Three <span class="t">futures</span>.<br>Made <span class="r">while</span> you wait.</h1>
+      <p class="hero-sub">The Fruitful Portal is the first place on earth where buying a coffee also builds you an app and feeds a child — before your order number is even called.</p>
+      <div class="master-tag">Buy Artisan. Create Apps. Eat Pancakes.™</div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="n">11</div><div class="l">Portal locations, live + opening</div></div>
+        <div class="hstat"><div class="n">3×3+1</div><div class="l">Golden Ticket Menu™</div></div>
+        <div class="hstat"><div class="n">1:1</div><div class="l">Item sold : child fed</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="insight-band"><b>The idea —</b> every global chain sells you something to hold while you wait. Fruitful is the only one where the wait is the product: a portal, an app, a giving act, at one counter, at once.</div>
+
+  <section>
+    <div class="eyebrow" style="color:var(--red)"><span class="line" style="background:var(--red)"></span>THE LAUNCH, IN THREE PARTS</div>
+    <h2 class="pillars-title">The Portal. The Apps. The Ecosystem.</h2>
+    <p class="pillars-sub">Three things that have never shipped from the same counter before — now launching together, everywhere Fruitful stands.</p>
+
+    <div class="pillar">
+      <div class="num" style="background:var(--red)">01</div>
+      <div>
+        <h3>The Portal</h3>
+        <p>A physical, mobile, cylindrical kiosk — teal body, red dome, the fruitful™ mark glowing on top. Counter service for artisan goods, coffee, smoothies and the Golden Ticket Menu™, with cold storage and a service ledge built in.</p>
+        <div class="tags"><span class="tag">Mobile · on castors</span><span class="tag">Dual-screen</span><span class="tag">Cold storage + shelving</span></div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="num" style="background:var(--teal)">02</div>
+      <div>
+        <h3>The Apps</h3>
+        <p>bushcoding runs live at the portal — type a prompt, watch a real full-stack app generate while your order is being made. No competitor gives you a working, deployed app before your name is called.</p>
+        <div class="tags"><span class="tag">/live-coding</span><span class="tag">/templates</span><span class="tag">/shop</span><span class="tag">Pro via WhatsApp checkout</span></div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="num" style="background:var(--amber)">03</div>
+      <div>
+        <h3>The Ecosystem</h3>
+        <p>Every portal sale connects back to Fruitful Global™: Banimal's artisan storefront, Fruitful Kids' handmade collection, SamFox prints, and the Banimal Giving Loop™ that turns every purchase into a same-day meal for a child.</p>
+        <div class="tags"><span class="tag">Banimal</span><span class="tag">Fruitful Kids</span><span class="tag">SamFox Prints</span><span class="tag">Giving Loop™</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-sec" id="portal">
+    <div class="eyebrow" style="color:var(--red)"><span class="line" style="background:var(--red)"></span>01 — THE PORTAL</div>
+    <h2 class="pillars-title">Built to stand on any street, anywhere.</h2>
+    <p class="pillars-sub">Fiberglass shell, mobile base, real counter service — the same portal design ships to a Pretoria bush flagship and a Tokyo sidewalk without changing a bolt.</p>
+    <div class="portal-grid">
+      <div class="kiosk-diagram">
+        <div class="kiosk-shape">
+          <div class="roof"></div>
+          <div class="body">
+            <div class="screen1"></div>
+            <div class="screen2"></div>
+            <div class="shelf"></div>
+            <div class="goods"></div>
+          </div>
+        </div>
+        <div class="kiosk-caption">FRUITFUL PORTAL — STANDARD UNIT<br>TEAL BODY · RED DOME · ILLUMINATED TOPPER</div>
+      </div>
+      <div class="portal-features">
+        <div class="pf-item"><span class="pf-dot" style="background:var(--red)"></span><div><div class="t">Counter + cold storage</div><div class="d">Glass-front shelving for artisan stock and fresh goods, built into the base of every unit.</div></div></div>
+        <div class="pf-item"><span class="pf-dot" style="background:var(--teal)"></span><div><div class="t">Dual display system</div><div class="d">A hinged upper screen and fixed lower screen — signage, menu, and bushcoding live-build, side by side.</div></div></div>
+        <div class="pf-item"><span class="pf-dot" style="background:var(--amber)"></span><div><div class="t">Mobile by design</div><div class="d">Castor-mounted — pop-up at a market this weekend, permanent on a corner next month.</div></div></div>
+        <div class="pf-item"><span class="pf-dot" style="background:var(--red-deep)"></span><div><div class="t">One brand, every market</div><div class="d">Same fiberglass mould, same Pantone-matched teal, same fruitful™ mark — from the SA Bush flagship to Tokyo.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="apps-sec" id="apps">
+    <div class="eyebrow on-dark"><span class="line"></span>02 — THE APPS</div>
+    <h2 class="pillars-title" style="color:#fff">Your coffee order compiles.</h2>
+    <p class="pillars-sub">bushcoding is the tech layer built into every portal — the reason "Tech Meets Tradition" is a mechanic, not a slogan.</p>
+    <div class="apps-quote">"I ordered a coffee. I left with an app."</div>
+    <div class="route-strip">
+      <span class="route-chip live">/live-coding — build in real time</span>
+      <span class="route-chip">/templates</span>
+      <span class="route-chip">/shop</span>
+      <span class="route-chip">/recipes</span>
+      <span class="route-chip">/workspaces</span>
+      <span class="route-chip">/preview/:id — see it deployed, on the spot</span>
+    </div>
+  </section>
+
+  <section id="ecosystem">
+    <div class="eyebrow" style="color:var(--amber)"><span class="line" style="background:var(--amber)"></span>03 — THE ECOSYSTEM</div>
+    <h2 class="pillars-title">Every sale connects back.</h2>
+    <p class="pillars-sub">One portal, one ticket, four brands working from the same counter.</p>
+    <div class="eco-grid">
+      <div class="eco-card">
+        <div class="icon" style="background:var(--red)">B</div>
+        <h4>Banimal</h4>
+        <p>The artisan storefront — Roleplay™ products, samfox_illustrate™ licensed art, free SA shipping.</p>
+        <span class="stat">www.banimal.co.za</span>
+      </div>
+      <div class="eco-card">
+        <div class="icon" style="background:var(--teal)">K</div>
+        <h4>Fruitful Kids</h4>
+        <p>Handmade by locals — babygrows, dresses, strollers, educational toys. Real artisans, real prices, R132–R495.</p>
+        <span class="stat">Handmade by Locals™</span>
+      </div>
+      <div class="eco-card">
+        <div class="icon" style="background:var(--amber)">S</div>
+        <h4>SamFox Prints</h4>
+        <p>Certified illustrated artwork, sold at the portal and online — every print signed, dated, verifiable.</p>
+        <span class="stat">Certificate per print</span>
+      </div>
+      <div class="eco-card">
+        <div class="icon" style="background:var(--red-deep)">G</div>
+        <h4>Banimal Giving Loop™</h4>
+        <p>Coffee +1 · smoothie +1 · single pancake +1 · 6-box +6 · 12-pack +12 — giving units, counted live.</p>
+        <span class="stat">1.9% of turnover, self-funding at +3% lift</span>
+      </div>
+      <div class="eco-card">
+        <div class="icon" style="background:var(--teal-deep)">P</div>
+        <h4>Pro Subscription</h4>
+        <p>Unlock bushcoding Pro by buying one handcrafted hat from Grand — technology, paid for in craft.</p>
+        <span class="stat">$295 / month, via WhatsApp checkout</span>
+      </div>
+      <div class="eco-card">
+        <div class="icon" style="background:var(--amber-deep)">V</div>
+        <h4>The Child Ticker™</h4>
+        <p>Live counter, on-screen at every portal — the reason for the sale, visible the moment you buy.</p>
+        <span class="stat">Not for sale. The point of the sale.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-sec" id="global">
+    <div class="eyebrow" style="color:var(--teal)"><span class="line" style="background:var(--teal)"></span>GLOBAL FOOTPRINT</div>
+    <h2 class="pillars-title">One portal. Eleven cities. One mould.</h2>
+    <p class="pillars-sub">Every location runs the same portal, the same menu framework, the same giving loop — adapted to the block it stands on, never to a different brand.</p>
+    <div class="loc-grid">
+      <div class="loc-card flagship"><div class="city">SA Bush</div><div class="status">Flagship</div></div>
+      <div class="loc-card"><div class="city">New York</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Tokyo</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Texas</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Botswana</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Mexico</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Iceland</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Zimbabwe</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Egypt</div><div class="status">Live</div></div>
+      <div class="loc-card"><div class="city">Bangkok</div><div class="status">Live</div></div>
+      <div class="loc-card opening"><div class="city">Canada</div><div class="status">Opening</div></div>
+    </div>
+  </section>
+
+  <section class="ticker-sec">
+    <div class="label">LIVE AT EVERY PORTAL, RIGHT NOW</div>
+    <div class="ticker-num">1,247</div>
+    <div class="ticker-sub">children fed today — you just made it 1,248.</div>
+  </section>
+
+  <section class="cta-sec" id="launch">
+    <div class="label" style="color:#fff; opacity:.75">THE LAUNCH</div>
+    <h2 class="title-xl">Come build an app.<br>Leave with a pancake.</h2>
+    <p>Fruitful Portal is live. The apps are live. The giving loop is live. This is the version of "global brand" that starts at one counter and never changes what it stands for on the way to the next one.</p>
+    <div class="cta-btn">Find your nearest portal →</div>
+  </section>
+
+  <div class="foot">
+    © 2026 Fruitful Shops (Pty) Ltd. FRUITFUL<span class="tm">™</span> · Banimal Giving Loop<span class="tm">™</span> · Golden Ticket Menu<span class="tm">™</span> · The Child Ticker<span class="tm">™</span>. All rights reserved.<br>
+    www.banimal.co.za · fruitful.co · github.com/fruitful-global-planet/Banimal-global-loop.git<br>
+    Built exclusively from verified brand assets and confirmed ecosystem facts.
+  </div>
+
+</div>
+
+<script>
+  const sections = ['hero','portal','apps','ecosystem','global','launch'];
+  const dots = document.querySelectorAll('.navdots a');
+  window.addEventListener('scroll', () => {
+    let current = 0;
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - window.innerHeight/2) current = i;
+    });
+    dots.forEach((d,i) => d.classList.toggle('on', i === current));
+  });
+</script>
+
+</body>
+</html>
