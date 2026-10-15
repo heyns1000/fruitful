@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 HotStack Admin Dashboard | FAA.zone™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0071e3;
+            --secondary: #30d158;
+            --tertiary: #ff3b30;
+            --purple: #8b5cf6;
+            --cyan: #06b6d4;
+            --lime: #84cc16;
+            --yellow: #fbbf24;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .pulse-indicator {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .vaultmesh-pulse {
+            animation: vaultmesh 9s ease-in-out infinite;
+        }
+
+        @keyframes vaultmesh {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.05); 
+                opacity: 0.8;
+            }
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .sector-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .health-green { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+        .health-yellow { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid #fbbf24; }
+        .health-red { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
+        .repo-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .repo-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--cyan);
+            transform: translateX(5px);
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #f8fafc;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--cyan);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .close-modal:hover {
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="glass-card mx-4 mt-4 p-6">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="text-5xl vaultmesh-pulse">🎯</div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                        HotStack Admin Dashboard
+                    </h1>
+                    <p class="text-sm text-gray-400 mt-1">FAA.zone™ OmniGrid Control Center</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-center">
+                    <div class="pulse-indicator inline-block w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-2 text-sm font-semibold">VaultMesh Active</span>
+                    <div class="text-xs text-gray-400">9-second pulse</div>
+                </div>
+                <button onclick="refreshDashboard()" class="action-btn bg-cyan-600 hover:bg-cyan-700 text-white">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <div class="px-4 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-card stat-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-sm font-semibold uppercase">Total Systems</div>
+                        <div class="text-4xl font-bold mt-2" id="stat-total">87</div>
+                        <div class="text-xs text-gray-500 mt-1">Across 6 sectors</div>
+                    </div>
+                    <div class="text-4xl">🕸️</div>
+                </div>
+            </div>
+
+            <div class="glass-card stat-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-sm font-semibold uppercase">Healthy</div>
+                        <div class="text-4xl font-bold mt-2 text-green-400" id="stat-healthy">72</div>
+                        <div class="text-xs text-gray-500 mt-1">Green status systems</div>
+                    </div>
+                    <div class="text-4xl">💚</div>
+                </div>
+            </div>
+
+            <div class="glass-card stat-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-sm font-semibold uppercase">Development</div>
+                        <div class="text-4xl font-bold mt-2 text-yellow-400" id="stat-development">15</div>
+                        <div class="text-xs text-gray-500 mt-1">Yellow status systems</div>
+                    </div>
+                    <div class="text-4xl">🔧</div>
+                </div>
+            </div>
+
+            <div class="glass-card stat-card p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-sm font-semibold uppercase">Last Sync</div>
+                        <div class="text-2xl font-bold mt-2" id="stat-lastsync">Just now</div>
+                        <div class="text-xs text-gray-500 mt-1">VaultMesh pulse</div>
+                    </div>
+                    <div class="text-4xl">⚡</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Tabs -->
+    <div class="px-4 mt-6">
+        <div class="glass-card p-6">
+            <!-- Tab Navigation -->
+            <div class="flex gap-2 mb-6 overflow-x-auto">
+                <button class="tab-button active" onclick="switchTab('overview')">📊 Overview</button>
+                <button class="tab-button" onclick="switchTab('sectors')">🌐 Sectors</button>
+                <button class="tab-button" onclick="switchTab('repositories')">📦 Repositories</button>
+                <button class="tab-button" onclick="switchTab('deploy')">🚀 Deploy & Build</button>
+                <button class="tab-button" onclick="switchTab('analytics')">📈 Analytics</button>
+                <button class="tab-button" onclick="switchTab('monitoring')">🔍 Monitoring</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-content">
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="tab-pane">
+                    <h2 class="text-2xl font-bold mb-4">System Overview</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- System Health -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">System Health</h3>
+                            <div id="health-status" class="loading">
+                                <div class="spinner"></div>
+                                <p class="mt-4">Loading health status...</p>
+                            </div>
+                        </div>
+
+                        <!-- VaultMesh Status -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">VaultMesh Pulse</h3>
+                            <div id="vaultmesh-status" class="loading">
+                                <div class="spinner"></div>
+                                <p class="mt-4">Loading VaultMesh status...</p>
+                            </div>
+                        </div>
+
+                        <!-- Sector Distribution -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">Sector Distribution</h3>
+                            <div id="sector-distribution" class="loading">
+                                <div class="spinner"></div>
+                                <p class="mt-4">Loading sector data...</p>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">Recent Activity</h3>
+                            <div id="recent-activity" class="space-y-2">
+                                <div class="text-sm text-gray-400">No recent activity</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sectors Tab -->
+                <div id="sectors-tab" class="tab-pane hidden">
+                    <h2 class="text-2xl font-bold mb-4">Sector Management</h2>
+                    <div id="sectors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p class="mt-4">Loading sectors...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repositories Tab -->
+                <div id="repositories-tab" class="tab-pane hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <h2 class="text-2xl font-bold">Repository Explorer</h2>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <input type="text" id="repo-search" class="search-input" placeholder="🔍 Search repositories...">
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <select id="filter-sector" class="search-input w-auto">
+                            <option value="">All Sectors</option>
+                            <option value="finance">💰 Finance</option>
+                            <option value="health">🏥 Health</option>
+                            <option value="legal">⚖️ Legal</option>
+                            <option value="build">🏗️ Build</option>
+                            <option value="ai">🤖 AI</option>
+                            <option value="global">🌍 Global</option>
+                        </select>
+                        <select id="filter-status" class="search-input w-auto">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="development">Development</option>
+                        </select>
+                        <select id="filter-health" class="search-input w-auto">
+                            <option value="">All Health</option>
+                            <option value="green">Green</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="red">Red</option>
+                        </select>
+                    </div>
+
+                    <div id="repositories-list" class="space-y-3">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p class="mt-4">Loading repositories...</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination" class="flex justify-center gap-2 mt-6 hidden"></div>
+                </div>
+
+                <!-- Deploy & Build Tab -->
+                <div id="deploy-tab" class="tab-pane hidden">
+                    <h2 class="text-2xl font-bold mb-4">Deploy & Build Console</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Deploy Form -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">🚀 Deploy System</h3>
+                            <form id="deploy-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">System ID</label>
+                                    <input type="text" id="deploy-system-id" class="search-input" placeholder="e.g., hotstack" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Environment</label>
+                                    <select id="deploy-environment" class="search-input">
+                                        <option value="production">Production</option>
+                                        <option value="staging">Staging</option>
+                                        <option value="development">Development</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="action-btn bg-green-600 hover:bg-green-700 text-white w-full">
+                                    Deploy System
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Build Form -->
+                        <div class="glass-card p-6">
+                            <h3 class="text-xl font-semibold mb-4">🔨 Trigger Build</h3>
+                            <form id="build-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">System ID</label>
+                                    <input type="text" id="build-system-id" class="search-input" placeholder="e.g., buildnest" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2">Intent</label>
+                                    <textarea id="build-intent" class="search-input" rows="3" placeholder="Describe the build intent...">Deploy system</textarea>
+                                </div>
+                                <button type="submit" class="action-btn bg-cyan-600 hover:bg-cyan-700 text-white w-full">
+                                    Trigger BuildNest
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Build History -->
+                        <div class="glass-card p-6 lg:col-span-2">
+                            <h3 class="text-xl font-semibold mb-4">Build History</h3>
+                            <div id="build-history" class="space-y-2">
+                                <div class="text-sm text-gray-400">No build history yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="analytics-tab" class="tab-pane hidden">
+                    <h2 class="text-2xl font-bold mb-4">Analytics Dashboard</h2>
+                    <div id="analytics-content" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p class="mt-4">Loading analytics...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Tab -->
+                <div id="monitoring-tab" class="tab-pane hidden">
+                    <h2 class="text-2xl font-bold mb-4">System Monitoring</h2>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                        <div class="glass-card p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="pulse-indicator w-4 h-4 rounded-full bg-green-500"></div>
+                                <div>
+                                    <div class="text-sm text-gray-400">API Status</div>
+                                    <div class="font-semibold" id="api-status">Connected</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="pulse-indicator w-4 h-4 rounded-full bg-green-500"></div>
+                                <div>
+                                    <div class="text-sm text-gray-400">BuildNest</div>
+                                    <div class="font-semibold" id="buildnest-status">Operational</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="pulse-indicator w-4 h-4 rounded-full bg-green-500"></div>
+                                <div>
+                                    <div class="text-sm text-gray-400">OmniGrid</div>
+                                    <div class="font-semibold" id="omnigrid-status">Synced</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="monitoring-details" class="glass-card p-6">
+                        <h3 class="text-xl font-semibold mb-4">System Details</h3>
+                        <div id="monitoring-content" class="loading">
+                            <div class="spinner"></div>
+                            <p class="mt-4">Loading monitoring data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="px-4 mt-8 mb-4">
+        <div class="glass-card p-6 text-center">
+            <div class="text-sm text-gray-400">
+                FAA.zone™ HotStack Admin Dashboard | 
+                Powered by VaultMesh 9-second pulse | 
+                瓷勺旋渦已築，脈買已通！ 🦍🔥
+            </div>
+            <div class="text-xs text-gray-500 mt-2">
+                Managing 87 repositories across 6 sectors | OmniGrid ecosystem
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for Repository Details -->
+    <div id="repo-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Load Integration Scripts -->
+    <script src="/omnigrid/api-integration.js"></script>
+    <script src="js/hotstack-integration.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSOMNI9000 - Zoho Vault Cloud Architecture | Fruitful Global Planet</title>
+    <meta name="description" content="Complete enterprise cloud architecture for managing 9,000+ brands, 100M data points, and global business operations. Built by Heyns Schoeman.">
+    <meta name="author" content="Heyns Schoeman - Fruitful Global Planet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <style>
+        :root {
+            --primary: #e42527;
+            --secondary: #f6821f;
+            --accent: #34a853;
+            --dark: #1a1a1a;
+            --light: #f5f5f5;
+            --code-bg: #2d2d2d;
+            --border: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 3em;
+        }
+
+        .brand-info h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .brand-info p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent), #4285f4);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            list-style: none;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: var(--light);
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(228, 37, 39, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        h3 {
+            font-size: 1.8em;
+            color: var(--secondary);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.4em;
+            color: var(--accent);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .inline-code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+            font-family: monospace;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(228, 37, 39, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent), #28a745);
+        }
+
+        /* Architecture Diagram */
+        .architecture-visual {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .flow-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .flow-box {
+            padding: 20px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .flow-cloudflare {
+            background: linear-gradient(135deg, #f6821f, #ff9800);
+            color: white;
+        }
+
+        .flow-zoho {
+            background: linear-gradient(135deg, #e42527, #c62828);
+            color: white;
+        }
+
+        .flow-external {
+            background: linear-gradient(135deg, #4285f4, #1976d2);
+            color: white;
+        }
+
+        .flow-arrow {
+            font-size: 2em;
+            color: var(--accent);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-left: 4px solid var(--accent);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            font-size: 1.5em;
+            color: var(--accent);
+        }
+
+        .checklist li.completed:before {
+            content: "✅";
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -46px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid white;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        }
+
+        footer p {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-row {
+                flex-direction: column;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em !important;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+
+        /* Scroll to top button */
+        #scrollTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        #scrollTop:hover {
+            transform: scale(1.1);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            header, nav, footer, #scrollTop {
+                display: none;
+            }
+            
+            main {
+                box-shadow: none;
+            }
+            
+            .card {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">🚀</div>
+                    <div class="brand-info">
+                        <h1>HSOMNI9000</h1>
+                        <p>Fruitful Global Planet | Cloud Architecture</p>
+                        <p><strong>Architect:</strong> Heyns Schoeman</p>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">9,000</div>
+                        <div class="stat-label">Brands</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">100M</div>
+                        <div class="stat-label">Data Points</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Mac • Man</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#cloudflare">Cloudflare Setup</a></li>
+                <li><a href="#zoho">Zoho Integration</a></li>
+                <li><a href="#platforms">Platform APIs</a></li>
+                <li><a href="#implementation">Implementation</a></li>
+                <li><a href="#monitoring">Monitoring</a></li>
+                <li><a href="#costs">Costs</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- OVERVIEW -->
+            <section id="overview">
+                <h2>🎯 Executive Overview</h2>
+                
+                <div class="alert alert-success">
+                    <strong>Mission:</strong> Build a single-operator enterprise cloud infrastructure managing 9,000+ brands, 100 million data points, and global business operations with maximum automation and minimum cost.
+                </div>
+
+                <h3>Core Principles</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">☁️</div>
+                        <div class="card-title">Cloud-First</div>
+                        <p>Cloudflare R2 as primary data lake with infinite scalability and zero egress fees</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔐</div>
+                        <div class="card-title">Security-First</div>
+                        <p>Zero Trust architecture with encrypted data at rest and in transit</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-title">Automation-First</div>
+                        <p>Zoho Flow orchestrating all data pipelines with real-time sync</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-title">Cost-Optimized</div>
+                        <p>Enterprise-scale infrastructure for ~$200/month</p>
+                    </div>
+                </div>
+
+                <h3>What This System Does</h3>
+                <ul>
+                    <li><strong>Centralized Storage:</strong> All 100M files in one Cloudflare R2 bucket</li>
+                    <li><strong>Automated Sync:</strong> Real-time data ingestion from Google Drive, GitHub, Vercel, Alibaba, email, CRM, etc.</li>
+                    <li><strong>Intelligent Processing:</strong> Zoho Vault Cloud scans for secrets, deduplicates, enriches metadata</li>
+                    <li><strong>Global Distribution:</strong> Files available worldwide in <50ms via Cloudflare's edge network</li>
+                    <li><strong>Unified Dashboard:</strong> Zoho Mail managing all 9,000 domains from one interface</li>
+                    <li><strong>API-First:</strong> Everything accessible via APIs for automation</li>
+                </ul>
+
+                <h3>Key Statistics</h3>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Details</th>
+                    </tr>
+                    <tr>
+                        <td>Total Brands</td>
+                        <td>9,000+</td>
+                        <td>Each with separate domain, email, and data folder</td>
+                    </tr>
+                    <tr>
+                        <td>Data Points</td>
+                        <td>100 Million</td>
+                        <td>Files from all platforms consolidated</td>
+                    </tr>
+                    <tr>
+                        <td>Email Domains</td>
+                        <td>9,000+</td>
+                        <td>All DNS in Cloudflare, email in Zoho Mail</td>
+                    </tr>
+                    <tr>
+                        <td>Contacts</td>
+                        <td>20 Million</td>
+                        <td>Global CRM database</td>
+                    </tr>
+                    <tr>
+                        <td>Storage</td>
+                        <td>~10-100TB</td>
+                        <td>Cloudflare R2 (unlimited capacity)</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly Cost</td>
+                        <td>~$195-$410</td>
+                        <td>Including all infrastructure</td>
+                    </tr>
+                    <tr>
+                        <td>Operators</td>
+                        <td>1</td>
+                        <td>You (Heyns) + automation</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- ARCHITECTURE -->
+            <section id="architecture">
+                <h2>🏗️ System Architecture</h2>
+
+                <h3>Data Flow Overview</h3>
+                <div class="architecture-visual">
+                    <div class="flow-diagram">
+                        <div class="flow-row">
+                            <div class="flow-box flow-external">External Sources<br>(Google, GitHub, etc.)</div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-row">
+                            <div class="flow-box flow-zoho">Zoho Vault Cloud<br>(Intelligence Layer)</div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-row">
+                            <div class="flow-box flow-cloudflare">Cloudflare R2<br>(Data Lake)</div>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-row">
+                            <div class="flow-box flow-cloudflare">Cloudflare Workers<br>(Global Access)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Layer 1: Cloudflare Foundation</h3>
+                <h4>Components:</h4>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">🌐 DNS Authority</div>
+                        <p><strong>Purpose:</strong> All 9,000 domains managed here</p>
+                        <p><strong>Records:</strong> MX → Zoho Mail, SPF/DKIM/DMARC</p>
+                        <p><strong>Automation:</strong> Auto-sync with Zoho Mail via API</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📦 R2 Storage</div>
+                        <p><strong>Purpose:</strong> Primary data lake (100M files)</p>
+                        <p><strong>Capacity:</strong> Unlimited (S3-compatible)</p>
+                        <p><strong>Cost:</strong> $0.015/GB storage, $0 egress</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">⚡ Workers</div>
+                        <p><strong>Purpose:</strong> Edge compute, authentication</p>
+                        <p><strong>Function:</strong> Process requests, serve files globally</p>
+                        <p><strong>Latency:</strong> <50ms worldwide</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">🔒 Zero Trust</div>
+                        <p><strong>Purpose:</strong> Access control and security</p>
+                        <p><strong>Features:</strong> mTLS, IP allowlisting, MFA</p>
+                        <p><strong>Policies:</strong> Role-based access control</p>
+                    </div>
+                </div>
+
+                <h3>Layer 2: Zoho Intelligence Hub</h3>
+                <h4>Components:</h4>
+                <table>
+                    <tr>
+                        <th>Service</th>
+                        <th>Purpose</th>
+                        <th>URL</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Mail</strong></td>
+                        <td>Unified email dashboard for 9,000 domains</td>
+                        <td><a href="https://mail.zoho.com" target="_blank">mail.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Vault</strong></td>
+                        <td>Credential management (API keys, secrets)</td>
+                        <td><a href="https://vault.zoho.com" target="_blank">vault.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho WorkDrive</strong></td>
+                        <td>Temporary file staging before R2 push</td>
+                        <td><a href="https://workdrive.zoho.com" target="_blank">workdrive.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Flow</strong></td>
+                        <td>Workflow automation & orchestration</td>
+                        <td><a href="https://flow.zoho.com" target="_blank">flow.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Catalyst</strong></td>
+                        <td>Serverless functions for data processing</td>
+                        <td><a href="https://catalyst.zoho.com" target="_blank">catalyst.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Creator</strong></td>
+                        <td>Searchable index database (100M records)</td>
+                        <td><a href="https://creator.zoho.com" target="_blank">creator.zoho.com</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho Analytics</strong></td>
+                        <td>Monitoring dashboard & reports</td>
+                        <td><a href="https://analytics.zoho.com" target="_blank">analytics.zoho.com</a></td>
+                    </tr>
+                </table>
+
+                <h3>Data Processing Pipeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 1: Intake</div>
+                        <p><strong>Source:</strong> Webhook or scheduled job triggers from external platforms</p>
+                        <p><strong>Action:</strong> File data queued in Zoho Flow</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 2: Validation</div>
+                        <p><strong>Checks:</strong> File integrity (checksum), virus scan, format validation</p>
+                        <p><strong>Reject:</strong> Files >5GB or malformed</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 3: Deduplication</div>
+                        <p><strong>Method:</strong> SHA-256 hash comparison against Creator database</p>
+                        <p><strong>Action:</strong> Skip if duplicate exists</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 4: Enrichment</div>
+                        <p><strong>Extract:</strong> Metadata (author, date, size), OCR text from images/PDFs</p>
+                        <p><strong>Classify:</strong> AI determines brand ID from path/content</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 5: Secret Scanning</div>
+                        <p><strong>Detect:</strong> API keys, passwords, tokens via regex</p>
+                        <p><strong>Store:</strong> Secrets extracted to Zoho Vault (encrypted chambers)</p>
+                        <p><strong>Sanitize:</strong> Remove credentials from files before storage</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 6: Indexing</div>
+                        <p><strong>Database:</strong> Store metadata in Zoho Creator</p>
+                        <p><strong>Fields:</strong> file_name, brand_id, source, checksum, r2_key, size, date</p>
+                        <p><strong>Search:</strong> Full-text searchable index</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Stage 7: Distribution</div>
+                        <p><strong>Upload:</strong> Push to Cloudflare R2 via S3-compatible API</p>
+                        <p><strong>Path:</strong> /brands/{brand_id}/{source}/{filename}</p>
+                        <p><strong>Result:</strong> Globally replicated across 275+ edge locations</p>
+                    </div>
+                </div>
+
+                <h3>R2 Bucket Structure</h3>
+                <pre><code>hsomni9000-global/
+├── brands/
+│   ├── brand_0001/
+│   │   ├── google-drive/
+│   │   ├── github/
+│   │   ├── vercel/
+│   │   └── emails/
+│   ├── brand_0002/
+│   └── ... (9000 total)
+│
+├── contacts/
+│   ├── by-region/
+│   │   ├── north-america/
+│   │   ├── europe/
+│   │   ├── asia-pacific/
+│   │   └── africa/
+│   └── by-industry/
+│
+├── repositories/
+│   ├── github-archives/
+│   └── gitlab-archives/
+│
+├── business-data/
+│   ├── crm/
+│   ├── invoices/
+│   └── analytics/
+│
+├── compliance/
+│   ├── gdpr/
+│   ├── popia/
+│   └── audit-logs/
+│
+└── system/
+    ├── backups/
+    └── metadata-exports/</code></pre>
+            </section>
+
+            <!-- CLOUDFLARE SETUP -->
+            <section id="cloudflare">
+                <h2>☁️ Cloudflare Setup Guide</h2>
+
+                <div class="alert alert-info">
+                    <strong>Start Here:</strong> Cloudflare is your primary infrastructure. Set this up first before anything else.
+                </div>
+
+                <h3>Step 1: Create Cloudflare Account</h3>
+                <ol>
+                    <li>Go to: <a href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com/sign-up</a></li>
+                    <li>Email: <code class="inline-code">heyns@fruitful-global-planet.com</code></li>
+                    <li>Create strong password</li>
+                    <li>Verify email</li>
+                    <li>Add payment method (required for R2)</li>
+                </ol>
+
+                <h3>Step 2: Enable R2 Storage</h3>
+                <ol>
+                    <li>Dashboard → R2 → "Purchase R2"</li>
+                    <li>Accept terms & conditions</li>
+                    <li>Click "Create bucket"</li>
+                    <li>Bucket name: <code class="inline-code">hsomni9000-vault</code></li>
+                    <li>Location: Automatic (global)</li>
+                </ol>
+
+                <div class="alert alert-success">
+                    ✅ <strong>Your main cloud storage is now ready!</strong> You have unlimited storage capacity.
+                </div>
+
+                <h3>Step 3: Get R2 API Credentials</h3>
+                <ol>
+                    <li>Dashboard → R2 → "Manage R2 API Tokens"</li>
+                    <li>Click "Create API Token"</li>
+                    <li>Token name: <code class="inline-code">hsomni9000-sync</code></li>
+                    <li>Permissions: ☑️ Object Read & Write</li>
+                    <li>TTL: Forever</li>
+                    <li>Click "Create API Token"</li>
+                </ol>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ SAVE THESE IMMEDIATELY:</strong>
+                    <pre><code>Access Key ID: [copy this - looks like: abc123...]
+Secret Access Key: [copy this - 40+ characters]
+Endpoint URL: https://[account-id].r2.cloudflarestorage.com</code></pre>
+                    <p>You will never see the Secret Access Key again!</p>
+                </div>
+
+                <h3>Step 4: DNS Management (For Email)</h3>
+                <p>All 9,000 domains will have their DNS managed in Cloudflare, pointing MX records to Zoho Mail.</p>
+
+                <h4>Example DNS Configuration:</h4>
+                <pre><code># MX Records (point to Zoho Mail)
+brand-0001.com    MX    10    mx.zoho.com
+brand-0001.com    MX    20    mx2.zoho.com
+brand-0001.com    MX    50    mx3.zoho.com
+
+# SPF Record
+brand-0001.com    TXT    "v=spf1 include:zoho.com ~all"
+
+# DKIM Record (get from Zoho Mail)
+zmail._domainkey.brand-0001.com    TXT    "v=DKIM1; k=rsa; p=MIGfMA0..."
+
+# DMARC Record
+_dmarc.brand-0001.com    TXT    "v=DMARC1; p=quarantine; rua=mailto:dmarc@brand-0001.com"
+
+# Zoho Verification
+brand-0001.com    TXT    "zoho-verification=abc123xyz"</code></pre>
+
+                <h3>Step 5: Install Rclone (Sync Your Mac)</h3>
+                <pre><code># Install Rclone (universal cloud sync tool)
+brew install rclone
+
+# Configure R2 connection
+rclone config
+
+# Follow prompts:
+# n) New remote
+# name> cloudflare-r2
+# Storage> s3
+# provider> Cloudflare
+# access_key_id> [paste your Access Key ID]
+# secret_access_key> [paste your Secret Access Key]
+# endpoint> https://[account-id].r2.cloudflarestorage.com
+# Done!</code></pre>
+
+                <h3>Step 6: Test Your Setup</h3>
+                <pre><code># List buckets
+rclone lsd cloudflare-r2:
+
+# Upload a test file
+echo "Hello HSOMNI9000" > test.txt
+rclone copy test.txt cloudflare-r2:hsomni9000-vault/
+
+# List files in bucket
+rclone ls cloudflare-r2:hsomni9000-vault/
+
+# If you see your file, SUCCESS! ✅</code></pre>
+
+                <h3>Step 7: Automated Mac Sync</h3>
+                <pre><code># Create sync script
+cat > ~/sync-to-r2.sh << 'EOF'
+#!/bin/bash
+rclone sync ~/Documents cloudflare-r2:hsomni9000-vault/mac-documents
+rclone sync ~/Desktop cloudflare-r2:hsomni9000-vault/mac-desktop
+rclone sync ~/Downloads cloudflare-r2:hsomni9000-vault/mac-downloads
+echo "$(date): Sync completed" >> ~/r2-sync.log
+EOF
+
+chmod +x ~/sync-to-r2.sh
+
+# Test it
+~/sync-to-r2.sh
+
+# Schedule it (runs every hour)
+crontab -e
+# Add this line:
+0 * * * * ~/sync-to-r2.sh</code></pre>
+
+                <div class="alert alert-success">
+                    ✅ <strong>Your Mac now automatically syncs to Cloudflare R2 every hour!</strong>
+                </div>
+
+                <h3>Cloudflare Zero Trust (Optional but Recommended)</h3>
+                <ol>
+                    <li>Go to: <a href="https://one.dash.cloudflare.com" target="_blank">one.dash.cloudflare.com</a></li>
+                    <li>Settings → Authentication → Add "One-time PIN"</li>
+                    <li>Access → Applications → Add application</li>
+                    <li>Name: "R2 File Access"</li>
+                    <li>Domain: <code class="inline-code">files.hsomni9000.com</code></li>
+                    <li>Policy: Allow emails ending in @fruitful-global-planet.com</li>
+                </ol>
+            </section>
+
+            <!-- ZOHO INTEGRATION -->
+            <section id="zoho">
+                <h2>🔐 Zoho Integration</h2>
+
+                <h3>Recommended Package: Zoho One</h3>
+                <div class="card">
+                    <div class="card-title">💼 Zoho One - All Employee</div>
+                    <p><strong>Price:</strong> $45/user/month (billed annually = $540/year)</p>
+                    <p><strong>Includes:</strong> ALL 45+ Zoho apps (Mail, Vault, WorkDrive, Flow, Creator, Catalyst, Analytics, CRM, etc.)</p>
+                    <p><strong>Sign Up:</strong> <a href="https://www.zoho.com/one/signup.html" target="_blank">zoho.com/one/signup.html</a></p>
+                    <p><strong>Trial:</strong> 30 days FREE (no credit card required)</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>💡 Pro Tip:</strong> Start with the 30-day trial. During the trial, contact <strong>sales@zohocorp.com</strong> to negotiate bulk pricing for 9,000 domains. They typically offer significant discounts for enterprise customers.
+                </div>
+
+                <h3>Zoho WorkDrive Setup (Your Cloud Storage)</h3>
+                <ol>
+                    <li>Go to: <a href="https://workdrive.zoho.com" target="_blank">workdrive.zoho.com</a></li>
+                    <li>Sign in with your Zoho account</li>
+                    <li>Click "Create" → "Team Folder"</li>
+                    <li>Name: <code class="inline-code">HSOMNI9000-Vault</code></li>
+                    <li>Create subfolders:
+                        <ul>
+                            <li>mac-documents</li>
+                            <li>mac-desktop</li>
+                            <li>google-drive-sync</li>
+                            <li>github-repos</li>
+                            <li>brands (9000 subfolders)</li>
+                            <li>contacts</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>Desktop Sync App:</h4>
+                <ol>
+                    <li>Download: <a href="https://www.zoho.com/workdrive/desktop-sync.html" target="_blank">zoho.com/workdrive/desktop-sync.html</a></li>
+                    <li>Install for Mac</li>
+                    <li>Sign in</li>
+                    <li>Select <code class="inline-code">HSOMNI9000-Vault</code></li>
+                    <li>Enable two-way sync</li>
+                </ol>
+
+                <h3>Zoho API Setup (Developer Access)</h3>
+                <ol>
+                    <li>Go to: <a href="https://api-console.zoho.com" target="_blank">api-console.zoho.com</a></li>
+                    <li>Click "Add Client"</li>
+                    <li>Client Type: "Self Client"</li>
+                    <li>Client Name: <code class="inline-code">HSOMNI9000</code></li>
+                    <li>Click "Create"</li>
+                </ol>
+
+                <div class="alert alert-warning">
+                    <strong>Save These Credentials:</strong>
+                    <pre><code>Client ID: 1000.XXXXXXXXXXXXX
+Client Secret: abc123def456ghi789jkl</code></pre>
+                </div>
+
+                <h4>Generate Access Token:</h4>
+                <ol>
+                    <li>Scroll to "Generate Code"</li>
+                    <li>Scopes: Select ALL (or minimum):
+                        <ul>
+                            <li>WorkDrive.files.ALL</li>
+                            <li>ZohoMail.accounts.ALL</li>
+                            <li>Vault.secrets.ALL</li>
+                            <li>Flow.functions.ALL</li>
+                            <li>Creator.report.ALL</li>
+                        </ul>
+                    </li>
+                    <li>Time: 10 minutes</li>
+                    <li>Click "Generate Code"</li>
+                    <li>Copy code immediately</li>
+                </ol>
+
+                <h4>Get Refresh Token:</h4>
+                <pre><code>curl -X POST https://accounts.zoho.com/oauth/v2/token \
+  -d "code=PASTE_CODE_HERE" \
+  -d "client_id=YOUR_CLIENT_ID" \
+  -d "client_secret=YOUR_CLIENT_SECRET" \
+  -d "grant_type=authorization_code"</code></pre>
+
+                <p>Save the <code class="inline-code">refresh_token</code> from the response!</p>
+
+                <h3>Zoho Mail Setup (9,000 Domains)</h3>
+                <ol>
+                    <li>Go to: <a href="https://mail.zoho.com" target="_blank">mail.zoho.com</a></li>
+                    <li>Admin Panel: <a href="https://mailadmin.zoho.com" target="_blank">mailadmin.zoho.com</a></li>
+                    <li>Add your first domain: <code class="inline-code">fruitful-global-planet.com</code></li>
+                    <li>Verify ownership (add TXT record in Cloudflare)</li>
+                    <li>Configure MX records (automated via script below)</li>
+                </ol>
+
+                <h4>Bulk Domain Import Script:</h4>
+                <pre><code>import requests
+import csv
+
+ZOHO_ORG_ID = "your_org_id"
+ZOHO_TOKEN = "your_oauth_token"
+
+def add_domain(domain_name):
+    response = requests.post(
+        f'https://mail.zoho.com/api/organization/{ZOHO_ORG_ID}/domains',
+        headers={'Authorization': f'Zoho-oauthtoken {ZOHO_TOKEN}'},
+        json={'domainName': domain_name}
+    )
+    return response.json()
+
+# Read from CSV and add all domains
+with open('domains.csv', 'r') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        result = add_domain(row['domain_name'])
+        print(f"Added: {row['domain_name']}")</code></pre>
+
+                <h3>Zoho Flow (Automation)</h3>
+                <p>Create workflows to automatically sync data from external platforms to R2.</p>
+
+                <h4>Example Flow: Google Drive → R2</h4>
+                <ol>
+                    <li>Go to: <a href="https://flow.zoho.com" target="_blank">flow.zoho.com</a></li>
+                    <li>Create Flow: "Google_Drive_to_R2"</li>
+                    <li>Trigger: Google Drive - New/Updated File</li>
+                    <li>Action 1: Download file</li>
+                    <li>Action 2: Call Catalyst function (process)</li>
+                    <li>Action 3: Upload to R2 via API</li>
+                    <li>Action 4: Update Creator index</li>
+                    <li>Action 5: Send Cliq notification</li>
+                </ol>
+
+                <h3>Zoho Creator (Index Database)</h3>
+                <ol>
+                    <li>Go to: <a href="https://creator.zoho.com" target="_blank">creator.zoho.com</a></li>
+                    <li>Create Application: <code class="inline-code">Vault Cloud Manager</code></li>
+                    <li>Create Form: <code class="inline-code">vault_cloud_index</code></li>
+                    <li>Add Fields:
+                        <ul>
+                            <li>file_name (Single Line)</li>
+                            <li>brand_id (Single Line)</li>
+                            <li>source_platform (Dropdown)</li>
+                            <li>checksum (Single Line - unique)</li>
+                            <li>r2_key (Multi Line)</li>
+                            <li>file_size (Number)</li>
+                            <li>upload_date (Date-Time)</li>
+                            <li>status (Dropdown: processing, synced, failed)</li>
+                        </ul>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- PLATFORM APIS -->
+            <section id="platforms">
+                <h2>🔌 Platform API Integration</h2>
+
+                <h3>Master Credentials File</h3>
+                <p>Create a secure file to store all your API keys:</p>
+
+                <pre><code>mkdir -p ~/.hsomni9000
+cat > ~/.hsomni9000/credentials.env << 'EOF'
+# HSOMNI9000 Master Credentials
+# DO NOT SHARE THIS FILE!
+
+# === CLOUDFLARE R2 ===
+CF_ACCOUNT_ID="your_account_id"
+CF_R2_ACCESS_KEY_ID="your_access_key"
+CF_R2_SECRET_KEY="your_secret_key"
+CF_API_TOKEN="your_api_token"
+
+# === ZOHO ===
+ZOHO_CLIENT_ID="1000.XXXXX"
+ZOHO_CLIENT_SECRET="abc123def456"
+ZOHO_REFRESH_TOKEN="1000.YYYYY"
+
+# === GOOGLE ===
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GOOGLE_REFRESH_TOKEN=""
+
+# === GITHUB ===
+GITHUB_PERSONAL_ACCESS_TOKEN=""
+
+# === OPENAI ===
+OPENAI_API_KEY=""
+
+# === ANTHROPIC (Claude) ===
+ANTHROPIC_API_KEY=""
+
+# === MICROSOFT ===
+MICROSOFT_CLIENT_ID=""
+MICROSOFT_CLIENT_SECRET=""
+
+# === GEMINI ===
+GEMINI_API_KEY=""
+EOF
+
+chmod 600 ~/.hsomni9000/credentials.env</code></pre>
+
+                <h3>Platform Setup URLs & Instructions</h3>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-icon">💻</div>
+                        <div class="card-title">GitHub</div>
+                        <p><strong>URL:</strong> <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Create new token</li>
+                            <li>Name: HSOMNI9000 Sync</li>
+                            <li>Scopes: repo, read:org, workflow</li>
+                            <li>Expiration: No expiration</li>
+                            <li>Copy token (starts with <code>ghp_</code>)</li>
+                        </ol>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">☁️</div>
+                        <div class="card-title">Google Drive / Gmail</div>
+                        <p><strong>URL:</strong> <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Create project: HSOMNI9000</li>
+                            <li>Enable APIs: Gmail, Drive, Admin SDK</li>
+                            <li>Create OAuth credentials</li>
+                            <li>Download JSON</li>
+                            <li>Use Python script to get refresh token</li>
+                        </ol>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📧</div>
+                        <div class="card-title">Microsoft / Outlook</div>
+                        <p><strong>URL:</strong> <a href="https://portal.azure.com" target="_blank">portal.azure.com</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Register app: HSOMNI9000</li>
+                            <li>Account type: Personal accounts</li>
+                            <li>Get Client ID & Secret</li>
+                            <li>Add permissions: Mail.Read, Files.Read.All</li>
+                            <li>Use rclone to authenticate</li>
+                        </ol>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🤖</div>
+                        <div class="card-title">OpenAI</div>
+                        <p><strong>URL:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Create new secret key</li>
+                            <li>Name: HSOMNI9000</li>
+                            <li>Copy key (starts with <code>sk-</code>)</li>
+                            <li>Store in credentials file</li>
+                        </ol>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🧠</div>
+                        <div class="card-title">Anthropic (Claude)</div>
+                        <p><strong>URL:</strong> <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com/settings/keys</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Create key</li>
+                            <li>Name: HSOMNI9000</li>
+                            <li>Copy key (starts with <code>sk-ant-</code>)</li>
+                            <li>Store in credentials file</li>
+                        </ol>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">✨</div>
+                        <div class="card-title">Google Gemini</div>
+                        <p><strong>URL:</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></p>
+                        <p><strong>Steps:</strong></p>
+                        <ol>
+                            <li>Create API key</li>
+                            <li>Select project: HSOMNI9000</li>
+                            <li>Copy key (starts with <code>AIza</code>)</li>
+                            <li>Store in credentials file</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h3>Master Sync Script (All Platforms)</h3>
+                <pre><code>#!/bin/bash
+# ~/hsomni9000-sync-all.sh
+
+source ~/.hsomni9000/credentials.env
+
+echo "🚀 Starting HSOMNI9000 Full Sync..."
+
+# 1. Mac folders
+echo "📁 Syncing Mac folders..."
+rclone sync ~/Documents cloudflare-r2:hsomni9000-vault/mac-documents
+rclone sync ~/Desktop cloudflare-r2:hsomni9000-vault/mac-desktop
+
+# 2. Google Drive
+echo "☁️ Syncing Google Drive..."
+rclone sync google-drive: cloudflare-r2:hsomni9000-vault/google-drive
+
+# 3. OneDrive
+echo "☁️ Syncing OneDrive..."
+rclone sync onedrive: cloudflare-r2:hsomni9000-vault/onedrive
+
+# 4. iCloud Drive
+echo "☁️ Syncing iCloud Drive..."
+rclone sync ~/Library/Mobile\ Documents/com~apple~CloudDocs/ \
+  cloudflare-r2:hsomni9000-vault/icloud-drive
+
+# 5. GitHub repos
+echo "💻 Backing up GitHub repos..."
+mkdir -p ~/github-backup
+cd ~/github-backup
+gh repo list --limit 1000 --json nameWithOwner | \
+  jq -r '.[].nameWithOwner' | \
+  xargs -I {} git clone git@github.com:{}.git
+rclone sync ~/github-backup cloudflare-r2:hsomni9000-vault/github-repos
+
+echo "✅ Sync complete!"</code></pre>
+
+                <h4>Schedule It:</h4>
+                <pre><code>chmod +x ~/hsomni9000-sync-all.sh
+
+# Add to crontab (runs every 6 hours)
+crontab -e
+# Add:
+0 */6 * * * ~/hsomni9000-sync-all.sh >> ~/r2-sync.log 2>&1</code></pre>
+            </section>
+
+            <!-- IMPLEMENTATION -->
+            <section id="implementation">
+                <h2>🚀 Implementation Roadmap</h2>
+
+                <h3>Quick Start (1 Hour)</h3>
+                <ul class="checklist">
+                    <li>Create Cloudflare account</li>
+                    <li>Enable R2 and create bucket</li>
+                    <li>Get R2 API credentials</li>
+                    <li>Install Rclone</li>
+                    <li>Sync first folder to R2</li>
+                    <li>Sign up for Zoho One (30-day trial)</li>
+                    <li>Create WorkDrive team folder</li>
+                    <li>Get Zoho API credentials</li>
+                </ul>
+
+                <h3>Phase 1: Foundation (Week 1-2)</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Day 1-3: Cloudflare Setup</div>
+                        <ul>
+                            <li>R2 bucket created</li>
+                            <li>API credentials secured</li>
+                            <li>Mac syncing hourly</li>
+                            <li>Zero Trust configured</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Day 4-7: Zoho Mail</div>
+                        <ul>
+                            <li>Add first 100 domains</li>
+                            <li>Configure Cloudflare DNS automation</li>
+                            <li>Verify email delivery</li>
+                            <li>Test MX/SPF/DKIM records</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Day 8-10: Zoho API & Creator</div>
+                        <ul>
+                            <li>API credentials obtained</li>
+                            <li>Creator database built</li>
+                            <li>Test data insertion</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Day 11-14: First Integration</div>
+                        <ul>
+                            <li>Google Drive → R2 flow</li>
+                            <li>Test with 100 files</li>
+                            <li>Verify in Creator index</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Phase 2: Platform Integrations (Week 3-4)</h3>
+                <ul class="checklist">
+                    <li>GitHub integration (webhook-based)</li>
+                    <li>Vercel environment variables sync</li>
+                    <li>Microsoft OneDrive sync</li>
+                    <li>OpenAI conversation exports</li>
+                    <li>Claude.ai conversation exports</li>
+                </ul>
+
+                <h3>Phase 3: Bulk Migration (Week 5-6)</h3>
+                <ul class="checklist">
+                    <li>Migrate 20M contacts</li>
+                    <li>Add remaining 8,900 domains to Zoho Mail</li>
+                    <li>Configure DNS for all domains</li>
+                    <li>Bulk upload brand assets</li>
+                    <li>Verify checksums</li>
+                </ul>
+
+                <h3>Phase 4: Monitoring & Optimization (Week 7-8)</h3>
+                <ul class="checklist">
+                    <li>Analytics dashboard live</li>
+                    <li>Alerting configured</li>
+                    <li>Load test with 10M files</li>
+                    <li>Cost optimization review</li>
+                    <li>Performance tuning</li>
+                </ul>
+
+                <h3>Phase 5: Production Launch (Week 9)</h3>
+                <ul class="checklist">
+                    <li>Enable all real-time syncs</li>
+                    <li>24/7 monitoring</li>
+                    <li>Documentation complete</li>
+                    <li>Backup verification</li>
+                    <li>Disaster recovery tested</li>
+                </ul>
+            </section>
+
+            <!-- MONITORING -->
+            <section id="monitoring">
+                <h2>📊 Monitoring & Analytics</h2>
+
+                <h3>Zoho Analytics Dashboard</h3>
+                <ol>
+                    <li>Go to: <a href="https://analytics.zoho.com" target="_blank">analytics.zoho.com</a></li>
+                    <li>Create workspace: "Vault Cloud Operations"</li>
+                    <li>Connect data source: Zoho Creator (vault_cloud_index)</li>
+                    <li>Create reports (see below)</li>
+                </ol>
+
+                <h3>Key Metrics to Track</h3>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Target</th>
+                        <th>Alert Threshold</th>
+                    </tr>
+                    <tr>
+                        <td>Sync Success Rate</td>
+                        <td>99%+</td>
+                        <td>< 95%</td>
+                    </tr>
+                    <tr>
+                        <td>Average Sync Time</td>
+                        <td>< 10 seconds</td>
+                        <td>> 30 seconds</td>
+                    </tr>
+                    <tr>
+                        <td>Storage Utilization</td>
+                        <td>< 80%</td>
+                        <td>> 90%</td>
+                    </tr>
+                    <tr>
+                        <td>Failed Syncs</td>
+                        <td>< 100/day</td>
+                        <td>> 500/day</td>
+                    </tr>
+                    <tr>
+                        <td>API Rate Limit Usage</td>
+                        <td>< 70%</td>
+                        <td>> 85%</td>
+                    </tr>
+                    <tr>
+                        <td>Deduplication Rate</td>
+                        <td>> 30%</td>
+                        <td>< 10%</td>
+                    </tr>
+                    <tr>
+                        <td>Secret Detection Rate</td>
+                        <td>> 95%</td>
+                        <td>< 90%</td>
+                    </tr>
+                </table>
+
+                <h3>Alerting Rules</h3>
+                <h4>Via Zoho Cliq:</h4>
+                <ul>
+                    <li><strong>Critical:</strong> Sync failure rate > 5% for 1 hour</li>
+                    <li><strong>Warning:</strong> Storage > 90% capacity</li>
+                    <li><strong>Info:</strong> Daily summary at 7 AM</li>
+                    <li><strong>Security:</strong> New secrets detected</li>
+                    <li><strong>Security:</strong> Unauthorized access attempt</li>
+                </ul>
+
+                <h3>Daily/Weekly Reports</h3>
+                <ul>
+                    <li><strong>Daily (7 AM):</strong> Sync volume, failures, storage usage</li>
+                    <li><strong>Weekly (Monday 8 AM):</strong> Full analytics report, cost summary</li>
+                    <li><strong>Monthly:</strong> Executive summary, trend analysis</li>
+                </ul>
+
+                <h3>Monitoring Commands</h3>
+                <pre><code># Check sync log
+tail -f ~/r2-sync.log
+
+# List recent files
+rclone lsf cloudflare-r2:hsomni9000-vault --max-age 1d
+
+# Check storage size
+rclone size cloudflare-r2:hsomni9000-vault
+
+# Test specific platform
+rclone ls google-drive: --max-depth 1
+
+# View sync status
+ps aux | grep rclone</code></pre>
+            </section>
+
+            <!-- COSTS -->
+            <section id="costs">
+                <h2>💰 Cost Breakdown</h2>
+
+                <h3>Monthly Infrastructure Costs</h3>
+                <table>
+                    <tr>
+                        <th>Service</th>
+                        <th>Usage</th>
+                        <th>Monthly Cost</th>
+                        <th>Annual Cost</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloudflare R2</strong></td>
+                        <td>~10TB storage</td>
+                        <td>$150</td>
+                        <td>$1,800</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare R2 Egress</td>
+                        <td>Free (unlimited)</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare Workers</td>
+                        <td>Paid plan</td>
+                        <td>$5</td>
+                        <td>$60</td>
+                    </tr>
+                    <tr>
+                        <td>Cloudflare Zero Trust</td>
+                        <td>1 user (free tier)</td>
+                        <td>$0</td>
+                        <td>$0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zoho One</strong></td>
+                        <td>1 user, all apps</td>
+                        <td>$45</td>
+                        <td>$540</td>
+                    </tr>
+                    <tr>
+                        <td>Domain Registrations</td>
+                        <td>9,000 domains (amortized)</td>
+                        <td>~$100</td>
+                        <td>~$1,200</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOTAL</strong></td>
+                        <td></td>
+                        <td><strong>$300</strong></td>
+                        <td><strong>$3,600</strong></td>
+                    </tr>
+                </table>
+
+                <div class="alert alert-success">
+                    <strong>💡 Cost Optimization Tips:</strong>
+                    <ul>
+                        <li>Negotiate Zoho bulk discount for 9,000 domains (potential 50-70% off)</li>
+                        <li>Use lifecycle policies in R2 to archive old files</li>
+                        <li>Implement aggressive deduplication (saves 30-40% storage)</li>
+                        <li>Cache frequently accessed files in Workers KV</li>
+                        <li>Schedule heavy syncs during off-peak hours</li>
+                    </ul>
+                </div>
+
+                <h3>Cost Per Metric</h3>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Cost</th>
+                    </tr>
+                    <tr>
+                        <td>Per Brand</td>
+                        <td>$0.033/month ($300 ÷ 9,000)</td>
+                    </tr>
+                    <tr>
+                        <td>Per Data Point</td>
+                        <td>$0.000003/month ($300 ÷ 100M)</td>
+                    </tr>
+                    <tr>
+                        <td>Per TB Stored</td>
+                        <td>$30/month ($300 ÷ 10TB)</td>
+                    </tr>
+                    <tr>
+                        <td>Per Email Domain</td>
+                        <td>$0.033/month (same as brand)</td>
+                    </tr>
+                </table>
+
+                <h3>Scaling Projections</h3>
+                <table>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Storage</th>
+                        <th>Files</th>
+                        <th>Est. Monthly Cost</th>
+                    </tr>
+                    <tr>
+                        <td>Current (10M files)</td>
+                        <td>10TB</td>
+                        <td>10M</td>
+                        <td>$300</td>
+                    </tr>
+                    <tr>
+                        <td>2x Growth</td>
+                        <td>20TB</td>
+                        <td>20M</td>
+                        <td>$450</td>
+                    </tr>
+                    <tr>
+                        <td>5x Growth</td>
+                        <td>50TB</td>
+                        <td>50M</td>
+                        <td>$900</td>
+                    </tr>
+                    <tr>
+                        <td>10x Growth (100M files)</td>
+                        <td>100TB</td>
+                        <td>100M</td>
+                        <td>$1,650</td>
+                    </tr>
+                </table>
+
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Costs scale linearly with storage. The architecture supports unlimited scaling without performance degradation.
+                </div>
+            </section>
+
+            <!-- RESOURCES -->
+            <section id="resources">
+                <h2>📚 Resources & Documentation</h2>
+
+                <h3>Official Documentation</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">Cloudflare</div>
+                        <ul>
+                            <li><a href="https://developers.cloudflare.com/r2/" target="_blank">R2 Documentation</a></li>
+                            <li><a href="https://developers.cloudflare.com/workers/" target="_blank">Workers Documentation</a></li>
+                            <li><a href="https://developers.cloudflare.com/cloudflare-one/" target="_blank">Zero Trust Docs</a></li>
+                            <li><a href="https://community.cloudflare.com" target="_blank">Community Forum</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Zoho</div>
+                        <ul>
+                            <li><a href="https://www.zoho.com/mail/help/" target="_blank">Zoho Mail Help</a></li>
+                            <li><a href="https://www.zoho.com/workdrive/help/" target="_blank">WorkDrive Help</a></li>
+                            <li><a href="https://www.zoho.com/flow/help/" target="_blank">Flow Documentation</a></li>
+                            <li><a href="https://www.zoho.com/creator/help/" target="_blank">Creator Help</a></li>
+                            <li><a href="https://catalyst.zoho.com/help/" target="_blank">Catalyst Docs</a></li>
+                            <li><a href="https://help.zoho.com/portal/en/community" target="_blank">Community</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Tools</div>
+                        <ul>
+                            <li><a href="https://rclone.org/docs/" target="_blank">Rclone Documentation</a></li>
+                            <li><a href="https://cli.github.com/manual/" target="_blank">GitHub CLI</a></li>
+                            <li><a href="https://developers.google.com/drive/api/v3/about-sdk" target="_blank">Google Drive API</a></li>
+                            <li><a href="https://docs.microsoft.com/en-us/graph/" target="_blank">Microsoft Graph API</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Quick Reference Commands</h3>
+
+                <h4>Cloudflare R2:</h4>
+                <pre><code># List buckets
+rclone lsd cloudflare-r2:
+
+# Upload file
+rclone copy file.txt cloudflare-r2:hsomni9000-vault/
+
+# Download file
+rclone copy cloudflare-r2:hsomni9000-vault/file.txt ./
+
+# Sync directory
+rclone sync ~/Documents cloudflare-r2:hsomni9000-vault/documents
+
+# Check size
+rclone size cloudflare-r2:hsomni9000-vault</code></pre>
+
+                <h4>Zoho API:</h4>
+                <pre><code># Get access token
+curl -X POST https://accounts.zoho.com/oauth/v2/token \
+  -d "refresh_token=YOUR_REFRESH_TOKEN" \
+  -d "client_id=YOUR_CLIENT_ID" \
+  -d "client_secret=YOUR_CLIENT_SECRET" \
+  -d "grant_type=refresh_token"
+
+# List WorkDrive files
+curl https://workdrive.zoho.com/api/v1/files \
+  -H "Authorization: Zoho-oauthtoken YOUR_ACCESS_TOKEN"
+
+# Add Zoho Mail domain
+curl -X POST https://mail.zoho.com/api/organization/ORG_ID/domains \
+  -H "Authorization: Zoho-oauthtoken YOUR_ACCESS_TOKEN" \
+  -d "domainName=example.com"</code></pre>
+
+                <h4>GitHub:</h4>
+                <pre><code># List repositories
+gh repo list --limit 1000
+
+# Clone all repos
+gh repo list --limit 1000 --json nameWithOwner | \
+  jq -r '.[].nameWithOwner' | \
+  xargs -I {} git clone git@github.com:{}.git
+
+# Create backup
+gh repo list --json nameWithOwner,url | \
+  jq -r '.[] | "\(.nameWithOwner),\(.url)"' > repos.csv</code></pre>
+
+                <h3>Troubleshooting</h3>
+
+                <h4>Common Issues:</h4>
+                <table>
+                    <tr>
+                        <th>Issue</th>
+                        <th>Solution</th>
+                    </tr>
+                    <tr>
+                        <td>Rclone "401 Unauthorized"</td>
+                        <td>Check R2 credentials, regenerate if needed</td>
+                    </tr>
+                    <tr>
+                        <td>Zoho API token expired</td>
+                        <td>Use refresh token to get new access token</td>
+                    </tr>
+                    <tr>
+                        <td>Sync very slow</td>
+                        <td>Use <code>--transfers=32</code> flag with rclone</td>
+                    </tr>
+                    <tr>
+                        <td>Storage at 100%</td>
+                        <td>Run deduplication script, archive old files</td>
+                    </tr>
+                    <tr>
+                        <td>DNS not propagating</td>
+                        <td>Check TTL settings, wait 24-48 hours</td>
+                    </tr>
+                    <tr>
+                        <td>Email delivery failing</td>
+                        <td>Verify SPF/DKIM/DMARC records in Cloudflare</td>
+                    </tr>
+                </table>
+
+                <h3>Support Contacts</h3>
+                <ul>
+                    <li><strong>Cloudflare Support:</strong> <a href="https://dash.cloudflare.com/support" target="_blank">dash.cloudflare.com/support</a></li>
+                    <li><strong>Zoho Support:</strong> <a href="https://accounts.zoho.com/support/tickets.do" target="_blank">accounts.zoho.com/support</a></li>
+                    <li><strong>Enterprise Inquiries:</strong> sales@zohocorp.com</li>
+                    <li><strong>Cloudflare Sales:</strong> Via dashboard or phone</li>
+                </ul>
+
+                <h3>Additional Files in Repository</h3>
+                <ul>
+                    <li><code>config/credentials.example.env</code> - Template for credentials</li>
+                    <li><code>scripts/sync-all.sh</code> - Master sync script</li>
+                    <li><code>scripts/cloudflare-dns-sync.py</code> - DNS automation</li>
+                    <li><code>scripts/zoho-bulk-import.py</code> - Bulk domain import</li>
+                    <li><code>catalyst/vault-to-r2-sync/</code> - Serverless function</li>
+                    <li><code>flows/google-drive-to-r2.json</code> - Zoho Flow template</li>
+                    <li><code>creator/vault_cloud_index.json</code> - Database schema</li>
+                    <li><code>docs/architecture.md</code> - Detailed architecture</li>
+                    <li><code>docs/implementation.md</code> - Step-by-step guide</li>
+                    <li><code>docs/api-reference.md</code> - API documentation</li>
+                </ul>
+            </section>
+
+            <!-- QUICK START -->
+            <section id="quickstart">
+                <h2>⚡ Quick Start Checklist</h2>
+
+                <div class="alert alert-success">
+                    <strong>🎯 Goal:</strong> Get your cloud operational in 1 hour
+                </div>
+
+                <h3>Hour 1: Essential Setup</h3>
+                <ul class="checklist">
+                    <li>☐ Create Cloudflare account</li>
+                    <li>☐ Enable R2 and create bucket <code>hsomni9000-vault</code></li>
+                    <li>☐ Get R2 API credentials (save securely)</li>
+                    <li>☐ Install Rclone: <code>brew install rclone</code></li>
+                    <li>☐ Configure Rclone with R2 credentials</li>
+                    <li>☐ Test upload: <code>echo "test" > test.txt && rclone copy test.txt cloudflare-r2:hsomni9000-vault/</code></li>
+                    <li>☐ Sign up for Zoho One (30-day free trial)</li>
+                    <li>☐ Access WorkDrive and create team folder</li>
+                    <li>☐ Get Zoho API credentials from api-console.zoho.com</li>
+                    <li>☐ Create credentials file: <code>~/.hsomni9000/credentials.env</code></li>
+                </ul>
+
+                <h3>Day 1: Basic Automation</h3>
+                <ul class="checklist">
+                    <li>☐ Create sync script for Mac folders</li>
+                    <li>☐ Test sync manually</li>
+                    <li>☐ Add to crontab for hourly sync</li>
+                    <li>☐ Add first domain to Zoho Mail</li>
+                    <li>☐ Configure DNS in Cloudflare</li>
+                    <li>☐ Send test email</li>
+                </ul>
+
+                <h3>Week 1: First Integration</h3>
+                <ul class="checklist">
+                    <li>☐ Connect Google Drive via rclone</li>
+                    <li>☐ Sync 100 test files to R2</li>
+                    <li>☐ Create Zoho Creator database</li>
+                    <li>☐ Build first Zoho Flow workflow</li>
+                    <li>☐ Test end-to-end automation</li>
+                </ul>
+
+                <h3>Production Ready</h3>
+                <ul class="checklist">
+                    <li>☐ All platforms connected</li>
+                    <li>☐ Monitoring dashboard live</li>
+                    <li>☐ Alerting configured</li>
+                    <li>☐ Documentation complete</li>
+                    <li>☐ Backup verified</li>
+                    <li>☐ 🎉 LAUNCH!</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p><strong>HSOMNI9000 - Vault Cloud Architecture</strong></p>
+            <p>Designed by: <strong>Heyns Schoeman</strong> | Fruitful Global Planet</p>
+            <p>One Mac • One Vision • 9,000 Brands</p>
+            <p style="margin-top: 20px; color: #999; font-size: 0.9em;">
+                Last Updated: October 28, 2025 | Version 1.0
+            </p>
+            <div class="footer-links">
+                <a href="https://dash.cloudflare.com" target="_blank">Cloudflare Dashboard</a>
+                <a href="https://mail.zoho.com" target="_blank">Zoho Mail</a>
+                <a href="https://workdrive.zoho.com" target="_blank">Zoho WorkDrive</a>
+                <a href="https://flow.zoho.com" target="_blank">Zoho Flow</a>
+                <a href="https://github.com/heyns1000" target="_blank">GitHub</a>
+            </div>
+        </footer>
+    </div>
+
+    <div id="scrollTop">↑</div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Copy code blocks on click
+        document.querySelectorAll('pre code').forEach(block => {
+            block.addEventListener('click', () => {
+                navigator.clipboard.writeText(block.textContent);
+                const originalText = block.textContent;
+                block.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    block.textContent = originalText;
+                }, 2000);
+            });
+            block.style.cursor = 'pointer';
+            block.title = 'Click to copy';
+        });
+
+        // Print functionality
+        function printPage() {
+            window.print();
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+P for print
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printPage();
+            }
+            // Ctrl+K for search (focus on first nav link)
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.querySelector('nav a').focus();
+            }
+        });
+
+        console.log('🚀 HSOMNI9000 Vault Cloud Architecture Loaded');
+        console.log('📦 9,000 Brands | 100M Data Points | 1 Mac • 1 Man');
+        console.log('Built by: Heyns Schoeman | Fruitful Global Planet');
+    </script>
+</body>
+</html>

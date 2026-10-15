@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️ Global Health Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Global Health Metrics & Disease Outbreaks Dashboard</h2>
+                <p class="text-gray-600 mt-1">Monitoring public health indicators, disease prevalence, and outbreak response.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html" class="active">Global Health</a>
+            <a href="land_degradation_dashboard.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Life Expectancy Trends -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Life Expectancy (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-life-expectancy"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks improvements in overall health outcomes and longevity worldwide.
+                </p>
+            </div>
+
+            <!-- Graph 2: Major Disease Outbreak Tracking (Active Cases) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Active Disease Outbreaks (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-disease-outbreaks"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Visualizes the current geographical spread and intensity of infectious diseases.
+                </p>
+            </div>
+
+            <!-- Graph 3: Global Vaccination Coverage Rates -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Vaccination Coverage Rates (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-vaccination-coverage"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Monitors immunization efforts critical for preventing and controlling outbreaks.
+                </p>
+            </div>
+
+            <!-- Graph 4: Access to Healthcare Services by Region -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Access to Healthcare Services by Continent</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-healthcare-access"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Assesses equity in healthcare provision, particularly in underserved communities.
+                </p>
+            </div>
+
+            <!-- Graph 5: Maternal and Child Mortality Rates -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Maternal & Child Mortality Rates (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-mortality-rates"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks critical indicators of health equity and healthcare quality for vulnerable populations.
+                </p>
+            </div>
+
+            <!-- Graph 6: AI-Powered Disease Surveillance & Prediction -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">AI Disease Prediction Accuracy (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="gh-ai-prediction"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Evaluates the success of AI in early detection and prediction of disease outbreaks.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-8 px-6 bg-gray-900 text-center text-sm text-gray-400">
+        <p>&copy; 2025 Heyns Schoeman ™. All rights reserved.</p>
+        <p class="mt-2">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+        <p class="mt-1">Water the Seed™ | Baobab™ Security | AI-Powered Global Expansion</p>
+    </footer>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // Sample data for global health metrics
+    { name: "Nigeria", continent: "Africa", lifeExpectancy: 60, activeCases: 5000, vaccinationCoverage: 40, healthcareAccess: 50, maternalMortality: 800, childMortality: 60, aiPredictionAccuracy: 70 },
+    { name: "USA", continent: "North America", lifeExpectancy: 78, activeCases: 500, vaccinationCoverage: 90, healthcareAccess: 95, maternalMortality: 20, childMortality: 5, aiPredictionAccuracy: 95 },
+    { name: "Brazil", continent: "South America", lifeExpectancy: 75, activeCases: 2000, vaccinationCoverage: 70, healthcareAccess: 75, maternalMortality: 150, childMortality: 20, aiPredictionAccuracy: 85 },
+    { name: "Germany", continent: "Europe", lifeExpectancy: 81, activeCases: 100, vaccinationCoverage: 95, healthcareAccess: 98, maternalMortality: 10, childMortality: 3, aiPredictionAccuracy: 98 },
+    { name: "China", continent: "Asia", lifeExpectancy: 77, activeCases: 8000, vaccinationCoverage: 80, healthcareAccess: 80, maternalMortality: 80, childMortality: 15, aiPredictionAccuracy: 90 },
+    { name: "Australia", continent: "Oceania", lifeExpectancy: 83, activeCases: 200, vaccinationCoverage: 88, healthcareAccess: 92, maternalMortality: 5, childMortality: 2, aiPredictionAccuracy: 96 }
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('gh-life-expectancy', 'line', getLifeExpectancyData);
+    createChart('gh-disease-outbreaks', 'bar', getDiseaseOutbreaksData);
+    createChart('gh-vaccination-coverage', 'bar', getVaccinationCoverageData);
+    createChart('gh-healthcare-access', 'doughnut', getHealthcareAccessData);
+    createChart('gh-mortality-rates', 'line', getMortalityRatesData);
+    createChart('gh-ai-prediction', 'line', getAIPredictionAccuracyData);
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        let config;
+        if (id === 'gh-life-expectancy') config = { dataFn: getLifeExpectancyData };
+        else if (id === 'gh-disease-outbreaks') config = { dataFn: getDiseaseOutbreaksData };
+        else if (id === 'gh-vaccination-coverage') config = { dataFn: getVaccinationCoverageData };
+        else if (id === 'gh-healthcare-access') config = { dataFn: getHealthcareAccessData };
+        else if (id === 'gh-mortality-rates') config = { dataFn: getMortalityRatesData };
+        else if (id === 'gh-ai-prediction') config = { dataFn: getAIPredictionAccuracyData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+
+function getLifeExpectancyData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.lifeExpectancy * (Math.random() * 0.05 + 0.98)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Life Expectancy (Years)',
+            data: datasetData,
+            borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getDiseaseOutbreaksData(data) {
+    const sortedData = [...data].sort((a, b) => b.activeCases - a.activeCases).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Active Cases (Simulated)',
+            data: sortedData.map(d => d.activeCases),
+            backgroundColor: '#F97316', borderRadius: 4
+        }]
+    };
+}
+
+function getVaccinationCoverageData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.vaccinationCoverage, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+    return {
+        labels: labels,
+        datasets: [{
+            label: 'Vaccination Coverage (%)',
+            data: chartData,
+            backgroundColor: '#10B981', borderRadius: 4
+        }]
+    };
+}
+
+function getHealthcareAccessData(data) {
+    const accessLevels = { 'High (>90%)': 0, 'Medium (70-90%)': 0, 'Low (<70%)': 0 };
+    data.forEach(d => {
+        if (d.healthcareAccess > 90) accessLevels['High (>90%)']++;
+        else if (d.healthcareAccess >= 70) accessLevels['Medium (70-90%)']++;
+        else accessLevels['Low (<70%)']++;
+    });
+    return {
+        labels: Object.keys(accessLevels),
+        datasets: [{
+            data: Object.values(accessLevels),
+            backgroundColor: ['#3B82F6', '#FBBF24', '#EF4444'],
+        }]
+    };
+}
+
+function getMortalityRatesData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const maternalData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.maternalMortality * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    const childData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.childMortality * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [
+            {
+                label: 'Maternal Mortality (per 100k births)',
+                data: maternalData,
+                borderColor: '#EC4899', backgroundColor: 'rgba(236, 72, 153, 0.1)', fill: false, tension: 0.4
+            },
+            {
+                label: 'Child Mortality (per 1k live births)',
+                data: childData,
+                borderColor: '#A855F7', backgroundColor: 'rgba(168, 85, 247, 0.1)', fill: false, tension: 0.4
+            }
+        ]
+    };
+}
+
+function getAIPredictionAccuracyData(data) {
+    const years = Array.from({ length: 5 }, (_, i) => `Year 20${19 + i}`); // Simulated years
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.aiPredictionAccuracy * (Math.random() * 0.05 + 0.98)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'AI Prediction Accuracy (%)',
+            data: datasetData,
+            borderColor: '#0EA5E9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+</script>
+</body>
+</html>
