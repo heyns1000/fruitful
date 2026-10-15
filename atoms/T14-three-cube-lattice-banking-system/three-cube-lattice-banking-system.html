@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Cube Lattice Banking System | Fruitful™</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .lattice-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 20px 40px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 5;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .title-section h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-section p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+
+        /* THREE CUBE LATTICE CONTAINER */
+        .cube-lattice-container {
+            perspective: 2000px;
+            margin: 60px auto;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 150px;
+        }
+
+        .cube-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+        }
+
+        .cube-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .cube-label.dc-infra { color: #7b2cbf; }
+        .cube-label.banking-core { color: #00d4ff; }
+        .cube-label.dc-bank { color: #ff6b35; }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 20s infinite linear;
+        }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border: 2px solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        /* DC Infrastructure Cube (Purple) */
+        .cube.dc-infra .cube-face {
+            background: rgba(123, 44, 191, 0.15);
+            border-color: rgba(123, 44, 191, 0.6);
+        }
+
+        /* Banking Core Cube (Cyan) */
+        .cube.banking-core .cube-face {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        /* DC Bank Cube (Orange) */
+        .cube.dc-bank .cube-face {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.6);
+        }
+
+        .cube-face.front  { transform: rotateY(0deg) translateZ(125px); }
+        .cube-face.back   { transform: rotateY(180deg) translateZ(125px); }
+        .cube-face.right  { transform: rotateY(90deg) translateZ(125px); }
+        .cube-face.left   { transform: rotateY(-90deg) translateZ(125px); }
+        .cube-face.top    { transform: rotateX(90deg) translateZ(125px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(125px); }
+
+        .face-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .face-content {
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Flow Lines Between Cubes */
+        .flow-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(0, 212, 255, 0.8), 
+                rgba(123, 44, 191, 0.8), 
+                rgba(255, 107, 53, 0.8));
+            animation: flowPulse 2s infinite;
+            z-index: 1;
+        }
+
+        .flow-line.left-to-center {
+            top: 50%;
+            left: 25%;
+            width: 20%;
+        }
+
+        .flow-line.center-to-right {
+            top: 50%;
+            right: 25%;
+            width: 20%;
+        }
+
+        @keyframes flowPulse {
+            0%, 100% { opacity: 0.4; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(1.1); }
+        }
+
+        /* Dashboard Panels */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .metric-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .metric-value.positive { color: #00ff88; }
+        .metric-value.warning { color: #ffaa00; }
+        .metric-value.critical { color: #ff4444; }
+
+        /* FCU Currency Display */
+        .fcu-display {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 44, 191, 0.2));
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .fcu-amount {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .fcu-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+
+        /* Service Charges Table */
+        .service-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .service-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .service-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .service-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-badge.charging {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        /* Real-time Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .activity-item.infra { border-color: #7b2cbf; }
+        .activity-item.banking { border-color: #00d4ff; }
+        .activity-item.bank-dc { border-color: #ff6b35; }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="lattice-grid"></div>
+
+    <header>
+        <div class="logo">Fruitful™ Global Banking Lattice</div>
+    </header>
+
+    <div class="main-container">
+        <div class="title-section">
+            <h1>Three-Cube Lattice Banking System</h1>
+            <p>Distributed Infrastructure • Core Banking • Data Center Operations</p>
+        </div>
+
+        <!-- THREE CUBE LATTICE VISUALIZATION -->
+        <div class="cube-lattice-container">
+            <!-- Flow Lines -->
+            <div class="flow-line left-to-center"></div>
+            <div class="flow-line center-to-right"></div>
+
+            <!-- LEFT CUBE - DC Infrastructure -->
+            <div class="cube-wrapper">
+                <div class="cube-label dc-infra">DC Infrastructure</div>
+                <div class="cube dc-infra">
+                    <div class="cube-face front">
+                        <div class="face-title">Load Balancers</div>
+                        <div class="face-content">
+                            • 12 Active LBs<br>
+                            • 99.99% Uptime<br>
+                            • Global Distribution
+                        </div>
+                    </div>
+                    <div class="cube-face back">
+                        <div class="face-title">Storage Nodes</div>
+                        <div class="face-content">
+                            • 850TB Capacity<br>
+                            • 15min Snapshots<br>
+                            • Multi-Region Sync
+                        </div>
+                    </div>
+                    <div class="cube-face right">
+                        <div class="face-title">Compute Fleet</div>
+                        <div class="face-content">
+                            • 240 vCPUs<br>
+                            • 960GB RAM<br>
+                            • Auto-Scaling
+                        </div>
+                    </div>
+                    <div class="cube-face left">
+                        <div class="face-title">Network Fabric</div>
+                        <div class="face-content">
+                            • 10Gbps Links<br>
+                            • DDoS Protection<br>
+                            • Edge Caching
+                        </div>
+                    </div>
+                    <div class="cube-face top">
+                        <div class="face-title">Security Layer</div>
+                        <div class="face-content">
+                            • WAF Enabled<br>
+                            • SSL/TLS 1.3<br>
+                            • Zero Trust
+                        </div>
+                    </div>
+                    <div class="cube-face bottom">
+                        <div class="face-title">Monitoring</div>
+                        <div class="face-content">
+                            • Real-time Metrics<br>
+                            • Alert System<br>
+                            • Log Aggregation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER CUBE - Banking Core -->
+            <div class="cube-wrapper">
+                <div class="cube-label banking-core">Banking Core</div>
+                <div class="cube dc-infra">
+                    <div class="cube-face front">
+                        <div class="face-title">Transaction Engine</div>
+                        <div class="face-content">
+                            • 15,000 TPS<br>
+                            • <0.5s Latency<br>
+                            • Atomic ACID
+                        </div>
+                    </div>
+                    <div class="cube-face back">
+                        <div class="face-title">FCU Ledger</div>
+                        <div class="face-content">
+                            • Distributed Ledger<br>
+                            • Immutable Records<br>
+                            • Real-time Balance
+                        </div>
+                    </div>
+                    <div class="cube-face right">
+                        <div class="face-title">Payment Gateway</div>
+                        <div class="face-content">
+                            • Multi-Currency<br>
+                            • Instant Settlement<br>
+                            • Smart Routing
+                        </div>
+                    </div>
+                    <div class="cube-face left">
+                        <div class="face-title">Account Services</div>
+                        <div class="face-content">
+                            • 1.2M Accounts<br>
+                            • KYC/AML Ready<br>
+                            • Multi-Signature
+                        </div>
+                    </div>
+                    <div class="cube-face top">
+                        <div class="face-title">Risk Management</div>
+                        <div class="face-content">
+                            • Fraud Detection<br>
+                            • Limit Controls<br>
+                            • AI Monitoring
+                        </div>
+                    </div>
+                    <div class="cube-face bottom">
+                        <div class="face-title">API Gateway</div>
+                        <div class="face-content">
+                            • REST + GraphQL<br>
+                            • Rate Limiting<br>
+                            • OAuth 2.0
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT CUBE - DC Bank -->
+            <div class="cube-wrapper">
+                <div class="cube-label dc-bank">DC Bank Operations</div>
+                <div class="cube dc-bank">
+                    <div class="cube-face front">
+                        <div class="face-title">Compliance Engine</div>
+                        <div class="face-content">
+                            • PCI DSS L1<br>
+                            • SOC 2 Type II<br>
+                            • GDPR Ready
+                        </div>
+                    </div>
+                    <div class="cube-face back">
+                        <div class="face-title">Audit Trail</div>
+                        <div class="face-content">
+                            • 100% Coverage<br>
+                            • 7yr Retention<br>
+                            • Immutable Logs
+                        </div>
+                    </div>
+                    <div class="cube-face right">
+                        <div class="face-title">Backup Systems</div>
+                        <div class="face-content">
+                            • Hourly Snapshots<br>
+                            • Geo-Redundant<br>
+                            • 15min RPO
+                        </div>
+                    </div>
+                    <div class="cube-face left">
+                        <div class="face-title">Reconciliation</div>
+                        <div class="face-content">
+                            • Auto-Matching<br>
+                            • Daily Settlement<br>
+                            • Exception Mgmt
+                        </div>
+                    </div>
+                    <div class="cube-face top">
+                        <div class="face-title">Reporting Suite</div>
+                        <div class="face-content">
+                            • Real-time Dashboards<br>
+                            • Regulatory Reports<br>
+                            • Analytics Engine
+                        </div>
+                    </div>
+                    <div class="cube-face bottom">
+                        <div class="face-title">Archive Storage</div>
+                        <div class="face-content">
+                            • Cold Storage<br>
+                            • Encrypted at Rest<br>
+                            • Tape Backup
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FCU DISPLAY -->
+        <div class="fcu-display">
+            <div class="fcu-amount" id="fcuAmount">1,247,583.42</div>
+            <div class="fcu-label">Fruitful Currency Units (FCU) in Circulation</div>
+        </div>
+
+        <!-- DASHBOARD PANELS -->
+        <div class="dashboard-grid">
+            <!-- Infrastructure Services Panel -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(123, 44, 191, 0.2); color: #7b2cbf;">🏗️</div>
+                    Infrastructure Services (Cube 1)
+                </h3>
+                <div class="metric-row">
+                    <span class="metric-label">Compute Hours</span>
+                    <span class="metric-value positive">5,760 hrs/mo</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Storage Consumed</span>
+                    <span class="metric-value positive">425 TB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Bandwidth</span>
+                    <span class="metric-value positive">18.5 TB/day</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Load Balancer Requests</span>
+                    <span class="metric-value positive">450M/day</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Monthly Charges</span>
+                    <span class="metric-value warning">42,500 FCU</span>
+                </div>
+            </div>
+
+            <!-- Banking Core Metrics -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(0, 212, 255, 0.2); color: #00d4ff;">💰</div>
+                    Banking Core Metrics (Cube 2)
+                </h3>
+                <div class="metric-row">
+                    <span class="metric-label">Transactions/Second</span>
+                    <span class="metric-value positive">14,832</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Active Accounts</span>
+                    <span class="metric-value positive">1,247,583</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Daily Volume</span>
+                    <span class="metric-value positive">82.4M FCU</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Success Rate</span>
+                    <span class="metric-value positive">99.97%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Avg Response Time</span>
+                    <span class="metric-value positive">0.42s</span>
+                </div>
+            </div>
+
+            <!-- Bank DC Services -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(255, 107, 53, 0.2); color: #ff6b35;">🏦</div>
+                    Bank DC Services (Cube 3)
+                </h3>
+                <div class="metric-row">
+                    <span class="metric-label">Compliance Checks</span>
+                    <span class="metric-value positive">1.2M/day</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Audit Records</span>
+                    <span class="metric-value positive">15.8M</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Backup Storage</span>
+                    <span class="metric-value positive">320 TB</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Report Generation</span>
+                    <span class="metric-value positive">450/day</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Monthly Charges</span>
+                    <span class="metric-value warning">38,200 FCU</span>
+                </div>
+            </div>
+
+            <!-- Infrastructure Charges -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(255, 170, 0, 0.2); color: #ffaa00;">💳</div>
+                    Infrastructure Charges
+                </h3>
+                <table class="service-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Cube</th>
+                            <th>FCU/Month</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Load Balancing</td>
+                            <td>Cube 1</td>
+                            <td>12,500</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                        <tr>
+                            <td>Storage Services</td>
+                            <td>Cube 1</td>
+                            <td>18,000</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                        <tr>
+                            <td>Compute Resources</td>
+                            <td>Cube 1</td>
+                            <td>12,000</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                        <tr>
+                            <td>Compliance Services</td>
+                            <td>Cube 3</td>
+                            <td>15,000</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                        <tr>
+                            <td>Backup & DR</td>
+                            <td>Cube 3</td>
+                            <td>11,200</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                        <tr>
+                            <td>Audit & Reporting</td>
+                            <td>Cube 3</td>
+                            <td>12,000</td>
+                            <td><span class="status-badge charging">Charging</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Banking Flow Activity -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(0, 255, 136, 0.2); color: #00ff88;">📊</div>
+                    Real-time Banking Flows
+                </h3>
+                <div class="activity-feed" id="activityFeed">
+                    <!-- Activity items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Distributed Subnodes -->
+            <div class="panel">
+                <h3>
+                    <div class="panel-icon" style="background: rgba(0, 212, 255, 0.2); color: #00d4ff;">🔗</div>
+                    Distributed Subnodes
+                </h3>
+                <div class="metric-row">
+                    <span class="metric-label">Transaction Nodes</span>
+                    <span class="metric-value positive">24 Active</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Ledger Nodes</span>
+                    <span class="metric-value positive">12 Synced</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Gateway Nodes</span>
+                    <span class="metric-value positive">8 Active</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Compliance Nodes</span>
+                    <span class="metric-value positive">6 Active</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Replication Factor</span>
+                    <span class="metric-value positive">3x Redundant</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startBankingFlow()">🚀 Initiate Banking Flow</button>
+            <button class="btn btn-secondary" onclick="syncCubes()">🔄 Sync All Cubes</button>
+            <button class="btn btn-secondary" onclick="generateReport()">📄 Generate Report</button>
+            <button class="btn btn-secondary" onclick="viewCharges()">💰 View Infrastructure Charges</button>
+        </div>
+    </div>
+
+    <script>
+        // FCU Counter Animation
+        let fcuAmount = 1247583.42;
+        setInterval(() => {
+            fcuAmount += Math.random() * 100 - 50; // Random fluctuation
+            document.getElementById('fcuAmount').textContent = fcuAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }, 2000);
+
+        // Activity Feed
+        const activities = [
+            { type: 'infra', text: 'Load balancer scaled up: 2 new instances' },
+            { type: 'banking', text: 'Transaction batch processed: 15,420 FCU transferred' },
+            { type: 'bank-dc', text: 'Compliance check completed: 1,240 accounts verified' },
+            { type: 'infra', text: 'Storage snapshot created: 425 TB backed up' },
+            { type: 'banking', text: 'Payment gateway: 3,250 transactions settled' },
+            { type: 'bank-dc', text: 'Audit trail updated: 850 new records' },
+            { type: 'infra', text: 'Network traffic spike: 2.5 Gbps handled' },
+            { type: 'banking', text: 'FCU ledger synced across all nodes' },
+            { type: 'bank-dc', text: 'Daily report generated: 450 transactions' }
+        ];
+
+        function addActivityItem() {
+            const feed = document.getElementById('activityFeed');
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            
+            const item = document.createElement('div');
+            item.className = `activity-item ${activity.type}`;
+            item.innerHTML = `
+                <div class="activity-time">${new Date().toLocaleTimeString()}</div>
+                <div class="activity-text">${activity.text}</div>
+            `;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        // Add initial activities
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => addActivityItem(), i * 1000);
+        }
+
+        // Continue adding activities
+        setInterval(addActivityItem, 5000);
+
+        // Control Functions
+        function startBankingFlow() {
+            alert('🚀 Banking Flow Initiated\n\nRouting transaction through:\n1. DC Infrastructure (Cube 1)\n2. Banking Core (Cube 2)\n3. Bank DC Operations (Cube 3)\n\nExpected completion: <2 seconds');
+        }
+
+        function syncCubes() {
+            alert('🔄 Synchronizing All Cubes\n\nSyncing:\n• Infrastructure state\n• Banking ledger\n• Compliance records\n\nEstimated time: 15 seconds');
+        }
+
+        function generateReport() {
+            alert('📄 Generating Comprehensive Report\n\nIncluding:\n• Transaction volumes\n• Infrastructure usage\n• Compliance metrics\n• Charges breakdown\n\nReport will be ready in 30 seconds');
+        }
+
+        function viewCharges() {
+            alert('💰 Infrastructure Charges Summary\n\nCube 1 (DC Infra): 42,500 FCU/month\nCube 3 (Bank DC): 38,200 FCU/month\n\nTotal: 80,700 FCU/month\n\nAll charges are distributed across banking operations');
+        }
+    </script>
+</body>
+</html>

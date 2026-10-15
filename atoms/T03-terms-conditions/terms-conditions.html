@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Terms & Conditions | Fruitful Global™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Consistent with Fruitful aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes footer to the bottom */
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f7;
+        }
+        body.dark-mode header {
+            background-color: rgba(26, 26, 26, 0.9);
+            border-bottom-color: #333;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode header h1 {
+            color: #f5f5f7;
+        }
+        body.dark-mode header nav a {
+            color: #f5f5f7; /* Light text in dark mode for visibility */
+        }
+        body.dark-mode header nav a:hover {
+            color: #66b2ff; /* Lighter blue for dark mode hover */
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-mode header nav a.px-4 { /* SecureSign button in dark mode */
+            background-color: #66b2ff;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+            border-color: #66b2ff; /* Ensure border color matches */
+        }
+        body.dark-mode header nav a.px-4:hover {
+            background-color: #7abaff;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.15);
+        }
+        body.dark-mode #language-toggle, body.dark-mode #theme-toggle {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+        }
+        body.dark-mode #language-toggle:focus, body.dark-mode #theme-toggle:focus {
+            box-shadow: 0 0 0 2px rgba(102, 178, 255, 0.5); /* Blue ring for dark mode */
+        }
+
+        body.dark-mode .container {
+            background-color: #2a2a2a;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        body.dark-mode .container h1, body.dark-mode h2, body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff;
+        }
+        body.dark-mode p, body.dark-mode ul li {
+            color: #e0e0e0;
+        }
+        body.dark-mode a {
+            color: #66b2ff;
+        }
+        body.dark-mode a:hover {
+            color: #7abaff;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            border-top-color: #333;
+            color: #888;
+        }
+        body.dark-mode footer a {
+            color: #e0e0e0;
+        }
+        body.dark-mode footer a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Header specific styling from faa.zone/index.html */
+        header {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            sm:flex-direction: row; /* Adjusted for responsive header */
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+            md:padding-left: 3rem; /* md:px-12 */
+            md:padding-right: 3rem; /* md:px-12 */
+        }
+        header h1 {
+            color: #1d1d1f; /* Dark text for logo */
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem; /* mb-4 sm:mb-0 */
+            sm:margin-bottom: 0;
+        }
+        header nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            sm:justify-content: flex-end; /* sm:justify-end */
+            align-items: center;
+            gap: 0.5rem; /* space-x-2 sm:space-x-4 */
+            sm:gap: 1rem;
+        }
+        header nav a {
+            color: #1d1d1f; /* Ensure dark color for links on light header */
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: #0071e3; /* Apple blue on hover */
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        header nav a.px-4 { /* Sign Up button */
+            background-color: #0071e3; /* Apple blue */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #0071e3; /* Ensure border is visible and matches */
+        }
+        header nav a.px-4:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        header .flex.items-center.space-x-2.ml-4 {
+            margin-left: 1rem; /* ml-4 */
+        }
+        header select, header button {
+            padding: 0.5rem; /* p-2 */
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem; /* text-sm */
+            cursor: pointer;
+            outline: none;
+            border: none; /* remove default border */
+            background-color: #e5e7eb; /* bg-gray-100 */
+            color: #1f2937; /* text-gray-800 */
+            transition: all 0.2s ease-in-out;
+        }
+        header select:focus, header button:focus {
+            box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+        }
+
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 960px;
+            width: 100%;
+            margin: 2rem auto;
+            flex-grow: 1; /* Allows container to take available space */
+        }
+
+        /* Corrected styling for main title and headings */
+        .container h1 {
+            font-size: 2.8rem; /* Consistent with faa.zone hero h2 */
+            font-weight: 800; /* Extra bold */
+            color: #1d1d1f; /* Near black for primary text on light mode */
+            margin-bottom: 0.5rem; /* Reduced margin to bring brand text closer */
+            text-align: center;
+            letter-spacing: -0.03em;
+        }
+        body.dark-mode .container h1 {
+            color: #f5f5f7; /* White in dark mode */
+        }
+        .container .brand-logo-text {
+            font-size: 1.8rem; /* Adjusted for a strong presence within content */
+            font-weight: 700;
+            color: #0071e3; /* Fruitful blue */
+            text-align: center;
+            margin-top: 0; /* Align with h1's bottom */
+            margin-bottom: 2rem; /* Space below brand text */
+            letter-spacing: -0.02em;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff; /* Lighter blue in dark mode */
+        }
+
+
+        /* Enhanced H2 styling for numbered sections */
+        h2 {
+            font-size: 2.2rem; /* Slightly larger than before, closer to main H1 */
+            font-weight: 800; /* Extra bold, like main title */
+            color: #0071e3; /* Fruitful blue for prominence */
+            margin-top: 3rem; /* More space above */
+            margin-bottom: 1.5rem; /* More space below */
+            border-bottom: 1px solid #e8e8ed;
+            padding-bottom: 0.75rem; /* More padding below border */
+            letter-spacing: -0.02em; /* Tighter spacing */
+        }
+        body.dark-mode h2 {
+            color: #66b2ff; /* Lighter blue in dark mode */
+            border-bottom-color: #333;
+        }
+
+        h3 {
+            font-size: 1.5rem; /* Consistent with faa.zone h3 */
+            font-weight: 700; /* Bold */
+            color: #1d1d1f; /* Near black */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+
+        p {
+            margin-bottom: 1rem; /* Consistent spacing between paragraphs */
+            color: #424245; /* Slightly lighter gray for body text */
+        }
+        body.dark-mode p {
+            color: #e0e0e0;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #424245;
+        }
+        ul li {
+            margin-bottom: 0.5rem; /* Spacing for list items */
+        }
+        body.dark-mode ul {
+            color: #e0e0e0;
+        }
+        body.dark-mode ul li {
+            color: #e0e0e0;
+        }
+
+        a {
+            color: #0071e3; /* Apple Blue */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #6e6e73;
+            margin-top: 2rem;
+            margin-bottom: 1rem; /* Ensure space below last updated */
+        }
+        body.dark-mode .last-updated {
+            color: #888;
+        }
+
+        /* Footer styles - copied directly from faa.zone/index.html */
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem; /* Horizontal spacing */
+            margin-bottom: 0.5rem; /* Vertical spacing for wrapped items */
+            white-space: nowrap; /* Prevent links from breaking individually */
+        }
+        body.dark-mode footer .footer-links a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer .footer-links a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer .footer-links a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            header h1 {
+                font-size: 1.2rem;
+            }
+            header nav {
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            header .flex.items-center.space-x-2.ml-4 {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+            header select, header button {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .container .brand-logo-text {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            p, ul li {
+                font-size: 0.95rem;
+            }
+            footer {
+                padding: 1.5rem;
+            }
+            footer .footer-links a {
+                margin: 0 0.25rem; /* Smaller horizontal margin for mobile */
+                margin-bottom: 0.25rem; /* Smaller vertical margin for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center text-white">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="fruitfulBrand">Fruitful™</h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center space-x-2 sm:space-x-4">
+            <a href="https://faa.zone/#features" class="transition-colors duration-200" data-i18n="navFeatures">Features</a>
+            <a href="https://faa.zone/#shareprice" class="transition-colors duration-200" data-i18n="navSignal">Signal</a>
+            <a href="https://faa.zone/#vault-access" class="transition-colors duration-200" data-i18n="navVault">Vault</a>
+            <a href="https://faa.zone/#treaty" class="transition-colors duration-200" data-i18n="navTreaty">Treaty</a>
+            <a href="https://faa.zone/#vaultmesh-section" class="transition-colors duration-200" data-i18n="navVaultMesh">VaultMesh</a>
+            <a href="https://faa.zone/#about" class="transition-colors duration-200" data-i18n="navAbout">About</a>
+            <a href="https://fruitfulcratedance.com/" class="transition-colors duration-200" data-i18n="navCrateDance">Fruitful Crate Dance</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" data-i18n="navCareers">Careers</a>
+            <a href="https://faa.zone/legal/securesign.html" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full" data-i18n="navSecureSign">SecureSign</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200" data-i18n="navSignUp">Sign Up</a>
+
+            <!-- Language and Day/Night Toggles -->
+            <div class="flex items-center space-x-2 ml-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    ☀️
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 data-i18n="termsTitle">Terms & Conditions</h1>
+        <p class="brand-logo-text" data-i18n="fruitfulGlobalBrand">Fruitful Global™</p>
+        <p class="last-updated" data-i18n="lastUpdated">Last Updated: <span id="lastUpdatedDate">July 1, 2025</span></p>
+
+        <p data-i18n="termsPara1">
+            Welcome to Fruitful Global™! These Terms & Conditions (“Terms”) govern your use of the Fruitful Global™ website (<a href="https://faa.zone">faa.zone</a>) and any related services, features, content, or applications (collectively, the “Services”). By accessing or using our Services, you agree to be bound by these Terms and all policies referenced herein. If you do not agree to these Terms, you may not access or use the Services.
+        </p>
+
+        <h2 data-i18n="termsSection1Title">1. Acceptance of Terms</h2>
+        <p data-i18n="termsSection1Para1">
+            By using our Services, you affirm that you are of legal age to enter into this agreement and that you accept and agree to be bound by these Terms. If you are using the Services on behalf of an entity, you represent that you have the authority to bind that entity to these Terms.
+        </p>
+
+        <h2 data-i18n="termsSection2Title">2. Changes to Terms</h2>
+        <p data-i18n="termsSection2Para1">
+            We reserve the right to modify these Terms at any time. All changes are effective immediately when we post them. Your continued use of the Services after the posting of revised Terms means that you accept and agree to the changes. We encourage you to review the Terms periodically to be aware of any modifications.
+        </p>
+
+        <h2 data-i18n="termsSection3Title">3. User Accounts</h2>
+        <p data-i18n="termsSection3Para1">
+            To access certain features of the Services, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. You are responsible for safeguarding your password and for any activities or actions under your account.
+        </p>
+        <ul>
+            <li data-i18n="termsSection3ListItem1">You agree not to disclose your password to any third party.</li>
+            <li data-i18n="termsSection3ListItem2">You must notify Fruitful Global™ immediately upon becoming aware of any breach of security or unauthorized use of your account.</li>
+        </ul>
+
+        <h2 data-i18n="termsSection4Title">4. Intellectual Property Rights</h2>
+        <p data-i18n="termsSection4Para1">
+            All content on the Services, including text, graphics, logos, images, and software, is the property of Fruitful Global™ or its content suppliers and is protected by international copyright laws. Unauthorized use, reproduction, or distribution of any content is strictly prohibited.
+        </p>
+
+        <h2 data-i18n="termsSection5Title">5. Prohibited Conduct</h2>
+        <p data-i18n="termsSection5Para1">
+            You agree not to use the Services for any unlawful purpose or in any way that could damage, disable, overburden, or impair the Services. Prohibited conduct includes, but is not limited to:
+        </p>
+        <ul>
+            <li data-i18n="termsSection5ListItem1">Engaging in any fraudulent, abusive, or otherwise illegal activity.</li>
+            <li data-i18n="termsSection5ListItem2">Attempting to gain unauthorized access to any part of the Services or other user accounts.</li>
+            <li data-i18n="termsSection5ListItem3">Interfering with or disrupting the integrity or performance of the Services.</li>
+        </ul>
+
+        <h2 data-i18n="termsSection6Title">6. Disclaimer of Warranties</h2>
+        <p data-i18n="termsSection6Para1">
+            The Services are provided "as is" and "as available" without any warranties of any kind, either express or implied. Fruitful Global™ does not warrant that the Services will be uninterrupted, error-free, or secure.
+        </p>
+
+        <h2 data-i18n="termsSection7Title">7. Limitation of Liability</h2>
+        <p data-i18n="termsSection7Para1">
+            In no event shall Fruitful Global™, its affiliates, or their respective directors, employees, or agents be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Services; (ii) any conduct or content of any third party on the Services.
+        </p>
+
+        <h2 data-i18n="termsSection8Title">8. Governing Law</h2>
+        <p data-i18n="termsSection8Para1">
+            These Terms shall be governed and construed in accordance with the laws of South Africa, without regard to its conflict of law provisions.
+        </p>
+
+        <h2 data-i18n="termsSection9Title">9. Contact Information</h2>
+        <p data-i18n="termsSection9Para1">
+            If you have any questions about these Terms, please contact us at:
+        </p>
+        <p data-i18n="termsSection9Email">
+            Email: <a href="mailto:legal@faa.zone">legal@faa.zone</a>
+        </p>
+    </div>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Set the last updated date dynamically
+        document.getElementById('lastUpdatedDate').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Language data for i18n
+        window.languageData = { // Changed to window.languageData to avoid re-declaration errors
+            en: {
+                pageTitle: 'Terms & Conditions | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                // Terms & Conditions Content
+                termsTitle: 'Terms & Conditions',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Last Updated: ',
+                termsPara1: 'Welcome to Fruitful Global™! These Terms & Conditions (“Terms”) govern your use of the Fruitful Global™ website (<a href="https://faa.zone">faa.zone</a>) and any related services, features, content, or applications (collectively, the “Services”). By accessing or using our Services, you agree to be bound by these Terms and all policies referenced herein. If you do not agree to these Terms, you may not access or use the Services.',
+                termsSection1Title: '1. Acceptance of Terms',
+                termsSection1Para1: 'By using our Services, you affirm that you are of legal age to enter into this agreement and that you accept and agree to be bound by these Terms. If you are using the Services on behalf of an entity, you represent that you have the authority to bind that entity to these Terms.',
+                termsSection2Title: '2. Changes to Terms',
+                termsSection2Para1: 'We reserve the right to modify these Terms at any time. All changes are effective immediately when we post them. Your continued use of the Services after the posting of revised Terms means that you accept and agree to the changes. We encourage you to review the Terms periodically to be aware of any modifications.',
+                termsSection3Title: '3. User Accounts',
+                termsSection3Para1: 'To access certain features of the Services, you may be required to register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. You are responsible for safeguarding your password and for any activities or actions under your account.',
+                termsSection3ListItem1: 'You agree not to disclose your password to any third party.',
+                termsSection3ListItem2: 'You must notify Fruitful Global™ immediately upon becoming aware of any breach of security or unauthorized use of your account.',
+                termsSection4Title: '4. Intellectual Property Rights',
+                termsSection4Para1: 'All content on the Services, including text, graphics, logos, images, and software, is the property of Fruitful Global™ or its content suppliers and is protected by international copyright laws. Unauthorized use, reproduction, or distribution of any content is strictly prohibited.',
+                termsSection5Title: '5. Prohibited Conduct',
+                termsSection5Para1: 'You agree not to use the Services for any unlawful purpose or in any way that could damage, disable, overburden, or impair the Services. Prohibited conduct includes, but is not limited to:',
+                termsSection5ListItem1: 'Engaging in any fraudulent, abusive, or otherwise illegal activity.',
+                termsSection5ListItem2: 'Attempting to gain unauthorized access to any part of the Services or other user accounts.',
+                termsSection5ListItem3: 'Interfering with or disrupting the integrity or performance of the Services.',
+                termsSection6Title: '6. Disclaimer of Warranties',
+                termsSection6Para1: 'The Services are provided "as is" and "as available" without any warranties of any kind, either express or implied. Fruitful Global™ does not warrant that the Services will be uninterrupted, error-free, or secure.',
+                termsSection7Title: '7. Limitation of Liability',
+                termsSection7Para1: 'In no event shall Fruitful Global™, its affiliates, or their respective directors, employees, or agents be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Services; (ii) any conduct or content of any third party on the Services.',
+                termsSection8Title: '8. Governing Law',
+                termsSection8Para1: 'These Terms shall be governed and construed in accordance with the laws of South Africa, without regard to its conflict of law provisions.',
+                termsSection9Title: '9. Contact Information',
+                termsSection9Para1: 'If you have any questions about these Terms, please contact us at:',
+                termsSection9Email: 'Email: <a href="mailto:legal@faa.zone">legal@faa.zone</a>',
+                // Footer links
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                pageTitle: 'Términos y Condiciones | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                // Terms & Conditions Content
+                termsTitle: 'Términos y Condiciones',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Última Actualización: ',
+                termsPara1: '¡Bienvenido a Fruitful Global™! Estos Términos y Condiciones (“Términos”) rigen su uso del sitio web de Fruitful Global™ (<a href="https://faa.zone">faa.zone</a>) y cualquier servicio, característica, contenido o aplicación relacionada (colectivamente, los “Servicios”). Al acceder o utilizar nuestros Servicios, usted acepta estar sujeto a estos Términos y a todas las políticas a las que se hace referencia en el presente. Si no está de acuerdo con estos Términos, no podrá acceder ni utilizar los Servicios.',
+                termsSection1Title: '1. Aceptación de los Términos',
+                termsSection1Para1: 'Al utilizar nuestros Servicios, usted afirma que tiene la edad legal para celebrar este acuerdo y que acepta y se compromete a cumplir con estos Términos. Si utiliza los Servicios en nombre de una entidad, usted declara que tiene la autoridad para vincular a esa entidad a estos Términos.',
+                termsSection2Title: '2. Cambios en los Términos',
+                termsSection2Para1: 'Nos reservamos el derecho de modificar estos Términos en cualquier momento. Todos los cambios son efectivos inmediatamente cuando los publicamos. Su uso continuado de los Servicios después de la publicación de los Términos revisados significa que acepta y está de acuerdo con los cambios. Le recomendamos que revise los Términos periódicamente para estar al tanto de cualquier modificación.',
+                termsSection3Title: '3. Cuentas de Usuario',
+                termsSection3Para1: 'Para acceder a ciertas características de los Servicios, es posible que se le solicite que se registre para obtener una cuenta. Usted acepta proporcionar información precisa, actual y completa durante el proceso de registro y actualizar dicha información para mantenerla precisa, actual y completa. Usted es responsable de salvaguardar su contraseña y de cualquier actividad o acción bajo su cuenta.',
+                termsSection3ListItem1: 'Usted acepta no divulgar su contraseña a ningún tercero.',
+                termsSection3ListItem2: 'Debe notificar a Fruitful Global™ inmediatamente al tener conocimiento de cualquier violación de seguridad o uso no autorizado de su cuenta.',
+                termsSection4Title: '4. Derechos de Propiedad Intelectual',
+                termsSection4Para1: 'Todo el contenido de los Servicios, incluidos textos, gráficos, logotipos, imágenes y software, es propiedad de Fruitful Global™ o de sus proveedores de contenido y está protegido por las leyes internacionales de derechos de autor. El uso, la reproducción o la distribución no autorizados de cualquier contenido están estrictamente prohibidos.',
+                termsSection5Title: '5. Conducta Prohibida',
+                termsSection5Para1: 'Usted acepta no utilizar los Servicios para ningún propósito ilegal o de ninguna manera que pueda dañar, deshabilitar, sobrecargar o deteriorar los Servicios. La conducta prohibida incluye, entre otras:',
+                termsSection5ListItem1: 'Participar en cualquier actividad fraudulenta, abusiva o ilegal.',
+                termsSection5ListItem2: 'Intentar obtener acceso no autorizado a cualquier parte de los Servicios o a otras cuentas de usuario.',
+                termsSection5ListItem3: 'Interferir o interrumpir la integridad o el rendimiento de los Servicios.',
+                termsSection6Title: '6. Renuncia de Garantías',
+                termsSection6Para1: 'Los Servicios se proporcionan "tal cual" y "según disponibilidad" sin garantías de ningún tipo, ya sean expresas o implícitas. Fruitful Global™ no garantiza que los Servicios serán ininterrumpidos, libres de errores o seguros.',
+                termsSection7Title: '7. Limitación de Responsabilidad',
+                termsSection7Para1: 'En ningún caso Fruitful Global™, sus afiliados o sus respectivos directores, empleados o agentes serán responsables de ningún daño indirecto, incidental, especial, consecuente o punitivo, incluida la pérdida de beneficios, datos, uso, buena voluntad u otras pérdidas intangibles, que resulten de (i) su acceso o uso o la imposibilidad de acceder o utilizar los Servicios; (ii) cualquier conducta o contenido de terceros en los Servicios.',
+                termsSection8Title: '8. Ley Aplicable',
+                termsSection8Para1: 'Estos Términos se regirán e interpretarán de acuerdo con las leyes de Sudáfrica, sin tener en cuenta sus disposiciones sobre conflicto de leyes.',
+                termsSection9Title: '9. Información de Contacto',
+                termsSection9Para1: 'Si tiene alguna pregunta sobre estos Términos, contáctenos en:',
+                termsSection9Email: 'Correo electrónico: <a href="mailto:legal@faa.zone">legal@faa.zone</a>',
+                // Footer links
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyrightLink: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                pageTitle: 'Conditions Générales | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À Propos',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                // Terms & Conditions Content
+                termsTitle: 'Conditions Générales',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Dernière mise à jour : ',
+                termsPara1: 'Bienvenue chez Fruitful Global™ ! Les présentes Conditions Générales (« Conditions ») régissent votre utilisation du site web de Fruitful Global™ (<a href="https://faa.zone">faa.zone</a>) et de tous les services, fonctionnalités, contenus ou applications connexes (collectivement, les « Services »). En accédant ou en utilisant nos Services, vous acceptez d\'être lié par les présentes Conditions et toutes les politiques qui y sont référencées. Si vous n\'acceptez pas les présentes Conditions, vous ne pouvez pas accéder ni utiliser les Services.',
+                termsSection1Title: '1. Acceptation des Conditions',
+                termsSection1Para1: 'En utilisant nos Services, vous affirmez que vous avez l\'âge légal pour conclure le présent accord et que vous acceptez et consentez à être lié par les présentes Conditions. Si vous utilisez les Services au nom d\'une entité, vous déclarez avoir l\'autorité de lier cette entité aux présentes Conditions.',
+                termsSection2Title: '2. Modifications des Conditions',
+                termsSection2Para1: 'Nous nous réservons le droit de modifier les présentes Conditions à tout moment. Toutes les modifications entrent en vigueur immédiatement après leur publication. Votre utilisation continue des Services après la publication des Conditions révisées signifie que vous acceptez et consentez aux modifications. Nous vous encourageons à consulter régulièrement les Conditions pour prendre connaissance de toute modification.',
+                termsSection3Title: '3. Comptes Utilisateurs',
+                termsSection3Para1: 'Pour accéder à certaines fonctionnalités des Services, vous pouvez être amené à créer un compte. Vous acceptez de fournir des informations exactes, à jour et complètes lors du processus d\'inscription et de mettre à jour ces informations pour qu\'elles restent exactes, à jour et complètes. Vous êtes responsable de la protection de votre mot de passe et de toutes les activités ou actions effectuées sous votre compte.',
+                termsSection3ListItem1: 'Vous acceptez de ne pas divulguer votre mot de passe à un tiers.',
+                termsSection3ListItem2: 'Vous devez informer Fruitful Global™ immédiatement si vous prenez connaissance d\'une violation de la sécurité ou d\'une utilisation non autorisée de votre compte.',
+                termsSection4Title: '4. Droits de Propriété Intellectuelle',
+                termsSection4Para1: 'Tout le contenu des Services, y compris les textes, les graphiques, les logos, les images et les logiciels, est la propriété de Fruitful Global™ ou de ses fournisseurs de contenu et est protégé par les lois internationales sur le droit d\'auteur. L\'utilisation, la reproduction ou la distribution non autorisées de tout contenu sont strictement interdites.',
+                termsSection5Title: '5. Conduite Interdite',
+                termsSection5Para1: 'Vous acceptez de ne pas utiliser les Services à des fins illégales ou d\'une manière qui pourrait endommager, désactiver, surcharger ou altérer les Services. La conduite interdite comprend, sans s\'y limiter :',
+                termsSection5ListItem1: 'S\'engager dans toute activité frauduleuse, abusive ou illégale.',
+                termsSection5ListItem2: 'Tenter d\'obtenir un accès non autorisé à toute partie des Services ou à d\'autres comptes utilisateurs.',
+                termsSection5ListItem3: 'Interférer avec ou perturber l\'intégrité ou la performance des Services.',
+                termsSection6Title: '6. Exclusion de Garanties',
+                termsSection6Para1: 'Les Services sont fournis « tels quels » et « tels que disponibles » sans aucune garantie d\'aucune sorte, expresse ou implicite. Fruitful Global™ ne garantit pas que les Services seront ininterrompus, sans erreur ou sécurisés.',
+                termsSection7Title: '7. Limitation de Responsabilité',
+                termsSection7Para1: 'En aucun cas Fruitful Global™, ses sociétés affiliées ou leurs administrateurs, employés ou agents respectifs ne seront responsables des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs, y compris la perte de profits, de données, d\'utilisation, de clientèle ou d\'autres pertes immatérielles, résultant (i) de votre accès ou de votre utilisation ou de votre incapacité à accéder ou à utiliser les Services ; (ii) de toute conduite ou contenu d\'un tiers sur les Services.',
+                termsSection8Title: '8. Loi Applicable',
+                termsSection8Para1: 'Les présentes Conditions seront régies et interprétées conformément aux lois de l\'Afrique du Sud, sans égard à ses dispositions en matière de conflit de lois.',
+                termsSection9Title: '9. Coordonnées',
+                termsSection9Para1: 'Si vous avez des questions concernant les présentes Conditions, veuillez nous contacter à l\'adresse suivante :',
+                termsSection9Email: 'E-mail: <a href="mailto:legal@faa.zone">legal@faa.zone</a>',
+                // Footer links
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            ar: {
+                pageTitle: 'الشروط والأحكام | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'الميزات',
+                navSignal: 'الإشارة',
+                navVault: 'الخزنة',
+                navTreaty: 'المعاهدة',
+                navVaultMesh: 'شبكة الكهف',
+                navAbout: 'حول',
+                navCrateDance: 'رقصة الصندوق المثمر',
+                navCareers: 'الوظائف',
+                navSecureSign: 'توقيع آمن',
+                navSignUp: 'التسجيل',
+                // Terms & Conditions Content
+                termsTitle: 'الشروط والأحكام',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'آخر تحديث: ',
+                termsPara1: 'مرحبًا بك في Fruitful Global™! تحكم هذه الشروط والأحكام ("الشروط") استخدامك لموقع Fruitful Global™ الإلكتروني (<a href="https://faa.zone">faa.zone</a>) وأي خدمات أو ميزات أو محتوى أو تطبيقات ذات صلة (يُشار إليها مجتمعة باسم "الخدمات"). من خلال الوصول إلى خدماتنا أو استخدامها، فإنك توافق على الالتزام بهذه الشروط وجميع السياسات المشار إليها هنا. إذا كنت لا توافق على هذه الشروط، فلا يجوز لك الوصول إلى الخدمات أو استخدامها.',
+                termsSection1Title: '1. قبول الشروط',
+                termsSection1Para1: 'باستخدامك لخدماتنا، فإنك تؤكد أنك في السن القانوني لإبرام هذا الاتفاق وأنك تقبل وتوافق على الالتزام بهذه الشروط. إذا كنت تستخدم الخدمات نيابة عن كيان، فإنك تقر بأن لديك السلطة لإلزام هذا الكيان بهذه الشروط.',
+                termsSection2Title: '2. التغييرات على الشروط',
+                termsSection2Para1: 'نحتفظ بالحق في تعديل هذه الشروط في أي وقت. تصبح جميع التغييرات سارية المفعول فور نشرها. يعني استمرار استخدامك للخدمات بعد نشر الشروط المعدلة أنك تقبل وتوافق على التغييرات. نشجعك على مراجعة الشروط بشكل دوري لتكون على دراية بأي تعديلات.',
+                termsSection3Title: '3. حسابات المستخدمين',
+                termsSection3Para1: 'للوصول إلى ميزات معينة من الخدمات، قد يُطلب منك التسجيل للحصول على حساب. أنت توافق على تقديم معلومات دقيقة وحديثة وكاملة أثناء عملية التسجيل وتحديث هذه المعلومات للحفاظ عليها دقيقة وحديثة وكاملة. أنت مسؤول عن حماية كلمة مرورك وعن أي أنشطة أو إجراءات تتم تحت حسابك.',
+                termsSection3ListItem1: 'أنت توافق على عدم الكشف عن كلمة مرورك لأي طرف ثالث.',
+                termsSection3ListItem2: 'يجب عليك إخطار Fruitful Global™ فور علمك بأي خرق أمني أو استخدام غير مصرح به لحسابك.',
+                termsSection4Title: '4. حقوق الملكية الفكرية',
+                termsSection4Para1: 'جميع المحتويات على الخدمات، بما في ذلك النصوص والرسومات والشعارات والصور والبرامج، هي ملك لـ Fruitful Global™ أو لموردي المحتوى الخاصين بها وهي محمية بموجب قوانين حقوق النشر الدولية. يُمنع منعًا باتًا الاستخدام أو الاستنساخ أو التوزيع غير المصرح به لأي محتوى.',
+                termsSection5Title: '5. السلوك المحظور',
+                termsSection5Para1: 'أنت توافق على عدم استخدام الخدمات لأي غرض غير قانوني أو بأي طريقة يمكن أن تلحق الضرر بالخدمات أو تعطلها أو تفرط في تحميلها أو تضعفها. يشمل السلوك المحظور، على سبيل المثال لا الحصر:',
+                termsSection5ListItem1: 'الانخراط في أي نشاط احتيالي أو مسيء أو غير قانوني بأي شكل آخر.',
+                termsSection5ListItem2: 'محاولة الحصول على وصول غير مصرح به إلى أي جزء من الخدمات أو حسابات المستخدمين الأخرى.',
+                termsSection5ListItem3: 'التدخل في سلامة أو أداء الخدمات أو تعطيلها.',
+                termsSection6Title: '6. إخلاء المسؤولية عن الضمانات',
+                termsSection6Para1: 'يتم تقديم الخدمات "كما هي" و "كما هي متاحة" دون أي ضمانات من أي نوع، سواء كانت صريحة أو ضمنية. لا تضمن Fruitful Global™ أن الخدمات ستكون دون انقطاع أو خالية من الأخطاء أو آمنة.',
+                termsSection7Title: '7. تحديد المسؤولية',
+                termsSection7Para1: 'لن تكون Fruitful Global™ أو الشركات التابعة لها أو مديروها أو موظفوها أو وكلاؤها مسؤولين بأي حال من الأحوال عن أي أضرار غير مباشرة أو عرضية أو خاصة أو تبعية أو عقابية، بما في ذلك خسارة الأرباح أو البيانات أو الاستخدام أو الشهرة أو غيرها من الخسائر غير الملموسة، الناتجة عن (أ) وصولك إلى الخدمات أو استخدامها أو عدم القدرة على الوصول إليها أو استخدامها؛ (ب) أي سلوك أو محتوى لأي طرف ثالث على الخدمات.',
+                termsSection8Title: '8. القانون الحاكم',
+                termsSection8Para1: 'تخضع هذه الشروط وتفسر وفقًا لقوانين جنوب إفريقيا، بغض النظر عن تعارض أحكامها القانونية.',
+                termsSection9Title: '9. معلومات الاتصال',
+                termsSection9Para1: 'إذا كان لديك أي أسئلة حول هذه الشروط، يرجى الاتصال بنا على:',
+                termsSection9Email: 'البريد الإلكتروني: <a href="mailto:legal@faa.zone">legal@faa.zone</a>',
+                // Footer links
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyrightLink: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMeshLink: 'شبكة الكهف',
+                footerFruitfulLink: 'مثمر',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyright: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.'
+            },
+            zh: {
+                pageTitle: '条款和条件 | 丰硕全球™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                // Terms & Conditions Content
+                termsTitle: '条款和条件',
+                fruitfulGlobalBrand: '丰硕全球™',
+                lastUpdated: '最后更新: ',
+                termsPara1: '欢迎来到丰硕全球™！本条款和条件（“条款”）管辖您对丰硕全球™网站（<a href="https://faa.zone">faa.zone</a>）以及任何相关服务、功能、内容或应用程序（统称为“服务”）的使用。通过访问或使用我们的服务，即表示您同意受本条款和此处引用的所有政策的约束。如果您不同意这些条款，则不得访问或使用服务。',
+                termsSection1Title: '1. 接受条款',
+                termsSection1Para1: '通过使用我们的服务，您确认您已达到签订本协议的法定年龄，并且您接受并同意受本条款的约束。如果您代表某个实体使用服务，则表示您有权使该实体受本条款的约束。',
+                termsSection2Title: '2. 条款变更',
+                termsSection2Para1: '我们保留随时修改这些条款的权利。所有更改在发布时立即生效。您在修订后的条款发布后继续使用服务，即表示您接受并同意这些更改。我们鼓励您定期查看这些条款，以了解任何修改。',
+                termsSection3Title: '3. 用户账户',
+                termsSection3Para1: '要访问服务的某些功能，您可能需要注册一个账户。您同意在注册过程中提供准确、最新和完整的信息，并更新这些信息以使其保持准确、最新和完整。您有责任保护您的密码以及您账户下的任何活动或行为。',
+                termsSection3ListItem1: '您同意不向任何第三方披露您的密码。',
+                termsSection3ListItem2: '一旦发现任何安全漏洞或未经授权使用您的账户，您必须立即通知丰硕全球™。',
+                termsSection4Title: '4. 知识产权',
+                termsSection4Para1: '服务上的所有内容，包括文本、图形、徽标、图像和软件，均为丰硕全球™或其内容供应商的财产，并受国际版权法的保护。严禁未经授权使用、复制或分发任何内容。',
+                termsSection5Title: '5. 禁止行为',
+                termsSection5Para1: '您同意不将服务用于任何非法目的，或以任何可能损坏、禁用、过载或损害服务的方式使用服务。禁止行为包括但不限于：',
+                termsSection5ListItem1: '从事任何欺诈、滥用或其他非法活动。',
+                termsSection5ListItem2: '试图未经授权访问服务的任何部分或其他用户账户。',
+                termsSection5ListItem3: '干扰或破坏服务的完整性或性能。',
+                termsSection6Title: '6. 免责声明',
+                termsSection6Para1: '服务按“原样”和“可用”提供，不附带任何明示或暗示的保证。丰硕全球™不保证服务不会中断、没有错误或安全。',
+                termsSection7Title: '7. 责任限制',
+                termsSection7Para1: '在任何情况下，丰硕全球™、其关联公司或其各自的董事、员工或代理均不对因以下原因造成的任何间接、偶然、特殊、后果性或惩罚性损害负责，包括利润、数据、使用、商誉或其他无形损失：(i) 您访问或使用或无法访问或使用服务；(ii) 服务上任何第三方的任何行为或内容。',
+                termsSection8Title: '8. 管辖法律',
+                termsSection8Para1: '本条款应受南非法律管辖和解释，不考虑其冲突法规定。',
+                termsSection9Title: '9. 联系信息',
+                termsSection9Para1: '如果您对本条款有任何疑问，请通过以下方式联系我们：',
+                termsSection9Email: '电子邮件: <a href="mailto:legal@faa.zone">legal@faa.zone</a>',
+                // Footer links
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyrightLink: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMeshLink: '金库网格',
+                footerFruitfulLink: '丰硕',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        // Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerText = '🌙';
+            } else {
+                themeToggle.innerText = '☀️';
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+
+            // Language toggle event listener
+            languageToggle.addEventListener('change', (event) => {
+                const newLang = event.target.value;
+                updateLanguage(newLang);
+                localStorage.setItem('language', newLang);
+            });
+
+            // Function to update text content based on selected language
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (window.languageData[lang] && window.languageData[lang][key]) { // Use window.languageData
+                        el.innerHTML = window.languageData[lang][key];
+                    }
+                });
+                document.title = window.languageData[lang]?.pageTitle || 'Fruitful Global'; // Use window.languageData
+            }
+        });
+    </script>
+</body>
+</html>

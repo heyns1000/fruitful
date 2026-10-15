@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIPOT (PTY) LTD: Business Rescue Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Calm Harmony" - A professional theme using warm neutrals (amber/stone) with slate blue for accents, conveying stability and seriousness. -->
+    <!-- Application Structure Plan: The SPA is designed as an executive dashboard. 1) A top "Status" banner with a countdown creates immediate context and urgency. 2) A two-column "Situation Analysis" section contrasts challenges and strengths, providing a balanced, at-a-glance view of the business case for rescue. This is more intuitive than a linear text document. 3) An interactive "Recovery Roadmap" visualizes the "RESOLVED" section as a clear, step-by-step action plan. 4) A modal provides access to the full legal text, keeping the main interface clean. This structure was chosen to guide the user from the high-level situation to the detailed plan, making a complex legal process digestible and transparent. -->
+    <!-- Visualization & Content Choices: 
+    - Report Info: Court date (July 1, 2025). Goal: Inform & create urgency. Viz: JS Countdown Timer. Justification: More impactful than static text.
+    - Report Info: Financial distress, asset risk. Goal: Compare. Viz: Two-column HTML/CSS layout titled "Challenges". Interaction: Subtle hover effects. Justification: Clearly isolates problems.
+    - Report Info: Inventory, sales orders, supplier support. Goal: Compare. Viz: Two-column HTML/CSS layout titled "Strengths". Interaction: Subtle hover effects. Justification: Highlights the viability of the business.
+    - Report Info: The "IT IS HEREBY RESOLVED THAT" section. Goal: Organize. Viz: Interactive HTML/CSS timeline. Interaction: Clicking a step reveals details. Justification: Transforms a legal list into a clear, forward-looking process.
+    - Report Info: The full resolution text. Goal: Inform. Viz: HTML/CSS/JS Modal. Interaction: Click a button to view. Justification: Provides full disclosure without cluttering the primary view.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .step-item.active {
+            border-color: #3b82f6; /* blue-500 */
+            background-color: #eff6ff; /* blue-50 */
+        }
+         .step-item.active h3 {
+            color: #1e3a8a; /* blue-900 */
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <div id="app" class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
+
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">TRIPOT (PTY) LTD</h1>
+            <p class="text-lg text-slate-600 mt-1">Interactive Overview: Business Rescue Proceedings</p>
+            <p class="text-sm text-slate-500">Registration: 2021/132487/07 | Effective: 26 June 2025</p>
+        </header>
+
+        <!-- Status & Countdown Section -->
+        <section class="bg-amber-100 border-l-4 border-amber-500 text-amber-900 p-6 rounded-r-lg shadow-md mb-8 md:mb-12">
+            <h2 class="text-xl font-bold mb-2">Current Status: Voluntarily Commencing Business Rescue</h2>
+            <p class="mb-4">To safeguard assets and ensure operational continuity, the director has initiated business rescue proceedings under Section 129(1) of the Companies Act. This provides a legal framework to restructure and restore the company to profitability.</p>
+            <div class="bg-white/60 p-4 rounded-lg text-center">
+                <p class="text-sm font-semibold uppercase tracking-wider text-slate-700">Time-sensitive action to pre-empt court date</p>
+                <div id="countdown" class="text-2xl md:text-3xl font-bold text-red-600 mt-2"></div>
+                <p class="text-xs text-slate-500 mt-1">Until landlord's scheduled court date on 1 July 2025</p>
+            </div>
+        </section>
+
+        <!-- Situation Analysis Section -->
+        <section class="mb-8 md:mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Situation Analysis</h2>
+                <p class="mt-2 text-slate-600 max-w-3xl mx-auto">This section provides a balanced overview of the company's current financial challenges against its significant operational strengths, demonstrating the underlying potential for a successful recovery.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Challenges Column -->
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-red-500">
+                    <h3 class="text-xl font-semibold mb-4 text-red-800 flex items-center">
+                        <span class="text-2xl mr-3">⚠️</span> Current Challenges
+                    </h3>
+                    <ul class="space-y-4 text-slate-700">
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Financial Distress</h4>
+                                <p class="text-sm">Caused by unforeseen delays in stock imports, leading to an inability to meet current financial obligations.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="font-bold text-red-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Creditor & Landlord Pressure</h4>
+                                <p class="text-sm">The company faces action from unpaid creditors and rental arrears, with a looming court date.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-red-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Immediate Asset Risk</h4>
+                                <p class="text-sm">A court order on 1 July 2025 could lead to the execution of a hypothec and sale of essential business assets.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Strengths Column -->
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-green-500">
+                    <h3 class="text-xl font-semibold mb-4 text-green-800 flex items-center">
+                        <span class="text-2xl mr-3">✨</span> Path to Recovery
+                    </h3>
+                    <ul class="space-y-4 text-slate-700">
+                       <li class="flex items-start">
+                             <span class="font-bold text-green-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Valuable Existing Inventory</h4>
+                                <p class="text-sm">The company possesses significant stock to be valued, forming a key asset for immediate sales.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-green-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Strong Supplier Relationships</h4>
+                                <p class="text-sm">Key importers are holding private label stock and are willing to supply on a COD basis, ensuring product flow.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-bold text-green-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Confirmed Sales Pipeline</h4>
+                                <p class="text-sm">Certainty of existing sales orders and established vendor numbers with national retail chains provides a clear path to revenue.</p>
+                            </div>
+                        </li>
+                         <li class="flex items-start">
+                            <span class="font-bold text-green-600 mr-2 mt-1">●</span>
+                            <div>
+                                <h4 class="font-semibold">Experienced Personnel</h4>
+                                <p class="text-sm">A plan to reinstate key staff with long-term relationships will accelerate sales and operational recovery.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recovery Roadmap Section -->
+        <section class="mb-8 md:mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Recovery Roadmap</h2>
+                <p class="mt-2 text-slate-600 max-w-3xl mx-auto">The following steps outline the formal process being initiated to stabilize and rebuild the company. Click on each step to see more details about the actions being taken.</p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Steps Navigation -->
+                <div class="lg:w-1/3 space-y-2">
+                    <div id="step-1" class="step-item p-4 border-l-4 border-slate-300 rounded-r-md cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                        <h3 class="font-bold text-slate-700">Step 1: Commence Proceedings</h3>
+                        <p class="text-sm text-slate-500">Formal initiation of business rescue.</p>
+                    </div>
+                    <div id="step-2" class="step-item p-4 border-l-4 border-slate-300 rounded-r-md cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                        <h3 class="font-bold text-slate-700">Step 2: File with CIPC</h3>
+                        <p class="text-sm text-slate-500">Official registration of the resolution.</p>
+                    </div>
+                    <div id="step-3" class="step-item p-4 border-l-4 border-slate-300 rounded-r-md cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                        <h3 class="font-bold text-slate-700">Step 3: Appoint Practitioner</h3>
+                        <p class="text-sm text-slate-500">Engaging an expert to guide the process.</p>
+                    </div>
+                    <div id="step-4" class="step-item p-4 border-l-4 border-slate-300 rounded-r-md cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                        <h3 class="font-bold text-slate-700">Step 4: Notify Stakeholders</h3>
+                        <p class="text-sm text-slate-500">Informing all creditors of the situation.</p>
+                    </div>
+                     <div id="step-5" class="step-item p-4 border-l-4 border-slate-300 rounded-r-md cursor-pointer hover:bg-slate-100 transition-colors duration-200">
+                        <h3 class="font-bold text-slate-700">Step 5: Execute Turnaround</h3>
+                        <p class="text-sm text-slate-500">Implementing the strategic recovery plan.</p>
+                    </div>
+                </div>
+
+                <!-- Steps Content -->
+                <div class="lg:w-2/3 bg-white p-6 rounded-lg shadow-lg min-h-[200px]">
+                    <div id="step-content" class="prose max-w-none text-slate-700">
+                        <p>Select a step from the left to view the details.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer / CTA -->
+        <footer class="text-center border-t border-slate-200 pt-8">
+            <button id="view-resolution-btn" class="bg-slate-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-800 transition-colors duration-200 shadow-md">
+                View Full Signed Resolution
+            </button>
+            <div class="mt-6 text-sm text-slate-500">
+                 <p>Director: Heyns Schoeman (ID: 8603035153082)</p>
+                 <p class="mt-2">This overview is for informational purposes. The full resolution serves as the governing legal document.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for Full Resolution -->
+    <div id="resolution-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95">
+            <div class="sticky top-0 bg-white border-b border-slate-200 p-4 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-900">Official Resolution of The Director</h2>
+                <button id="close-modal-btn" class="text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <pre class="whitespace-pre-wrap text-sm text-slate-700 bg-slate-50 p-4 rounded-md font-sans">
+**RESOLUTION OF THE DIRECTOR OF TRIPOT (PTY) LTD**
+(Registration Number: 2021/132487/07)
+
+**PASSED AT A MEETING HELD ON THIS 26TH DAY OF JUNE 2025 AT [CURRENT TIME]**
+
+**WHEREAS:**
+
+1. TRIPOT (PTY) LTD (hereinafter referred to as "the Company") is a company duly incorporated in accordance with the company laws of the Republic of South Africa, with registration number 2021/132487/07.
+
+2. Mr. Heyns Schoeman, Identity Number 8603035153082, is the sole director of the Company.
+
+3. The Company conducts a wholesale business and is currently experiencing financial distress due to unforeseen delays in stock imports, which has led to unpaid creditors and an inability to meet current financial obligations, including rental arrears for its premises at 40 Zanie Straat, Newmark Estate, Pretoria.
+
+4. A court date is set for 1 July 2025 for the landlord to execute a hypothec over the Company's movable assets, including essential office equipment, situated at the aforementioned premises.
+
+5. Despite the current challenges, the Company possesses valuable inventory that will be captured and valued, has certainty regarding existing sales orders, and maintains strong relationships with importers who are holding significant private label stock for the Company and are willing to supply on a Cash on Delivery (COD) basis, enabling managed sales to national retail chains.
+
+6. The director believes that there are reasonable prospects for rescuing the Company and restoring it to solvency, thereby preserving employment, maximizing the likelihood of the Company continuing in existence on a solvent basis, and yielding a better return for creditors than would result from immediate liquidation.
+
+7. The initiation of business rescue proceedings is necessary to prevent the immediate sale of essential assets, facilitate the structured management of current inventory and incoming stock, and allow the Company to leverage its established vendor relationships and sales orders to generate revenue and repay its obligations.
+
+8. A key component of the business rescue plan involves the potential reinstatement of staff with good qualities and long-term relationships to effectively drive sales and accelerate the Company's recovery.
+
+9. The director, being the sole director of the Company, hereby deems it necessary and appropriate, in terms of Section 129(1) of the Companies Act, 71 of 2008, to place the Company under business rescue.
+
+**IT IS HEREBY RESOLVED THAT:**
+
+1. The Company, TRIPOT (PTY) LTD, hereby voluntarily commences business rescue proceedings, effective immediately, in terms of Section 129(1) of the Companies Act, 71 of 2008.
+
+2. Mr. Heyns Schoeman, in his capacity as the sole director, is hereby authorized to take all necessary steps to formally file the Notice of Beginning of Business Rescue Proceedings (Form CoR123.1) with the Companies and Intellectual Property Commission (CIPC) without delay.
+
+3. The director is further authorized to engage with the Company’s legal representatives to appoint a suitably qualified, experienced, and cost-efficient business rescue practitioner as soon as practically possible, as required by the Companies Act.
+
+4. All creditors of the Company shall be notified of these proceedings within the prescribed timelines as stipulated by the Companies Act.
+
+5. The director is authorized to do all such things and sign all such documents as may be necessary or incidental to give effect to this resolution, including but not limited to, actions relating to the strategic reinstatement of key personnel to support business continuity and sales objectives.
+
+**DIRECTOR:**
+
+____________________________
+**HEYNS SCHOEMAN**
+Identity Number: 8603035153082
+Sole Director of TRIPOT (PTY) LTD
+
+**DATE:** 26 June 2025
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Countdown Timer Logic
+            const countdownElement = document.getElementById('countdown');
+            const courtDate = new Date('2025-07-01T00:00:00').getTime();
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const distance = courtDate - now;
+
+                if (distance < 0) {
+                    countdownElement.innerHTML = "Court date has passed";
+                    clearInterval(interval);
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            };
+            
+            const interval = setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            // Interactive Roadmap Logic
+            const steps = {
+                'step-1': {
+                    title: 'Resolution: Commence Proceedings',
+                    content: 'The company, TRIPOT (PTY) LTD, has voluntarily commenced business rescue proceedings, effective immediately. This is a proactive measure taken by the director to protect the company and its stakeholders.'
+                },
+                'step-2': {
+                    title: 'Action: File with CIPC',
+                    content: 'The director, Mr. Heyns Schoeman, is authorized to immediately file the formal Notice of Beginning of Business Rescue Proceedings (Form CoR123.1) with the Companies and Intellectual Property Commission (CIPC).'
+                },
+                'step-3': {
+                    title: 'Action: Appoint Business Rescue Practitioner',
+                    content: 'Legal representatives will be engaged to appoint a suitably qualified, experienced, and cost-efficient business rescue practitioner (BRP) to oversee the process and develop a formal rescue plan.'
+                },
+                'step-4': {
+                    title: 'Communication: Notify Creditors',
+                    content: 'All creditors of the company will be formally notified of the business rescue proceedings within the legally required timelines, ensuring transparency throughout the process.'
+                },
+                 'step-5': {
+                    title: 'Strategy: Execute Turnaround Plan',
+                    content: 'The director is fully authorized to take all necessary actions to give effect to the resolution. This includes managing assets, leveraging supplier relationships, and strategically reinstating key personnel to support business continuity and drive sales.'
+                }
+            };
+
+            const stepContentElement = document.getElementById('step-content');
+            const stepItems = document.querySelectorAll('.step-item');
+
+            function setActiveStep(stepId) {
+                stepItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+                const activeItem = document.getElementById(stepId);
+                if(activeItem) {
+                    activeItem.classList.add('active');
+                }
+                
+                const stepData = steps[stepId];
+                if (stepData) {
+                    stepContentElement.innerHTML = `
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">${stepData.title}</h3>
+                        <p class="text-slate-700">${stepData.content}</p>
+                    `;
+                }
+            }
+
+            stepItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    setActiveStep(item.id);
+                });
+            });
+
+            setActiveStep('step-1'); 
+
+            // Modal Logic
+            const modal = document.getElementById('resolution-modal');
+            const viewBtn = document.getElementById('view-resolution-btn');
+            const closeBtn = document.getElementById('close-modal-btn');
+
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                }, 10);
+            };
+
+            const closeModal = () => {
+                modal.classList.add('opacity-0');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            };
+
+            viewBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

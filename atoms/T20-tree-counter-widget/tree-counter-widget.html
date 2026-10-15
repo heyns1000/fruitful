@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Counter Widget - Dynamic Loader</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* Main container */
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    /* Heading styles */
+    h1 {
+      color: #065f46;
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    /* Description text */
+    .description {
+      color: #047857;
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Tree counter placeholder div */
+    #tree-counter {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 0 auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      background-color: #f0fdf4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Loading state */
+    .loading {
+      color: #065f46;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Info section */
+    .info-section {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f0fdf4;
+      border-radius: 8px;
+      border-left: 4px solid #10b981;
+    }
+
+    .info-section h3 {
+      color: #065f46;
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .info-section p {
+      color: #047857;
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Link styling */
+    a {
+      color: #059669;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Error message styling */
+    .error-message {
+      color: #dc2626;
+      background-color: #fef2f2;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 4px solid #ef4444;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .description {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header section -->
+    <h1>🌲 Dynamic Tree Counter</h1>
+    <p class="description">
+      This implementation dynamically loads the Plant-for-the-Planet tree counter widget 
+      using JavaScript. The widget will appear below once loaded.
+    </p>
+
+    <!-- Widget container - will be populated by JavaScript -->
+    <div id="tree-counter">
+      <div class="loading">Loading tree counter...</div>
+    </div>
+
+    <!-- Information section -->
+    <div class="info-section">
+      <h3>Dynamic Loading</h3>
+      <p>
+        This page uses JavaScript to dynamically create and load the iframe. 
+        This approach is useful for Single Page Applications (SPAs) and when you need 
+        programmatic control over widget loading.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Configuration for the tree counter widget
+     * IMPORTANT: Replace 'YOUR_WIDGET_URL' with your actual widget URL
+     * Get your widget URL from: https://widgets.plant-for-the-planet.org
+     */
+    const TREE_WIDGET_CONFIG = {
+      // Replace this with your actual widget URL
+      widgetUrl: 'YOUR_WIDGET_URL',
+      // Example: 'https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME'
+      
+      // Container element ID
+      containerId: 'tree-counter',
+      
+      // Iframe dimensions and styling
+      width: '100%',
+      height: '300px',
+      borderRadius: '8px',
+      
+      // Additional iframe settings
+      scrolling: 'no',
+      loading: 'lazy'
+    };
+
+    /**
+     * Asynchronously loads the tree counter widget
+     * Creates an iframe element and injects it into the container
+     */
+    async function loadTreeWidget() {
+      try {
+        // Get the container element
+        const container = document.getElementById(TREE_WIDGET_CONFIG.containerId);
+        
+        if (!container) {
+          throw new Error('Tree counter container not found');
+        }
+
+        // Check if widget URL is configured
+        if (TREE_WIDGET_CONFIG.widgetUrl === 'YOUR_WIDGET_URL') {
+          container.innerHTML = `
+            <div class="error-message">
+              <strong>Configuration Required:</strong> Please replace 'YOUR_WIDGET_URL' 
+              with your actual Plant-for-the-Planet widget URL in the TREE_WIDGET_CONFIG object.
+              Visit <a href="https://widgets.plant-for-the-planet.org" target="_blank" rel="noopener noreferrer">
+              widgets.plant-for-the-planet.org</a> to get your widget URL.
+            </div>
+          `;
+          return;
+        }
+
+        // Create the iframe element
+        const iframe = document.createElement('iframe');
+        
+        // Set iframe attributes
+        iframe.src = TREE_WIDGET_CONFIG.widgetUrl;
+        iframe.title = 'Plant for the Planet Tree Counter';
+        iframe.scrolling = TREE_WIDGET_CONFIG.scrolling;
+        iframe.loading = TREE_WIDGET_CONFIG.loading;
+        
+        // Apply styling (includes border: none which replaces deprecated frameBorder)
+        iframe.style.width = TREE_WIDGET_CONFIG.width;
+        iframe.style.height = TREE_WIDGET_CONFIG.height;
+        iframe.style.borderRadius = TREE_WIDGET_CONFIG.borderRadius;
+        iframe.style.border = 'none';
+        
+        // Set security attributes (minimal permissions for tree counter)
+        iframe.setAttribute('allow', 'encrypted-media');
+        
+        // Clear loading message and insert iframe
+        container.innerHTML = '';
+        container.appendChild(iframe);
+
+        console.log('Tree counter widget loaded successfully');
+        
+      } catch (error) {
+        console.error('Error loading tree counter widget:', error);
+        
+        // Display error message to user
+        const container = document.getElementById(TREE_WIDGET_CONFIG.containerId);
+        if (container) {
+          container.innerHTML = `
+            <div class="error-message">
+              <strong>Error:</strong> Failed to load the tree counter widget. 
+              Please check your configuration and try again.
+            </div>
+          `;
+        }
+      }
+    }
+
+    /**
+     * Initialize the widget when DOM is ready
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM loaded, initializing tree counter widget...');
+      loadTreeWidget();
+    });
+
+    /**
+     * Optional: Reload widget function for manual refresh
+     * Can be called from browser console: reloadTreeWidget()
+     */
+    window.reloadTreeWidget = function() {
+      console.log('Reloading tree counter widget...');
+      loadTreeWidget();
+    };
+  </script>
+</body>
+</html>

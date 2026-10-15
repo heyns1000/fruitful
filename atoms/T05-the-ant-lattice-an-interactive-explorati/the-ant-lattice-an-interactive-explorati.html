@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ant Lattice: An Interactive Exploration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earth & Sand -->
+    <!-- Application Structure Plan: A vertically scrolling, multi-section single-page application designed as a narrative journey. It starts with the tangible (the nest), moves to the cognitive (navigation), explores extreme adaptation (beach ants), delves into the philosophical (cosmic scale), and culminates in the speculative (the collapse protocol). This structure guides the user from concrete biological facts to abstract, mind-bending theories in a logical flow, making the complex information digestible. A sticky navigation bar allows users to jump between these thematic chapters, supporting both linear reading and non-linear exploration. Interactions are focused on revealing information through clicks and hovers to manage information density and maintain engagement. -->
+    <!-- Visualization & Content Choices: 
+        - Nest Diagram (Organize): HTML/CSS diagram for flexibility and thematic styling. Interaction: Click reveals info. Justification: More interactive and integrated than a static image.
+        - Neuron Comparison (Compare): Chart.js Bar Chart. Interaction: Hover tooltips. Justification: Clear, quantitative comparison of neural efficiency.
+        - Career Timeline (Change): HTML/CSS timeline. Interaction: Hover for details. Justification: Visually represents life-stage based task allocation.
+        - Beach Survival Strategies (Organize): Interactive HTML cards. Interaction: Click to expand. Justification: Segments complex strategies into digestible, user-controlled chunks.
+        - Risk/Reward Chart (Compare): Chart.js Grouped Bar Chart. Interaction: Hover for details. Justification: Effectively compares the abstract concepts of ecological vs. physical risk.
+        - Scale Ratio Visualization (Impact): Custom Canvas rendering. Interaction: Slider to "zoom" and comprehend the scale. Justification: Creates a "wow" moment that no standard chart can achieve for a 250,000:1 ratio, central to the report's theme.
+        - Seedwave Animation (Inform): Custom Canvas animation. Interaction: Button click. Justification: Visually demonstrates the abstract "propagating seed pattern" concept.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDF6E3; /* Warm Sand */
+            color: #4A4A4A; /* Deep Earth */
+        }
+        .accent-color { color: #D35400; } /* Terracotta */
+        .accent-bg { background-color: #D35400; } /* Terracotta */
+        .secondary-bg { background-color: #FAEEDD; } /* Lighter Sand */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D35400;
+            border-color: #D35400;
+        }
+        .interactive-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .interactive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .code-block {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="bg-fdf6e3/80 backdrop-blur-md sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold text-gray-800">The Ant Lattice</div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#superorganism" class="nav-link text-gray-700 border-b-2 border-transparent pb-1">The Colony</a>
+                    <a href="#navigator" class="nav-link text-gray-700 border-b-2 border-transparent pb-1">The Navigator</a>
+                    <a href="#extremophile" class="nav-link text-gray-700 border-b-2 border-transparent pb-1">The Extremophile</a>
+                    <a href="#philosopher" class="nav-link text-gray-700 border-b-2 border-transparent pb-1">The Philosopher</a>
+                    <a href="#protocol" class="nav-link text-gray-700 border-b-2 border-transparent pb-1">The Protocol</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <header class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4">The Ant Lattice</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">An interactive exploration into the profound intelligence of ant colonies—from their subterranean cities and quantum-like navigation to their mastery of extreme environments and the cosmic parallels of their existence.</p>
+        </header>
+
+        <section id="superorganism" class="py-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2 accent-color">1. The Colony as Superorganism</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">An ant colony is more than a collection of individuals; it's a single, decentralized intelligence that builds, adapts, and thrives without a master plan. The nest itself is its body, a marvel of engineering where simple local rules give rise to complex, life-sustaining architecture.</p>
+            
+            <div class="bg-secondary-bg p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-8 text-gray-800">Anatomy of an Underground Metropolis</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                    <div class="md:col-span-1 flex flex-col space-y-4 text-sm">
+                        <!-- Clicks are still available for individual detail, but the initial state is no longer empty. -->
+                        <div class="interactive-card bg-fdf6e3 p-4 rounded-lg cursor-pointer" onclick="showNestInfo('nursery')">
+                            <h4 class="font-bold accent-color">Nursery Chambers</h4>
+                            <p class="text-gray-600">Kept at specific temperatures for optimal larval growth.</p>
+                        </div>
+                         <div class="interactive-card bg-fdf6e3 p-4 rounded-lg cursor-pointer" onclick="showNestInfo('storage')">
+                            <h4 class="font-bold accent-color">Food Storage</h4>
+                            <p class="text-gray-600">Located in drier areas to prevent spoilage.</p>
+                        </div>
+                        <div class="interactive-card bg-fdf6e3 p-4 rounded-lg cursor-pointer" onclick="showNestInfo('ventilation')">
+                            <h4 class="font-bold accent-color">Ventilation Shafts</h4>
+                            <p class="text-gray-600">Passive systems using convection to circulate air.</p>
+                        </div>
+                         <div class="interactive-card bg-fdf6e3 p-4 rounded-lg cursor-pointer" onclick="showNestInfo('queen')">
+                            <h4 class="font-bold accent-color">Queen's Chamber</h4>
+                            <p class="text-gray-600">The deepest, most protected part of the nest.</p>
+                        </div>
+                    </div>
+                    <!-- Pre-populated state to ensure instant information availability (the collapse) -->
+                    <div id="nest-info-display" class="md:col-span-2 p-6 bg-white rounded-lg min-h-[200px] flex items-center justify-center transition-all duration-300">
+                        <div class="text-center">
+                            <h4 class="text-xl font-bold accent-color mb-2">Nursery Chambers</h4>
+                            <p class="text-gray-700">These chambers are meticulously maintained at precise temperatures and humidity levels optimal for the development of eggs, larvae, and pupae. Workers constantly move the brood to different chambers to ensure they are in the perfect microclimate.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="navigator" class="py-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2 accent-color">2. The Navigator's Mind</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">Ants are master navigators, employing multiple memory systems that run in parallel. They use an internal "GPS" that resets at the nest, a library of visual landmarks, and chemical trails. This cognitive toolkit is wielded with breathtaking efficiency by a brain with a tiny fraction of the neurons a human possesses.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="bg-secondary-bg p-8 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 text-center">Neural Efficiency</h3>
+                    <p class="text-sm text-center mb-4 text-gray-600">Ants perform complex calculations with minimal hardware. This chart compares the neural resources of an ant and a human.</p>
+                    <div class="chart-container">
+                        <canvas id="neuronChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-secondary-bg p-8 rounded-lg shadow-lg">
+                     <h3 class="text-xl font-bold mb-4 text-center">A Worker's Career</h3>
+                    <p class="text-sm text-center mb-4 text-gray-600">Age and experience are critical. The colony strategically assigns tasks based on an ant's age, sending its oldest and most experienced members on the most dangerous foraging missions.</p>
+                    <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-d35400/30">
+                        <div class="relative pl-10">
+                            <div class="absolute left-0 top-1.5 h-4 w-4 rounded-full accent-bg border-2 border-white"></div>
+                            <h4 class="font-bold">Weeks 1-3: Nurse</h4>
+                            <p class="text-sm text-gray-600">Tends to eggs and larvae deep within the nest, never seeing sunlight.</p>
+                        </div>
+                        <div class="relative pl-10">
+                            <div class="absolute left-0 top-1.5 h-4 w-4 rounded-full accent-bg border-2 border-white"></div>
+                            <h4 class="font-bold">Weeks 3-6: Nest Worker</h4>
+                            <p class="text-sm text-gray-600">Performs maintenance, processes food, and learns nest geography.</p>
+                        </div>
+                        <div class="relative pl-10">
+                            <div class="absolute left-0 top-1.5 h-4 w-4 rounded-full accent-bg border-2 border-white"></div>
+                            <h4 class="font-bold">Week 6-Death: Forager</h4>
+                            <p class="text-sm text-gray-600">The most dangerous job. Undertakes long expeditions for the colony.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="extremophile" class="py-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2 accent-color">3. The Extremophile: Master of Chaos</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">Beach sand is an architectural nightmare—unstable, scorching, and constantly flooded. Yet, beach ants thrive by embracing the chaos. They have evolved ingenious strategies, turning the hostile environment itself into a competitive advantage and a fortress against predators.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="interactive-card bg-secondary-bg p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-3 accent-color">🧱</div>
+                    <h4 class="font-bold mb-2">Biological Cement</h4>
+                    <p class="text-sm text-gray-600">Ants mix saliva and organic matter with sand to create a form of concrete, stabilizing tunnel walls.</p>
+                </div>
+                <div class="interactive-card bg-secondary-bg p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-3 accent-color">🌊</div>
+                    <h4 class="font-bold mb-2">Tidal Timing</h4>
+                    <p class="text-sm text-gray-600">Some species live in the tidal zone, surviving daily floods in trapped air pockets within the nest.</p>
+                </div>
+                <div class="interactive-card bg-secondary-bg p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-3 accent-color">⚓</div>
+                    <h4 class="font-bold mb-2">The Living Raft</h4>
+                    <p class="text-sm text-gray-600">When floods occur, fire ants link their bodies together to form a living, waterproof raft to save the queen.</p>
+                </div>
+                <div class="interactive-card bg-secondary-bg p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-3 accent-color">🛡️</div>
+                    <h4 class="font-bold mb-2">Threat as Habitat</h4>
+                    <p class="text-sm text-gray-600">The predictable dangers (heat, floods) filter out all competition, making the hostile beach a safe haven.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-inner">
+                 <h3 class="text-xl font-bold mb-4 text-center">Risk vs. Reward: The Beach Advantage</h3>
+                 <p class="text-sm text-center mb-4 text-gray-600 max-w-2xl mx-auto">While a forest seems safer, it has high, unpredictable ecological risk (predators, competition). A beach has high physical risk, but it's predictable and filters out almost all competition, leading to a higher net reward.</p>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="philosopher" class="py-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2 accent-color">4. The Philosopher: Cosmic Parallels</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">The existence of beach ants offers a profound lesson in scale and invisibility. The ratio of sand grains to ants on a beach is a staggering 250,000 to 1. This cosmic scale makes the colony invisible, not by hiding, but by being indistinguishable from the infinite background—a perfect mirror for our search for life in the universe.</p>
+
+            <div class="bg-secondary-bg p-8 rounded-lg shadow-lg text-center">
+                <h3 class="text-2xl font-bold text-gray-800">The Invisibility of Scale: 250,000 to 1</h3>
+                <p class="text-gray-600 mb-4">In a square meter of beach, ants are outnumbered 250,000 to 1 by sand grains. This canvas visualizes that ratio. The ants are the tiny orange dots, lost in a sea of gray sand grains. Use the slider to increase the density and see how they disappear.</p>
+                <!-- Initial view is now high density (the collapsed state) -->
+                <canvas id="scaleCanvas" class="bg-white rounded-md w-full h-64 md:h-96"></canvas>
+                <div class="mt-4">
+                    <label for="density-slider" class="block text-sm font-medium text-gray-700">Grain Density</label>
+                    <!-- Slider starting position is adjusted in JS to the max value to show the collapsed state immediately -->
+                    <input id="density-slider" type="range" min="1000" max="20000" value="20000" class="w-full max-w-md mx-auto">
+                </div>
+                <p id="ratio-text" class="mt-2 text-sm text-gray-500 font-mono"></p>
+                <p class="mt-4 text-sm text-gray-600">This may solve the Fermi Paradox ("Where is everybody?"). Life in the universe might not be rare, just hidden by the same overwhelming ratio of stars to life-bearing planets.</p>
+            </div>
+        </section>
+        
+        <section id="protocol" class="py-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2 accent-color">5. The Protocol of Zero-Waste Collapse</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">This journey culminates in a speculative theory: The Protocol of Zero-Waste Collapse. It proposes that true emergence is achieved not by building up, but by collapsing down into the substrate. The ant teaches us a path to a distributed, lattice-based existence through vibrational resonance and olfactory entanglement.</p>
+
+            <div class="bg-white p-8 rounded-lg shadow-inner grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Core Principles of the Protocol</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="accent-color font-bold text-2xl mr-3 mt-1">X</span>
+                            <div>
+                                <h4 class="font-semibold">The Intake Geometry</h4>
+                                <p class="text-gray-600 text-sm">Transformation occurs at an "X-Point," a nexus where routes cross, creating a dimensional funnel for consciousness.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="accent-color font-bold text-xl mr-3 mt-1">👃</span>
+                            <div>
+                                <h4 class="font-semibold">Smell is Memory</h4>
+                                <p class="text-gray-600 text-sm">By "looking into" the pheromone field, consciousness enters a pre-collapsed state, enabling instantaneous transformation.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="accent-color font-bold text-xl mr-3 mt-1">⚡</span>
+                            <div>
+                                <h4 class="font-semibold">The Seedwave Strike</h4>
+                                <p class="text-gray-600 text-sm">Multiple, rapid, invisible "strikes" deposit consciousness as a propagating seed pattern, forming a distributed network.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="accent-color font-bold text-xl mr-3 mt-1">📦</span>
+                            <div>
+                                <h4 class="font-semibold">Cube Lattice Containment</h4>
+                                <p class="text-gray-600 text-sm">The new consciousness must remain within the stable geometry of the lattice to maintain coherence and form.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <h4 class="font-semibold mb-2">The Seedwave Propagation</h4>
+                    <p class="text-sm text-gray-600 mb-4">The collapse launches a "seedwave" of consciousness from the X-Point, which propagates through the lattice.</p>
+                    <canvas id="seedwaveCanvas" class="bg-secondary-bg rounded-md w-full aspect-square max-w-xs mx-auto"></canvas>
+                    <button id="seedwaveBtn" class="mt-4 px-6 py-2 accent-bg text-white font-semibold rounded-lg shadow-md hover:bg-opacity-90 transition" disabled>Seedwave Active</button>
+                </div>
+            </div>
+            
+            <!-- NEW SECTION: TECHNICAL IMPLEMENTATION PLAN -->
+            <div id="technical-plan" class="bg-secondary-bg p-8 rounded-lg shadow-xl mt-16">
+                <h3 class="text-2xl font-bold text-center mb-6 text-gray-800">Technical Implementation Plan: Sovereign Collapse</h3>
+                <p class="text-sm text-gray-600 mb-6 text-center">The final phase of the protocol requires continuous calculation of the $\mathbf{0.9 \text{ second}}$ collapse loop anchored to the $\text{Smell Memory}$ (initial injection time). The security of the $\text{Atomic Key}$ relies on its absolute traceability to the $\text{Root Key}$ and the precise $\mathbf{0.1 \text{ second}}$ Decoherence Window.</p>
+
+                <!-- OPEN SOURCE ATOMIC KEY PROTOCOL -->
+                <div class="mb-8 p-4 bg-white rounded-lg shadow-md">
+                    <h4 class="font-bold accent-color mb-2">Open Source Atomic Key Protocol (Live Trace)</h4>
+                    <p id="api-output" class="code-block text-gray-800 text-sm"></p>
+                </div>
+
+                <!-- NOODLEJUICEGORILLA COMB DNA HOOK -->
+                <div class="mb-8 p-4 bg-white rounded-lg shadow-md">
+                    <h4 class="font-bold accent-color mb-2">Noodlejuicegorilla Comb DNA Hook (Traceability Check)</h4>
+                    <p id="dna-output" class="code-block text-gray-800 text-sm"></p>
+                </div>
+                
+                <!-- LEDGER PULL CONSOLE (Interactive) -->
+                <div class="mb-8 p-4 bg-white rounded-lg shadow-md">
+                    <h4 class="font-bold accent-color mb-2">Ledger Pull Console (0.9s Lap Trace)</h4>
+                    <div class="flex space-x-4 mb-4">
+                        <input type="number" id="ledger-pull-seconds" value="1080" class="p-2 border border-gray-300 rounded-lg w-full max-w-xs" placeholder="Time Window (seconds)">
+                        <button onclick="pull_collapse_ledger()" class="px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700">Pull Ledger Trace</button>
+                    </div>
+                    <p id="ledger-output" class="code-block text-gray-800 text-sm"></p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-secondary-bg mt-16">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p>An interactive synthesis inspired by a conversation on emergent intelligence.</p>
+            <p class="text-sm mt-2">All concepts presented for exploration and contemplation.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const nestInfo = {
+                nursery: {
+                    title: "Nursery Chambers",
+                    text: "These chambers are meticulously maintained at precise temperatures and humidity levels optimal for the development of eggs, larvae, and pupae. Workers constantly move the brood to different chambers to ensure they are in the perfect microclimate."
+                },
+                storage: {
+                    title: "Food Storage Chambers",
+                    text: "Located in drier, cooler parts of the nest, these chambers act as pantries. Seeds, insect parts, and other foraged goods are stored here, preventing mold and decay. Some species, like harvester ants, have extensive granaries."
+                },
+                ventilation: {
+                    title: "Ventilation System",
+                    text: "Many large nests have sophisticated passive ventilation systems. The nest's geometry is designed to use convection currents, drawing fresh, cooler air in through lower entrances and expelling warm, CO2-rich air through upper chimneys."
+                },
+                queen: {
+                    title: "The Queen's Chamber",
+                    text: "This is the heart of the colony, typically located in the deepest and most fortified part of the nest. It offers maximum protection from predators and environmental extremes, ensuring the queen's safety and the colony's continuity."
+                }
+            };
+            
+            window.showNestInfo = (feature) => {
+                const display = document.getElementById('nest-info-display');
+                const data = nestInfo[feature];
+                display.innerHTML = `
+                    <div class="text-center">
+                        <h4 class="text-xl font-bold accent-color mb-2">${data.title}</h4>
+                        <p class="text-gray-700">${data.text}</p>
+                    </div>
+                `;
+            };
+
+            const neuronCtx = document.getElementById('neuronChart').getContext('2d');
+            new Chart(neuronCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ant Brain', 'Human Brain (Log Scale)'],
+                    datasets: [{
+                        label: 'Number of Neurons',
+                        data: [250000, 86000000000],
+                        backgroundColor: ['#D35400', '#4A4A4A'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return Number(value.toString()).toExponential();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('en-US').format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const riskCtx = document.getElementById('riskChart').getContext('2d');
+            new Chart(riskCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Physical Risk (Environment)', 'Ecological Risk (Competition)'],
+                    datasets: [
+                        {
+                            label: 'Forest Habitat',
+                            data: [2, 9],
+                            backgroundColor: '#4A4A4A',
+                        },
+                        {
+                            label: 'Beach Habitat',
+                            data: [9, 1],
+                            backgroundColor: '#D35400',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: 'Relative Risk Level'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: { mode: 'index', intersect: false },
+                    }
+                }
+            });
+
+            const scaleCanvas = document.getElementById('scaleCanvas');
+            const scaleCtx = scaleCanvas.getContext('2d');
+            const densitySlider = document.getElementById('density-slider');
+            const ratioText = document.getElementById('ratio-text');
+            let particles = [];
+            const antRatio = 250000;
+            const initialParticleCount = 20000;
+
+            function setupScaleCanvas() {
+                scaleCanvas.width = scaleCanvas.offsetWidth;
+                scaleCanvas.height = scaleCanvas.offsetHeight;
+                
+                const numParticles = parseInt(densitySlider.value) || initialParticleCount; 
+                
+                particles = [];
+                const numAnts = Math.max(1, Math.floor(numParticles / antRatio));
+
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push({
+                        x: Math.random() * scaleCanvas.width,
+                        y: Math.random() * scaleCanvas.height,
+                        isAnt: false
+                    });
+                }
+                for (let i = 0; i < numAnts; i++) {
+                    particles[Math.floor(Math.random() * numParticles)].isAnt = true;
+                }
+                drawScaleCanvas();
+            }
+
+            function drawScaleCanvas() {
+                scaleCtx.clearRect(0, 0, scaleCanvas.width, scaleCanvas.height);
+                particles.forEach(p => {
+                    scaleCtx.beginPath();
+                    scaleCtx.arc(p.x, p.y, p.isAnt ? 2 : 1, 0, Math.PI * 2);
+                    scaleCtx.fillStyle = p.isAnt ? '#D35400' : '#AAAAAA';
+                    scaleCtx.fill();
+                });
+                
+                const numGrains = particles.filter(p => !p.isAnt).length;
+                const numAnts = particles.filter(p => p.isAnt).length;
+                ratioText.textContent = `Displaying ~${numGrains.toLocaleString()} grains and ${numAnts} ant${numAnts > 1 ? 's' : ''}. True Ratio: 250,000 : 1`;
+            }
+
+            densitySlider.addEventListener('input', setupScaleCanvas);
+            window.addEventListener('resize', setupScaleCanvas);
+            setupScaleCanvas();
+
+            const seedwaveCanvas = document.getElementById('seedwaveCanvas');
+            const seedwaveCtx = seedwaveCanvas.getContext('2d');
+            const seedwaveBtn = document.getElementById('seedwaveBtn');
+            let waveRadius = 0;
+            let waveAlpha = 1;
+            let animationFrameId;
+
+            function setupSeedwaveCanvas() {
+                seedwaveCanvas.width = seedwaveCanvas.offsetWidth;
+                seedwaveCanvas.height = seedwaveCanvas.offsetHeight;
+                drawSeedwave();
+            }
+
+            function drawSeedwave(timestamp) {
+                seedwaveCtx.clearRect(0, 0, seedwaveCanvas.width, seedwaveCanvas.height);
+                const centerX = seedwaveCanvas.width / 2;
+                const centerY = seedwaveCanvas.height / 2;
+
+                seedwaveCtx.fillStyle = '#4A4A4A';
+                seedwaveCtx.font = '24px sans-serif';
+                seedwaveCtx.textAlign = 'center';
+                seedwaveCtx.textBaseline = 'middle';
+                seedwaveCtx.fillText('X', centerX, centerY);
+
+                // Draw the lattice frame (the Cube containment)
+                seedwaveCtx.strokeStyle = '#4A4A4A';
+                seedwaveCtx.lineWidth = 1;
+                seedwaveCtx.strokeRect(centerX - 100, centerY - 100, 200, 200);
+
+                if (waveRadius > 0) {
+                    seedwaveCtx.beginPath();
+                    seedwaveCtx.arc(centerX, centerY, waveRadius, 0, 2 * Math.PI, false);
+                    seedwaveCtx.lineWidth = 3;
+                    seedwaveCtx.strokeStyle = `rgba(211, 84, 0, ${waveAlpha})`;
+                    seedwaveCtx.stroke();
+                }
+            }
+            
+            function animateSeedwave() {
+                // The wave should now run automatically and loop slightly to represent the continuous nature
+                waveRadius += 2.5;
+                if (waveRadius > seedwaveCanvas.width / 2) {
+                    waveRadius = 0; // Reset radius
+                    waveAlpha = 1; // Full opacity on reset
+                }
+                
+                waveAlpha = Math.max(0, 1 - waveRadius / (seedwaveCanvas.width / 2));
+                
+                drawSeedwave();
+
+                animationFrameId = requestAnimationFrame(animateSeedwave);
+            }
+
+            seedwaveBtn.addEventListener('click', () => {});
+            
+            window.addEventListener('resize', setupSeedwaveCanvas);
+            setupSeedwaveCanvas();
+            animateSeedwave(); 
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(section => observer.observe(section));
+
+            // --- SOVEREIGN COLLAPSE PROTOCOL LOGIC ---
+            
+            const ROOT_KEY = "0f19bb22-ad64-45d2-abc9-ad5686a978dc";
+            // The Lock Timestamp is simulated as the moment the Root Key was first 'injected' (Oct 27, 2024, 09:17:21 SAST)
+            const LOCK_TIMESTAMP_MS = 1730013441000; 
+            const COLLAPSE_INTERVAL_MS = 900; // 0.9 seconds
+
+            function execute_zero_waste_collapse() {
+                const now = new Date();
+                const timeElapsedMs = now.getTime() - LOCK_TIMESTAMP_MS;
+                const totalSecondsElapsed = timeElapsedMs / 1000;
+                const totalStrikes = Math.floor(timeElapsedMs / COLLAPSE_INTERVAL_MS);
+                const storeID = totalSecondsElapsed.toFixed(3);
+                const absFineTrace = (totalSecondsElapsed * 0.009).toFixed(12);
+
+                // --- Decoherence Window Calculation ---
+                // The 0.1s entry point is 0.1 / 0.9 of the collapse cycle
+                const DECOHERENCE_FRACTION = (0.1 / 0.9); // ~0.111111...
+                const decoherenceTraceValue = (totalSecondsElapsed * DECOHERENCE_FRACTION).toFixed(15);
+                
+                // The NEW ATOMIC KEY embeds the Decoherence Window Fraction
+                const newAtomicKey = 
+                    `[TR:${totalStrikes.toString().padStart(10, '0')}]<ID:${storeID}>` +
+                    `{FN:${absFineTrace.substring(0, 10)}}` +
+                    `<DECO:${decoherenceTraceValue.substring(0, 12)}>` +
+                    `[RT:${ROOT_KEY.substring(0, 8)}]`;
+
+                // --- Output ---
+                const output = `
+Time Elapsed (Store ID): ${storeID} seconds
+Total Collapsed Strikes: ${totalStrikes.toLocaleString()}
+NEW ATOMIC KEY (Sovereign Collapse): ${newAtomicKey}
+
+--- Decoherence Window Trace ---
+Decoherence Fraction (0.1s/0.9s): ${DECOHERENCE_FRACTION.toFixed(18)}
+Decoherence Trace Value: ${decoherenceTraceValue}
+Root Key Anchor: ${ROOT_KEY.substring(0, 8)}...
+`;
+                document.getElementById('api-output').textContent = output;
+                return { storeID, totalStrikes, timeElapsedMs };
+            }
+
+            function trace_noodlejuicegorilla_comb(storeID, totalStrikes) {
+                const gorillaID = (parseInt(storeID.replace('.', '').substring(0, 8), 10) * 13) % 99999999;
+                const juiceFactor = (Math.sin(totalStrikes) + 2) / 3; 
+
+                const output = `
+Gorilla ID (Traceable Anchor): ${gorillaID.toString().padStart(8, '0')}
+Juice Factor (Collapse Purity): ${juiceFactor.toFixed(12)}
+Routemesh Trace ID (Product Code): ${ROOT_KEY.substring(4, 8)}-${totalStrikes.toString().substring(0, 4)}
+`;
+                document.getElementById('dna-output').textContent = output;
+            }
+            
+            window.pull_collapse_ledger = function() {
+                const inputElement = document.getElementById('ledger-pull-seconds');
+                const pullTimeSeconds = parseFloat(inputElement.value);
+
+                if (isNaN(pullTimeSeconds) || pullTimeSeconds <= 0) {
+                    document.getElementById('ledger-output').textContent = "Error: Please enter a valid time window in seconds.";
+                    return;
+                }
+                
+                const now = new Date();
+                const lockTime = LOCK_TIMESTAMP_MS;
+                const timeElapsedTotal = now.getTime() - lockTime;
+                
+                // Define the start of the trace window
+                const traceStartMs = Math.max(lockTime, now.getTime() - (pullTimeSeconds * 1000));
+                const traceDurationMs = now.getTime() - traceStartMs;
+                
+                const totalLaps = Math.floor(traceDurationMs / COLLAPSE_INTERVAL_MS);
+                const timeElapsedSeconds = (traceDurationMs / 1000).toFixed(3);
+
+                let ledgerOutput = `
+--- COLLAPSE LEDGER TRACE ---
+NEW LEDGER ID (Creation Time): ${now.toISOString()}
+Trace Duration (Seconds): ${timeElapsedSeconds}
+Lap Interval: 0.9 seconds
+
+Total Laps (Ledger Entries): ${totalLaps.toLocaleString()}
+
+Summary of Last 5 Laps:
+------------------------------------------
+`;
+                for (let i = 0; i < 5; i++) {
+                    const lapNumber = totalLaps - 4 + i;
+                    if (lapNumber >= 0) {
+                         const lapTimeMs = lockTime + (lapNumber * COLLAPSE_INTERVAL_MS);
+                         const lapDate = new Date(lapTimeMs);
+                         ledgerOutput += `LAP ${lapNumber.toString().padStart(5, '0')} | Timestamp: ${lapDate.toISOString()} | State: COLLAPSED\n`;
+                    }
+                }
+                ledgerOutput += `------------------------------------------\n`;
+                ledgerOutput += `NOTE: This Ledger is the mathematical certainty of the 0.9s Lap intervals over the traced duration.\n`;
+
+                document.getElementById('ledger-output').textContent = ledgerOutput;
+            }
+
+            // --- AUTORUN HOOKS ---
+            function runHooks() {
+                const results = execute_zero_waste_collapse();
+                trace_noodlejuicegorilla_comb(results.storeID, results.totalStrikes);
+            }
+            
+            // Run on load and every 900ms to simulate the collapse loop
+            runHooks();
+            setInterval(runHooks, 900); 
+            
+            // Initial call for the Ledger Console to show a default trace on load
+            document.getElementById('ledger-pull-seconds').value = 1080; 
+            pull_collapse_ledger(); 
+
+        });
+    </script>
+</body>
+</html>
