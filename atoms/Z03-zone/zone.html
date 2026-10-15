@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAA.Zone — Pulse Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .glow-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 tracking-tight">
+
+<!-- HEADER -->
+<header class="bg-white shadow p-6 flex justify-between items-center">
+  <div>
+    <h1 class="text-3xl font-extrabold text-indigo-700">🧠 FAA.Zone Master Pulse Dashboard</h1>
+    <p class="text-sm text-gray-500">VaultMesh Actuarial Grid · Real-Time Scroll Activity</p>
+  </div>
+  <div class="flex gap-3 text-sm">
+    <a href="faa-owner.html" class="px-4 py-2 bg-blue-500 text-white rounded glow-btn">🧑‍✈️ FAA Owner</a>
+    <a href="faa-hardware.html" class="px-4 py-2 bg-gray-600 text-white rounded glow-btn">🖥️ Hardware Access</a>
+    <a href="faa-distributor.html" class="px-4 py-2 bg-green-500 text-white rounded glow-btn">🤝 Distributor Panel</a>
+  </div>
+</header>
+
+  <!-- SUBNAV -->
+<nav class="bg-gray-100 flex gap-6 px-6 py-3 text-sm overflow-x-auto whitespace-nowrap">
+  <a href="quick-view.html" class="text-indigo-700 font-semibold transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🏁 Quick View (Current)</a>
+  <a href="pulse-monitor.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📡 Signal Sync</a>
+  <a href="node-status.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧩 Node Index</a>
+  <a href="sector-grid.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🏙️ Sector Grid</a>
+  <a href="licensing.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🔐 License Ledger</a>
+  <a href="clause-index.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📜 FAA Clauses</a>
+  <a href="scrollmap.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🗺️ ScrollMap</a>
+  <a href="ecosystem.html" class="hover:text-green-600 font-semibold transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🌿 Ecosystem Mesh</a>
+  <a href="brandmetrics.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🔍 Brand Metrics</a>
+  <a href="scroll-layers.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧬 Scroll Layers</a>
+  <a href="grid-index.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📊 Grid Index</a>
+  <a href="node-packs.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📁 Node Packs</a>
+  <a href="audit-tracker.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📈 Audit Tracker</a>
+  <a href="signal-zones.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🛰️ Signal Zones</a>
+  <a href="ecosync-logs.html" class="hover:text-indigo-600 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📥 Ecosync Logs</a>
+</nav>
+
+
+<!-- NAVBAR -->
+<nav class="bg-white border-b px-6 py-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-4 text-sm">
+  <a href="sector-agriculture.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🌱 Agriculture & Biotech</a>
+  <a href="sector-banking.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">₿ Banking & Finance</a>
+  <a href="sector-creative.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🖋️ Creative Tech</a>
+  <a href="sector-logistics.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📦 Distribution & Logistics</a>
+  <a href="sector-education.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📚 Education & IP</a>
+  <a href="sector-fashion.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">✂ Fashion & Identity</a>
+  <a href="sector-gaming.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🎮 Gaming & Simulation</a>
+  <a href="sector-health.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">⚗ Health & Hygiene</a>
+  <a href="sector-housing.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🏗️ Infrastructure & Housing</a>
+  <a href="sector-justice.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">⚖ Justice & Ethics</a>
+  <a href="sector-knowledge.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧠 Knowledge & Archives</a>
+  <a href="sector-micromesh.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">☰ Micro-Mesh Logistics</a>
+  <a href="sector-media.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🌀 Media & Motion</a>
+  <a href="sector-nutrition.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">✿ Nutrition & Food Chain</a>
+  <a href="sector-ai.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧬 Omni AI Systems</a>
+  <a href="sector-packaging.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📦 Packaging & Materials</a>
+  <a href="sector-quantum.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">✴️ Quantum Protocols</a>
+  <a href="sector-ritual.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">☯ Ritual & Culture</a>
+  <a href="sector-saas.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🔑 SaaS & Licensing</a>
+  <a href="sector-trade.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧺 Trade Systems</a>
+  <a href="sector-utilities.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🔋 Utilities & Energy</a>
+  <a href="sector-voice.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🎙️ Voice & Audio</a>
+  <a href="sector-webless.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">📴 Webless Systems</a>
+  <a href="sector-nft.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🔁 NFT & Ownership</a>
+  <a href="sector-youth.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">🧒 Youth & Learning</a>
+  <a href="sector-zerowaste.html" class="bg-gray-100 px-3 py-2 rounded shadow text-center font-semibold block transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">♻️ Zero Waste</a>
+</nav>
+
+
+
+<!-- CHART SECTION -->
+<section class="max-w-7xl mx-auto px-6 py-8">
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold text-gray-700">📉 FAA Scroll Pulse Monitor</h2>
+    <p class="text-sm text-gray-500">Dynamic scroll sync across sectors in real-time.</p>
+    <div class="h-96">
+      <canvas id="pulseChart" class="w-full h-full"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS GRID -->
+<section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6 px-6 py-8">
+  <a href="node-activity.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">🧠 Active Nodes</h3><p>12,934</p>
+  </a>
+  <a href="license-grid.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">🔐 Licenses Active</h3><p>3,288</p>
+  </a>
+  <a href="vault-deployments.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">💾 Vault Deployments</h3><p>654 Vaults</p>
+  </a>
+  <a href="royalty-payouts.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">💸 Royalty Streams</h3><p>Updated every 72h</p>
+  </a>
+  <a href="placeholder-1.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📂 Placeholder Metric 1</h3><p>--</p>
+  </a>
+  <a href="placeholder-2.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📂 Placeholder Metric 2</h3><p>--</p>
+  </a>
+  <a href="placeholder-3.html" class="bg-white p-5 rounded shadow text-center hover:bg-yellow-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105">
+    <h3 class="text-md font-bold text-gray-700">📂 Placeholder Metric 3</h3><p>--</p>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center text-xs text-gray-400 mt-16 py-6 border-t">
+  FAA.Zone ScrollGrid · PulseTrade Certified · TreatyMesh Validated
+</footer>
+
+<!-- CHART SCRIPT -->
+<script type="module">
+document.addEventListener('DOMContentLoaded', () => {
+  const ctx = document.getElementById('pulseChart').getContext('2d');
+  const labels = [];
+  const sectors = ['Housing', 'Mining', 'Media', 'Finance', 'Youth', 'Ritual', 'Packaging'];
+
+  const data = {
+    labels,
+    datasets: sectors.map((label, i) => ({
+      label,
+      data: [],
+      borderColor: `hsl(${i * 40}, 70%, 50%)`,
+      borderWidth: 2,
+      fill: false,
+      tension: 0.3
+    }))
+  };
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        y: {
+          min: 1500,
+          max: 5000,
+          ticks: {
+            callback: v => v + ' syncs'
+          }
+        }
+      },
+      plugins: { legend: { position: 'bottom' } }
+    }
+  });
+
+  function pushData() {
+    const time = new Date().toLocaleTimeString();
+    if (labels.length > 30) {
+      labels.shift();
+      data.datasets.forEach(ds => ds.data.shift());
+    }
+    labels.push(time);
+    data.datasets.forEach((ds, i) => {
+      const base = 2000 + i * 400;
+      ds.data.push(base + Math.random() * 300 - 150);
+    });
+    chart.update();
+  }
+
+  pushData();
+  setInterval(pushData, 4000);
+});
+</script>
+
+</body>
+</html>

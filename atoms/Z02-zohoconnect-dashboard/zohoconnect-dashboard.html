@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZohoConnect Dashboard | HSOMNI9000 Full-Stack Integration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --cyan: #4facfe;
+            --pink: #f5576c;
+            --yellow: #facc15;
+            --green: #10b981;
+            --dark: #0a0e27;
+            --dark-200: #1a1f3a;
+            --dark-300: #2d3348;
+            --light: #f8fafc;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1a2e 50%, var(--dark) 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Orbs */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.3;
+        }
+
+        .orb-1 {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, var(--primary), transparent);
+            top: -300px;
+            left: -200px;
+            animation: float1 25s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--pink), transparent);
+            bottom: -250px;
+            right: -150px;
+            animation: float2 30s ease-in-out infinite;
+        }
+
+        .orb-3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--cyan), transparent);
+            top: 40%;
+            left: 50%;
+            animation: float3 35s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(150px, -100px) scale(1.2); }
+            50% { transform: translate(-80px, 200px) scale(0.8); }
+            75% { transform: translate(-200px, -80px) scale(1.1); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-150px, -120px) scale(1.3); }
+            66% { transform: translate(100px, 150px) scale(0.9); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) scale(1.4) rotate(180deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.6); }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .header-left h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .header-left p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-indicator span {
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 40px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 60px 20px 25px;
+            font-size: 1.1rem;
+            background: rgba(26, 31, 58, 0.8);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            color: var(--text);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+            animation: slideUp 1s ease-out;
+        }
+
+        .stat-card {
+            padding: 30px;
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+        }
+
+        .stat-trend {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .trend-up {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--green);
+        }
+
+        .trend-down {
+            background: rgba(245, 87, 108, 0.2);
+            color: var(--pink);
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            animation: slideUp 1.2s ease-out;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 35px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: var(--text);
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(45, 51, 72, 0.4);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(45, 51, 72, 0.7);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        .activity-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        /* Sources Panel */
+        .sources-panel {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 35px;
+        }
+
+        .source-item {
+            padding: 20px;
+            background: rgba(45, 51, 72, 0.4);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .source-item:hover {
+            background: rgba(45, 51, 72, 0.7);
+            border-color: var(--primary);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .source-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .source-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .source-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--green);
+        }
+
+        .status-syncing {
+            background: rgba(79, 172, 254, 0.2);
+            color: var(--cyan);
+        }
+
+        .status-idle {
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .source-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .source-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(45, 51, 72, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--cyan));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .header-left h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animated">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>ZohoConnect</h1>
+                <p>Full-Stack Zero-Waste Integration • HSOMNI9000 Ecosystem</p>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>All Systems Operational</span>
+            </div>
+        </header>
+
+        <!-- Universal Search -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search across all Zoho apps, HotStack, and connected systems..."
+                    id="universalSearch"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-icon">🔗</span>
+                    <span class="stat-trend trend-up">+24%</span>
+                </div>
+                <div class="stat-value" id="activeConnections">127</div>
+                <div class="stat-label">Active Connections</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-trend trend-up">+56%</span>
+                </div>
+                <div class="stat-value" id="syncEvents">12,458</div>
+                <div class="stat-label">Sync Events Today</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-icon">💾</span>
+                    <span class="stat-trend trend-up">+18%</span>
+                </div>
+                <div class="stat-value" id="dataTransferred">847GB</div>
+                <div class="stat-label">Data Transferred</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-icon">⏱️</span>
+                    <span class="stat-trend trend-down">-42%</span>
+                </div>
+                <div class="stat-value" id="avgLatency">23ms</div>
+                <div class="stat-label">Avg Latency</div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Activity Feed -->
+            <div class="activity-feed">
+                <h2 class="section-title">Real-Time Activity</h2>
+                <div id="activityContainer">
+                    <!-- Activities will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Sources Panel -->
+            <div class="sources-panel">
+                <h2 class="section-title">Connected Sources</h2>
+                <div id="sourcesContainer">
+                    <!-- Sources will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for the dashboard
+        const activities = [
+            {
+                icon: '📊',
+                title: 'Zoho CRM → Salesforce',
+                description: '245 lead records synchronized',
+                time: '2 minutes ago',
+                color: 'rgba(102, 126, 234, 0.2)'
+            },
+            {
+                icon: '📁',
+                title: 'HotStack → R2 Storage',
+                description: '18 files uploaded to Cloudflare R2',
+                time: '5 minutes ago',
+                color: 'rgba(79, 172, 254, 0.2)'
+            },
+            {
+                icon: '🔐',
+                title: 'Zoho Vault → Secrets Manager',
+                description: '4 secrets scanned and secured',
+                time: '12 minutes ago',
+                color: 'rgba(245, 87, 108, 0.2)'
+            },
+            {
+                icon: '🎯',
+                title: 'Zoho Creator → PostgreSQL',
+                description: 'Form submissions synced to database',
+                time: '18 minutes ago',
+                color: 'rgba(16, 185, 129, 0.2)'
+            },
+            {
+                icon: '🛰️',
+                title: 'Silent Node Orbit',
+                description: 'Background sync completed successfully',
+                time: '25 minutes ago',
+                color: 'rgba(250, 204, 21, 0.2)'
+            },
+            {
+                icon: '📧',
+                title: 'Zoho Mail → Gmail',
+                description: '1,247 emails synchronized',
+                time: '34 minutes ago',
+                color: 'rgba(102, 126, 234, 0.2)'
+            },
+            {
+                icon: '💻',
+                title: 'Zoho Projects → Jira',
+                description: '32 tasks updated across platforms',
+                time: '45 minutes ago',
+                color: 'rgba(79, 172, 254, 0.2)'
+            },
+            {
+                icon: '📈',
+                title: 'Analytics Pipeline',
+                description: 'Daily metrics aggregated and stored',
+                time: '1 hour ago',
+                color: 'rgba(16, 185, 129, 0.2)'
+            }
+        ];
+
+        const sources = [
+            {
+                name: 'Zoho CRM',
+                status: 'active',
+                info: '24.5K records • Last sync: 2 min ago',
+                progress: 100
+            },
+            {
+                name: 'Zoho Creator',
+                status: 'syncing',
+                info: '8.2K forms • Syncing now...',
+                progress: 67
+            },
+            {
+                name: 'HotStack Omnidrop',
+                status: 'active',
+                info: '847GB • Real-time monitoring',
+                progress: 100
+            },
+            {
+                name: 'Zoho Vault',
+                status: 'active',
+                info: '142 secrets • All secured',
+                progress: 100
+            },
+            {
+                name: 'Cloudflare R2',
+                status: 'active',
+                info: '2.4TB storage • 99.9% uptime',
+                progress: 100
+            },
+            {
+                name: 'Zoho Projects',
+                status: 'idle',
+                info: '1.2K tasks • Waiting for changes',
+                progress: 100
+            },
+            {
+                name: 'Zoho Mail',
+                status: 'syncing',
+                info: '45K emails • Background sync',
+                progress: 42
+            }
+        ];
+
+        // Populate Activities
+        function renderActivities() {
+            const container = document.getElementById('activityContainer');
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${activity.color}">
+                        ${activity.icon}
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate Sources
+        function renderSources() {
+            const container = document.getElementById('sourcesContainer');
+            container.innerHTML = sources.map(source => `
+                <div class="source-item">
+                    <div class="source-header">
+                        <span class="source-name">${source.name}</span>
+                        <span class="source-status status-${source.status}">
+                            ${source.status}
+                        </span>
+                    </div>
+                    <div class="source-info">${source.info}</div>
+                    <div class="source-progress">
+                        <div class="progress-bar" style="width: ${source.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Animate Stats Counter
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+            let current = start;
+
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = current.toLocaleString();
+                if (current === end) {
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+
+        // Real-time updates simulation
+        function simulateRealTimeUpdates() {
+            setInterval(() => {
+                // Update sync events
+                const syncElement = document.getElementById('syncEvents');
+                const currentValue = parseInt(syncElement.textContent.replace(/,/g, ''));
+                syncElement.textContent = (currentValue + Math.floor(Math.random() * 10)).toLocaleString();
+
+                // Update active connections
+                const connectionsElement = document.getElementById('activeConnections');
+                const connectionsValue = parseInt(connectionsElement.textContent);
+                const change = Math.random() > 0.5 ? 1 : -1;
+                connectionsElement.textContent = Math.max(100, connectionsValue + change);
+
+                // Update latency
+                const latencyElement = document.getElementById('avgLatency');
+                const latencyValue = parseInt(latencyElement.textContent.replace('ms', ''));
+                latencyElement.textContent = Math.max(15, Math.min(50, latencyValue + (Math.random() > 0.5 ? 1 : -1))) + 'ms';
+            }, 3000);
+        }
+
+        // Search functionality
+        document.getElementById('universalSearch').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm === '') {
+                renderActivities();
+                return;
+            }
+
+            const filtered = activities.filter(activity =>
+                activity.title.toLowerCase().includes(searchTerm) ||
+                activity.description.toLowerCase().includes(searchTerm)
+            );
+
+            const container = document.getElementById('activityContainer');
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
+                        <div style="font-size: 1.2rem;">No results found for "${searchTerm}"</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = filtered.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: ${activity.color}">
+                            ${activity.icon}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">${activity.title}</div>
+                            <div class="activity-description">${activity.description}</div>
+                            <div class="activity-time">${activity.time}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            renderActivities();
+            renderSources();
+            simulateRealTimeUpdates();
+
+            console.log('✅ ZohoConnect Dashboard Loaded');
+            console.log('📊 All data rendering successfully');
+            console.log('🎨 Inline styles applied');
+            console.log('⚡ Real-time updates active');
+        });
+    </script>
+</body>
+</html>
