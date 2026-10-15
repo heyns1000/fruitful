@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Global · qapp · Phase 1.0_gary_upload</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,700;1,800;1,900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Golden Ticket CI Guide MASTER v2 — Audited & Aligned */
+            --teal: #1E9F97; --teal-bright: #47B3A8; --teal-deep: #0E7C74;
+            --red: #E63946; --red-deep: #C42B37;
+            --amber: #FCB915; --amber-deep: #E29A00;
+            --cream: #FBF4E4; --cream-soft: #FDF9EF; --sand: #F3E7CE;
+            --ink: #3A2A1B; --ink-soft: #6E5A45;
+            --emerald: #10B981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: #e8e1d0;
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            user-select: none;
+        }
+
+        /* Portrait Touch Terminal Frame */
+        .kiosk-frame {
+            width: 480px;
+            height: 820px;
+            background: var(--background);
+            border: 8px solid var(--ink);
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--cream);
+        }
+
+        .pattern-band {
+            height: 14px;
+            width: 100%;
+            flex: none;
+            background-image: repeating-linear-gradient(90deg, transparent 0 10px, rgba(58,42,27,.16) 10px 11px), linear-gradient(90deg, var(--sand), var(--sand));
+        }
+
+        /* HEADER */
+        header {
+            flex: none;
+            padding: 20px 24px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: #fff; padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .wordmark { font-style: italic; font-weight: 900; font-size: 20px; color: var(--red); text-transform: lowercase; }
+
+        .status {
+            background: var(--teal-bright); color: #fff;
+            padding: 8px 18px; border-radius: 999px;
+            font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+        }
+        .dot { width: 8px; height: 8px; background: var(--amber); border-radius: 50%; box-shadow: 0 0 10px var(--amber); animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* SCREENS */
+        .main-view { flex: 1; min-height: 0; position: relative; z-index: 5; }
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 20px; }
+        .screen.active { display: flex; }
+
+        /* ATTRACTOR */
+        .attractor-content { text-align: center; justify-content: center; }
+        .fox-ring {
+            width: 140px; height: 140px; border-radius: 50%; background: var(--teal-bright);
+            margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(30, 159, 151, 0.3);
+        }
+        .fox-ring img { width: 100px; object-fit: contain; }
+        
+        .kicker { font-family: 'Fira Code', sans-serif; font-weight: 700; font-size: 12px; text-transform: uppercase; color: var(--red); letter-spacing: 0.3em; margin-bottom: 12px; }
+        .mantra { font-style: italic; font-weight: 900; text-transform: uppercase; font-size: 48px; line-height: 0.92; margin-bottom: 20px; }
+        .mantra span { color: var(--red); }
+        .subtext { font-size: 15px; color: var(--ink-soft); font-weight: 600; line-height: 1.4; max-width: 320px; margin: 0 auto 50px; }
+
+        .start-cta {
+            width: 100%; padding: 30px; border-radius: 28px; background: var(--red); color: #fff;
+            font-style: italic; font-weight: 900; font-size: 24px; text-transform: uppercase;
+            border: none; box-shadow: 0 10px 0 var(--red-deep); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .start-cta:active { transform: translateY(5px); box-shadow: 0 5px 0 var(--red-deep); }
+
+        /* TICKER */
+        .ticker { background: var(--ink); color: var(--cream); border-radius: 14px; padding: 12px 18px; margin-bottom: 20px; font-family: 'Fira Code', monospace; font-size: 10px; display: flex; align-items: center; gap: 10px; }
+        .ticker b { color: var(--amber); }
+        .ticker .alive { width: 8px; height: 8px; background: var(--emerald); border-radius: 50%; box-shadow: 0 0 0 4px rgba(16,185,129,0.2); }
+
+        /* GRID */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; overflow-y: auto; flex: 1; padding-bottom: 110px; }
+        .section-title { grid-column: span 2; font-style: italic; font-weight: 900; text-transform: uppercase; font-size: 14px; color: var(--teal-deep); border-bottom: 2px solid var(--sand); padding-bottom: 8px; margin-top: 15px; }
+
+        .p-card { background: #fff; border: 2px solid var(--sand); border-radius: 24px; padding: 16px; position: relative; display: flex; flex-direction: column; gap: 10px; }
+        .p-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; border: 1px solid var(--sand); }
+        .p-name { font-size: 13px; font-weight: 800; color: var(--ink); line-height: 1.25; }
+        .p-meta { font-family: 'Fira Code', monospace; font-size: 9px; color: var(--ink-soft); }
+        .p-price { font-family: 'Fira Code', monospace; font-size: 14px; font-weight: 800; color: var(--red); margin-top: auto; }
+        .add-btn { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff; border: none; font-size: 20px; font-weight: 700; cursor: pointer; }
+
+        /* CART BAR */
+        .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: var(--cream); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 50; border-top: 2px solid var(--sand); }
+        .cart-info .l { font-family: 'Fira Code', monospace; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); }
+        .cart-info .v { font-style: italic; font-weight: 900; font-size: 26px; color: var(--ink); }
+        .count-badge { background: var(--amber); color: var(--ink); padding: 2px 8px; border-radius: 999px; font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 800; }
+        .checkout-btn { background: var(--teal); color: #fff; border: none; padding: 14px 24px; border-radius: 14px; font-size: 15px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 0 var(--teal-deep); }
+
+        /* SUCCESS */
+        .success-box { text-align: center; justify-content: center; background-color: var(--teal); }
+        .check { width: 90px; height: 90px; border-radius: 50%; background: #fff; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--teal); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .order-num { font-style: italic; font-weight: 900; font-size: 64px; color: var(--amber); line-height: 1; margin: 15px 0; }
+        .success-msg { font-size: 18px; color: #fff; font-weight: 800; margin-bottom: 40px; }
+        
+        .specs { position: absolute; top: 110px; right: 20px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 10px; color: var(--amber); border: 1px solid var(--amber); z-index: 100; text-align: right; }
+        .foot-mono { flex: none; font-family: 'Fira Code', monospace; font-size: 8px; color: var(--ink-soft); text-align: center; padding: 10px 0 15px; }
+    </style>
+</head>
+<body>
+    <div class="kiosk-frame">
+        <div class="pattern-band"></div>
+
+        <header>
+            <div class="brand">
+                <img src="https://www.lovable.dev/__l5e/assets-v1/a75dc7c7-61a0-402b-97e3-a9c455b3eb91/fruitful-mark.png" alt="Fruitful Logo">
+                <div class="wordmark">fruitful™</div>
+            </div>
+            <div class="status">
+                <div class="dot"></div>
+                Online
+            </div>
+        </header>
+
+        <div class="specs">
+            1.6m Inner Radius<br>
+            1.8m Outer Shell<br>
+            2.01m² Base Area
+        </div>
+
+        <div class="main-view">
+            <!-- ATTRACTOR -->
+            <div id="scr-attractor" class="screen active attractor-content">
+                <div class="fox-ring">
+                    <img src="https://www.lovable.dev/__l5e/assets-v1/a75dc7c7-61a0-402b-97e3-a9c455b3eb91/fruitful-mark.png" alt="Fruitful">
+                </div>
+                <div class="kicker">Fruitful Portal</div>
+                <h1 class="mantra">Buy artisan.<br>Create apps.<br><span>Eat pancakes.</span></h1>
+                <p class="subtext">Every item on the Golden Ticket menu feeds a child in need today™.</p>
+                <button class="start-cta" onclick="nav('browse')">👋 Tap to start</button>
+            </div>
+
+            <!-- BROWSE -->
+            <div id="scr-browse" class="screen">
+                <div class="ticker">
+                    <div class="alive"></div>
+                    <span><b>1,247</b> children fed today — you make it <b>1,248</b>.</span>
+                </div>
+                <div class="menu-grid">
+                    <div class="section-title">Art Subscriptions</div>
+                    <div class="p-card">
+                        <img src="https://www.lovable.dev/__l5e/assets-v1/eac50b26-0d6e-470c-8511-dfe831518c64/samfox-01.png" alt="The Chief">
+                        <div class="p-name">The Chief (SamFox)</div>
+                        <div class="p-meta">Signed print · Monthly</div>
+                        <div class="p-price">R 295.00</div>
+                        <button class="add-btn" onclick="add('The Chief', 295)">+</button>
+                    </div>
+                    <div class="p-card">
+                        <img src="https://www.lovable.dev/__l5e/assets-v1/27a25e08-e4a1-4c68-ad8b-e01440464b3e/grand-01.jpeg" alt="Grand Original">
+                        <div class="p-name">Grand Machadlela</div>
+                        <div class="p-meta">Hand-painted · Monthly</div>
+                        <div class="p-price">R 380.00</div>
+                        <button class="add-btn" onclick="add('Grand Original', 380)">+</button>
+                    </div>
+
+                    <div class="section-title">Kidswear</div>
+                    <div class="p-card">
+                        <img src="https://www.lovable.dev/__l5e/assets-v1/ca7c2d4f-cf5e-4a6a-9e94-9c52b4c7dd47/kidswear-01.png" alt="Butterfly Dress">
+                        <div class="p-name">Butterfly Print Dress</div>
+                        <div class="p-meta">Handmade · Locally Sewn</div>
+                        <div class="p-price">R 290.00</div>
+                        <button class="add-btn" onclick="add('Butterfly Dress', 290)">+</button>
+                    </div>
+                </div>
+                <div class="cart-bar" id="bar" style="display:none;">
+                    <div class="cart-info">
+                        <div class="l">Basket</div>
+                        <div class="v" id="total-v">R 0</div>
+                    </div>
+                    <div class="count-badge" id="count-v">0</div>
+                    <button class="checkout-btn" onclick="nav('success')">Pay ZAR</button>
+                </div>
+            </div>
+
+            <!-- SUCCESS -->
+            <div id="scr-success" class="screen success-box">
+                <div class="check">✓</div>
+                <h1 class="mantra" style="font-size:32px; color:#fff;">Order Confirmed</h1>
+                <div class="order-num" id="order-id">1248</div>
+                <p class="success-msg">🎉 You just fed a child today™!</p>
+                <button class="start-cta" style="background:#fff; color:var(--teal-deep); box-shadow: 0 8px 0 rgba(0,0,0,0.1);" onclick="reset()">Done</button>
+            </div>
+        </div>
+
+        <div class="foot-mono">
+            STABLE_REL · v1.0_gary_upload · MISSION_COMMERCE
+        </div>
+    </div>
+
+    <script>
+        let cart = {}; let total = 0; let count = 0;
+        function nav(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('scr-' + id).classList.add('active');
+        }
+        function add(name, price) {
+            total += price; count++;
+            document.getElementById('total-v').textContent = 'R ' + total.toFixed(2);
+            document.getElementById('count-v').textContent = count;
+            document.getElementById('bar').style.display = 'flex';
+        }
+        function reset() {
+            total = 0; count = 0;
+            document.getElementById('bar').style.display = 'none';
+            nav('attractor');
+        }
+    </script>
+</body>
+</html>

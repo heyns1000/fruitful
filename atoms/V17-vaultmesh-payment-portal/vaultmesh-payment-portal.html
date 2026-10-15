@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaultMesh Global Payment Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- NOTE: Removed PayPal SDK reliance to fix CRITICAL ERROR -->
+
+    <!-- Chosen Palette: MineNest Gradient (Orange/Brown) & Sovereign Amber -->
+    <style>
+        /* CSS Variables for theming (MineNest/Fruitful Primary) */
+        :root {
+            --text-color-dark: #f5f5f7;
+            --bg-color-dark: #121212; /* Deep Black for true dark mode */
+            --card-bg-dark: #1e1e1e; /* Darker grey for card */
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Fruitful Primary Blue */
+            --minenest-color: #D2691E; /* Chocolate (Darker Gradient Base) */
+            --minenest-accent-color: #E97451; /* Burnt Sienna (Lighter Gradient End) */
+            --amber-accent: #FFB800; /* Sovereign Amber */
+            --care-green: #10b981; /* Gorilla Comb Green Accent */
+            --muted-text-dark: #a0a0a5;
+            --paypal-blue: #0070BA;
+            --payfast-teal: #00A69D; /* Payfast primary color */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            min-height: 100vh;
+        }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        
+        /* Card & Accent Colors */
+        .card-bg { background-color: var(--card-bg-dark); }
+        .accent-color { color: var(--amber-accent); } /* Sovereign Amber */
+        
+        /* FIX: Ensure input field contrast is high */
+        .input-field { @apply bg-[#0f0f0f] text-white p-3 rounded-lg border border-[#444] focus:ring-amber-500 focus:border-amber-500 transition duration-150; }
+        .btn-primary { @apply bg-amber-600 text-[#1a1a1a] font-bold py-3 rounded-lg hover:bg-amber-500 transition shadow-lg; }
+
+        /* Financial Lock Card Border Glow */
+        .lock-card {
+            border: 1px solid var(--amber-accent);
+            box-shadow: 0 0 15px rgba(255, 184, 0, 0.3);
+        }
+        /* Care Split Green Accent Box */
+        .care-split { 
+            background-color: #0c0c0c; 
+            border: 1px solid var(--care-green); 
+            color: var(--care-green); 
+        }
+
+        /* Header Hero - MineNest/Fruitful Gradient */
+        .portal-hero {
+            text-align: center;
+            padding: 50px 20px;
+            /* Using the rich brown/orange gradient aligned with MineNest */
+            background: linear-gradient(135deg, var(--minenest-color) 0%, var(--minenest-accent-color) 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(210, 105, 30, 0.4);
+            margin-bottom: 30px;
+            border-radius: 12px;
+        }
+        .portal-hero h1 { font-size: 3rem; font-weight: 900; line-height: 1.1; text-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
+        .portal-hero p { font-size: 1.25rem; margin-top: 10px; color: rgba(255, 255, 255, 0.8); }
+
+        /* AI Help Section Styling */
+        .ai-help-section h3 i {
+             color: #9370DB; /* MindLift Purple Accent for the icon */
+        }
+        .checkout-action-button {
+            background-color: var(--primary-color);
+        }
+        .checkout-action-button:hover {
+            background-color: #005bb5;
+        }
+        
+        /* Static Payment Button Styles */
+        .payment-static-btn {
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 0;
+            border-radius: 0.25rem;
+            text-align: center;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .paypal-static-btn {
+            background-color: var(--paypal-blue);
+        }
+        .paypal-static-btn:hover {
+            background-color: #005bb5;
+        }
+        .payfast-static-btn {
+            background-color: var(--payfast-teal);
+        }
+        .payfast-static-btn:hover {
+            background-color: #008f88;
+        }
+
+        .payment-static-btn i {
+            margin-right: 0.5rem;
+        }
+        .paypal-static-subtext {
+            color: var(--muted-text-dark);
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        
+        /* Responsive adjustments for large header text */
+        @media (max-width: 640px) {
+            .portal-hero h1 { font-size: 2.2rem; }
+            .portal-hero p { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body class="antialiased p-4">
+
+    <main class="max-w-4xl mx-auto py-8">
+        <header class="portal-hero">
+            <h1 class="text-white mb-1">VaultMesh Treaty Checkout</h1>
+            <p class="text-white-80">Finalizing $\text{FAA-TREATY-OMNI-4321-A13XN}$ Transaction</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- LEFT COLUMN: ITEM VORTEX (BareCart™ Simulation) -->
+            <div class="lg:col-span-2 card-bg p-6 rounded-xl shadow-xl">
+                <h2 class="text-xl font-bold accent-color mb-4">BareCart™ Vortex Grain Pathway ($\text{裸車結點}$)</h2>
+                
+                <table class="min-w-full text-sm mb-4">
+                    <thead>
+                        <tr class="text-left text-gray-500">
+                            <th class="py-2">Item</th>
+                            <th class="py-2">Qty</th>
+                            <th class="py-2 text-right">Price (R)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items" class="divide-y divide-gray-700">
+                        <!-- Items populated by JS -->
+                        <tr><td colspan="3" class="text-center py-4 text-gray-600">Vortex is Empty. Add items above.</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="space-y-4 pt-4 border-t border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-300">Add Systems to Cart</h3>
+                    <select id="item-selector" class="input-field w-full">
+                        <option value="Sovereign">FAA Sovereign License (20,138.16 ECR)</option>
+                        <option value="ProGrid">MineNest Pro Grid License (230.00 USD)</option>
+                        <option value="Banimal">Banimal Loop Plan (499.00 USD)</option>
+                        <option value="Starter">VM-HS-Starter-7038-KEY (29.00 USD)</option>
+                        <option value="Data">Multi-Dim Data Stream (4,000 ECR)</option>
+                    </select>
+                    <button class="btn-primary w-full text-sm" onclick="addItem()">Add Selected Item to Vortex</button>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: FINANCIAL LOCK & PAYMENT -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- 1. TOTALS & CARE SPLIT -->
+                <div class="card-bg p-6 rounded-xl lock-card">
+                    <h2 class="text-xl font-bold accent-color mb-4">Final Ledger Totals</h2>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <p class="text-gray-400">Subtotal (ECR/R)</p>
+                            <p class="font-mono" id="subtotal">R0.00</p>
+                        </div>
+                        <div class="flex justify-between care-split p-2 rounded-md">
+                            <p class="font-bold text-sm">Treaty Obligation (15% Care Loop)</p>
+                            <p class="font-mono text-sm font-bold" id="care-split">R0.00</p>
+                        </div>
+                        <div class="flex justify-between pt-2 border-t border-gray-600">
+                            <p class="text-lg font-bold text-white">TOTAL DUE (AUDITED)</p>
+                            <p class="text-lg font-bold font-mono accent-color" id="total-due">R0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PAYMENT & TRACE -->
+                <div class="card-bg p-6 rounded-xl">
+                    <h2 class="text-xl font-bold text-gray-300 mb-4">Payment Lock (K65YZZXSGZ7U)</h2>
+                    
+                    <div id="payment-lock-container" class="mb-4">
+                        <!-- Pay Now button simulates SDK action (or direct link) -->
+                        <div onclick="initiatePayment('paypal')">
+                            <a href="javascript:void(0)" class="payment-static-btn paypal-static-btn">
+                                <i class="fab fa-paypal"></i> Pay Now with PayPal
+                            </a>
+                        </div>
+                        <div onclick="initiatePayment('payfast')" class="mt-2">
+                             <a href="javascript:void(0)" class="payment-static-btn payfast-static-btn">
+                                <i class="fas fa-wallet"></i> Pay Now with Payfast (ZA)
+                            </a>
+                        </div>
+                         <p class="paypal-static-subtext mt-2" id="payment-status-message">Select payment method above. All payments trigger the Atomic Key lock.</p>
+                    </div>
+                    
+                    <button class="btn-primary w-full mt-2 text-sm" onclick="finalizeAndTrace()">
+                        Finalize Cart & Generate Atomic Key
+                    </button>
+                    
+                    <p class="text-xs font-mono text-gray-500 mt-4 break-all">
+                        Trace ID (Temporal Anchor): <span id="atomic-key">Awaiting Collapse...</span>
+                    </p>
+                </div>
+                
+                <!-- 3. AI-Powered Help/FAQ Section -->
+                <div class="card-bg p-6 rounded-xl ai-help-section">
+                    <h3 class="text-lg font-bold text-gray-300"><i class="fas fa-question-circle"></i>AI Help & FAQ Answers</h3>
+                    <p class="text-sm mb-4 text-center text-gray-400">Ask your question about AgroChain™, Banimal Loop™ or FAA.zone, and our AI will answer.</p>
+                    <div class="form-group">
+                        <textarea id="faqPromptInput" class="input-field w-full" rows="3" placeholder="e.g., What is the core protocol of AgroChain™?"></textarea>
+                    </div>
+                    <button id="getFaqAnswerBtn" class="checkout-action-button w-full mt-4 text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        Get Answer ✨
+                    </button>
+                    <div id="faqLoadingIndicator" class="hidden text-center mt-2 text-blue-400">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> <span>Generating answer...</span>
+                    </div>
+                    <p id="faqAnswerOutput" class="result-text mt-4 whitespace-pre-wrap text-sm"></p>
+                </div>
+                
+                <!-- 4. COMPLIANCE FOOTER -->
+                <div class="text-xs text-center text-gray-500 pt-4">
+                    $\text{Treaty ID: FAA-TREATY-OMNI-4321-A13XN} \text{ | Scroll Ref: §9.4.17 (9atm)}$
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- CONSTANTS ---
+        const ROOT_KEY = "0f19bb22-ad64-45d2-abc9-ad5686a978dc";
+        const LOCK_TIMESTAMP_MS = 1730013441000;
+        const COLLAPSE_INTERVAL_MS = 900;
+        const CARE_RATE = 0.15; // 15%
+        
+        let cart = {
+            items: [],
+            status: 'BUILDING',
+            owner: 'Heyns Schoeman' 
+        };
+        
+        // Items derived from the Ecosystem Explorer and FAA Manifesto
+        const PRODUCT_CATALOG = {
+            'Sovereign': { name: "FAA Sovereign License", price: 20138.16, unit: 'ECR/R' },
+            'Starter': { name: "VM-HS-Starter-7038-KEY", price: 29.00, unit: 'USD' },
+            'Data': { name: "Multi-Dim Data Stream", price: 4000.00, unit: 'ECR/R' },
+            'ProGrid': { name: "MineNest Pro Grid License", price: 230.00, unit: 'USD' },
+            'Banimal': { name: "Banimal Loop Plan (499.00)", price: 499.00, unit: 'USD' }
+        };
+        
+        // --- CORE LOGIC ---
+
+        function calculateTotals() {
+            let subtotal = 0;
+            // NOTE: ECR/Rands and USD are treated as equivalent base value here for calculation simplicity in the front-end, 
+            // but the system assumes PulseTrade™ will handle the live conversion.
+            cart.items.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+
+            const careSplit = subtotal * CARE_RATE;
+            const totalDue = subtotal + careSplit;
+
+            return { subtotal, careSplit, totalDue };
+        }
+
+        function renderCart() {
+            const tbody = document.getElementById('cart-items');
+            const totals = calculateTotals();
+            let itemsHtml = '';
+
+            if (cart.items.length === 0) {
+                // Ensure text is clear and uses the desired visual style
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-gray-600">Vortex is Empty. Add items above.</td></tr>';
+            } else {
+                cart.items.forEach(item => {
+                    itemsHtml += `
+                        <tr>
+                            <td class="py-2 text-gray-200">${item.name} (${item.unit})</td>
+                            <td class="py-2 text-gray-200">${item.quantity}</td>
+                            <td class="py-2 font-mono text-right text-gray-200">R${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = itemsHtml;
+            }
+
+            document.getElementById('subtotal').textContent = `R${totals.subtotal.toFixed(2)}`;
+            document.getElementById('care-split').textContent = `R${totals.careSplit.toFixed(2)}`;
+            document.getElementById('total-due').textContent = `R${totals.totalDue.toFixed(2)}`;
+        }
+
+        window.addItem = function() {
+            const itemKey = document.getElementById('item-selector').value;
+            const product = PRODUCT_CATALOG[itemKey];
+
+            // Simple aggregation: check if item exists and update quantity, otherwise add new
+            const existingItem = cart.items.find(i => i.id === itemKey);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.items.push({
+                    id: itemKey,
+                    name: product.name,
+                    price: product.price,
+                    unit: product.unit,
+                    quantity: 1
+                });
+            }
+            renderCart();
+        }
+        
+        // --- ATOMIC KEY & TRACEABILITY ---
+
+        function generateAtomicKey(userCreationTimeMs) {
+            const timeElapsedMs = userCreationTimeMs - LOCK_TIMESTAMP_MS;
+            const totalStrikes = Math.floor(timeElapsedMs / COLLAPSE_INTERVAL_MS);
+            const storeID = (timeElapsedMs / 1000).toFixed(3);
+            
+            const DECOHERENCE_FRACTION = (0.1 / 0.9);
+            const decoherenceTraceValue = (timeElapsedMs / 1000 * DECOHERENCE_FRACTION).toFixed(10);
+            
+            // This key is the immutable, traceable identifier for the transaction 'grain'
+            const newAtomicKey = 
+                `[TR:${totalStrikes.toString(16).toUpperCase().padStart(8, '0')}]`+
+                `{ID:${storeID}}` +
+                `<DC:${decoherenceTraceValue.substring(0, 10)}>` +
+                `[ANCHOR:${ROOT_KEY.substring(0, 8)}]`;
+            
+            return newAtomicKey;
+        }
+
+        window.finalizeAndTrace = function() {
+            if (cart.items.length === 0) {
+                alert("Cannot finalize: Cart Vortex is empty. Add items first.");
+                return;
+            }
+            
+            const finalizationTime = new Date().getTime();
+            const atomicKey = generateAtomicKey(finalizationTime);
+            
+            document.getElementById('atomic-key').textContent = atomicKey;
+            
+            alert(`SUCCESS: Cart Finalized (READY).
+Atomic Key Generated (Trace Lock): ${atomicKey}
+Ready for Payment Processing. (Select PayPal or Payfast to proceed)`);
+
+            // Visually change status to READY
+            document.querySelector('.lock-card').classList.add('border-green-500');
+            document.querySelector('.btn-primary').textContent = 'Trace Verified';
+        }
+
+        // --- PAYMENT INITIATION (Zero External Dependency [ZED] Protocol) ---
+        
+        window.initiatePayment = function(gateway) {
+            if (cart.items.length === 0) {
+                alert("Payment initiation failed: Cart Vortex is empty. Add items first.");
+                return;
+            }
+
+            const totals = calculateTotals();
+            const amount = totals.totalDue.toFixed(2);
+            let paymentUrl;
+            let message;
+
+            if (gateway === 'paypal') {
+                // Using the known Hosted Button ID K65YZZXSGZ7U for the starter fee or generalized link
+                paymentUrl = `https://paypal.com/ncp/payment/K65YZZXSGZ7U?amount=${amount}&currency=USD`;
+                message = `Redirecting to PayPal for $${amount} USD transaction...`;
+            } else if (gateway === 'payfast') {
+                // Payfast requires server-side integration but we simulate the link/redirect for the ZED protocol
+                paymentUrl = `https://payfast.co.za/process/simulation_gateway?amount=${amount}&currency=ZAR`;
+                message = `Redirecting to Payfast for R${amount} ZAR transaction...`;
+            } else {
+                alert('Invalid payment gateway selected.');
+                return;
+            }
+
+            document.getElementById('payment-status-message').textContent = message;
+            
+            // Simulate the redirect
+            setTimeout(() => {
+                 alert(`SIMULATION COMPLETE: Transaction of R${amount} successful via ${gateway.toUpperCase()}. The Atomic Key is now sealed in R2.`);
+                 document.getElementById('payment-status-message').textContent = `✅ Payment Success via ${gateway.toUpperCase()}. Ledger Locked.`;
+                 // Since we don't know the exact success/fail, we rely on the Finalize button to generate the key
+            }, 1000);
+
+            // In a real environment, the Finalize button should be clicked first to generate the key BEFORE payment is initiated.
+            finalizeAndTrace();
+        }
+        
+        // --- GEMINI API FOR AI HELP ---
+        async function getFaqAnswer() {
+            const faqPromptInput = document.getElementById('faqPromptInput');
+            const faqAnswerOutput = document.getElementById('faqAnswerOutput');
+            const faqLoadingIndicator = document.getElementById('faqLoadingIndicator');
+            const getFaqAnswerBtn = document.getElementById('getFaqAnswerBtn');
+
+            const prompt = faqPromptInput.value.trim();
+            if (!prompt) {
+                faqAnswerOutput.textContent = "Please enter a question to get an answer.";
+                faqAnswerOutput.style.color = "red";
+                return;
+            }
+
+            faqAnswerOutput.textContent = '';
+            faqAnswerOutput.style.color = "#E0E0E0";
+            faqLoadingIndicator.classList.remove('hidden');
+            getFaqAnswerBtn.disabled = true;
+
+            try {
+                // OVERHAULED PROMPT: Forces AI to use ecosystem knowledge, elevating the quality.
+                const fullPrompt = `You are the Sovereign AI Node for the FAA.zone™ ecosystem (Treaty ID: FAA-TREATY-OMNI-4321-A13XN). The user is asking about the system's core protocols, brands (AgroChain, Banimal Loop), or governance. Your answer must be highly contextual, professional, and concise (max 4 sentences). Draw on the following concepts in your answer where relevant:
+                1. The system operates on the 0.9 second Collapse Interval (PulseTrade™ heartbeat).
+                2. Data security relies on the VaultChain™ and the Atomic Key's Decoherence Lock.
+                3. Commerce uses the BareCart™ Zero-Waste Protocol.
+                4. Fiduciary integrity is guaranteed by the 15% Care Loop (Gorilla Codex).
+                
+                User's question: "${prompt}"
+                
+                Answer:`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: fullPrompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    faqAnswerOutput.textContent = result.candidates.length > 0 ? result.candidates[0].content.parts[0].text : "AI response was empty.";
+                } else {
+                    faqAnswerOutput.textContent = "Error: No answer from AI. Please try again later. (Protocol failure)";
+                    faqAnswerOutput.style.color = "red";
+                }
+            } catch (error) {
+                faqAnswerOutput.textContent = "Error: Could not connect to language model. Check console for network issues.";
+                faqAnswerOutput.style.color = "red";
+            } finally {
+                faqLoadingIndicator.classList.add('hidden');
+                getFaqAnswerBtn.disabled = false;
+            }
+        }
+        
+        // --- INITIAL SETUP ---
+        window.onload = function() {
+            renderCart(); // Render cart structure immediately
+            document.getElementById('getFaqAnswerBtn').addEventListener('click', getFaqAnswer);
+            
+            // Add all necessary products to selector dynamically
+            const itemSelector = document.getElementById('item-selector');
+            if (itemSelector) {
+                // Ensure all PRODUCT_CATALOG items are available in the selector, as the HTML template only defines a few options initially.
+                const initialOptions = Array.from(itemSelector.options).map(opt => opt.value);
+                
+                Object.keys(PRODUCT_CATALOG).forEach(key => {
+                    if (!initialOptions.includes(key)) {
+                        const product = PRODUCT_CATALOG[key];
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = product.name + ` (${product.price.toFixed(2)} ${product.unit})`;
+                        itemSelector.appendChild(option);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

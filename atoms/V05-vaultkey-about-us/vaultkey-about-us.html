@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 VaultKey™ About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        .product-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-modal-content {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: 30px;
+            border: 1px solid #4a5568;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .product-modal-close {
+            color: #cbd5e0;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .product-modal-close:hover,
+        .product-modal-close:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+    </style>
+    <script>
+    // Global function to hide the product detail modal
+    window.hideProductModal = function() {
+        const modal = document.getElementById('productDetailModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open'); // Ensure body scroll is re-enabled
+            document.body.style.overflow = '';
+        }
+    };
+
+    // Global data for product details and other sections (used by products.html)
+    // These are passed as JSON strings from Python and parsed by JS.
+    // The `to_js_str` function ensures they are correctly escaped for JS.
+    window.productDetailsMap = {
+    "vaultkey_solution_alpha": {
+        "id": "vaultkey_solution_alpha",
+        "icon": "\ud83d\udca1",
+        "name": "VaultKey Solution Alpha",
+        "description": "An intelligent core solution for Saas optimization, powered by VaultKey's unique algorithms.",
+        "features": [
+            "Advanced Saas Analytics",
+            "Scalable Integration",
+            "Real-time Monitoring"
+        ],
+        "specs": {
+            "Platform": "Cloud-Native",
+            "API": "RESTful"
+        },
+        "benefits": [
+            "Streamlines Saas Workflows",
+            "Enhances Decision Making"
+        ],
+        "use_cases": [
+            "General Saas Automation",
+            "Data Optimization"
+        ],
+        "pricing": "Contact for Quote",
+        "modal_content": "<h4>VaultKey Solution Alpha Details</h4><p>This foundational solution is meticulously crafted to address key challenges within the Saas sector, providing robust tools for efficiency and growth. It's designed to seamlessly integrate with your existing infrastructure.</p>",
+        "image": "/assets/images/default-product-a.jpg",
+        "cta_link": "/contact.html"
+    },
+    "vaultkey_module_beta": {
+        "id": "vaultkey_module_beta",
+        "icon": "\ud83d\udd17",
+        "name": "VaultKey Module Beta",
+        "description": "A robust module designed to enhance connectivity and data flow across your Saas ecosystem.",
+        "features": [
+            "Secure Saas Integration",
+            "Automated Data Sync",
+            "Customizable Dashboards"
+        ],
+        "specs": {
+            "Compatibility": "Multi-Platform",
+            "Security": "AES-256"
+        },
+        "benefits": [
+            "Improved Collaboration",
+            "Reduced Manual Effort"
+        ],
+        "use_cases": [
+            "Saas System Interoperability",
+            "Workflow Automation"
+        ],
+        "pricing": "Contact for Quote",
+        "modal_content": "<h4>VaultKey Module Beta Details</h4><p>Module Beta extends the capabilities of VaultKey, ensuring seamless data exchange and operational synergy within complex Saas environments. It's built for adaptability and future-proofing.</p>",
+        "image": "/assets/images/default-product-b.jpg",
+        "cta_link": "/contact.html"
+    }
+};
+    window.featuresDeepDiveData = [
+    {
+        "title": "Core VaultKey Functionality",
+        "description": "Experience the foundational strengths of VaultKey tailored for streamlined Saas operations, delivering immediate and measurable impact.",
+        "icon": "\u2705"
+    },
+    {
+        "title": "Scalable VaultKey Performance",
+        "description": "Our solutions are built to grow with your Saas needs, ensuring consistent performance at any scale.",
+        "icon": "\ud83d\udcc8"
+    },
+    {
+        "title": "Intuitive VaultKey User Experience",
+        "description": "Designed with the user in mind, VaultKey provides an intuitive and engaging interface, simplifying complex Saas tasks.",
+        "icon": "\ud83d\udca1"
+    }
+];
+    window.integrationCapabilitiesData = [
+    {
+        "name": "VaultKey API Integration",
+        "description": "Seamlessly connect VaultKey with your existing Saas software via robust and well-documented APIs.",
+        "icon": "\ud83d\udd0c"
+    },
+    {
+        "name": "Third-Party Saas Tools",
+        "description": "Integrate effortlessly with a wide array of popular Saas tools and platforms for extended functionality and data synchronization.",
+        "icon": "\ud83e\udde9"
+    }
+];
+    window.useCasesData = [
+    {
+        "title": "Optimizing Saas Workflows",
+        "description": "Utilize VaultKey to refine and automate your Saas processes for maximum operational efficiency and resource utilization.",
+        "icon": "\u2699\ufe0f"
+    },
+    {
+        "title": "Enhancing Data Analytics",
+        "description": "Gain deeper, actionable insights into your Saas data with VaultKey's powerful analytical tools and customizable reporting.",
+        "icon": "\ud83d\udcca"
+    },
+    {
+        "title": "Boosting Saas Productivity",
+        "description": "Implement VaultKey to significantly increase overall team and system productivity within your Saas environment.",
+        "icon": "\ud83d\ude80"
+    }
+];
+    window.techSpecsData = {
+    "Architecture": "Modular Microservices",
+    "Security": "Industry-Standard Encryption",
+    "Scalability": "Auto-Scaling Cloud Infrastructure"
+};
+    window.securityComplianceData = [
+    "Robust Data Encryption for VaultKey",
+    "Compliance with Saas Industry Standards and Regulations",
+    "Regular Security Audits and Vulnerability Assessments for VaultKey Systems"
+];
+    window.customerSuccessStories = [
+    {
+        "name": "Leading Saas Co.",
+        "quote": "Implementing VaultKey has transformed our Saas operations, delivering significant improvements and measurable value within a short period.",
+        "industry": "Saas"
+    },
+    {
+        "name": "Innovative Saas Startup",
+        "quote": "The seamless integration and intuitive design of VaultKey were game-changers for our team, driving immediate and impressive results.",
+        "industry": "Saas"
+    }
+];
+    window.supportTrainingData = [
+    {
+        "title": "24/7 Comprehensive VaultKey Support",
+        "description": "Access our dedicated support team around the clock for any VaultKey related queries or critical issues, ensuring uninterrupted operations.",
+        "icon": "\ud83d\udcde"
+    },
+    {
+        "title": "In-depth Saas Training",
+        "description": "Utilize our extensive training resources and tailored sessions to master VaultKey and excel in your Saas field.",
+        "icon": "\ud83c\udf93"
+    }
+];
+    window.faqData = [
+    {
+        "question": "What is VaultKey?",
+        "answer": "VaultKey is a leading solution in the Saas sector, specifically designed to provide innovative tools for your business needs and challenges."
+    },
+    {
+        "question": "How does VaultKey benefit my Saas business?",
+        "answer": "VaultKey streamlines operations, enhances decision-making, and significantly improves efficiency and compliance specifically within the Saas domain, leading to tangible ROI."
+    }
+];
+    window.pricingOverviewContent = `
+            <p class="text-gray-300 text-lg mb-4">VaultKey offers flexible pricing tiers designed to scale precisely with your Saas business needs. All tiers include essential functionality, robust security, and dedicated support.</p>
+            <ul class="list-disc list-inside text-gray-300 text-base mb-6">
+                <li><strong>Starter Plan:</strong> Ideal for pilot projects and small-scale Saas operations.</li>
+                <li><strong>Professional Plan:</strong> Advanced features for growing Saas demands, including enhanced analytics and integrations.</li>
+                <li><strong>Enterprise Solution:</strong> Full suite of tools, custom integrations, and priority support for large Saas organizations with complex requirements.</li>
+            </ul>
+            <a href="contact.html" class="bg-gray-700 hover:bg-gray-600 text-gray-300 font-bold py-2 px-6 rounded-md transition-colors duration-200">Request a Custom Quote</a>
+        `;
+
+
+    window.fetchProductDetails = async function(productId) { // Make global for onclick
+        const productDetails = window.productDetailsMap[productId]; // Access global map
+        if (productDetails) {
+            // Populate modal fields
+            document.getElementById('modalProductTitle').textContent = productDetails.name || 'Product Title';
+            document.getElementById('modalProductDescription').textContent = productDetails.description || 'Product description goes here.';
+
+            // Set product image if available
+            const modalProductImage = document.getElementById('modalProductImage');
+            if (modalProductImage && productDetails.image) {
+                modalProductImage.src = productDetails.image;
+                modalProductImage.style.display = 'block'; // Ensure image is visible
+            } else if (modalProductImage) {
+                modalProductImage.style.display = 'none'; // Hide if no image
+            }
+
+            // Set CTA link
+            const modalProductCTA = document.getElementById('modalProductCTA');
+            if (modalProductCTA && productDetails.cta_link) {
+                modalProductCTA.href = productDetails.cta_link;
+                modalProductCTA.style.display = 'inline-block'; // Show button
+            } else if (modalProductCTA) {
+                modalProductCTA.style.display = 'none'; // Hide button
+            }
+
+            const populateList = (elementId, items) => {
+                const parentDiv = document.getElementById(elementId);
+                const ul = parentDiv.querySelector('ul');
+                ul.innerHTML = '';
+                if (items && items.length > 0) {
+                    parentDiv.style.display = 'block';
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        ul.appendChild(li);
+                    });
+                } else {
+                    parentDiv.style.display = 'none';
+                }
+            };
+
+            const populateSpecs = (elementId, specs) => {
+                const parentDiv = document.getElementById(elementId);
+                const ul = parentDiv.querySelector('ul');
+                ul.innerHTML = '';
+                if (specs && Object.keys(specs).length > 0) {
+                    parentDiv.style.display = 'block';
+                    for (const key in specs) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>$${key}</strong>: $${specs[key]}`; // Correctly escaped for JS template literal
+                        ul.appendChild(li);
+                    }
+                } else {
+                    parentDiv.style.display = 'none';
+                }
+            };
+
+            populateList('modalProductFeatures', productDetails.features);
+            populateSpecs('modalProductSpecs', productDetails.specs);
+            populateList('modalProductBenefits', productDetails.benefits);
+            populateList('modalProductUseCases', productDetails.use_cases);
+
+            document.getElementById('modalProductPricing').textContent = `Pricing: $${productDetails.pricing || 'Contact for Quote'}`;
+
+            // Show the modal
+            document.getElementById('productDetailModal').style.display = 'flex';
+            document.body.classList.add('modal-open'); // Add class to body
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        } else {
+            console.error(`Product details for ID $${productId} not found in mock data.`);
+            alert('Product details not found.');
+        }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+        const productModal = document.getElementById('productDetailModal');
+        if (productModal) {
+            productModal.addEventListener('click', function(event) {
+                // If clicked directly on the modal background or a close button
+                if (event.target === productModal || event.target.closest('.product-modal-close') || event.target.closest('.close-modal-button')) {
+                    window.hideProductModal();
+                }
+            });
+        }
+    });
+</script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-gray-800 shadow-lg py-4 px-6 md:px-10 sticky top-0 z-50">
+        <div class="container mx-auto flex items-start justify-between flex-wrap">
+            <div class="flex items-center mb-4 md:mb-0">
+                <span class="text-3xl mr-3">🔑</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-400">
+                    FAA.ZONE <span class="text-gray-100">Sovereign Scrolls</span>
+                </h1>
+            </div>
+
+            <div class="flex flex-col items-center md:items-end w-full md:w-auto">
+                <span class="text-xl md:text-2xl text-gray-400 mb-2 mt-4 md:mt-0">Global Supply Chain Grid</span>
+                <nav class="w-full md:w-auto">
+                    <ul class="flex flex-wrap justify-center md:justify-end space-x-2 md:space-x-4 text-sm md:text-base">
+<li><a href="/public/sectors/saas/dashboard.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Sector Dashboard</a></li><li><a href="index.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Home</a></li><li><a href="dashboard.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Dashboard</a></li><li><a href="pricing.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Pricing</a></li><li><a href="products.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Products</a></li><li><a href="about.html" class="px-3 py-2 rounded-md bg-gray-500 text-white">About</a></li><li><a href="features.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Features</a></li><li><a href="contact.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Contact</a></li><li><a href="licensing.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Licensing</a></li><li><a href="terms.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Terms</a></li><li><a href="clauses.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Clauses</a></li><li><a href="auth.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Auth</a></li><li><a href="metrics.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Metrics</a></li><li><a href="vaultkey-vision.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">VaultKey Vision</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-6 py-8 md:py-12">
+            
+            <div id="dynamicContent" class="mb-12">
+    <section class="text-center mb-12">
+        <h2 class="text-5xl md:text-6xl font-extrabold text-white mb-4">
+            ℹ️ VaultKey™ About Us
+        </h2>
+        <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+            This is the About Us page for VaultKey, a leading entity in the SaaS sector. Content will be dynamically loaded or expanded here.
+        </p>
+        <div class="mt-8">
+            <a href="dashboard.html" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-md transition-colors duration-200 shadow-lg">
+                Go to Dashboard
+            </a>
+        </div>
+    </section>
+    <section class="bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
+        <h3 class="text-3xl font-semibold text-gray-400 mb-4">Welcome to our About Us</h3>
+        <p class="text-gray-300 leading-relaxed">
+            Discover detailed information and interactive elements for VaultKey's about us specific to the SaaS domain. We are continuously updating our portal to provide the most relevant data and user experience.
+        </p>
+        <div class="mt-6 text-gray-400">
+            <p><strong>Key Areas:</strong></p>
+            <ul class="list-disc list-inside ml-4 mt-2">
+                <li>Overview of VaultKey offerings in SaaS.</li>
+                <li>In-depth insights into about us data relevant to SaaS.</li>
+                <li>Relevant statistics and user-specific information for VaultKey's SaaS operations.</li>
+            </ul>
+        </div>
+    </section>
+            </div>
+        </main>
+</ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-6 py-8 md:py-12">
+        <div id="dynamicContent" class="mb-12">
+
+
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 py-6 px-6 md:px-10 mt-12">
+        <div class="container mx-auto text-center text-gray-400 text-sm">
+            <p>&copy; 2025 FAA.ZONE Sovereign Scrolls. All rights reserved.</p>
+            <p class="mt-2">
+                Part of the Global Supply Chain Grid · Powered by VaultMesh™ & TreatyMesh™ Protocols.
+            </p>
+            <div class="flex flex-wrap justify-center space-x-4 mt-4">
+                <a href="#" class="hover:text-gray-400 transition-colors duration-200">Privacy Policy</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-gray-400 transition-colors duration-200">Terms of Service</a>
+                <span class="text-gray-600">|</span>
+                <a href="#" class="hover:text-gray-400 transition-colors duration-200">Contact Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="productDetailModal" class="product-modal">
+        <div class="product-modal-content">
+            <span class="product-modal-close" onclick="hideProductModal()">&times;</span>
+            <h3 id="modalProductTitle" class="text-3xl font-bold text-gray-400 mb-4"></h3>
+            <img id="modalProductImage" src="" alt="Product Image" class="w-full h-48 object-cover rounded-md mb-4" style="display: none;">
+            <p id="modalProductDescription" class="text-gray-300 mb-4 leading-relaxed"></p>
+
+            <div id="modalProductFeatures" class="mb-4" style="display:none;">
+                <h4 class="text-xl font-semibold text-gray-200 mb-2">Key Features:</h4>
+                <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+            </div>
+            <div id="modalProductSpecs" class="mb-4" style="display:none;">
+                <h4 class="text-xl font-semibold text-gray-200 mb-2">Specifications:</h4>
+                <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+            </div>
+            <div id="modalProductBenefits" class="mb-4" style="display:none;">
+                <h4 class="text-xl font-semibold text-gray-200 mb-2">Benefits:</h4>
+                <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+            </div>
+            <div id="modalProductUseCases" class="mb-4" style="display:none;">
+                <h4 class="text-xl font-semibold text-gray-200 mb-2">Use Cases:</h4>
+                <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+            </div>
+            <p id="modalProductPricing" class="text-lg font-semibold text-white mt-4"></p>
+            <a id="modalProductCTA" href="#" class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md" style="display: none;">Learn More</a>
+            <button onclick="hideProductModal()" class="close-modal-button mt-4 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">Close</button>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const brandName = "VaultKey";
+        const sectorSlug = "saas";
+        const pageType = "about"; // Use page_slug for pageType
+        const accentColor500 = "gray-500";
+        const buttonBgClass = "bg-gray-600";
+        const hoverButtonBgClass = "hover:bg-gray-700";
+
+        console.log(`Loaded ${brandName} ${pageType} page.`);
+
+        // Access global data populated by generate_global_js_definitions
+        const featuresDeepDiveData = window.featuresDeepDiveData;
+        const integrationCapabilitiesData = window.integrationCapabilitiesData;
+        const useCasesData = window.useCasesData;
+        const techSpecsData = window.techSpecsData;
+        const securityComplianceData = window.securityComplianceData;
+        const customerSuccessStories = window.customerSuccessStories;
+        const supportTrainingData = window.supportTrainingData;
+        const faqData = window.faqData;
+        const pricingOverviewContent = window.pricingOverviewContent;
+
+
+        if (pageType === "products") {
+            // This fetch can be used if you want to update them dynamically from a backend.
+            // For now, product cards are initially rendered by Python, and modal data is global.
+            // If you want to replace them completely with a backend fetch, enable this:
+            /*
+            fetch(`http://localhost:5000/api/sectors/$${sectorSlug}/brands/$${brand_slug_clean}/products`)
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            console.warn('Products data not found from backend, using initial HTML render and global mock data for modals.');
+                            return { products: [], error: 'Backend endpoint not found for products, using embedded data.' };
+                        }
+                        throw new Error(`Network response was not ok: $${response.status} $${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // This is where you would render the product cards if fetching dynamically.
+                    // For now, productGrid is populated by Python initially.
+                    console.log("Fetched dynamic products (if applicable):", data);
+                })
+                .catch(error => {
+                    console.error('Error fetching product listings from backend:', error);
+                });
+            */
+
+            // Render other sections using global data (now brand-specific via generate_global_js_definitions)
+            const renderGridSection = (elementId, data, itemHtmlCallback) => {
+                const container = document.getElementById(elementId);
+                if (container && data && data.length > 0) {
+                    container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">${data.map(itemHtmlCallback).join('')}</div>`;
+                } else if (container) {
+                    container.innerHTML = `<p class="text-gray-400 text-center col-span-full">No data available for this section.</p>`;
+                }
+            };
+
+            renderGridSection('featuresDeepDiveContent', featuresDeepDiveData, f => `
+                <div class="bg-gray-900 rounded-lg shadow-md p-5 border border-gray-700">
+                    <span class="text-3xl block mb-2">$${f.icon}</span>
+                    <h4 class="text-xl font-semibold text-white mb-2">$${f.title}</h4>
+                    <p class="text-gray-400">$${f.description}</p>
+                </div>
+            `);
+
+            renderGridSection('integrationCapabilitiesContent', integrationCapabilitiesData, i => `
+                <div class="bg-gray-900 rounded-lg shadow-md p-5 border border-gray-700">
+                    <span class="text-3xl block mb-2">$${i.icon}</span>
+                    <h4 class="text-xl font-semibold text-white mb-2">$${i.name}</h4>
+                    <p class="text-gray-400">$${i.description}</p>
+                </div>
+            `);
+
+            renderGridSection('useCasesContent', useCasesData, uc => `
+                <div class="bg-gray-900 rounded-lg shadow-md p-5 border border-gray-700">
+                    <span class="text-3xl block mb-2">$${uc.icon}</span>
+                    <h4 class="text-xl font-semibold text-white mb-2">$${uc.title}</h4>
+                    <p class="text-gray-400">$${uc.description}</p>
+                </div>
+            `);
+
+            const techSpecsDiv = document.getElementById('techSpecsContent');
+            if (techSpecsDiv && Object.keys(techSpecsData).length > 0) {
+                const techSpecsList = document.createElement('ul');
+                techSpecsList.className = 'list-disc list-inside text-gray-300 ml-4';
+                for (const spec in techSpecsData) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>$${spec}</strong>: $${techSpecsData[spec]}`;
+                    techSpecsList.appendChild(li);
+                }
+                techSpecsDiv.innerHTML = '';
+                techSpecsDiv.appendChild(techSpecsList);
+            } else if (techSpecsDiv) { techSpecsDiv.innerHTML = `<p class="text-gray-400 text-center">No technical specifications available.</p>`; }
+
+            const securityComplianceDiv = document.getElementById('securityComplianceContent');
+            if (securityComplianceDiv && securityComplianceData.length > 0) {
+                const securityList = document.createElement('ul');
+                securityList.className = 'list-disc list-inside text-gray-300 ml-4';
+                securityComplianceData.forEach(highlight => {
+                    const li = document.createElement('li');
+                    li.textContent = highlight;
+                    securityList.appendChild(li);
+                });
+                securityComplianceDiv.innerHTML = '';
+                securityComplianceDiv.appendChild(securityList);
+            } else if (securityComplianceDiv) { securityComplianceDiv.innerHTML = `<p class="text-gray-400 text-center">No security and compliance highlights available.</p>`; }
+
+            const customerSuccessDiv = document.getElementById('customerSuccessContent');
+            if (customerSuccessDiv && customerSuccessStories.length > 0) {
+                customerSuccessDiv.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        $${customerSuccessStories.map(story => `
+                            <div class="bg-gray-900 rounded-lg shadow-md p-5 border border-gray-700">
+                                <p class="text-gray-300 italic mb-3">"$${story.quote}"</p>
+                                <p class="text-white font-semibold">- $${story.name}, <span class="text-gray-400">$${story.industry}</span></p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (customerSuccessDiv) { customerSuccessDiv.innerHTML = `<p class="text-gray-400 text-center">No customer success stories available.</p>`; }
+
+            const supportTrainingDiv = document.getElementById('supportTrainingContent');
+            if (supportTrainingDiv && supportTrainingData.length > 0) {
+                supportTrainingDiv.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        $${supportTrainingData.map(item => `
+                            <div class="bg-gray-900 rounded-lg shadow-md p-5 border border-gray-700">
+                                <span class="text-3xl block mb-2">$${item.icon}</span>
+                                <h4 class="text-xl font-semibold text-white mb-2">$${item.title}</h4>
+                                <p class="text-gray-400">$${item.description}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (supportTrainingDiv) { supportTrainingDiv.innerHTML = `<p class="text-gray-400 text-center">No support and training information available.</p>`; }
+
+            const faqDiv = document.getElementById('faqContent');
+            if (faqDiv && faqData.length > 0) {
+                faqDiv.innerHTML = faqData.map(faq => `
+                    <div class="bg-gray-900 rounded-lg shadow-md p-5 mb-4 border border-gray-700">
+                        <h4 class="text-xl font-semibold text-white mb-2">$${faq.question}</h4>
+                        <p class="text-gray-400">$${faq.answer}</p>
+                    </div>
+                `).join('');
+            } else if (faqDiv) { faqDiv.innerHTML = `<p class="text-gray-400 text-center">No FAQs available.</p>`; }
+
+            const pricingOverviewDiv = document.getElementById('pricingOverviewContent');
+            if (pricingOverviewDiv && pricingOverviewContent) {
+                pricingOverviewDiv.innerHTML = pricingOverviewContent;
+            } else if (pricingOverviewDiv) { pricingOverviewDiv.innerHTML = `<p class="text-gray-400 text-center">No pricing overview available.</p>`; }
+
+        } // End if pageType === "products"
+    }); // End DOMContentLoaded
+</script>
+</html>
