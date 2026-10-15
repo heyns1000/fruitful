@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uNtshontsho – The Cape Buffalo | Fruitful Global</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --straw:        #C8A96E;
+            --straw-light:  #F5EDD8;
+            --straw-dark:   #8B6914;
+            --bead-red:     #C0392B;
+            --bead-blue:    #1A5276;
+            --bead-green:   #1E8449;
+            --bead-yellow:  #D4AC0D;
+            --ink:          #1C1310;
+            --muted:        #6B5B4B;
+            --card-bg:      #FFFDF8;
+            --border:       #E8D9BC;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F0E3;
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            background-color: var(--ink);
+            color: #F5EDD8;
+            text-align: center;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+
+        /* ── Nav ── */
+        nav {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ink);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+        }
+        .nav-brand span { color: var(--straw-dark); }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--ink); }
+
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            padding: 14px 40px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .breadcrumb a { color: var(--muted); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--ink); }
+
+        /* ── Product layout ── */
+        .product-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 24px 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        /* ── Image panel ── */
+        .image-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .main-image-container {
+            background: linear-gradient(135deg, #F5EDD8 0%, #EAD9B8 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Beadwork decorative border on image container */
+        .main-image-container::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 10px;
+            border: 2px dashed var(--straw);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hat-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .hat-icon-large {
+            font-size: 7rem;
+            line-height: 1;
+            filter: drop-shadow(0 8px 24px rgba(139,105,20,0.3));
+        }
+
+        .hat-caption {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        /* Beadwork pattern strip */
+        .bead-strip {
+            height: 22px;
+            border-radius: 11px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--bead-red)   0px,   6px,
+                var(--bead-yellow) 6px,  12px,
+                var(--bead-blue)  12px,  18px,
+                var(--bead-green) 18px,  24px,
+                var(--bead-red)   24px,  30px,
+                #fff              30px,  36px
+            );
+            border: 1px solid var(--border);
+        }
+
+        /* Thumbnail row */
+        .thumb-row {
+            display: flex;
+            gap: 10px;
+        }
+        .thumb {
+            flex: 1;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #EAD9B8, #D9C49A);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: border-color 0.2s;
+        }
+        .thumb.active { border-color: var(--straw-dark); }
+        .thumb:hover { border-color: var(--straw); }
+
+        /* ── Info panel ── */
+        .info-panel { display: flex; flex-direction: column; gap: 28px; }
+
+        .product-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--straw-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .product-category::before {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--straw-dark);
+        }
+
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--ink);
+        }
+        .product-title span {
+            display: block;
+            font-size: 1rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+        .price-main {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .price-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: var(--ink);
+            color: #F5EDD8;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .product-description {
+            font-size: 0.97rem;
+            line-height: 1.75;
+            color: #3D2E20;
+            border-left: 3px solid var(--straw);
+            padding-left: 16px;
+        }
+
+        /* Feature list */
+        .features-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+        .feature-list { display: flex; flex-direction: column; gap: 14px; }
+        .feature-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .feature-bead {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bead-r { background: var(--bead-red); }
+        .bead-b { background: var(--bead-blue); }
+        .bead-g { background: var(--bead-green); }
+        .bead-y { background: var(--bead-yellow); }
+        .feature-bead i { color: #fff; font-size: 0.6rem; }
+
+        .feature-text strong {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .feature-text p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* CTA buttons */
+        .cta-group { display: flex; flex-direction: column; gap: 12px; }
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--ink);
+            color: #F5EDD8;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-primary:hover { background: #3D2E20; transform: translateY(-1px); }
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--straw-dark);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover { background: var(--straw-light); }
+
+        .cta-note {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+        .cta-note i { color: var(--bead-green); margin-right: 4px; }
+
+        /* ── Artisan Spotlight ── */
+        .artisan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .artisan-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--straw-dark), var(--bead-red));
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+        .artisan-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .artisan-meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .artisan-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .artisan-quote {
+            font-style: italic;
+            font-size: 0.83rem;
+            color: #3D2E20;
+            line-height: 1.6;
+            border-left: 2px solid var(--straw);
+            padding-left: 10px;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── Subscription panel ── */
+        .subscription-panel {
+            max-width: 1100px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+        }
+        .subscription-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+        .subscription-sub {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .sub-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            position: relative;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .sub-card:hover {
+            box-shadow: 0 8px 32px rgba(139,105,20,0.15);
+            transform: translateY(-3px);
+        }
+        .sub-card.featured {
+            border-color: var(--straw-dark);
+            background: linear-gradient(135deg, #FFFDF8, #F5EDD8);
+        }
+        .sub-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ink);
+            color: #F5EDD8;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+        .sub-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .sub-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .sub-price span {
+            font-size: 0.85rem;
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
+            color: var(--muted);
+        }
+        .sub-renewal {
+            font-size: 0.78rem;
+            color: var(--bead-green);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .sub-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .sub-features li {
+            font-size: 0.82rem;
+            color: #3D2E20;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+        .sub-features li i { color: var(--bead-green); margin-top: 2px; flex-shrink: 0; }
+        .sub-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1.5px solid var(--ink);
+            background: transparent;
+            color: var(--ink);
+            letter-spacing: 0.03em;
+        }
+        .sub-card.featured .sub-btn {
+            background: var(--ink);
+            color: #F5EDD8;
+        }
+        .sub-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* ── Details section below product ── */
+        .product-details-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .detail-block h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .detail-table { width: 100%; border-collapse: collapse; }
+        .detail-table tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+        .detail-table td {
+            padding: 10px 0;
+            font-size: 0.85rem;
+            vertical-align: top;
+        }
+        .detail-table td:first-child {
+            color: var(--muted);
+            font-weight: 500;
+            width: 38%;
+            padding-right: 16px;
+        }
+        .detail-table td:last-child { color: var(--ink); }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--ink);
+            color: #F5EDD8;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+        footer a { color: var(--straw); text-decoration: none; }
+        footer .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .product-wrapper { grid-template-columns: 1fr; gap: 32px; }
+            nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .product-title { font-size: 2rem; }
+            .subscription-grid { grid-template-columns: 1fr; }
+            .product-details-section { grid-template-columns: 1fr; }
+            .breadcrumb { padding: 10px 20px; }
+        }
+
+        /* Beadwork pattern (checkered) */
+        .bead-checkered {
+            height: 28px;
+            border-radius: 14px;
+            background-image:
+                repeating-conic-gradient(var(--bead-red) 0% 25%, var(--bead-blue) 0% 50%) 0 0 / 14px 14px,
+                repeating-conic-gradient(var(--bead-yellow) 0% 25%, var(--bead-green) 0% 50%) 7px 7px / 14px 14px;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top announcement bar -->
+<div class="topbar">
+    Handcrafted in Mamelodi, Pretoria &nbsp;|&nbsp; Authentic Xhosa &amp; Zulu Beadwork &nbsp;|&nbsp; Free shipping on Pro orders
+</div>
+
+<!-- Navigation -->
+<nav>
+    <a class="nav-brand" href="index.html">Fruitful <span>Global</span></a>
+    <ul class="nav-links">
+        <li><a href="#">Collection</a></li>
+        <li><a href="#">Heritage</a></li>
+        <li><a href="#">Artisans</a></li>
+        <li><a href="#">Subscriptions</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+    <div style="display:flex;gap:16px;color:var(--muted);font-size:1.1rem;">
+        <i class="fas fa-search" style="cursor:pointer;"></i>
+        <i class="fas fa-shopping-bag" style="cursor:pointer;"></i>
+    </div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="#">Home</a>
+    <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+    <a href="#">Collection</a>
+    <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+    <span style="color:var(--ink);">uNtshontsho</span>
+</div>
+
+<!-- ══ Product Section ══ -->
+<main>
+    <div class="product-wrapper">
+
+        <!-- Left: Images -->
+        <div class="image-panel reveal">
+            <div class="main-image-container">
+                <div class="hat-placeholder">
+                    <div class="hat-icon-large">🎩</div>
+                    <p class="hat-caption">
+                        Natural straw fedora with vibrant checkered beadwork<br>
+                        <span style="font-size:0.75rem;color:var(--straw-dark);font-style:normal;font-weight:600;">
+                            Handcrafted by Grand Sibangilizwe Maghandlela
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Beadwork pattern strip -->
+            <div class="bead-checkered" style="height:24px;border-radius:12px;"></div>
+
+            <!-- Thumbnails -->
+            <div class="thumb-row">
+                <div class="thumb active" title="Front view">🎩</div>
+                <div class="thumb" title="Beadwork detail">🔴</div>
+                <div class="thumb" title="Logo detail">🌿</div>
+                <div class="thumb" title="Side view">🎩</div>
+            </div>
+
+            <!-- Beadwork info pill -->
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <span style="background:#FFF3E0;color:#8B6914;font-size:0.72rem;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid #E8D9BC;">
+                    <i class="fas fa-paint-brush" style="margin-right:4px;"></i> Xhosa Beadwork
+                </span>
+                <span style="background:#FFF3E0;color:#8B6914;font-size:0.72rem;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid #E8D9BC;">
+                    <i class="fas fa-leaf" style="margin-right:4px;"></i> Natural Straw
+                </span>
+                <span style="background:#FFF3E0;color:#8B6914;font-size:0.72rem;font-weight:600;padding:6px 12px;border-radius:20px;border:1px solid #E8D9BC;">
+                    <i class="fas fa-star" style="margin-right:4px;"></i> Zulu Inspired
+                </span>
+            </div>
+        </div>
+
+        <!-- Right: Info -->
+        <div class="info-panel reveal" style="transition-delay:0.1s;">
+
+            <div>
+                <div class="product-category">The Cape Buffalo Series</div>
+            </div>
+
+            <div>
+                <h1 class="product-title">
+                    uNtshontsho
+                    <span>Traditional name meaning: Cape Buffalo</span>
+                </h1>
+            </div>
+
+            <div class="price-row">
+                <div class="price-main">$295</div>
+                <div class="price-badge">Pro Subscription</div>
+            </div>
+
+            <p class="product-description">
+                The uNtshontsho fedora is a natural straw piece that grounds your style while celebrating vibrant South African artistry. It features colorful checkered geometric beadwork and the signature Fruitful emblem — a statement of solidity and powerful grounded energy.
+            </p>
+
+            <!-- Feature list -->
+            <div>
+                <div class="features-title">Product Features</div>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-bead bead-r">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="feature-text">
+                            <strong>Symbolism</strong>
+                            <p>Represents solidity, unpredictability, and powerful grounded energy — the spirit of the Cape Buffalo.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bead bead-b">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="feature-text">
+                            <strong>Craftsmanship</strong>
+                            <p>Authentic Xhosa and Zulu-inspired beadwork applied by hand to natural straw — each piece unique.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bead bead-g">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="feature-text">
+                            <strong>Design</strong>
+                            <p>Natural brown straw fedora with vibrant checkered geometric beadwork and a prominent "Fruitful" logo on the crown.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-bead bead-y">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="feature-text">
+                            <strong>Material</strong>
+                            <p>Premium natural straw base with hand-applied multicolored bead accents in red, blue, green, and gold.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-group">
+                <button class="btn-primary">
+                    <i class="fas fa-shopping-bag"></i>
+                    Purchase — $295
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-calendar-check"></i>
+                    Renew Pro Subscription with this Hat
+                </button>
+                <p class="cta-note">
+                    <i class="fas fa-shield-alt"></i>
+                    This purchase renews your Pro Subscription for 30 days. A direct investment in South African artistry — no automated billing.
+                </p>
+            </div>
+
+            <!-- Artisan Spotlight -->
+            <hr class="divider">
+            <div class="artisan-card">
+                <div class="artisan-avatar">
+                    <i class="fas fa-user-circle" style="font-size:2.8rem;"></i>
+                </div>
+                <div>
+                    <div class="artisan-name">Grand Sibangilizwe Maghandlela</div>
+                    <div class="artisan-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Mamelodi, Pretoria</span>
+                        <span><i class="fas fa-birthday-cake"></i> Born 28 August 1960</span>
+                    </div>
+                    <div class="artisan-quote">
+                        "I am an artist — my soul message is art is part of creation. Mine is a God-given talent."
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══ Product Details Table ══ -->
+    <div class="product-details-section reveal">
+        <div class="detail-block">
+            <h3>Product Specifications</h3>
+            <table class="detail-table">
+                <tr>
+                    <td>Traditional Name</td>
+                    <td>uNtshontsho (Cape Buffalo)</td>
+                </tr>
+                <tr>
+                    <td>Symbolism</td>
+                    <td>Solidity, unpredictability, powerful grounded energy</td>
+                </tr>
+                <tr>
+                    <td>Material</td>
+                    <td>Natural straw with hand-applied beadwork</td>
+                </tr>
+                <tr>
+                    <td>Beadwork Style</td>
+                    <td>Checkered geometric — Xhosa &amp; Zulu inspired</td>
+                </tr>
+                <tr>
+                    <td>Logo</td>
+                    <td>Fruitful emblem on crown (hand-painted)</td>
+                </tr>
+                <tr>
+                    <td>Style</td>
+                    <td>Fedora</td>
+                </tr>
+                <tr>
+                    <td>Origin</td>
+                    <td>Mamelodi, Pretoria, South Africa</td>
+                </tr>
+            </table>
+        </div>
+        <div class="detail-block">
+            <h3>Artisan &amp; Subscription Details</h3>
+            <table class="detail-table">
+                <tr>
+                    <td>Price</td>
+                    <td><strong>$295</strong></td>
+                </tr>
+                <tr>
+                    <td>Subscription</td>
+                    <td>Pro — 30-day access renewal</td>
+                </tr>
+                <tr>
+                    <td>Renewal Method</td>
+                    <td>Physical hat purchase (no automated billing)</td>
+                </tr>
+                <tr>
+                    <td>Artisan</td>
+                    <td>Grand Sibangilizwe Maghandlela</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>Mamelodi, Pretoria</td>
+                </tr>
+                <tr>
+                    <td>Protocol</td>
+                    <td>Proof-of-Human-Craft (PoHC)</td>
+                </tr>
+                <tr>
+                    <td>Royalty</td>
+                    <td>Vaultmesh Diamond Tier — direct artisan payout</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ Subscription Tiers ══ -->
+    <div class="subscription-panel reveal">
+        <h2 class="subscription-heading">Subscription Tiers</h2>
+        <p class="subscription-sub">
+            Every subscription renews through a physical purchase — a direct investment in South African craftsmanship. No automated billing. No corporate middlemen.
+        </p>
+        <div class="subscription-grid">
+
+            <!-- Starter -->
+            <div class="sub-card">
+                <div class="sub-name">Starter</div>
+                <div class="sub-price">$20 <span>/ month</span></div>
+                <div class="sub-renewal">
+                    <i class="fas fa-recycle"></i> Renewed by Kids Kitchen Apron purchase
+                </div>
+                <ul class="sub-features">
+                    <li><i class="fas fa-check-circle"></i> Marketplace access</li>
+                    <li><i class="fas fa-check-circle"></i> Artisan Heritage profiles</li>
+                    <li><i class="fas fa-check-circle"></i> Digital Certificate of Authenticity</li>
+                    <li><i class="fas fa-check-circle"></i> Community forum access</li>
+                </ul>
+                <button class="sub-btn">Get Starter</button>
+            </div>
+
+            <!-- Pro — Featured -->
+            <div class="sub-card featured">
+                <div class="sub-badge">Most Popular</div>
+                <div class="sub-name">Pro</div>
+                <div class="sub-price">$295 <span>/ month</span></div>
+                <div class="sub-renewal">
+                    <i class="fas fa-recycle"></i> Renewed by purchasing any Pro hat
+                </div>
+                <ul class="sub-features">
+                    <li><i class="fas fa-check-circle"></i> Everything in Starter</li>
+                    <li><i class="fas fa-check-circle"></i> VaultLevel 7 membership</li>
+                    <li><i class="fas fa-check-circle"></i> Handcrafted hat (uNtshontsho or uBhejane)</li>
+                    <li><i class="fas fa-check-circle"></i> Vaultmesh Diamond royalty ledger</li>
+                    <li><i class="fas fa-check-circle"></i> ScrollClaim for Grand Sibangilizwe</li>
+                    <li><i class="fas fa-check-circle"></i> Direct artisan support</li>
+                </ul>
+                <button class="sub-btn">Get Pro — $295</button>
+            </div>
+
+            <!-- Core Brand -->
+            <div class="sub-card">
+                <div class="sub-name">Core Brand</div>
+                <div class="sub-price">$49 <span>/ month</span></div>
+                <div class="sub-renewal">
+                    <i class="fas fa-recycle"></i> Renewed by any vendor item purchase
+                </div>
+                <ul class="sub-features">
+                    <li><i class="fas fa-check-circle"></i> Everything in Starter</li>
+                    <li><i class="fas fa-check-circle"></i> Inline brand value linking</li>
+                    <li><i class="fas fa-check-circle"></i> 100+ vendor marketplace access</li>
+                    <li><i class="fas fa-check-circle"></i> Governance dashboard</li>
+                    <li><i class="fas fa-check-circle"></i> Fruitful Planet Change integration</li>
+                </ul>
+                <button class="sub-btn">Get Core Brand</button>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<!-- ══ Footer ══ -->
+<footer>
+    <div class="footer-brand">Fruitful Global</div>
+    <p>Mamelodi · Pretoria · South Africa</p>
+    <p style="margin-top:8px;color:var(--straw);">"Art is part of creation — mine is a God-given talent."</p>
+    <p style="margin-top:12px;font-size:0.72rem;color:#A08060;">
+        &copy; 2025 Fruitful Global &nbsp;·&nbsp;
+        <a href="#">Privacy</a> &nbsp;·&nbsp;
+        <a href="#">Terms</a> &nbsp;·&nbsp;
+        <a href="#">Contact</a>
+    </p>
+</footer>
+
+<script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Trigger visible on load for above-fold items
+    setTimeout(() => {
+        document.querySelectorAll('.reveal').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) el.classList.add('visible');
+        });
+    }, 100);
+
+    // Thumbnail active state
+    document.querySelectorAll('.thumb').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>
