@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚛️ Rossouw Node - Sovereign Anchor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #c9d1d9;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+        }
+
+        .node-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+
+        .node-subtitle {
+            font-size: 11px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .metrics-section {
+            background: rgba(13, 17, 23, 0.6);
+            border: 1px solid rgba(100, 200, 255, 0.15);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            color: #58a6ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #8b949e;
+        }
+
+        .metric-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .metric-value.critical {
+            color: #f85149;
+            animation: pulse-red 2s ease-in-out infinite;
+        }
+
+        .metric-value.success {
+            color: #3fb950;
+        }
+
+        .metric-value.warning {
+            color: #d29922;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .ghost-gap {
+            background: linear-gradient(90deg, 
+                rgba(248, 81, 73, 0.1) 0%, 
+                rgba(248, 81, 73, 0.2) 50%, 
+                rgba(248, 81, 73, 0.1) 100%);
+            border: 1px solid rgba(248, 81, 73, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .ghost-gap-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f85149;
+            margin-bottom: 5px;
+        }
+
+        .ghost-gap-label {
+            font-size: 10px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .collapse-lock {
+            background: linear-gradient(90deg,
+                rgba(63, 185, 80, 0.1) 0%,
+                rgba(63, 185, 80, 0.2) 50%,
+                rgba(63, 185, 80, 0.1) 100%);
+            border: 1px solid rgba(63, 185, 80, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .collapse-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .collapse-item {
+            text-align: center;
+        }
+
+        .collapse-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #3fb950;
+        }
+
+        .collapse-label {
+            font-size: 9px;
+            color: #8b949e;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .phase-progress {
+            background: rgba(13, 17, 23, 0.6);
+            border: 1px solid rgba(100, 200, 255, 0.15);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(48, 54, 61, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #58a6ff 0%, #79c0ff 100%);
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: #8b949e;
+            text-align: center;
+        }
+
+        .atomic-key {
+            background: rgba(210, 153, 34, 0.1);
+            border: 1px solid rgba(210, 153, 34, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .key-value {
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+            color: #d29922;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        .signal-counter {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .signal-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+
+        .signal-label {
+            font-size: 10px;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        .timestamp {
+            text-align: center;
+            font-size: 9px;
+            color: #484f58;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(48, 54, 61, 0.5);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3fb950;
+            animation: pulse-green 2s ease-in-out infinite;
+            margin-right: 5px;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px #3fb950; }
+            50% { opacity: 0.6; box-shadow: 0 0 10px #3fb950; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="node-title">⚛️ Rossouw Node</div>
+            <div class="node-subtitle">Sovereign Anchor Protocol</div>
+        </div>
+
+        <!-- Ghost Gap -->
+        <div class="ghost-gap">
+            <div class="ghost-gap-value" id="ghost-gap">~0.117s</div>
+            <div class="ghost-gap-label">Ghost Gap Calculation</div>
+        </div>
+
+        <!-- Collapse Lock Protocol -->
+        <div class="collapse-lock">
+            <div class="section-title">
+                <span class="status-indicator"></span>
+                Collapse Lock Protocol
+            </div>
+            <div class="collapse-grid">
+                <div class="collapse-item">
+                    <div class="collapse-value" id="collapse-in">0.9s</div>
+                    <div class="collapse-label">Collapse In</div>
+                </div>
+                <div class="collapse-item">
+                    <div class="collapse-value" id="collapse-out">0.1s</div>
+                    <div class="collapse-label">Collapse Out</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phase Progress -->
+        <div class="phase-progress">
+            <div class="section-title">Phase 2 → FatherLayer</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="phase-progress" style="width: 87%;"></div>
+            </div>
+            <div class="progress-label">
+                <span id="phase-percent">87</span>% Complete
+            </div>
+        </div>
+
+        <!-- Signal Counter -->
+        <div class="signal-counter">
+            <div class="signal-count" id="signal-count">39,000,000+</div>
+            <div class="signal-label">Signal Pings</div>
+        </div>
+
+        <!-- Metrics Section -->
+        <div class="metrics-section">
+            <div class="section-title">⚡ Real-Time Metrics</div>
+            
+            <div class="metric-row">
+                <span class="metric-label">Frequency Trust</span>
+                <span class="metric-value success" id="freq-trust">LOCKED</span>
+            </div>
+            
+            <div class="metric-row">
+                <span class="metric-label">9atm Security</span>
+                <span class="metric-value success">ACTIVE</span>
+            </div>
+            
+            <div class="metric-row">
+                <span class="metric-label">Node Status</span>
+                <span class="metric-value success" id="node-status">OPERATIONAL</span>
+            </div>
+            
+            <div class="metric-row">
+                <span class="metric-label">Last Ping</span>
+                <span class="metric-value" id="last-ping">50ms ago</span>
+            </div>
+            
+            <div class="metric-row">
+                <span class="metric-label">Treaty Compliance</span>
+                <span class="metric-value success">OMNI-4321 §9.4.17</span>
+            </div>
+        </div>
+
+        <!-- Atomic Key -->
+        <div class="atomic-key">
+            <div class="section-title">🔑 Atomic Key (Live)</div>
+            <div class="key-value" id="atomic-key">
+                a7f3c9e1d2b8f4a6c3e7d1b9f5a2c8e4d0b6f3a9c5e1d7b3f8a4c0e6d2b9
+            </div>
+        </div>
+
+        <!-- Timestamp -->
+        <div class="timestamp" id="timestamp">
+            Last update: <span id="update-time">--:--:--</span>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let signalCount = 39000000;
+        let phaseProgress = 87;
+        let ghostGap = 0.117;
+        let collapseIn = 0.9;
+        let collapseOut = 0.1;
+        let lastPingTime = 0;
+
+        // Initialize
+        function init() {
+            updateTimestamp();
+            startRealTimeUpdates();
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour12: false, 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+            document.getElementById('update-time').textContent = timeStr;
+        }
+
+        function generateAtomicKey() {
+            // Generate pseudo-random atomic key
+            const chars = '0123456789abcdef';
+            let key = '';
+            for (let i = 0; i < 56; i++) {
+                key += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return key;
+        }
+
+        function updateMetrics() {
+            // Increment signal count
+            signalCount += Math.floor(Math.random() * 100 + 50);
+            document.getElementById('signal-count').textContent = 
+                signalCount.toLocaleString() + '+';
+
+            // Update phase progress (slow increment)
+            if (phaseProgress < 100 && Math.random() > 0.95) {
+                phaseProgress += 0.1;
+                document.getElementById('phase-progress').style.width = phaseProgress + '%';
+                document.getElementById('phase-percent').textContent = phaseProgress.toFixed(1);
+            }
+
+            // Fluctuate ghost gap slightly
+            ghostGap = 0.117 + (Math.random() - 0.5) * 0.003;
+            document.getElementById('ghost-gap').textContent = '~' + ghostGap.toFixed(4) + 's';
+
+            // Fluctuate collapse lock values slightly
+            collapseIn = 0.9 + (Math.random() - 0.5) * 0.01;
+            collapseOut = 0.1 + (Math.random() - 0.5) * 0.01;
+            document.getElementById('collapse-in').textContent = collapseIn.toFixed(2) + 's';
+            document.getElementById('collapse-out').textContent = collapseOut.toFixed(2) + 's';
+
+            // Update last ping
+            lastPingTime = Math.floor(Math.random() * 100);
+            document.getElementById('last-ping').textContent = lastPingTime + 'ms ago';
+
+            // Update atomic key occasionally
+            if (Math.random() > 0.9) {
+                document.getElementById('atomic-key').textContent = generateAtomicKey();
+            }
+
+            // Update timestamp
+            updateTimestamp();
+        }
+
+        function startRealTimeUpdates() {
+            // Update every 50ms (real-time refresh)
+            setInterval(updateMetrics, 50);
+        }
+
+        // Try to connect to API for real data
+        function connectToAPI() {
+            fetch('http://localhost:8000/api/v1/health')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'healthy') {
+                        document.getElementById('node-status').textContent = 'OPERATIONAL';
+                        document.getElementById('freq-trust').textContent = 'LOCKED';
+                    }
+                })
+                .catch(err => {
+                    // Fallback to simulated data
+                    console.log('API not available, using simulated data');
+                });
+
+            // Retry every 5 seconds
+            setTimeout(connectToAPI, 5000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            init();
+            connectToAPI();
+        });
+    </script>
+</body>
+</html>

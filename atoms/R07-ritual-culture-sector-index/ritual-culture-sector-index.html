@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☯ FAA.ZONE™ CultureMesh Sector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CultureMesh Specific Color Palette */
+        :root {
+            --culturemesh-primary: #6A0572; /* Deep Purple */
+            --culturemesh-secondary: #A820A3; /* Medium Purple */
+            --culturemesh-accent: #F4D03F; /* Vibrant Yellow */
+            --culturemesh-light-bg: #F8F0FA; /* Very light purple/pink */
+            --culturemesh-card-bg: #E6D0E8; /* Lighter purple */
+            --culturemesh-dark-text: #2C003E; /* Dark Purple text */
+            --culturemesh-muted-text: #5B3A6E; /* Muted Purple text */
+            --culturemesh-border: #C2A4C5; /* Light purple border */
+            --culturemesh-button-hover: #4D0355; /* Darker purple on hover */
+            /* Traditional palette for shared sections */
+            --traditional-bg: #fcf8f0;
+            --traditional-border: #d4b499;
+            --traditional-text-heading: #5c4033;
+            --traditional-text-body: #7a614e;
+            --traditional-highlight: #e0a35e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--culturemesh-light-bg); /* Light purple background */
+            color: var(--culturemesh-dark-text); /* Dark text */
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--culturemesh-primary); /* Deep purple header */
+            color: white;
+            padding-top: 1.2rem;
+            padding-bottom: 1.2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+        }
+        header h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            letter-spacing: -0.03em;
+        }
+        header p {
+            color: #E6D0E8; /* Lighter purple for subtitle */
+        }
+        header nav a {
+            color: #E6D0E8;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: white;
+            background-color: var(--culturemesh-button-hover);
+            transform: translateY(-2px);
+        }
+
+       .hero-section-with-canvas {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--culturemesh-primary), var(--culturemesh-secondary), var(--culturemesh-accent)); /* Purple-Yellow gradient */
+            min-height: 70vh;
+            padding: 8rem 2rem;
+            border-bottom-left-radius: 60px;
+            border-bottom-right-radius: 60px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            color: white;
+            animation: fadeInScale 1s ease-out;
+        }
+       .hero-canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+       .hero-content-z-2 {
+            position: relative;
+            z-index: 2;
+        }
+       .gradient-heading {
+            background: linear-gradient(90deg, #F4D03F, #FF8C00); /* Yellow-Orange gradient for contrast */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+       .hero-section-with-canvas p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: #E6D0E8;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            max-width: 900px;
+        }
+       .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, var(--culturemesh-secondary), var(--culturemesh-accent)); /* Purple-Yellow gradient */
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+       .primary-btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3), 0 0 25px rgba(168, 32, 163, 0.8);
+        }
+
+       .metadata-section {
+            padding: 3rem 2rem;
+            background-color: var(--culturemesh-light-bg);
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(106, 5, 114, 0.1);
+        }
+       .metadata-card {
+            background-color: var(--culturemesh-card-bg); /* Lighter purple for cards */
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--culturemesh-border); /* Light purple border */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+       .metadata-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+       .metadata-card p.text-sm {
+            color: var(--culturemesh-muted-text);
+        }
+       .metadata-card p.text-2xl {
+            color: var(--culturemesh-primary); /* Deep purple for main values */
+            font-weight: 700;
+        }
+       .metadata-card p.text-xl {
+            color: var(--culturemesh-dark-text);
+            font-weight: 600;
+        }
+       .metadata-card .text-green-600 { /* For Security Rating - adapted to accent color */
+            color: var(--culturemesh-accent); /* Vibrant yellow for positive status */
+        }
+
+        #sector-brands, #global-cultural-entities {
+            padding: 6rem 2rem;
+            background-color: var(--culturemesh-light-bg); /* Use light purple */
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(106, 5, 114, 0.1);
+        }
+        #sector-brands h3, #global-cultural-entities h3 {
+            color: var(--culturemesh-dark-text);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 2.5rem;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        #sector-brands p.text-center, #global-cultural-entities p.text-center {
+            color: var(--culturemesh-muted-text);
+            font-size: 1.15rem;
+            line-height: 1.6;
+        }
+       .brand-card,.entity-card {
+            background-color: var(--culturemesh-card-bg); /* Lighter purple for cards */
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease-in-out, border-color 0.3s ease;
+            border: 1px solid var(--culturemesh-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+       .brand-card:hover,.entity-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 25px rgba(168, 32, 163, 0.5);
+            border-color: var(--culturemesh-accent);
+        }
+       .brand-card h4,.entity-card h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--culturemesh-primary); /* Deep purple for brand name */
+            margin-bottom: 0.75rem;
+        }
+       .brand-card p,.entity-card p {
+            font-size: 1rem;
+            color: var(--culturemesh-muted-text);
+        }
+       .brand-card ul {
+            list-style-type: disc;
+            list-style-position: inside;
+            margin-left: 1rem;
+            color: var(--culturemesh-muted-text);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+       .brand-card ul li {
+            margin-bottom: 0.25rem;
+        }
+       .brand-card .primary-btn,.entity-card .primary-btn {
+            margin-top: 1.5rem;
+            align-self: flex-start;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 25px;
+        }
+
+        /* Sections with traditional styling */
+        #traditional-wear-rituals, #cultural-brand-dna, #cultural-market-dynamics, #strategic-cultural-alignment, #lessons-aligned-brands, #sa-sector-landscape, #sa-provinces-overview, #vendor-artisan-hub {
+            background-color: var(--traditional-bg); /* Use traditional earthy background */
+            box-shadow: inset 0 5px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--traditional-border);
+        }
+        #traditional-wear-rituals h3, #cultural-brand-dna h3, #cultural-market-dynamics h3, #strategic-cultural-alignment h3, #lessons-aligned-brands h3, #sa-sector-landscape h3, #sa-provinces-overview h3, #vendor-artisan-hub h3 {
+            color: var(--traditional-text-heading);
+            text-shadow: none;
+        }
+        #traditional-wear-rituals p.text-center, #cultural-brand-dna p.text-center, #cultural-market-dynamics p.text-center, #strategic-cultural-alignment p.text-center, #lessons-aligned-brands p.text-center, #sa-sector-landscape p.text-center, #sa-provinces-overview p.text-center, #vendor-artisan-hub p.text-lg {
+            color: var(--traditional-text-body);
+        }
+       .country-card-traditional {
+            background-color: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--traditional-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+       .country-card-traditional:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+       .country-card-traditional h4 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--traditional-text-heading);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+       .country-card-traditional .province-text {
+            color: var(--traditional-text-body);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+       .ethnic-group-card {
+            background-color: #fcf5e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+       .ethnic-group-card h5 {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: var(--traditional-highlight);
+            margin-bottom: 0.75rem;
+        }
+       .ethnic-group-card strong {
+            color: var(--traditional-text-heading);
+        }
+       .ethnic-group-card p {
+            font-size: 0.9rem;
+            color: var(--traditional-text-body);
+            margin-bottom: 0.5rem;
+        }
+       .ethnic-group-card ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--traditional-text-body);
+        }
+       .ethnic-group-card ul li {
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+       .ethnic-group-card ul li strong {
+            color: var(--traditional-highlight);
+            font-weight: 700;
+        }
+
+       .dashboard-stat-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--traditional-border);
+            text-align: center;
+        }
+       .dashboard-stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--traditional-highlight);
+            line-height: 1;
+        }
+       .dashboard-stat-card .label {
+            font-size: 0.9rem;
+            color: var(--traditional-text-body);
+            margin-top: 0.5rem;
+        }
+       .product-showcase-card {
+            background-color: #fcf5e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+       .product-showcase-card h5 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--traditional-text-heading);
+            margin-bottom: 0.5rem;
+        }
+       .product-showcase-card p {
+            font-size: 0.9rem;
+            color: var(--traditional-text-body);
+            flex-grow: 1;
+        }
+       .product-showcase-card .view-btn {
+            margin-top: 1rem;
+            display: inline-block;
+            background-color: var(--traditional-highlight);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+       .product-showcase-card .view-btn:hover {
+            background-color: #c78c4e;
+        }
+       .opportunity-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       .opportunity-card h5 {
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--traditional-text-heading);
+            margin-bottom: 0.5rem;
+        }
+       .opportunity-card p {
+            font-size: 0.9rem;
+            color: var(--traditional-text-body);
+        }
+       .opportunity-card .apply-btn {
+            margin-top: 1rem;
+            display: inline-block;
+            background-color: var(--culturemesh-accent); /* Use CultureMesh accent for buttons here */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+       .opportunity-card .apply-btn:hover {
+            background-color: #DDAA00; /* Darker yellow on hover */
+        }
+
+       .cultural-attribute-card {
+            background-color: #fcf5e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       .cultural-attribute-card h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--traditional-highlight);
+            margin-bottom: 0.75rem;
+        }
+       .cultural-attribute-card p {
+            font-size: 0.95rem;
+            color: var(--traditional-text-body);
+        }
+
+       .market-dynamic-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       .market-dynamic-card h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--traditional-text-heading);
+            margin-bottom: 0.75rem;
+        }
+       .market-dynamic-card p {
+            font-size: 0.95rem;
+            color: var(--traditional-text-body);
+        }
+       .market-dynamic-card strong {
+            color: var(--traditional-highlight);
+        }
+
+       .pam-concept-card {
+            background-color: #fcf5e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+       .pam-concept-card h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--traditional-highlight);
+            margin-bottom: 0.5rem;
+        }
+       .pam-concept-card p {
+            font-size: 0.9rem;
+            color: var(--traditional-text-body);
+        }
+       .pam-arrow {
+            font-size: 2rem;
+            color: var(--traditional-border);
+            margin: 0.5rem 0;
+        }
+
+       .lesson-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       .lesson-card h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--traditional-text-heading);
+            margin-bottom: 0.75rem;
+        }
+       .lesson-card p {
+            font-size: 0.95rem;
+            color: var(--traditional-text-body);
+        }
+       .lesson-card strong {
+            color: var(--traditional-highlight);
+        }
+        
+       .sa-sector-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--traditional-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+       .sa-sector-card h4 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--traditional-text-heading);
+            margin-bottom: 0.75rem;
+        }
+       .sa-sector-card p {
+            font-size: 0.95rem;
+            color: var(--traditional-text-body);
+        }
+       .sa-sector-card strong {
+            color: var(--traditional-highlight);
+        }
+
+       .province-card {
+            background-color: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--traditional-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; /* Make it clickable */
+        }
+       .province-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+       .province-card h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--traditional-text-heading);
+            margin-bottom: 1rem;
+        }
+       .province-card .detail-item {
+            font-size: 0.95rem;
+            color: var(--traditional-text-body);
+            margin-bottom: 0.5rem;
+        }
+       .province-card .detail-item strong {
+            color: var(--traditional-highlight);
+            font-weight: 600;
+        }
+        .province-card .view-municipalities-btn {
+            margin-top: 1.5rem;
+            display: inline-block;
+            background-color: var(--culturemesh-accent); /* Use CultureMesh accent for buttons here */
+            color: var(--culturemesh-primary); /* Text color for button */
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+        .province-card .view-municipalities-btn:hover {
+            background-color: #DDAA00; /* Darker yellow on hover */
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--traditional-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: scale(0.95);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--traditional-text-heading);
+            cursor: pointer;
+        }
+        .modal-content h4 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--traditional-text-heading);
+            margin-bottom: 1.5rem;
+        }
+        .modal-content .municipality-list ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+        .modal-content .municipality-list ul li {
+            font-size: 0.9rem;
+            color: var(--culturemesh-dark-text); /* Use CultureMesh dark text for modal lists */
+            margin-bottom: 0.4rem;
+        }
+        .modal-content .municipality-list ul li strong {
+            color: var(--culturemesh-primary); /* Use CultureMesh primary for strong text in modal */
+            font-weight: 600;
+        }
+        .modal-content .municipality-list .district-list {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .modal-content .municipality-list .local-list {
+            margin-left: 1.5rem;
+            margin-top: 0.2rem;
+        }
+
+
+        footer {
+            background-color: var(--culturemesh-primary); /* Deep purple footer */
+            color: #E6D0E8;
+            padding: 2.5rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-top: auto;
+        }
+        footer p {
+            color: #E6D0E8;
+        }
+        footer p.opacity-70 {
+            color: #C2A4C5;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <header class="py-6 px-6 md:px-12 text-center shadow-lg">
+        <div class="container mx-auto">
+            <h1 class="font-extrabold tracking-tight">
+                ☯ FAA.ZONE™ CultureMesh Sector
+            </h1>
+            <p class="opacity-90 mt-2">Connecting Global Cultures, Digitally</p>
+            <nav class="mt-4">
+                <a href="https://ritual.seedwave.faa.zone/index" class="text-white hover:text-culturemesh-accent transition-colors mx-3 text-lg">&larr; Back to Main Index</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="py-16 md:py-24 text-center hero-section-with-canvas">
+        <canvas id="culturemesh-pulse-ant-canvas" class="hero-canvas-overlay"></canvas>
+
+        <div class="max-w-4xl mx-auto px-4 hero-content-z-2">
+            <h2 class="font-extrabold mb-6 gradient-heading leading-tight">
+                Unifying Global Cultural Data
+            </h2>
+            <p class="mb-8 max-w-2xl mx-auto">
+                CultureMesh provides the digital infrastructure to connect, preserve, and evolve diverse cultural expressions and traditions worldwide.
+            </p>
+            <a href="https://ritual.seedwave.faa.zone/sectors/culturemesh/dashboard.html" class="inline-block px-10 py-4 primary-btn font-bold rounded-full text-lg shadow-xl hover:shadow-2xl">
+                CultureMesh Dashboard
+            </a>
+            <a href="https://ritual.seedwave.faa.zone/sectors/culturemesh/subnodes/index.html" class="inline-block px-10 py-4 bg-culturemesh-secondary hover:bg-culturemesh-accent text-white font-bold rounded-full text-lg shadow-xl hover:shadow-2xl ml-4">
+                Explore Sub-Nodes <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="metadata-section">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center mb-8 text-culturemesh-dark-text">CultureMesh Overview Metrics</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="metadata-card">
+                    <p class="text-sm">Cultural Data Points</p>
+                    <p class="text-2xl font-bold text-culturemesh-primary">5.2M+</p>
+                </div>
+                <div class="metadata-card">
+                    <p class="text-sm">Community Engagement Rate</p>
+                    <p class="text-2xl font-bold text-culturemesh-primary">85%</p>
+                </div>
+                <div class="metadata-card">
+                    <p class="text-sm">Global Reach</p>
+                    <p class="text-2xl font-bold text-culturemesh-accent">180+ Countries</p>
+                </div>
+                <div class="metadata-card">
+                    <p class="text-sm">Integration Protocols</p>
+                    <p class="text-xl font-bold text-culturemesh-dark-text">CM-API v3.1</p>
+                </div>
+                <div class="metadata-card">
+                    <p class="text-sm">Heritage Nodes</p>
+                    <p class="text-xl font-bold text-culturemesh-dark-text">7500+</p>
+                </div>
+                <div class="metadata-card">
+                    <p class="text-sm">Interoperability Score</p>
+                    <p class="text-xl font-bold text-culturemesh-dark-text">9.2/10</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sector-brands">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12 text-culturemesh-dark-text">CultureMesh Core Brands & Sub-Nodes</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                CultureMesh and its associated brands and sub-nodes facilitate the digital connection and preservation of global cultural heritage.
+            </p>
+            <div id="culturemesh-brands-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <section id="global-cultural-entities" class="mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12 text-culturemesh-dark-text">Global Cultural Hubs & Entities</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                Recognizing countries, provinces, and municipalities that embody the principles of Innovate, Connect, and Thrive in their cultural landscapes.
+            </p>
+            <div id="global-entities-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+        </div>
+    </section>
+
+    <section id="sa-provinces-overview" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">South Africa: The Rainbow Nation's Cultural & Economic Landscape</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                Explore the vibrant diversity of South Africa's 9 provinces, their unique cultures, languages, economic drivers, and rich heritage. Click on a province to view its detailed "spiderweb" of municipalities.
+            </p>
+            <div id="sa-provinces-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- South African Province cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <section id="traditional-wear-rituals" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">Traditional Wear & Cultural Practices Across Southern Africa</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                Exploring the rich tapestry of traditional attire and rituals across Southern Africa, embodying heritage, community, and resilience. This includes the diverse cultures within South Africa, alongside our neighbors Lesotho, Eswatini (Swaziland), Botswana, Zimbabwe, and Namibia.
+            </p>
+            <div id="traditional-wear-container" class="grid grid-cols-1 gap-12">
+                </div>
+        </div>
+    </section>
+
+    <section id="cultural-brand-dna" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">Brand DNA for Cultural Brands</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                A strong cultural brand connects deeply. It's built on what it does, how it makes people feel, what it represents, and its true purpose.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="cultural-attribute-card">
+                    <h4>Functional</h4>
+                    <p>What the cultural product or service *does*. (e.g., Authentic craft quality, clear ritual steps, reliable digital platform for heritage.)</p>
+                </div>
+                <div class="cultural-attribute-card">
+                    <h4>Emotional</h4>
+                    <p>How it makes people *feel*. (e.g., Sense of belonging, pride in heritage, spiritual connection, joy from shared experience.)</p>
+                </div>
+                <div class="cultural-attribute-card">
+                    <h4>Symbolic</h4>
+                    <p>What it *represents*. (e.g., Ancestral connection, cultural identity, status, a link to tradition.)</p>
+                </div>
+                <div class="cultural-attribute-card">
+                    <h4>Ethical / Purpose-Driven</h4>
+                    <p>Its *true values* and *impact*. (e.g., Fair trade for artisans, sustainable practices, preserving endangered languages, community empowerment.)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cultural-market-dynamics" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">Market Dynamics in the Cultural Sector</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                Understanding the unique forces that shape how cultural products and experiences are shared and valued.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="market-dynamic-card">
+                    <h4>Market Structure</h4>
+                    <p>Often <strong>fragmented</strong> with many small artisans and community groups. Also includes larger cultural institutions and emerging digital platforms.</p>
+                </div>
+                <div class="market-dynamic-card">
+                    <h4>Key Players</h4>
+                    <p><strong>Traditional Artisans, Community Elders, Cultural Institutions</strong> (museums, heritage sites), <strong>Digital Platforms</strong> (online marketplaces, heritage apps), <strong>Cultural Tourism Operators</strong>.</p>
+                </div>
+                <div class="market-dynamic-card">
+                    <h4>Competitive Factors</h4>
+                    <p><strong>Authenticity, Craftsmanship, Storytelling, Community Engagement, Accessibility</strong> (digital reach), <strong>Ethical Sourcing</strong>, and ability to adapt tradition for new audiences.</p>
+                </div>
+                <div class="market-dynamic-card">
+                    <h4>Dominant Trends</h4>
+                    <p><strong>Digitalization of Heritage</strong>, rise of <strong>Ethical Consumption</strong>, demand for <strong>Authentic Experiences</strong>, growth of <strong>Cultural Tourism</strong>, and increasing focus on <strong>Intellectual Property Rights</strong> for traditional knowledge.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="strategic-cultural-alignment" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">Strategic Alignment: Building Our Cultural Future</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                For FAA.ZONE™ to truly succeed, our vision must connect with how we manage our cultural projects and support our teams. This ensures everything works together.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="pam-concept-card">
+                    <h4>Our Big Plan (Business Strategy)</h4>
+                    <p>What FAA.ZONE™ wants to achieve for culture (e.g., preserve heritage, empower artisans).</p>
+                </div>
+                <div class="flex items-center justify-center pam-arrow hidden sm:flex"><i class="fas fa-arrow-right"></i></div>
+                <div class="flex items-center justify-center pam-arrow sm:hidden"><i class="fas fa-arrow-down"></i></div>
+                <div class="pam-concept-card">
+                    <h4>Our Project Way (Portfolio Strategy)</h4>
+                    <p>How we choose, manage, and review cultural projects (e.g., CultureMesh, TraditionVault).</p>
+                </div>
+                <div class="flex items-center justify-center pam-arrow hidden lg:flex"><i class="fas fa-arrow-right"></i></div>
+                <div class="flex items-center justify-center pam-arrow sm:hidden lg:hidden"><i class="fas fa-arrow-down"></i></div>
+                <div class="pam-concept-card">
+                    <h4>Our Team & Culture (Business Organization)</h4>
+                    <p>How FAA.ZONE™'s people, values, and tools support our cultural mission.</p>
+                </div>
+                <div class="flex items-center justify-center pam-arrow hidden sm:flex"><i class="fas fa-arrow-right"></i></div>
+                <div class="flex items-center justify-center pam-arrow sm:hidden"><i class="fas fa-arrow-down"></i></div>
+                <div class="pam-concept-card">
+                    <h4>Our Project Tools (Portfolio Organization)</h4>
+                    <p>The systems, methods, and skills used to run our cultural projects smoothly.</p>
+                </div>
+            </div>
+            <p class="text-center text-sm mt-8 max-w-xl mx-auto">
+                When these four parts work together, we achieve a **Holistic Fit**, ensuring our efforts truly **Innovate, Connect, and Thrive**.
+            </p>
+        </div>
+    </section>
+
+    <section id="lessons-aligned-brands" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">Lessons from Aligned Cultural Brands</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                Looking at successful brands shows us how to build trust, connect with people, and make a real impact in the cultural space.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="lesson-card">
+                    <h4>Purpose First: The Patagonia Way</h4>
+                    <p><strong>Lesson:</strong> When your core purpose (like preserving a tradition) is stronger than just making money, people trust you deeply. Be clear about *why* you do what you do.</p>
+                    <p class="text-sm mt-2">Example: A traditional weaving collective that prioritizes sustainable practices and fair wages for weavers, even if it means higher costs.</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Human Stories: Like BlackRock's Approach</h4>
+                    <p><strong>Lesson:</strong> Make complex cultural history or practices easy to understand by sharing real stories of people. Connect on a human level.</p>
+                    <p class="text-sm mt-2">Example: A digital archive that shares short videos of elders explaining rituals, rather than just written texts.</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Focus Your Message: BBH's Niche Success</h4>
+                    <p><strong>Lesson:</strong> Don't try to reach everyone. Find a specific group who cares deeply about your cultural offering and speak directly to them.</p>
+                    <p class="text-sm mt-2">Example: An online platform specializing only in rare Southern African traditional musical instruments and their history.</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Tech for Tradition: Forward Health's Vision</h4>
+                    <p><strong>Lesson:</strong> Use modern technology to make traditional practices more accessible and relevant, without losing their essence.</p>
+                    <p class="text-sm mt-2">Example: An app that teaches traditional dance steps through interactive video lessons and augmented reality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sa-sector-landscape" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <h3 class="text-4xl md:text-5xl font-extrabold text-center mb-12">South Africa's Economic Heartbeat: Sectors & Local Impact</h3>
+            <p class="text-center text-lg mb-10 max-w-3xl mx-auto">
+                South Africa has many important economic sectors. These sectors are deeply connected to our local areas (municipalities), forming a "spiderweb" of activity that helps our nation grow.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="sa-sector-card">
+                    <h4>Mining ⛏️</h4>
+                    <p>Extracting valuable resources like gold, platinum, and coal. This sector often thrives in municipalities rich in natural resources, providing jobs and driving local economies.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Drives infrastructure, employment in specific regions.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Agriculture 🚜</h4>
+                    <p>Farming, livestock, and food production. Found in rural municipalities, it's vital for food security and supports many local communities and small businesses.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Food supply, rural employment, land use.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Tourism 🌍</h4>
+                    <p>Attracting visitors to our beautiful landscapes, wildlife, and heritage sites. Key in coastal, wildlife, and culturally rich municipalities, bringing in income and supporting local crafts and services.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Job creation, cultural exchange, local business growth.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Manufacturing 🏭</h4>
+                    <p>Producing goods from raw materials. Concentrated in industrial hubs and larger urban municipalities, creating diverse employment opportunities.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Industrial development, urban employment.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Financial Services 🏦</h4>
+                    <p>Banking, insurance, and investment. Primarily based in major metropolitan municipalities, it's the engine of the national economy and business growth.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Economic stability, business funding, urban development.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Retail & Trade 🛍️</h4>
+                    <p>Buying and selling goods. Present in every municipality, from large shopping malls in cities to local shops in villages, serving daily consumer needs.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Consumer access, local commerce, diverse employment.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Technology & Innovation 💡</h4>
+                    <p>Developing new digital tools and solutions. Growing rapidly in metropolitan areas and some secondary cities, driving modern economic growth and new types of jobs.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Digital transformation, future job creation.</p>
+                </div>
+                <div class="sa-sector-card">
+                    <h4>Ritual & Culture 🎭</h4>
+                    <p>Preserving traditions, arts, and community practices. Found in every municipality, it connects people, celebrates heritage, and supports local artisans and cultural events.</p>
+                    <p class="text-sm mt-2"><strong>Impact:</strong> Community cohesion, heritage preservation, cultural entrepreneurship.</p>
+                </div>
+            </div>
+            <p class="text-center text-sm mt-8 max-w-xl mx-auto">
+                These sectors, like a **spiderweb**, are interconnected and rely on the unique strengths of our municipalities to grow and **Thrive** across the nation.
+            </p>
+        </div>
+    </section>
+
+    <section id="vendor-artisan-hub" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h3 class="text-4xl md:text-5xl font-extrabold mb-12">Local Artisan & Municipality Hub</h3>
+            <p class="text-lg mb-8 max-w-3xl mx-auto">
+                Your digital marketplace for traditional wear and handmade goods. Connect, showcase, and thrive!
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="dashboard-stat-card">
+                    <div class="value" id="total-vendors">0</div>
+                    <div class="label">Total Vendors</div>
+                </div>
+                <div class="dashboard-stat-card">
+                    <div class="value" id="products-listed">0</div>
+                    <div class="label">Products Listed</div>
+                </div>
+                <div class="dashboard-stat-card">
+                    <div class="value" id="municipal-partners">0</div>
+                    <div class="label">Municipal Partners</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
+                <div class="dashboard-card-concept p-6">
+                    <h4 class="mb-4">My Products: Showcase Your Craft</h4>
+                    <div id="vendor-products-showcase" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        </div>
+                    <button class="view-btn w-full text-center py-2 bg-[var(--traditional-highlight)] text-white rounded-lg font-semibold hover:bg-[#c78c4e] transition-colors">
+                        Add New Product <i class="fas fa-plus ml-2"></i>
+                    </button>
+                </div>
+                <div class="dashboard-card-concept p-6">
+                    <h4 class="mb-4">Opportunities: Connect & Grow</h4>
+                    <div id="municipal-opportunities-list" class="space-y-4 mb-4">
+                        </div>
+                    <button class="view-btn w-full text-center py-2 bg-[var(--culturemesh-accent)] text-white rounded-lg font-semibold hover:bg-[#DDAA00] transition-colors">
+                        View All Opportunities <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p class="mt-10 text-md max-w-2xl mx-auto">
+                This hub aims to **Innovate** by digitizing traditional markets, **Connect** vendors with corporate opportunities and communities, and enable local economies to **Thrive** through cultural entrepreneurship.
+            </p>
+        </div>
+    </section>
+
+
+    <footer class="footer-bg text-center py-8 mt-12">
+        <div class="container mx-auto px-6">
+            <p class="text-sm">© 2025 FAA.ZONE™. All rights reserved.</p>
+            <p class="text-xs opacity-70 mt-2">ScrollGrid · PulseTrade Certified · TreatyMesh Validated</p>
+            <div class="mt-4 space-x-4">
+                <a href="https://ritual.seedwave.faa.zone/privacy" class="text-white hover:text-culturemesh-accent text-xs">Privacy</a>
+                <a href="https://ritual.seedwave.faa.zone/terms" class="text-white hover:text-culturemesh-accent text-xs">Terms</a>
+                <a href="https://ritual.seedwave.faa.zone/contact" class="text-white hover:text-culturemesh-accent text-xs">Contact</a>
+                <a href="https://ritual.seedwave.faa.zone/copyright" class="text-white hover:text-culturemesh-accent text-xs">Copyright</a>
+                <a href="https://ritual.seedwave.faa.zone/developers" class="text-white hover:text-culturemesh-accent text-xs">Developers</a>
+                <a href="https://ritual.seedwave.faa.zone/vaultmesh" class="text-white hover:text-culturemesh-accent text-xs">VaultMesh</a>
+                <a href="https://ritual.seedwave.faa.zone/fruitful" class="text-white hover:text-culturemesh-accent text-xs">Fruitful</a>
+                <a href="https://ritual.seedwave.faa.zone/faa.zone" class="text-white hover:text-culturemesh-accent text-xs">FAA.ZONE</a>
+                <a href="https://ritual.seedwave.faa.zone/about" class="text-white hover:text-culturemesh-accent text-xs">About</a>
+                <a href="https://ritual.seedwave.faa.zone/accessibility" class="text-white hover:text-culturemesh-accent text-xs">Accessibility</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Structure for Province Details -->
+    <div id="province-modal-overlay" class="modal-overlay">
+        <div id="province-modal-content" class="modal-content">
+            <button class="modal-close-btn" onclick="closeProvinceModal()"><i class="fas fa-times"></i></button>
+            <h4 id="modal-province-name"></h4>
+            <div id="modal-province-details" class="text-left text-gray-700 text-base space-y-2 mb-6"></div>
+            <div id="modal-municipalities-list" class="municipality-list"></div>
+        </div>
+    </div>
+
+    <script>
+        class RitualParticle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.reset();
+                this.baseSize = Math.random() * 1.5 + 0.5;
+                this.pulseSpeed = Math.random() * 0.05 + 0.02;
+                this.colorIndex = Math.floor(Math.random() * 3); /* Only 3 colors for CultureMesh palette */
+                this.colors = ['#A820A3', '#F4D03F', '#6A0572']; /* CultureMesh colors */
+            }
+
+            reset() {
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.alpha = 0;
+                this.targetAlpha = Math.random() * 0.6 + 0.3;
+                this.fadeInSpeed = 0.01;
+                this.lifespan = Math.random() * 300 + 200;
+                this.age = 0;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.age++;
+
+                if (this.alpha < this.targetAlpha) {
+                    this.alpha += this.fadeInSpeed;
+                } else {
+                    if (this.age > this.lifespan * 0.7) {
+                        this.alpha -= 0.005;
+                    }
+                }
+
+                if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
+
+                const currentPulseSize = this.baseSize * (1 + Math.sin(this.age * this.pulseSpeed) * 0.5);
+
+                if (this.alpha <= 0 || this.age > this.lifespan) {
+                    this.reset();
+                }
+
+                return currentPulseSize;
+            }
+
+            draw(currentSize) {
+                this.ctx.save();
+                this.ctx.globalAlpha = this.alpha;
+                this.ctx.fillStyle = this.colors[this.colorIndex];
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, currentSize, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.restore();
+            }
+        }
+
+        const ritualPulseCanvas = {
+            canvas: null,
+            ctx: null,
+            particles: [],
+            animationFrameId: null,
+            numParticles: 150
+        };
+
+        function initRitualPulseAnt(canvasId) {
+            ritualPulseCanvas.canvas = document.getElementById(canvasId);
+            if (ritualPulseCanvas.canvas) {
+                ritualPulseCanvas.ctx = ritualPulseCanvas.canvas.getContext('2d');
+                ritualPulseCanvas.canvas.width = ritualPulseCanvas.canvas.offsetWidth;
+                ritualPulseCanvas.canvas.height = ritualPulseCanvas.canvas.offsetHeight;
+
+                for (let i = 0; i < ritualPulseCanvas.numParticles; i++) {
+                    ritualPulseCanvas.particles.push(new RitualParticle(ritualPulseCanvas.canvas));
+                }
+
+                startRitualPulseAnimation();
+            }
+        }
+
+        function startRitualPulseAnimation() {
+            if (!ritualPulseCanvas.ctx) return;
+            ritualPulseCanvas.ctx.clearRect(0, 0, ritualPulseCanvas.canvas.width, ritualPulseCanvas.canvas.height);
+
+            for (let i = 0; i < ritualPulseCanvas.particles.length; i++) {
+                const particle = ritualPulseCanvas.particles[i];
+                const currentSize = particle.update();
+                particle.draw(currentSize);
+            }
+
+            ritualPulseCanvas.animationFrameId = requestAnimationFrame(startRitualPulseAnimation);
+        }
+
+        window.addEventListener('resize', () => {
+            if (ritualPulseCanvas.canvas) {
+                ritualPulseCanvas.canvas.width = ritualPulseCanvas.canvas.offsetWidth;
+                ritualPulseCanvas.canvas.height = ritualPulseCanvas.canvas.offsetHeight;
+                ritualPulseCanvas.particles = [];
+                for (let i = 0; i < ritualPulseCanvas.numParticles; i++) {
+                    ritualPulseCanvas.particles.push(new RitualParticle(ritualPulseCanvas.canvas));
+                }
+            }
+        });
+
+        const ritualCultureBrands = [
+            { name: 'RiteNest™', description: 'A core protocol enabling secure digital interfaces for traditional practices within the Ritual & Culture sector.', route: 'ritenest-dashboard.html' },
+            { name: 'CultureMesh', description: 'A brand focused on connecting diverse cultural expressions and traditions through a unified digital platform.', route: 'sectors/culturemesh/index.html' },
+            { name: 'LinguaLink™', description: 'Connects language learners with native speakers for authentic cultural exchange.', route: 'sectors/lingualink/index.html' },
+            { name: 'ArtisanBridge™', description: 'A platform to connect traditional artisans with global markets, preserving craft heritage.', route: 'sectors/artisanbridge/index.html' },
+            { name: 'HeritageFlow™', description: 'Streamlines the digital archiving and interactive presentation of cultural narratives.', route: 'sectors/heritageflow/index.html' },
+            { name: 'RitualConnect™', description: 'Facilitates virtual participation and understanding of global rituals and ceremonies.', route: 'sectors/ritualconnect/index.html' },
+            { name: 'GlobalTasteMap™', description: 'An interactive guide to traditional cuisines and their cultural origins.', route: 'sectors/globaltastemap/index.html' },
+            { name: 'PulseSpirit™', description: 'Focuses on the energetic and spiritual dimensions of rituals, offering protocols for digital resonance.', route: 'sectors/pulsespirit/index.html' },
+            { name: 'ClanScroll™', description: 'Dedicated to the digital preservation and management of ancestral records and lineage history.', route: 'sectors/clanscroll/index.html' },
+            { name: 'MythLoop™', description: 'Specializes in the digital storytelling and reinterpretation of myths and folklore for contemporary audiences.', route: 'sectors/mythloop/index.html' },
+            { name: 'AuraDrop™', description: 'A platform for tokenizing and sharing unique cultural expressions and digital artifacts.', route: 'sectors/auradrop/index.html' },
+            { name: 'CeremPath™', description: 'Offers guided digital pathways and tools for learning and participating in various ceremonial practices.', route: 'sectors/cerempath/index.html' },
+            { name: 'EchoGlyph™', description: 'Focuses on the digital reconstruction and interactive display of ancient symbols and cultural markings.', route: 'sectors/echoglyph/index.html' },
+            { name: 'TradVault™', description: 'A secure digital vault for storing and authenticating traditional knowledge and practices.', route: 'sectors/tradvault/index.html' },
+            { name: 'LineageClaim™', description: 'Enables individuals to digitally verify and assert their connection to specific cultural lineages or traditions.', route: 'sectors/lineageclaim/index.html' },
+            { name: 'SymbolMap™', description: 'An interactive mapping tool for exploring the geographical distribution and cultural significance of symbols.', route: 'sectors/symbolmap/index.html' },
+            { name: 'AncestorSync™', description: 'Synchronizes personal data with historical records to help individuals connect with their ancestral heritage.', route: 'sectors/ancestorsync/index.html' },
+            { name: 'SoulPanel™', description: 'A personalized dashboard for tracking and engaging with one\'s spiritual and cultural development.', route: 'sectors/soulpanel/index.html' },
+            { name: 'ClanRoot™', description: 'A digital platform for connecting members of a specific clan or tribal group, fostering community.', route: 'sectors/clanroot/index.html' },
+            { name: 'EchoRitual™', description: 'Facilitates the digital re-enactment and immersive experience of historical rituals.', route: 'sectors/echoritual/index.html' },
+            { name: 'TotemCast™', description: 'Enables the creation and sharing of digital totems and symbolic representations of cultural identity.', route: 'sectors/totemcast/index.html' },
+            { name: 'RiteClaim™', description: 'A protocol for digitally registering and protecting unique cultural rites and intellectual property.', route: 'sectors/riteclaim/index.html' },
+            { name: 'GlyphVault™', description: 'A secure repository for digitized glyphs, ancient texts, and symbolic languages.', route: 'sectors/glyphvault/index.html' },
+            { name: 'CultureNest™', description: 'A community-driven platform for sharing and nurturing local cultural initiatives and projects.', route: 'sectors/culturenest/index.html' },
+            { name: 'SpiritBeam™', description: 'Utilizes light and sound protocols to create immersive digital environments for spiritual contemplation.', route: 'sectors/spiritbeam/index.html' },
+            { name: 'Airbnb Experiences', description: 'Digitizes local cultural experiences, connecting travelers with authentic local life.', route: 'sectors/airbnb-experiences/index.html' },
+            { name: 'Headspace / Calm', description: 'Modernizes mindfulness and meditation through accessible digital platforms.', route: 'sectors/headspace-calm/index.html' },
+            { name: 'Etsy (Handmade/Vintage)', description: 'Provides a global platform for artisans and vintage sellers, preserving traditional crafts and unique goods.', route: 'sectors/etsy/index.html' },
+            { name: 'TED (Conferences/TEDx)', description: 'Disseminates "ideas worth spreading" globally, fostering intellectual curiosity and cross-disciplinary understanding.', route: 'sectors/ted/index.html' },
+            { name: 'Local Harvest', description: 'A digital platform connecting consumers directly with local farmers and sustainable food sources.', route: 'sectors/local-harvest/index.html' },
+            { name: 'Ancestry.com', description: 'A leading online platform for genealogical research and DNA testing, helping individuals discover their family history.', route: 'sectors/ancestry-com/index.html' },
+            { name: 'Duolingo', description: 'A popular language-learning app that makes education accessible and engaging through gamification.', route: 'sectors/duolingo/index.html' },
+            { name: 'Slow Food Movement', description: 'A global grassroots organization promoting local food and traditional cooking, countering fast food culture.', route: 'sectors/slow-food-movement/index.html' }
+        ];
+
+        const ritualCultureSubNodes = {
+            'RiteNest™': ['TotemTrack', 'VaultSpirit', 'GlyphTag', 'ScrollLoop'], // These are generic sub-nodes, not part of the ecosystem map for specific routes
+            'CultureMesh': [
+                { name: 'TraditionVault', route: 'sectors/culturemesh/traditionvault/index.html' },
+                { name: 'EthnoSync', route: 'sectors/culturemesh/ethnosync/index.html' }
+            ],
+            'LinguaLink™': ['LanguageExchange', 'CulturalDialogue'],
+            'ArtisanBridge™': ['CraftMarketplace', 'SkillPreservation'],
+            'HeritageFlow™': ['DigitalArchiving', 'NarrativeMapping'],
+            'RitualConnect™': ['VirtualCeremonies', 'GuidedPractices'],
+            'GlobalTasteMap™': ['CulinaryHeritage', 'RecipeExchange'],
+            'PulseSpirit™': ['ClanPath', 'EchoTotem', 'PulseMyth', 'ScrollClaim'],
+            'ClanScroll™': ['CultureCast', 'VaultClaim', 'RiteMark', 'TradEcho'],
+            'CultureGrid™': ['LoopTotem', 'ClaimClan', 'VaultGlyph', 'SymbolTrack'],
+            'MythLoop™': ['MythDrop', 'EchoPath', 'ScrollProof', 'RitualGrid'],
+            'AuraDrop™': ['AuraTrack', 'VaultCast', 'TotemPanel', 'GlyphEcho'],
+            'CeremPath™': ['CeremSync', 'ClaimRite', 'ScrollVault', 'TotemBeam'],
+            'EchoGlyph™': ['GlyphSync', 'SpiritClaim', 'VaultMyth', 'EchoClan'],
+            'TradVault™': ['TradPanel', 'LoopClaim', 'MythTrack', 'VaultCulture'],
+            'LineageClaim™': ['LineagePath', 'VaultTag', 'EchoGlyph', 'ScrollCast'],
+            'SymbolMap™': ['SymbolMap', 'VaultScroll', 'TotemMap', 'ClanNest'],
+            'AncestorSync™': ['AncestorTag', 'VaultLoop', 'ClaimTotem', 'SpiritRoot'],
+            'SoulPanel™': ['EchoRitualX', 'ClaimPanel', 'VaultTotem', 'CultureSync'],
+            'ClanRoot™': ['TotemEcho', 'LoopGlyph', 'VaultClaimX', 'SymbolProof'],
+            'EchoRitual™': ['ClaimCulture', 'VaultTrad', 'SpiritSync', 'EchoCast'],
+            'TotemCast™': ['GlyphVaultX', 'ScrollTag', 'CultureDrop', 'TotemRoot'],
+            'RiteClaim™': ['NestSpirit', 'PulseClaim', 'VaultEchoX', 'MythPath'],
+            'GlyphVault™': ['BeamLoop', 'VaultSymbol', 'ScrollRite', 'ClanBeam'],
+            'CultureNest™': ['CommunityHub', 'LocalTraditions', 'HeritageProjects'],
+            'SpiritBeam™': ['LightProtocols', 'SoundTherapy', 'ImmersiveEnvironments'],
+            'Airbnb Experiences': ['LocalHostConnect', 'CulturalImmersion', 'ExperienceBooking'],
+            'Headspace / Calm': ['GuidedMeditation', 'SleepStories', 'MindfulnessPrograms'],
+            'Etsy (Handmade/Vintage)': ['ArtisanMarketplace', 'VintageFinds', 'CraftingCommunity'],
+            'TED (Conferences/TEDx)': ['IdeaSharing', 'SpeakerNetwork', 'GlobalAudience'],
+            'Local Harvest': ['FarmDirect', 'CSAConnect', 'MarketLink'],
+            'Ancestry.com': ['DNAExplore', 'FamilyTreeBuilder', 'HistoricalRecords'],
+            'Duolingo': ['LanguageCourses', 'GamifiedLessons', 'PracticeCommunity'],
+            'Slow Food Movement': ['ArkOfTaste', 'FoodCommunities', 'TerraMadre']
+        };
+
+
+        const globalCulturalEntities = [
+            { name: 'Japan', type: 'Country', description: 'A nation known for its profound blend of ancient traditions and cutting-edge innovation, fostering social harmony and cultural resilience.' },
+            { name: 'Bhutan', type: 'Country', description: 'The Kingdom of Bhutan, pioneering Gross National Happiness, emphasizes holistic well-being, sustainable tourism, and deep-rooted Buddhist traditions.' },
+            { name: 'Kyoto, Japan', type: 'City', description: 'A historical city that beautifully preserves traditional arts and crafts while embracing modern design and smart city initiatives.' },
+            { name: 'Provence-Alpes-Côte d\'Azur, France', type: 'Region', description: 'A region celebrated for its vibrant local markets, gastronomic heritage, and strong regional identity, fostering a high quality of life.' },
+            { name: 'Cape Town, South Africa', type: 'City', description: 'A dynamic urban center recognized for its diverse cultural communities, vibrant arts scene, and emerging tech and design innovation.' },
+            { name: 'Burning Man (Black Rock City, USA)', type: 'Event/Community', description: 'An annual event dedicated to community, art, self-expression, and self-reliance, creating a temporary city in the desert.' }
+        ];
+
+        // Corrected and expanded South African Provinces Data
+        const saProvincesData = [
+            {
+                name: "Eastern Cape",
+                capital: "Bhisho",
+                keyCultures: ["Xhosa", "Sotho", "Mfengu", "Khoisan", "Coloured", "English South Africans", "Afrikaans", "Zulu", "Ndebele", "Indian South Africans"],
+                keyLanguages: ["isiXhosa", "Afrikaans", "English", "Sesotho", "isiZulu", "isiNdebele"],
+                majorSectors: ["Agriculture (citrus, pineapples, dairy)", "Tourism (Wild Coast, Addo Elephant National Park)", "Manufacturing (automotive, textiles)", "Fisheries"],
+                localTradeFocus: "Crafts, traditional wear, fresh produce, seafood, informal trading.",
+                artsCultureHighlights: "National Arts Festival (Makhanda), Xhosa traditional music and dance, storytelling, Nelson Mandela heritage sites.",
+                sportsHighlights: "Rugby (Eastern Province Elephants, Border Bulldogs), Cricket (Warriors), surfing (Jeffreys Bay), athletics.",
+                municipalities: {
+                    metropolitan: ["Buffalo City Metropolitan Municipality", "Nelson Mandela Bay Metropolitan Municipality"],
+                    district: [
+                        { name: "Alfred Nzo District Municipality", locals: ["Matatiele Local Municipality", "Mbizana Local Municipality", "Ntabankulu Local Municipality", "Umzimvubu Local Municipality"] },
+                        { name: "Amathole District Municipality", locals: ["Amahlathi Local Municipality", "Great Kei Local Municipality", "Mnquma Local Municipality", "Ngqushwa Local Municipality", "Raymond Mhlaba Local Municipality"] },
+                        { name: "Chris Hani District Municipality", locals: ["Emalahleni Local Municipality", "Engcobo Local Municipality", "Inxuba Yethemba Local Municipality", "Intsika Yethu Local Municipality", "Lukenji Local Municipality", "Sakhisizwe Local Municipality", "Enoch Mgijima Local Municipality"] },
+                        { name: "Joe Gqabi District Municipality", locals: ["Elundini Local Municipality", "Senqu Local Municipality", "Walter Sisulu Local Municipality"] },
+                        { name: "OR Tambo District Municipality", locals: ["Ingquza Hill Local Municipality", "King Sabata Dalindyebo Local Municipality", "Mhlontlo Local Municipality", "Nyandeni Local Municipality", "Port St Johns Local Municipality"] },
+                        { name: "Sarah Baartman District Municipality", locals: ["Dr Beyers Naudé Local Municipality", "Blue Crane Route Local Municipality", "Kouga Local Municipality", "Koukamma Local Municipality", "Makana Local Municipality", "Ndlambe Local Municipality", "Sundays River Valley Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "Free State",
+                capital: "Bloemfontein",
+                keyCultures: ["Sotho", "Tswana", "Afrikaans", "Zulu", "Xhosa", "Coloured", "English South Africans", "Ndebele"],
+                keyLanguages: ["Sesotho", "Afrikaans", "isiXhosa", "isiZulu", "Setswana", "English", "isiNdebele"],
+                majorSectors: ["Agriculture (maize, wheat, sunflowers, dairy)", "Mining (gold, diamonds)", "Manufacturing (petrochemicals in Sasolburg)"],
+                localTradeFocus: "Agricultural products, traditional Sotho crafts (e.g., Basotho blankets), informal trade, small business services.",
+                artsCultureHighlights: "Macufe Festival (Mangaung African Cultural Festival), Sotho traditional music and dance, Basotho Cultural Village.",
+                sportsHighlights: "Rugby (Cheetahs), Football (Bloemfontein Celtic, Free State Stars), athletics, motorsport.",
+                municipalities: {
+                    metropolitan: ["Mangaung Metropolitan Municipality"],
+                    district: [
+                        { name: "Fezile Dabi District Municipality", locals: ["Metsimaholo Local Municipality", "Moqhaka Local Municipality", "Ngwathe Local Municipality", "Mafube Local Municipality"] },
+                        { name: "Lejweleputswa District Municipality", locals: ["Matjhabeng Local Municipality", "Nala Local Municipality", "Masilonyana Local Municipality", "Tokologo Local Municipality", "Tswelopele Local Municipality"] },
+                        { name: "Thabo Mofutsanyana District Municipality", locals: ["Setsoto Local Municipality", "Dihlabeng Local Municipality", "Maluti-a-Phofung Local Municipality", "Phumelela Local Municipality", "Nketoana Local Municipality"] },
+                        { name: "Xhariep District Municipality", locals: ["Mohokare Local Municipality", "Kopanong Local Municipality", "Letsemeng Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "Gauteng",
+                capital: "Johannesburg",
+                keyCultures: ["Zulu", "Sotho", "Tswana", "Pedi", "Tsonga", "Ndebele", "Afrikaans", "English South Africans", "Indian South Africans", "Coloured", "Venda"],
+                keyLanguages: ["isiZulu", "Sesotho", "Setswana", "Sepedi", "Xitsonga", "isiNdebele", "Afrikaans", "English", "Tshivenda", "isiXhosa"],
+                majorSectors: ["Financial Services", "Manufacturing", "Mining (gold, platinum)", "Technology & Innovation", "Retail & Trade", "Logistics", "Automotive"],
+                localTradeFocus: "Diverse retail, fashion (including streetwear), informal trade, technology services, arts and crafts markets, food markets.",
+                artsCultureHighlights: "Johannesburg Art Fair, Soweto Theatre, Maboneng Precinct, vibrant music and dance scenes, Cradle of HumanKind (UNESCO site).",
+                sportsHighlights: "Football (Kaizer Chiefs, Orlando Pirates, Mamelodi Sundowns), Rugby (Lions, Bulls), Cricket (Highveld Lions), FNB Stadium, Ellis Park Stadium.",
+                municipalities: {
+                    metropolitan: ["City of Johannesburg Metropolitan Municipality", "City of Tshwane Metropolitan Municipality", "Ekurhuleni Metropolitan Municipality"],
+                    district: [
+                        { name: "Sedibeng District Municipality", locals: ["Emfuleni Local Municipality", "Lesedi Local Municipality", "Midvaal Local Municipality"] },
+                        { name: "West Rand District Municipality", locals: ["Mogale City Local Municipality", "Merafong City Local Municipality", "Rand West City Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "KwaZulu-Natal",
+                capital: "Pietermaritzburg",
+                keyCultures: ["Zulu", "Indian South Africans", "Coloured", "English South Africans", "Xhosa", "Ndebele", "Sotho"],
+                keyLanguages: ["isiZulu", "English", "isiXhosa", "Afrikaans", "Sesotho", "Tamil", "Hindi", "Urdu"],
+                majorSectors: ["Tourism (beaches, wildlife, Drakensberg)", "Manufacturing (automotive, textiles, chemicals)", "Agriculture (sugar cane, timber)", "Logistics (Durban Port)"],
+                localTradeFocus: "Zulu crafts (beadwork, pottery), Indian spices and textiles, coastal tourism services, fresh produce, informal markets.",
+                artsCultureHighlights: "Zulu Reed Dance (Umhlanga), Durban International Film Festival, Indian classical dance and music, Shaka Zulu heritage sites.",
+                sportsHighlights: "Rugby (Sharks), Football (AmaZulu FC, Golden Arrows), Cricket (Dolphins), surfing, Comrades Marathon.",
+                municipalities: {
+                    metropolitan: ["eThekwini Metropolitan Municipality"],
+                    district: [
+                        { name: "Harry Gwala District Municipality", locals: ["Ubuhlebezwe Local Municipality", "Umzimkhulu Local Municipality", "Greater Kokstad Local Municipality", "Dr Nkosazana Dlamini Zuma Local Municipality"] },
+                        { name: "iLembe District Municipality", locals: ["Mandeni Local Municipality", "KwaDukuza Local Municipality", "Ndwedwe Local Municipality", "Maphumulo Local Municipality"] },
+                        { name: "Ugu District Municipality", locals: ["Ray Nkonyeni Local Municipality", "Umdoni Local Municipality", "Umzumbe Local Municipality"] },
+                        { name: "uMgungundlovu District Municipality", locals: ["Msunduzi Local Municipality", "Richmond Local Municipality", "Mshwathi Local Municipality", "Mpofana Local Municipality", "Impendle Local Municipality", "Umngeni Local Municipality"] },
+                        { name: "uMkhanyakude District Municipality", locals: ["Mtubatuba Local Municipality", "Big 5 Hlabisa Local Municipality", "Jozini Local Municipality", "Umhlabuyalingana Local Municipality"] },
+                        { name: "uMzinyathi District Municipality", locals: ["Msinga Local Municipality", "Nquthu Local Municipality", "Umvoti Local Municipality", "Endumeni Local Municipality"] },
+                        { name: "uThukela District Municipality", locals: ["Alfred Duma Local Municipality", "Inkosi Langalibalele Local Municipality", "Okhahlamba Local Municipality"] },
+                        { name: "King Cetshwayo District Municipality", locals: ["Umhlathuze Local Municipality", "Nkandla Local Municipality", "Mthonjaneni Local Municipality", "uMlalazi Local Municipality"] },
+                        { name: "Zululand District Municipality", locals: ["Abaqulusi Local Municipality", "Ulundi Local Municipality", "Nongoma Local Municipality", "Phongolo Local Municipality", "Umhlabuyalingana Local Municipality (shared with uMkhanyakude DM)"] }
+                    ]
+                }
+            },
+            {
+                name: "Limpopo",
+                capital: "Polokwane",
+                keyCultures: ["Pedi", "Tsonga", "Venda", "Ndebele", "Afrikaans", "English South Africans", "Sotho", "Zulu"],
+                keyLanguages: ["Sepedi", "Xitsonga", "Tshivenda", "isiNdebele", "Afrikaans", "English", "Sesotho", "isiZulu"],
+                majorSectors: ["Mining (platinum, coal, diamonds, chrome)", "Agriculture (fruits, nuts, vegetables)", "Tourism (Kruger National Park, Limpopo Valley, Waterberg Biosphere)"],
+                localTradeFocus: "Traditional Venda and Tsonga crafts, agricultural produce, wildlife tourism services, informal trade.",
+                artsCultureHighlights: "Venda traditional music (Tshikona), Pedi traditional dance, storytelling, Modjadji Cycad Forest.",
+                sportsHighlights: "Football (Baroka FC, Polokwane City), athletics, hunting and fishing.",
+                municipalities: {
+                    metropolitan: [],
+                    district: [
+                        { name: "Capricorn District Municipality", locals: ["Blouberg Local Municipality", "Lepelle-Nkumpi Local Municipality", "Polokwane Local Municipality", "Molemole Local Municipality"] },
+                        { name: "Mopani District Municipality", locals: ["Ba-Phalaborwa Local Municipality", "Greater Giyani Local Municipality", "Greater Letaba Local Municipality", "Greater Tzaneen Local Municipality", "Maruleng Local Municipality"] },
+                        { name: "Sekhukhune District Municipality", locals: ["Elias Motsoaledi Local Municipality", "Fetakgomo Tubatse Local Municipality", "Makhuduthamaga Local Municipality"] },
+                        { name: "Vhembe District Municipality", locals: ["Collins Chabane Local Municipality", "Makhado Local Municipality", "Musina Local Municipality", "Thulamela Local Municipality"] },
+                        { name: "Waterberg District Municipality", locals: ["Bela-Bela Local Municipality", "Lephalale Local Municipality", "Modimolle-Mookgophong Local Municipality", "Mogalakwena Local Municipality", "Thabazimbi Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "Mpumalanga",
+                capital: "Mbombela",
+                keyCultures: ["Swazi", "Ndebele", "Zulu", "Tsonga", "Pedi", "Afrikaans", "English South Africans", "Sotho"],
+                keyLanguages: ["Siswati", "isiNdebele", "isiZulu", "Xitsonga", "Sepedi", "Afrikaans", "English", "Sesotho"],
+                majorSectors: ["Mining (coal)", "Energy (power stations)", "Agriculture (forestry, citrus, vegetables)", "Tourism (Kruger National Park, Panorama Route, Blyde River Canyon)"],
+                localTradeFocus: "Swazi and Ndebele crafts, agricultural products, tourism services, informal trade, coal-related services.",
+                artsCultureHighlights: "Ndebele mural art, traditional Swazi ceremonies, cultural villages, historical sites (e.g., Barberton Makhonjwa Mountains).",
+                sportsHighlights: "Football (TS Galaxy), athletics, adventure sports (bungee jumping, white water rafting).",
+                municipalities: {
+                    metropolitan: [],
+                    district: [
+                        { name: "Ehlanzeni District Municipality", locals: ["Mbombela Local Municipality", "Nkomazi Local Municipality", "Bushbuckridge Local Municipality"] },
+                        { name: "Gert Sibande District Municipality", locals: ["Albert Luthuli Local Municipality", "Msukaligwa Local Municipality", "Lekwa Local Municipality", "Dipaleseng Local Municipality", "Govan Mbeki Local Municipality", "Mkhondo Local Municipality", "Pixley ka Seme Local Municipality"] },
+                        { name: "Nkangala District Municipality", locals: ["Victor Khanye Local Municipality", "Emalahleni Local Municipality", "Steve Tshwete Local Municipality", "Emakhazeni Local Municipality", "Thembisile Hani Local Municipality", "Dr JS Moroka Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "Northern Cape",
+                capital: "Kimberley",
+                keyCultures: ["Afrikaans", "Tswana", "Coloured", "Xhosa", "Sotho", "Khoisan", "English South Africans", "Nama"],
+                keyLanguages: ["Afrikaans", "Setswana", "isiXhosa", "Sesotho", "English", "Khoisan languages"],
+                majorSectors: ["Mining (diamonds, iron ore, manganese, copper)", "Agriculture (grapes, lucerne)", "Tourism (Namaqualand, Kgalagadi Transfrontier Park, Augrabies Falls)"],
+                localTradeFocus: "Mining support services, agricultural products, Khoisan crafts, tourism services, informal trade.",
+                artsCultureHighlights: "San rock art, Kimberley's Big Hole history, Nama cultural practices, Diamond Route.",
+                sportsHighlights: "Cricket (Northern Cape Heat), Rugby (Griquas), extreme sports (Orange River).",
+                municipalities: {
+                    metropolitan: [],
+                    district: [
+                        { name: "Frances Baard District Municipality", locals: ["Sol Plaatje Local Municipality", "Dikgatlong Local Municipality", "Phokwane Local Municipality", "Kgatelopele Local Municipality"] },
+                        { name: "John Taolo Gaetsewe District Municipality", locals: ["Gamagara Local Municipality", "Joe Morolong Local Municipality", "Ga-Segonyana Local Municipality"] },
+                        { name: "Namakwa District Municipality", locals: ["Richtersveld Local Municipality", "Nama Khoi Local Municipality", "Kamiesberg Local Municipality", "Hantam Local Municipality", "Khâi-Ma Local Municipality", "Karoo Hoogland Local Municipality"] },
+                        { name: "Pixley ka Seme District Municipality", locals: ["Ubuntu Local Municipality", "Emthanjeni Local Municipality", "Siyathemba Local Municipality", "Siyancuma Local Municipality", "Thembelihle Local Municipality", "Kai !Garib Local Municipality", "Tsantsabane Local Municipality", "Kareeberg Local Municipality"] },
+                        { name: "ZF Mgcawu District Municipality", locals: ["Dawid Kruiper Local Municipality", "Kai !Garib Local Municipality", "Tsantsabane Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "North West",
+                capital: "Mahikeng",
+                keyCultures: ["Tswana", "Sotho", "Afrikaans", "Zulu", "Xhosa", "English South Africans", "Ndebele"],
+                keyLanguages: ["Setswana", "Afrikaans", "Sesotho", "isiXhosa", "isiZulu", "English", "isiNdebele"],
+                majorSectors: ["Mining (platinum, chrome, gold)", "Agriculture (maize, sunflowers, cattle)", "Tourism (Pilanesberg National Park, Sun City)"],
+                localTradeFocus: "Mining support, agricultural products, Tswana crafts, tourism services, informal trade.",
+                artsCultureHighlights: "Traditional Tswana music and dance, cultural villages, Taung Skull Heritage Site.",
+                sportsHighlights: "Football (Platinum Stars), athletics, motorsport (Phakisa Freeway), golf.",
+                municipalities: {
+                    metropolitan: [],
+                    district: [
+                        { name: "Bojanala Platinum District Municipality", locals: ["Madibeng Local Municipality", "Rustenburg Local Municipality", "Kgetlengrivier Local Municipality", "Moses Kotane Local Municipality", "Moretele Local Municipality"] },
+                        { name: "Dr Kenneth Kaunda District Municipality", locals: ["City of Matlosana Local Municipality", "Maquassi Hills Local Municipality", "JB Marks Local Municipality"] },
+                        { name: "Dr Ruth Segomotsi Mompati District Municipality", locals: ["Greater Taung Local Municipality", "Kagisano-Molopo Local Municipality", "Naledi Local Municipality", "Mamusa Local Municipality", "Lekwa-Teemane Local Municipality"] },
+                        { name: "Ngaka Modiri Molema District Municipality", locals: ["Mahikeng Local Municipality", "Ditsobotla Local Municipality", "Ramotshere Moiloa Local Municipality", "Tswaing Local Municipality", "Ratlou Local Municipality"] }
+                    ]
+                }
+            },
+            {
+                name: "Western Cape",
+                capital: "Cape Town",
+                keyCultures: ["Coloured", "Afrikaans", "Xhosa", "English South Africans", "Khoisan", "Zulu", "Indian South Africans"],
+                keyLanguages: ["Afrikaans", "isiXhosa", "English", "isiZulu"],
+                majorSectors: ["Tourism (wine routes, beaches, Table Mountain)", "Financial Services", "Agriculture (wine, fruit, flowers)", "Technology & Innovation", "Retail", "Film & Media"],
+                localTradeFocus: "Wine, fresh produce, diverse crafts, fashion, tourism services, tech startups, informal trade.",
+                artsCultureHighlights: "Cape Town Art Fair, Cape Town International Jazz Festival, Bo-Kaap culture, theatre, District Six Museum, Riel Dance.",
+                sportsHighlights: "Rugby (Stormers), Football (Cape Town City FC, Stellenbosch FC), Cricket (Cape Cobras), surfing, cycling (Cape Argus Cycle Tour).",
+                municipalities: {
+                    metropolitan: ["City of Cape Town Metropolitan Municipality"],
+                    district: [
+                        { name: "Cape Winelands District Municipality", locals: ["Drakenstein Local Municipality", "Stellenbosch Local Municipality", "Breede Valley Local Municipality", "Witzenberg Local Municipality", "Langeberg Local Municipality"] },
+                        { name: "Central Karoo District Municipality", locals: ["Beaufort West Local Municipality", "Laingsburg Local Municipality", "Prince Albert Local Municipality"] },
+                        { name: "Garden Route District Municipality", locals: ["George Local Municipality", "Knysna Local Municipality", "Mossel Bay Local Municipality", "Oudtshoorn Local Municipality", "Plettenberg Bay Local Municipality", "Hessequa Local Municipality", "Kannaland Local Municipality"] },
+                        { name: "Overberg District Municipality", locals: ["Overstrand Local Municipality", "Cape Agulhas Local Municipality", "Theewaterskloof Local Municipality", "Swellendam Local Municipality"] },
+                        { name: "West Coast District Municipality", locals: ["Bergrivier Local Municipality", "Cederberg Local Municipality", "Matzikama Local Municipality", "Saldanha Bay Local Municipality", "Swartland Local Municipality"] }
+                    ]
+                }
+            }
+        ];
+
+        // Corrected and expanded Traditional Wear & Rituals Data
+        const traditionalWearData = [
+            {
+                country: "South Africa",
+                provinces: ["Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape"],
+                ethnicGroups: [
+                    {
+                        name: "Zulu",
+                        wear: "Isicholo (hats for married women), umqhele (headbands), ibeshu (loincloths), isiphandla (bracelets), amabeads (beadwork).",
+                        rituals: "Umemulo (coming-of-age for girls), Ukweshwama (first fruits ceremony), traditional weddings.",
+                        innovate: "Modern Zulu designers integrate traditional beadwork into contemporary fashion.",
+                        connect: "Rituals like Umemulo strengthen family and community bonds, passing on heritage.",
+                        thrive: "Cultural tourism and craft markets support economic well-being and preserve artistic skills."
+                    },
+                    {
+                        name: "Xhosa",
+                        wear: "Umbhaco (traditional fabric), isikhakha (shawls), intsimbi (beadwork), iqhiya (head wraps).",
+                        rituals: "Ulwaluko (male initiation), traditional weddings, imigidi (celebrations of milestones).",
+                        innovate: "Umbhaco fabric used in modern designs; digital platforms share initiation stories.",
+                        connect: "Ulwaluko fosters strong male bonds and community responsibility; weddings unite families.",
+                        thrive: "Preservation of language and oral traditions; economic opportunities through traditional craft sales."
+                    },
+                    {
+                        name: "Ndebele",
+                        wear: "Isigolwani (neck rings), idzila (brass rings), liphotu (aprons), vibrant beadwork.",
+                        rituals: "Coming-of-age ceremonies, traditional weddings, mural painting (cultural expression).",
+                        innovate: "Ndebele art and patterns inspire global fashion and design; digital archives of murals.",
+                        connect: "Distinctive attire and home decoration foster strong cultural identity and community pride.",
+                        thrive: "Art sales and cultural tourism provide income; heritage preservation through art education."
+                    },
+                    {
+                        name: "Basotho (South Africa)",
+                        wear: "Basotho blanket (kobo), mokorotlo (conical hat), shweshwe fabric.",
+                        rituals: "Lebollo (initiation), traditional weddings, agricultural ceremonies.",
+                        innovate: "Basotho blankets adapted into modern clothing; digital platforms for cultural storytelling.",
+                        connect: "Blankets are symbols of identity and unity; rituals reinforce social structures.",
+                        thrive: "Blanket weaving and craft support local economies; cultural festivals attract tourism."
+                    },
+                    {
+                        name: "Venda",
+                        wear: "Musisi (skirt), nwenda (top), intricate beadwork, traditional headwear.",
+                        rituals: "Domba (initiation school), traditional weddings, sacred dance (tshikona).",
+                        innovate: "Venda cultural motifs in contemporary art and fashion; digital documentation of rituals.",
+                        connect: "Domba strengthens community bonds and passes on moral values; music and dance unite.",
+                        thrive: "Craftsmanship provides livelihoods; cultural tourism to sacred sites and performances."
+                    },
+                    {
+                        name: "Tsonga",
+                        wear: "Xibelani (skirt for women), vibrant prints, beadwork, and head wraps.",
+                        rituals: "Domba (initiation), traditional weddings, ancestral ceremonies.",
+                        innovate: "Tsonga patterns in modern fashion; digital platforms for cultural exchange.",
+                        connect: "Rituals reinforce social bonds and cultural identity.",
+                        thrive: "Craft sales and cultural performances contribute to local economies."
+                    },
+                    {
+                        name: "Tswana",
+                        wear: "Leteisi (shweshwe fabric dresses/skirts), ditlhama (traditional skirts), kaross (animal skin blanket).",
+                        rituals: "Bogwera/Bojale (initiation), traditional weddings, rain-making ceremonies (dikhwaere).",
+                        innovate: "Leteisi used in modern fashion; digital archives of oral traditions and music.",
+                        connect: "Kgotla (traditional court/meeting place) fosters community dialogue; rituals reinforce social cohesion.",
+                        thrive: "Basket weaving and traditional crafts provide income; cultural preservation through education."
+                    },
+                    {
+                        name: "Swazi (South Africa)",
+                        wear: "Ligcebesha (beaded necklaces), sidvwaba (leather skirts for women), emahiya (cloth wraps), lihiya (men's loincloth).",
+                        rituals: "Umhlanga (Reed Dance), Incwala (First Fruits Ceremony), traditional weddings.",
+                        innovate: "Traditional attire influences contemporary Eswatini fashion; cultural festivals are globally recognized.",
+                        connect: "Umhlanga and Incwala are major national events fostering unity and cultural pride.",
+                        thrive: "Cultural tourism around traditional ceremonies; craft sales."
+                    },
+                    {
+                        name: "Indian South Africans",
+                        wear: "Sari, Salwar Kameez, Sherwani, traditional jewelry. (Often adapted with local influences).",
+                        rituals: "Diwali, Eid, various Hindu, Muslim, Christian, and other religious ceremonies, weddings.",
+                        innovate: "Fusion wear integrating Indian and African designs; digital platforms for cultural exchange.",
+                        connect: "Religious and community festivals foster strong social bonds and cultural preservation.",
+                        thrive: "Culinary arts, textile businesses, and cultural events contribute significantly to the economy."
+                    },
+                    {
+                        name: "Coloured",
+                        wear: "Diverse, often a blend of European, African, and Asian influences. No single 'traditional wear' but cultural expressions in music, dance (e.g., Riel Dance), and storytelling.",
+                        rituals: "Strong family gatherings, specific religious practices (e.g., Coon Carnival in Cape Town).",
+                        innovate: "Contemporary fashion often incorporates elements from diverse heritage; vibrant music genres.",
+                        connect: "Community events and family ties are central to cultural identity.",
+                        thrive: "Contributions to arts, music, and culinary sectors; unique cultural tourism experiences."
+                    },
+                    {
+                        name: "Khoisan",
+                        wear: "Animal skin garments, intricate beadwork, ostrich eggshell jewelry.",
+                        rituals: "Healing dances, trance rituals, storytelling, rites of passage.",
+                        innovate: "Preservation of ancient languages and knowledge through modern documentation; eco-tourism initiatives.",
+                        connect: "Strong communal bonds, oral traditions passed through generations.",
+                        thrive: "Cultural tourism, traditional medicine knowledge, sustainable land management practices."
+                    },
+                    {
+                        name: "English South Africans",
+                        wear: "Western attire, but with cultural adaptations in fashion and accessories reflecting local identity.",
+                        rituals: "Diverse Christian, secular, and social traditions; often blend with local customs.",
+                        innovate: "Contributions to modern South African literature, media, and arts; cultural fusion.",
+                        connect: "Participation in diverse community and national events; bridging cultural divides.",
+                        thrive: "Significant contributions to education, business, and arts sectors; promotion of multiculturalism."
+                    },
+                    {
+                        name: "Afrikaans",
+                        wear: "Western attire, often with influences from Dutch, French, German, and local African styles. Specific traditional dress is less common than for other groups.",
+                        rituals: "Family gatherings, specific religious and cultural festivals (e.g., Volksblad Kunstefees).",
+                        innovate: "Development of unique Afrikaans music genres and literature; modern culinary adaptations.",
+                        connect: "Strong community bonds through language, history, and shared cultural activities.",
+                        thrive: "Significant contributions to agriculture, business, and arts; preservation of unique linguistic heritage."
+                    }
+                ]
+            },
+            {
+                country: "Lesotho",
+                provinces: ["Maseru", "Thaba-Tseka", "Leribe", "Berea", "Mafeteng", "Mohale's Hoek", "Quthing", "Qacha's Nek", "Mokhotlong", "Butha-Buthe"],
+                ethnicGroups: [
+                    {
+                        name: "Basotho",
+                        wear: "Basotho blanket (kobo), mokorotlo (conical hat), shweshwe fabric.",
+                        rituals: "Lebollo (initiation), traditional weddings, agricultural ceremonies, spiritual healing.",
+                        innovate: "Modern interpretations of the kobo; digital platforms for cultural education.",
+                        connect: "The kobo is a unifying symbol; communal rituals reinforce national identity.",
+                        thrive: "Handicraft industry (blankets, pottery, grass products) supports rural economies."
+                    }
+                ]
+            },
+            {
+                country: "Eswatini (Swaziland)",
+                provinces: ["Hhohho", "Manzini", "Shiselweni", "Lubombo"],
+                ethnicGroups: [
+                    {
+                        name: "Swazi",
+                        wear: "Ligcebesha (beaded necklaces), sidvwaba (leather skirts for women), emahiya (cloth wraps), lihiya (men's loincloth).",
+                        rituals: "Umhlanga (Reed Dance), Incwala (First Fruits Ceremony), traditional weddings.",
+                        innovate: "Traditional attire influences contemporary Eswatini fashion; cultural festivals are globally recognized.",
+                        connect: "Umhlanga and Incwala are major national events fostering unity and cultural pride.",
+                        thrive: "Cultural tourism around traditional ceremonies; craft sales at Mantenga Lifestyle & Craft Centre."
+                    }
+                ]
+            },
+            {
+                country: "Botswana",
+                provinces: ["South-East", "Kweneng", "Central", "North-East", "Kgatleng", "Southern", "North-West", "Ghanzi", "Kgalagadi"],
+                ethnicGroups: [
+                    {
+                        name: "Tswana",
+                        wear: "Leteisi (shweshwe fabric dresses/skirts), ditlhama (traditional skirts), kaross (animal skin blanket).",
+                        rituals: "Bogwera/Bojale (initiation), traditional weddings, rain-making ceremonies (dikhwaere).",
+                        innovate: "Leteisi used in modern fashion; digital archives of oral traditions and music.",
+                        connect: "Kgotla (traditional court/meeting place) fosters community dialogue; rituals reinforce social cohesion.",
+                        thrive: "Basket weaving and traditional crafts provide income; cultural preservation through education."
+                    }
+                ]
+            },
+            {
+                country: "Zimbabwe",
+                provinces: ["Harare Metropolitan", "Bulawayo Metropolitan", "Mashonaland East", "Manicaland", "Masvingo", "Matabeleland North", "Matabeleland South", "Midlands", "Mashonaland Central", "Mashonaland West"],
+                ethnicGroups: [
+                    {
+                        name: "Shona",
+                        wear: "Zishanduko (wraps), traditional prints, vibrant beadwork, head wraps.",
+                        rituals: "Bira (spirit possession ceremony), traditional weddings, rain-making ceremonies (mukwerere), ancestral veneration.",
+                        innovate: "Shona sculpture is globally recognized; traditional music adapted into contemporary genres.",
+                        connect: "Bira ceremonies connect living with ancestors; communal rituals reinforce social fabric.",
+                        thrive: "Art and craft sales (sculpture, baskets) support artisans; cultural heritage tourism."
+                    },
+                    {
+                        name: "Ndebele",
+                        wear: "Similar to South African Ndebele, with specific regional variations in beadwork and patterns.",
+                        rituals: "Similar to South African Ndebele rituals, with local adaptations.",
+                        innovate: "Ndebele patterns in modern fashion and design; digital platforms for cultural exchange.",
+                        connect: "Strong emphasis on family and clan identity; ceremonies reinforce community bonds.",
+                        thrive: "Crafts (beadwork, pottery) provide livelihoods; cultural festivals promote heritage."
+                    }
+                ]
+            },
+            {
+                country: "Namibia",
+                provinces: ["Khomas", "Otjozondjupa", "Kunene", "Erongo", "Hardap", "Karas", "Kavango East", "Kavango West", "Ohangwena", "Omaheke", "Omusati", "Oshana", "Oshikoto", "Zambezi"],
+                ethnicGroups: [
+                    {
+                        name: "Herero",
+                        wear: "Otjikaiva (large, cow-horn shaped headwear), elaborate Victorian-style dresses.",
+                        rituals: "Ancestral veneration (Okuruuo sacred fire), traditional weddings, coming-of-age ceremonies.",
+                        innovate: "Herero fashion influences global designers; cultural events showcase unique attire.",
+                        connect: "Distinctive dress serves as a strong cultural identifier and fosters community pride.",
+                        thrive: "Tourism centered around cultural heritage; preservation of unique sartorial traditions."
+                    },
+                    {
+                        name: "Himba",
+                        wear: "Ocher-coated skin (otjize), elaborate hairstyles, traditional jewelry (shell, iron).",
+                        rituals: "Daily rituals involving otjize, ancestral veneration, coming-of-age ceremonies, marriage rituals.",
+                        innovate: "Himba culture is a subject of anthropological data and cultural exchange.",
+                        connect: "Strong communal living and shared cultural practices reinforce social cohesion.",
+                        thrive: "Sustainable tourism practices; preservation of traditional lifestyle and knowledge."
+                    }
+                ]
+            }
+        ];
+
+        const vendorHubData = {
+            stats: {
+                totalVendors: 1250,
+                productsListed: 4890,
+                municipalPartners: 45
+            },
+            myProducts: [
+                { id: 'prod1', name: 'Zulu Beaded Necklace (Isicholo)', description: 'Handcrafted with traditional patterns, representing cultural heritage from KwaZulu-Natal.', area: 'KwaZulu-Natal', type: 'Traditional Wear' },
+                { id: 'prod2', name: 'Xhosa Umbhaco Shawl', description: 'Authentic Umbhaco fabric, a symbol of Xhosa identity from Eastern Cape.', area: 'Eastern Cape', type: 'Traditional Wear' },
+                { id: 'prod3', name: 'Basotho Blanket (Kobo) - Modern Design', description: 'Classic Basotho Kobo with a contemporary twist, perfect for modern wear, from Lesotho.', area: 'Lesotho', type: 'Traditional Wear' },
+                { id: 'prod4', name: 'Ndebele Mural Art Print', description: 'High-quality print of a vibrant Ndebele house mural, showcasing unique geometric patterns from Mpumalanga.', area: 'Mpumalanga', type: 'Handmade Art' }
+            ],
+            municipalOpportunities: [
+                { id: 'opp1', title: 'Cultural Festival Vendor Call - Cape Town', description: 'Cape Town Municipality seeking traditional artisans for annual cultural festival. Deadline: 30 July 2025.', municipality: 'City of Cape Town Metropolitan Municipality', region: 'Western Cape, South Africa' },
+                { id: 'opp2', title: 'Street Art Initiative - Gaborone', description: 'Gaborone City Council inviting street artists and muralists for urban revitalization project. Focus on local themes. Deadline: 15 August 2025.', municipality: 'Gaborone City Council', region: 'South-East, Botswana' },
+                { id: 'opp3', title: 'Heritage Craft Market - Maseru', description: 'Maseru City Council organizing a monthly heritage craft market. Seeking handmade jewelry, pottery, and textiles. Ongoing applications.', municipality: 'Maseru City Council', region: 'Maseru, Lesotho' }
+            ]
+        };
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const brandsContainer = document.getElementById('sector-brands-container'); /* Changed ID to match CultureMesh */
+            const entitiesContainer = document.getElementById('global-cultural-entities');
+            const saProvincesContainer = document.getElementById('sa-provinces-container');
+            const traditionalWearContainer = document.getElementById('traditional-wear-container');
+            const totalVendorsEl = document.getElementById('total-vendors');
+            const productsListedEl = document.getElementById('products-listed');
+            const municipalPartnersEl = document.getElementById('municipal-partners');
+            const vendorProductsShowcase = document.getElementById('vendor-products-showcase');
+            const municipalOpportunitiesList = document.getElementById('municipal-opportunities-list');
+
+
+            if (brandsContainer) {
+                if (ritualCultureBrands.length === 0) {
+                    brandsContainer.innerHTML = '<p class="text-center text-culturemesh-muted-text col-span-full">No brands currently listed for this sector.</p>';
+                } else {
+                    ritualCultureBrands.forEach(brand => {
+                        const card = document.createElement('div');
+                        card.className = 'brand-card';
+
+                        const subNodes = ritualCultureSubNodes[brand.name]; // Get sub-nodes for this brand
+                        let subNodesHtml = '';
+                        if (subNodes && subNodes.length > 0) {
+                            // Check if subNodes are objects with a route (like CultureMesh) or just strings
+                            const isObjectSubNode = typeof subNodes[0] === 'object' && subNodes[0] !== null && 'route' in subNodes[0];
+
+                            subNodesHtml = `
+                                <ul class="list-disc list-inside text-sm text-culturemesh-muted-text space-y-1 mt-4">
+                                    ${subNodes.map(node => {
+                                        if (isObjectSubNode) {
+                                            return `<li><a href="https://ritual.seedwave.faa.zone/${node.route}" class="text-culturemesh-muted-text hover:text-culturemesh-primary">${node.name}</a></li>`;
+                                        } else {
+                                            return `<li>${node}</li>`; // For generic sub-nodes without specific routes
+                                        }
+                                    }).join('')}
+                                </ul>
+                            `;
+                        } else {
+                            subNodesHtml = '<p class="text-sm text-culturemesh-muted-text mt-4">No specific sub-nodes listed.</p>';
+                        }
+
+                        // Use the brand.route directly, prepending the base URL
+                        const brandRoute = `https://ritual.seedwave.faa.zone/${brand.route}`;
+
+                        card.innerHTML = `
+                            <div>
+                                <h4 class="font-bold mb-3">${brand.name}</h4>
+                                <p>${brand.description}</p>
+                                ${subNodesHtml}
+                            </div>
+                            <a href="${brandRoute}" class="mt-6 self-start px-6 py-2 primary-btn font-semibold rounded-full text-base">
+                                Discover More
+                            </a>
+                        `;
+                        brandsContainer.appendChild(card);
+                    });
+                }
+            }
+
+            if (entitiesContainer) {
+                if (globalCulturalEntities.length === 0) {
+                    entitiesContainer.innerHTML = '<p class="text-center text-culturemesh-muted-text col-span-full">No global entities currently listed for this.</p>';
+                } else {
+                    globalCulturalEntities.forEach(entity => {
+                        const card = document.createElement('div');
+                        card.className = 'entity-card';
+
+                        card.innerHTML = `
+                            <div>
+                                <h4 class="font-bold mb-3">${entity.name}</h4>
+                                <p class="text-sm text-culturemesh-primary font-semibold">${entity.type}</p>
+                                <p class="mt-2">${entity.description}</p>
+                            </div>
+                            <a href="#" class="mt-6 self-start px-6 py-2 primary-btn font-semibold rounded-full text-base">
+                                Explore
+                            </a>
+                        `;
+                        entitiesContainer.appendChild(card);
+                    });
+                }
+            }
+
+            // Render South African Provinces
+            if (saProvincesContainer) {
+                if (saProvincesData.length === 0) {
+                    saProvincesContainer.innerHTML = '<p class="text-center text-culturemesh-muted-text col-span-full">No South African province data currently listed.</p>';
+                } else {
+                    saProvincesData.forEach(province => {
+                        const provinceCard = document.createElement('div');
+                        provinceCard.className = 'province-card';
+                        
+                        provinceCard.innerHTML = `
+                            <h4>${province.name}</h4>
+                            <p class="detail-item"><strong>Capital:</strong> ${province.capital}</p>
+                            <p class="detail-item"><strong>Key Cultures:</strong> ${province.keyCultures.join(', ')}</p>
+                            <p class="detail-item"><strong>Key Languages:</strong> ${province.keyLanguages.join(', ')}</p>
+                            <p class="detail-item"><strong>Major Sectors:</strong> ${province.majorSectors.join(', ')}</p>
+                            <p class="detail-item"><strong>Local Trade Focus:</strong> ${province.localTradeFocus}</p>
+                            <p class="detail-item"><strong>Arts & Culture:</strong> ${province.artsCultureHighlights}</p>
+                            <p class="detail-item"><strong>Sports:</strong> ${province.sportsHighlights}</p>
+                            <button class="view-municipalities-btn" data-province-name="${province.name}">View Municipalities</button>
+                        `;
+                        saProvincesContainer.appendChild(provinceCard);
+                    });
+
+                    // Add event listeners for the "View Municipalities" buttons
+                    document.querySelectorAll('.view-municipalities-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const provinceName = event.target.dataset.provinceName;
+                            showProvinceModal(provinceName);
+                        });
+                    });
+                }
+            }
+
+            // Modal functions
+            const provinceModalOverlay = document.getElementById('province-modal-overlay');
+            const modalProvinceName = document.getElementById('modal-province-name');
+            const modalProvinceDetails = document.getElementById('modal-province-details');
+            const modalMunicipalitiesList = document.getElementById('modal-municipalities-list');
+
+            window.showProvinceModal = (provinceName) => {
+                const province = saProvincesData.find(p => p.name === provinceName);
+                if (!province) return;
+
+                modalProvinceName.textContent = province.name;
+                modalProvinceDetails.innerHTML = `
+                    <p><strong>Capital:</strong> ${province.capital}</p>
+                    <p><strong>Key Cultures:</strong> ${province.keyCultures.join(', ')}</p>
+                    <p><strong>Key Languages:</strong> ${province.keyLanguages.join(', ')}</p>
+                    <p><strong>Major Sectors:</strong> ${province.majorSectors.join(', ')}</p>
+                    <p><strong>Local Trade Focus:</strong> ${province.localTradeFocus}</p>
+                    <p><strong>Arts & Culture:</strong> ${province.artsCultureHighlights}</p>
+                    <p><strong>Sports:</strong> ${province.sportsHighlights}</p>
+                `;
+
+                let municipalitiesHtml = '';
+                if (province.municipalities.metropolitan && province.municipalities.metropolitan.length > 0) {
+                    municipalitiesHtml += `<h5 class="font-semibold text-lg text-culturemesh-dark-text mt-4 mb-2">Metropolitan Municipalities:</h5>`;
+                    municipalitiesHtml += `<ul>`;
+                    province.municipalities.metropolitan.forEach(metro => {
+                        municipalitiesHtml += `<li><i class="fas fa-city mr-2 text-culturemesh-accent"></i><strong>${metro}</strong></li>`;
+                    });
+                    municipalitiesHtml += `</ul>`;
+                }
+
+                if (province.municipalities.district && province.municipalities.district.length > 0) {
+                    municipalitiesHtml += `<h5 class="font-semibold text-lg text-culturemesh-dark-text mt-4 mb-2">District Municipalities:</h5>`;
+                    municipalitiesHtml += `<ul>`;
+                    province.municipalities.district.forEach(district => {
+                        municipalitiesHtml += `<li><i class="fas fa-map-marker-alt mr-2 text-culturemesh-accent"></i><strong>${district.name}</strong>`;
+                        if (district.locals && district.locals.length > 0) {
+                            municipalitiesHtml += `<ul class="local-list">`;
+                            district.locals.forEach(local => {
+                                municipalitiesHtml += `<li><i class="fas fa-building mr-2 text-culturemesh-muted-text"></i>${local}</li>`;
+                            });
+                            municipalitiesHtml += `</ul>`;
+                        }
+                        municipalitiesHtml += `</li>`;
+                    });
+                    municipalitiesHtml += `</ul>`;
+                }
+                modalMunicipalitiesList.innerHTML = municipalitiesHtml;
+
+                provinceModalOverlay.classList.add('active');
+            };
+
+            window.closeProvinceModal = () => {
+                provinceModalOverlay.classList.remove('active');
+            };
+
+
+            if (traditionalWearContainer) {
+                if (traditionalWearData.length === 0) {
+                    traditionalWearContainer.innerHTML = '<p class="text-center text-culturemesh-muted-text col-span-full">No traditional wear data currently listed.</p>';
+                } else {
+                    traditionalWearData.forEach(countryData => {
+                        const countryCard = document.createElement('div');
+                        countryCard.className = 'country-card-traditional col-span-1';
+                        countryCard.innerHTML = `
+                            <h4 class="mb-4">${countryData.country}</h4>
+                            ${countryData.provinces.length > 0 ? `<p class="province-text mb-2"><strong>Provinces/Regions:</strong> ${countryData.provinces.join(', ')}</p>` : ''}
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                                ${countryData.ethnicGroups.map(group => `
+                                    <div class="ethnic-group-card">
+                                        <h5>${group.name}</h5>
+                                        <p><strong>Wear:</strong> ${group.wear}</p>
+                                        <p><strong>Rituals:</strong> ${group.rituals}</p>
+                                        <ul class="mt-2">
+                                            <li><strong>Innovate:</strong> ${group.innovate}</li>
+                                            <li><strong>Connect:</strong> ${group.connect}</li>
+                                            <li><strong>Thrive:</strong> ${group.thrive}</li>
+                                        </ul>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        traditionalWearContainer.appendChild(countryCard);
+                    });
+                }
+            }
+
+            if (totalVendorsEl && productsListedEl && municipalPartnersEl && vendorProductsShowcase && municipalOpportunitiesList) {
+                totalVendorsEl.textContent = vendorHubData.stats.totalVendors.toLocaleString();
+                productsListedEl.textContent = vendorHubData.stats.productsListed.toLocaleString();
+                municipalPartnersEl.textContent = vendorHubData.stats.municipalPartners.toLocaleString();
+
+                vendorHubData.myProducts.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-showcase-card';
+                    productCard.innerHTML = `
+                        <h5>${product.name}</h5>
+                        <p>${product.description}</p>
+                        <button class="view-btn">View Details</button>
+                    `;
+                    vendorProductsShowcase.appendChild(productCard);
+                });
+
+                vendorHubData.municipalOpportunities.forEach(opportunity => {
+                    const opportunityCard = document.createElement('div');
+                    opportunityCard.className = 'opportunity-card';
+                    opportunityCard.innerHTML = `
+                        <h5>${opportunity.title}</h5>
+                        <p>${opportunity.description}</p>
+                        <button class="apply-btn">Apply Now</button>
+                    `;
+                    municipalOpportunitiesList.appendChild(opportunityCard);
+                });
+            }
+
+
+            initRitualPulseAnt('culturemesh-pulse-ant-canvas'); /* Changed canvas ID */
+        });
+    </script>
+</body>
+</html>
