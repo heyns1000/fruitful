@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: The Future of Farming is Fruitful™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0D1B2A;
+            color: #E0E1DD;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-card h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .flow-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -1rem;
+            width: 1.5rem;
+            height: 2px;
+            background-color: #415A77;
+        }
+         .flow-line-vertical::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5rem;
+            background-color: #415A77;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center my-12">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-[#E0E1DD]">The Future of Farming is <span class="text-[#38A169]">Fruitful™</span></h1>
+            <p class="mt-4 text-lg md:text-xl text-[#778DA9]">Harnessing data and AI to cultivate a more sustainable and productive agricultural world.</p>
+        </header>
+
+        <section id="kpis" class="my-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="kpi-card text-center bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+                    <p class="text-2xl font-semibold text-[#778DA9]">Farms Managed</p>
+                    <h3 class="text-[#38A169]">1,250+</h3>
+                    <p class="text-md text-[#415A77]">across 6 continents</p>
+                </div>
+                <div class="kpi-card text-center bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+                    <p class="text-2xl font-semibold text-[#778DA9]">Active Crop Area</p>
+                    <h3 class="text-[#F6AD55]">850K+</h3>
+                    <p class="text-md text-[#415A77]">acres under observation</p>
+                </div>
+                <div class="kpi-card text-center bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+                    <p class="text-2xl font-semibold text-[#778DA9]">Forecasted Yield</p>
+                    <h3 class="text-[#63B3ED]">2.5M</h3>
+                    <p class="text-md text-[#415A77]">tons projected this season</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="key-insights" class="my-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9]">Key Operational Insights</h2>
+                <p class="mt-2 text-lg text-[#415A77]">Our dashboard provides a real-time pulse on the health and efficiency of your entire agricultural operation.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-1">Crop Health Over Time</h3>
+                    <p class="text-sm text-[#778DA9] mb-4">Tracking a composite health score reveals that proactive management leads to a steady improvement in crop vitality throughout the growing season.</p>
+                    <div class="chart-container">
+                        <canvas id="cropHealthChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-1">Top Performing Crops by Yield</h3>
+                    <p class="text-sm text-[#778DA9] mb-4">Potatoes and Corn show the highest yield per acre, indicating strong performance and suitability for their current locations.</p>
+                    <div class="chart-container">
+                        <canvas id="cropYieldChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sustainability" class="my-20">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9]">Driving Growth & Sustainability</h2>
+                <p class="mt-2 text-lg text-[#415A77]">Balancing productivity with responsibility is at the core of smart farming.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                 <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-1">Global Yield Growth Trend</h3>
+                    <p class="text-sm text-[#778DA9] mb-4">Technology adoption and data-driven farming practices are contributing to a consistent and significant increase in global agricultural yield year-over-year.</p>
+                    <div class="chart-container">
+                        <canvas id="globalYieldChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-1">Soil Nutrient Balance</h3>
+                    <p class="text-sm text-[#778DA9] mb-4">Precision agriculture helps maintain optimal soil health, ensuring long-term fertility. Potassium and Organic Matter levels are strong across managed farms.</p>
+                    <div class="chart-container">
+                        <canvas id="soilNutrientsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ecosystem" class="my-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9]">The Agri-Tech Ecosystem Flow</h2>
+                <p class="mt-2 text-lg text-[#415A77]">Our platform integrates a complex ecosystem of technologies into a seamless flow, from data collection to actionable insight.</p>
+            </div>
+            <div class="bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+                    <div class="text-center p-4 bg-[#0D1B2A] rounded-lg relative w-full md:w-auto">
+                        <p class="text-2xl">🚜</p>
+                        <h4 class="font-bold text-lg text-[#E0E1DD]">Farm Data</h4>
+                        <p class="text-sm text-[#778DA9]">Sensors, Drones, Manual Input</p>
+                        <div class="hidden md:block flow-line"></div>
+                        <div class="md:hidden flow-line-vertical"></div>
+                    </div>
+
+                    <div class="text-center p-4 bg-[#0D1B2A] rounded-lg relative w-full md:w-auto">
+                        <p class="2xl">🤖</p>
+                        <h4 class="font-bold text-lg text-[#E0E1DD]">Gemini AI</h4>
+                        <p class="text-sm text-[#778DA9]">Analysis & Prediction</p>
+                        <div class="hidden md:block flow-line"></div>
+                         <div class="md:hidden flow-line-vertical"></div>
+                    </div>
+
+                    <div class="text-center p-4 bg-[#0D1B2A] rounded-lg relative w-full md:w-auto">
+                        <p class="text-2xl">📊</p>
+                        <h4 class="font-bold text-lg text-[#E0E1DD]">Fruitful™ AgriDash</h4>
+                        <p class="text-sm text-[#778DA9]">Insights & Management</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sector-overview" class="my-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9]">Fruitful™ Agri-Tech Sector Overview</h2>
+                <p class="mt-2 text-lg text-[#415A77]">Explore the interconnected brands and subnodes that form the backbone of our agricultural technology ecosystem.</p>
+            </div>
+            <div id="sectorOverviewContainer" class="bg-[#1B263B] p-8 rounded-xl shadow-2xl">
+                
+            </div>
+            <div class="text-center mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="https://agriculture.seedwave.faa.zone/index.html" target="_blank" class="inline-block bg-[#38A169] hover:bg-[#287A4F] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200">
+                    Go to Full Agri Dashboard ↗
+                </a>
+                <a href="/about.html" class="inline-block bg-[#63B3ED] hover:bg-[#3182CE] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200">
+                    About Fruitful™
+                </a>
+            </div>
+        </section>
+
+        <section id="tools" class="my-20">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-[#778DA9]">Empowering the Modern Farmer</h2>
+                <p class="mt-2 text-lg text-[#415A77]">Providing intelligent tools and resources to make informed decisions.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                 <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl flex flex-col items-center text-center">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-4">AI Agri Assistant</h3>
+                    <div class="w-full max-w-md bg-[#0D1B2A] p-4 rounded-lg mb-6">
+                        <p class="text-left text-sm text-[#778DA9] mb-2">GENERAL AGRICULTURE QUERY:</p>
+                        <textarea id="agriAIPrompt" rows="4" placeholder="e.g., How can I combat blight in tomatoes? Suggest optimal planting times for corn in a temperate climate." class="w-full p-2 rounded-md bg-[#415A77] border border-[#778DA9] text-[#E0E1DD] text-sm"></textarea>
+                        <button type="button" id="sendAgriAIPrompt" class="mt-2 w-full bg-[#38A169] hover:bg-[#287A4F] text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                            ✨ Get Agri-AI Advice
+                        </button>
+                        <p id="agriAIStatus" class="text-xs text-[#778DA9] mt-1 hidden"></p>
+                        <div id="agriAIResponse" class="w-full p-2 border border-[#778DA9] rounded-md bg-[#415A77] text-[#E0E1DD] mt-2 hidden text-left" style="white-space: pre-wrap;"></div>
+                    </div>
+
+                    <div class="w-full max-w-md bg-[#0D1B2A] p-4 rounded-lg mb-6">
+                        <p class="text-left text-sm text-[#778DA9] mb-2">CROP HEALTH ADVISOR:</p>
+                        <textarea id="cropHealthQuery" rows="3" placeholder="e.g., My corn leaves are yellowing and stunted. What's wrong?" class="w-full p-2 rounded-md bg-[#415A77] border border-[#778DA9] text-[#E0E1DD] text-sm"></textarea>
+                        <button type="button" id="generateCropHealthAdvice" class="mt-2 w-full bg-[#F6AD55] hover:bg-[#D99041] text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                            ✨ Diagnose Crop Health
+                        </button>
+                        <p id="cropHealthStatus" class="text-xs text-[#778DA9] mt-1 hidden"></p>
+                        <div id="cropHealthResponse" class="w-full p-2 border border-[#778DA9] rounded-md bg-[#415A77] text-[#E0E1DD] mt-2 hidden text-left" style="white-space: pre-wrap;"></div>
+                    </div>
+
+                    <div class="w-full max-w-md bg-[#0D1B2A] p-4 rounded-lg">
+                        <p class="text-left text-sm text-[#778DA9] mb-2">SUSTAINABLE PRACTICE EXPLAINER:</p>
+                        <textarea id="sustainablePracticeQuery" rows="3" placeholder="e.g., Explain permaculture in agriculture." class="w-full p-2 rounded-md bg-[#415A77] border border-[#778DA9] text-[#E0E1DD] text-sm"></textarea>
+                        <button type="button" id="explainSustainablePractice" class="mt-2 w-full bg-[#63B3ED] hover:bg-[#3182CE] text-white font-bold py-2 px-4 rounded-md transition-colors duration-200">
+                            ✨ Explain Practice
+                        </button>
+                        <p id="sustainablePracticeStatus" class="text-xs text-[#778DA9] mt-1 hidden"></p>
+                        <div id="sustainablePracticeResponse" class="w-full p-2 border border-[#778DA9] rounded-md bg-[#415A77] text-[#E0E1DD] mt-2 hidden text-left" style="white-space: pre-wrap;"></div>
+                    </div>
+                </div>
+                <div class="bg-[#1B263B] p-6 rounded-xl shadow-2xl">
+                    <h3 class="font-bold text-xl text-[#E0E1DD] mb-4 text-center">Curated Agri-Tools & Resources</h3>
+                    <div class="space-y-4">
+                        <div class="bg-[#0D1B2A] p-4 rounded-lg">
+                            <h4 class="font-semibold text-[#63B3ED]">✓ Farm Management Software</h4>
+                            <p class="text-sm text-[#778DA9]">Links to platforms like FarmOS and AgriVi for comprehensive farm planning.</p>
+                        </div>
+                         <div class="bg-[#0D1B2A] p-4 rounded-lg">
+                            <h4 class="font-semibold text-[#F6AD55]">✓ Weather & Climate Data</h4>
+                            <p class="text-sm text-[#778DA9]">Access to OpenWeather Agri and ClimateAI for critical risk intelligence.</p>
+                        </div>
+                         <div class="bg-[#0D1B2A] p-4 rounded-lg">
+                            <h4 class="font-semibold text-[#38A169]">✓ Marketplace & Trade Hubs</h4>
+                            <p class="text-sm text-[#778DA9]">Connections to global commodity markets and direct-to-consumer platforms.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-8 px-6 md:px-12 text-center bg-[#1B263B] text-[#778DA9] border-t border-[#415A77]">
+            <div class="flex flex-wrap justify-center mb-4 text-sm">
+                <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerCopyright">Copyright</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerVaultMesh">VaultMesh™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerFruitful">Fruitful™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerFAAZone">FAA.Zone™</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerAbout">About</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-[#E0E1DD] transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+            </div>
+            <span data-i18n="footerCopyrightText">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+        </footer>
+
+    </div>
+
+    <script>
+        const colorPalette = {
+            background: '#0D1B2A',
+            cardBackground: '#1B263B',
+            border: '#415A77',
+            textPrimary: '#E0E1DD',
+            textSecondary: '#778DA9',
+            accentGreen: '#38A169',
+            accentOrange: '#F6AD55',
+            accentBlue: '#63B3ED',
+        };
+
+        let currentChartInstances = {};
+
+        function wrapLabel(str) {
+            const words = str.split(' ');
+            if (str.length <= 16) {
+                return str;
+            }
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > 16) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines.filter(line => line.length > 0);
+        }
+
+        const sharedChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: colorPalette.textPrimary,
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: colorPalette.background,
+                    titleColor: colorPalette.textPrimary,
+                    bodyColor: colorPalette.textSecondary,
+                    borderColor: colorPalette.border,
+                    borderWidth: 1,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+        };
+
+        const cropHealthData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Average Crop Health Score',
+                data: [75, 80, 82, 85, 88, 86, 89],
+                borderColor: colorPalette.accentGreen,
+                backgroundColor: 'rgba(56, 161, 105, 0.2)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: colorPalette.accentGreen,
+                pointBorderColor: colorPalette.textPrimary,
+                pointHoverRadius: 7,
+            }]
+        };
+
+        const cropYieldData = {
+            labels: ['Wheat', 'Corn', 'Soybeans', 'Rice', 'Potatoes'].map(wrapLabel),
+            datasets: [{
+                label: 'Yield (tons/acre)',
+                data: [3.5, 5.2, 2.8, 4.1, 7.0],
+                backgroundColor: [
+                    'rgba(56, 161, 105, 0.7)',
+                    'rgba(246, 173, 85, 0.7)',
+                    'rgba(99, 179, 237, 0.7)',
+                    'rgba(119, 141, 169, 0.7)',
+                    'rgba(224, 225, 221, 0.7)',
+                ],
+                borderColor: colorPalette.cardBackground,
+                hoverOffset: 8,
+                hoverBorderColor: colorPalette.textPrimary,
+            }]
+        };
+
+        const globalYieldData = {
+            labels: ['2020', '2021', '2022', '2023', '2024 (proj.)'],
+            datasets: [{
+                label: 'Global Yield (Million Tons)',
+                data: [1500, 1550, 1600, 1680, 1750],
+                borderColor: colorPalette.accentOrange,
+                backgroundColor: 'rgba(246, 173, 85, 0.2)',
+                fill: true,
+                tension: 0.3,
+            }]
+        };
+
+        const soilNutrientsData = {
+            labels: ['Nitrogen', 'Phosphorus', 'Potassium', 'Organic Matter', 'pH Level'].map(wrapLabel),
+            datasets: [{
+                label: 'Soil Health Index',
+                data: [70, 65, 80, 75, 85],
+                backgroundColor: 'rgba(99, 179, 237, 0.3)',
+                borderColor: colorPalette.accentBlue,
+                pointBackgroundColor: colorPalette.accentBlue,
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: colorPalette.accentBlue
+            }]
+        };
+
+        function initializeCharts() {
+            const chartsToInitialize = [
+                { id: 'cropHealthChart', type: 'line', data: cropHealthData, options: { ...sharedChartOptions, scales: { y: { beginAtZero: false, min: 70, grid: { color: 'rgba(120, 141, 169, 0.2)' }, ticks: { color: colorPalette.textSecondary } }, x: { grid: { color: 'rgba(120, 141, 169, 0.2)' }, ticks: { color: colorPalette.textSecondary } } } } },
+                { id: 'cropYieldChart', type: 'doughnut', data: cropYieldData, options: { ...sharedChartOptions, plugins: { ...sharedChartOptions.plugins, legend: { ...sharedChartOptions.plugins.legend, position: 'right' } } } },
+                { id: 'globalYieldChart', type: 'line', data: globalYieldData, options: { ...sharedChartOptions, scales: { y: { beginAtZero: false, grid: { color: 'rgba(120, 141, 169, 0.2)' }, ticks: { color: colorPalette.textSecondary } }, x: { grid: { color: 'rgba(120, 141, 169, 0.2)' }, ticks: { color: colorPalette.textSecondary } } } } },
+                { id: 'soilNutrientsChart', type: 'radar', data: soilNutrientsData, options: { ...sharedChartOptions, scales: { r: { angleLines: { color: 'rgba(120, 141, 169, 0.2)' }, grid: { color: 'rgba(120, 141, 169, 0.2)' }, pointLabels: { color: colorPalette.textPrimary, font: { size: 12 } }, ticks: { color: colorPalette.textSecondary, backdropColor: colorPalette.cardBackground } } }, plugins: { ...sharedChartOptions.plugins, legend: { display: false } } } }
+            ];
+
+            chartsToInitialize.forEach(chartConfig => {
+                const ctx = document.getElementById(chartConfig.id)?.getContext('2d');
+                if (ctx) {
+                    if (currentChartInstances[chartConfig.id]) {
+                        currentChartInstances[chartConfig.id].destroy();
+                    }
+                    currentChartInstances[chartConfig.id] = new Chart(ctx, chartConfig);
+                }
+            });
+        }
+
+        const GEMINI_API_KEY = "";
+
+        window.callGeminiAPI = async function(prompt, targetElementId, statusElementId, buttonElement, originalButtonText) {
+            const targetElement = document.getElementById(targetElementId);
+            const statusElement = document.getElementById(statusElementId);
+            
+            if (!targetElement || !statusElement || !buttonElement) {
+                console.error("Missing target, status element, or button element for Gemini API call.");
+                return null;
+            }
+
+            statusElement.textContent = "Generating...";
+            statusElement.classList.remove('hidden');
+            targetElement.classList.add('hidden');
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="inline-block border-4 border-t-[#38A169] border-[#778DA9] rounded-full w-5 h-5 animate-spin"></span>`;
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    
+                    targetElement.innerHTML = text;
+                    targetElement.classList.remove('hidden');
+                    statusElement.textContent = "Generation complete!";
+                    return text;
+                } else {
+                    statusElement.textContent = "Error: No content generated by AI.";
+                    console.error("Gemini API returned an unexpected structure or no content:", result);
+                    return null;
+                }
+            } catch (error) {
+                statusElement.textContent = "Error: API call failed.";
+                console.error("Error calling Gemini API:", error);
+                return null;
+            } finally {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalButtonText;
+                setTimeout(() => statusElement.classList.add('hidden'), 3000);
+            }
+        };
+
+        document.getElementById('sendAgriAIPrompt')?.addEventListener('click', async (event) => {
+            const agriPromptText = document.getElementById('agriAIPrompt').value.trim();
+            const button = event.currentTarget;
+
+            if (!agriPromptText) {
+                alert('Please enter your agriculture query.');
+                return;
+            }
+
+            const fullPrompt = `As an expert in sustainable agriculture and farming, provide concise and actionable advice for the following query: "${agriPromptText}"`;
+            await window.callGeminiAPI(fullPrompt, 'agriAIResponse', 'agriAIStatus', button, '✨ Get Agri-AI Advice');
+        });
+
+        document.getElementById('generateCropHealthAdvice')?.addEventListener('click', async (event) => {
+            const cropHealthQueryText = document.getElementById('cropHealthQuery').value.trim();
+            const button = event.currentTarget;
+
+            if (!cropHealthQueryText) {
+                alert('Please describe the crop symptoms.');
+                return;
+            }
+
+            const prompt = `As an agricultural expert, provide a probable diagnosis and initial organic/sustainable treatment recommendations for a crop showing the following symptoms: "${cropHealthQueryText}". Be concise and focus on practical steps.`;
+            await window.callGeminiAPI(prompt, 'cropHealthResponse', 'cropHealthStatus', button, '✨ Diagnose Crop Health');
+        });
+
+        document.getElementById('explainSustainablePractice')?.addEventListener('click', async (event) => {
+            const sustainablePracticeQueryText = document.getElementById('sustainablePracticeQuery').value.trim();
+            const button = event.currentTarget;
+
+            if (!sustainablePracticeQueryText) {
+                alert('Please enter a sustainable farming practice to explain.');
+                return;
+            }
+
+            const prompt = `Explain the agricultural concept or sustainable farming practice "${sustainablePracticeQueryText}" in simple terms, highlighting its main benefits for the environment and farm productivity. Keep it to 2-3 sentences.`;
+            await window.callGeminiAPI(prompt, 'sustainablePracticeResponse', 'sustainablePracticeStatus', button, '✨ Explain Practice');
+        });
+
+        const allSectorsData = {
+            "agriculture": {
+                name: "🌱 Agriculture & Biotech",
+                repoName: "agriculture-seedwave-admin",
+                baseUrl: "agriculture.seedwave.faa.zone",
+                brands: [
+                    { name: "CropLink", subnodes: ["CropLink ID™", "CropLink Vault™", "CropLink Field™", "CropLink Yield™"] },
+                    { name: "SoilPulse", subnodes: ["SoilPulse Trace™", "SoilPulse Data™", "SoilPulse Alert™"] },
+                    { name: "FarmFlow", subnodes: ["FarmFlow Connect", "AgriSense", "IrrigaSmart"] },
+                    { name: "AquaFarm", subnodes: ["HydroGen", "FishLoop", "NutriWater"] },
+                    { name: "AgriMesh", subnodes: ["SensorGrid", "DataHarvester", "YieldPredict"] },
+                    { name: "GrowNode", subnodes: ["PlantID", "BioMonitor", "GrowthTrack"] },
+                    { name: "GrainCast", subnodes: ["MarketSignal", "FutureHarvest", "StorageOpt"] },
+                    { name: "SoilBank", subnodes: ["CarbonSeq", "Microbiome", "ErosionGuard"] },
+                    { name: "CropID", subnodes: ["CropID Scanner™", "CropID Trust™"] },
+                    { name: "AgriVault", subnodes: ["AgriVault Lock™", "AgriVault Chain™", "AgriVault Seed™"] },
+                    { name: "PulseHarvest", subnodes: ["PulseHarvest Sync™", "PulseHarvest Drop™", "PulseHarvest Vault™"] },
+                    { name: "MarketSoil", subnodes: ["MarketSoil Rate™", "MarketSoil Feed™", "MarketSoil UI™"] },
+                    { name: "DroneFarm", subnodes: ["DroneFarm View™", "DroneFarm Grid™", "DroneFarm Trace™"] },
+                    { name: "RuralOps", subnodes: ["RuralOps Node™", "RuralOps Pulse™", "RuralOps Chain™"] },
+                    { name: "SeedGrid", subnodes: ["SeedGrid Vault™", "SeedGrid Scan™", "SeedGrid Growth™"] },
+                    { name: "FarmChain", subnodes: ["FarmChain Link™", "FarmChain Claim™", "FarmChain Credit™"] },
+                    { name: "AgriScore", subnodes: ["AgriScore Index™", "AgriScore Node™"] },
+                    { name: "SoilNet", subnodes: ["SoilNet Base™", "SoilNet UI™"] },
+                    { name: "CropDoc", subnodes: ["CropDoc Scan™", "CropDoc Aid™"] },
+                    { name: "TerraVault", subnodes: ["TerraVault Ledger™", "TerraVault View™", "TerraVault Chain™"] },
+                    { name: "AgriID", subnodes: ["AgriID Chain™", "AgriID Badge™", "AgriID Verify™"] },
+                    { name: "SproutFlow", subnodes: ["SproutFlow Loop™", "SproutFlow Track™"] },
+                    { name: "GrainSafe", subnodes: ["GrainSafe Lock™", "GrainSafe Audit™"] },
+                    { name: "FieldSync", subnodes: ["FieldSync Signal™", "FieldSync Grid™"] },
+                    { name: "AgriDepot", subnodes: ["AgriDepot Map™", "AgriDepot Sync™", "AgriDepot Drop™"] },
+                    { name: "DroneCrop", subnodes: ["DroneCrop Watch™", "DroneCrop Sync™"] },
+                    { name: "CropTrace", subnodes: ["CropTrace Root™", "CropTrace Link™"] },
+                    { name: "PulseSoil", subnodes: ["PulseSoil Core™", "PulseSoil Signal™"] },
+                    { name: "SeedRoot", subnodes: ["SeedRoot Tag™", "SeedRoot Layer™"] },
+                    { name: "RuralFlow", subnodes: ["RuralFlow Map™", "RuralFlow Loop™", "RuralFlow Chain™"] },
+                    { name: "MarketGrow", subnodes: ["MarketGrow Pulse™", "MarketGrow Cast™", "MarketGrow Deals™"] },
+                    { name: "AgriRank", subnodes: ["AgriRank Score™", "AgriRank Matrix™"] },
+                    { name: "SoilLogic", subnodes: ["SoilLogic Grid™", "SoilLogic Forecast™"] },
+                    { name: "AgriSync", subnodes: ["AgriSync UI™", "AgriSync Chain™"] },
+                    { name: "NutrientGrid", subnodes: ["NutrientGrid Base™", "NutrientGrid Flux™"] },
+                    { name: "FieldCast", subnodes: ["FieldCast Audio™", "FieldCast Relay™"] },
+                    { name: "CropSource", subnodes: ["CropSource Ledger™", "CropSource ID™"] },
+                    { name: "YieldStack", subnodes: ["YieldStack UI™", "YieldStack Payout™", "YieldStack Index™"] },
+                    { name: "FarmPulse", subnodes: ["FarmPulse Loop™", "FarmPulse Mesh™"] },
+                    { name: "SoilTech", subnodes: ["SoilTech DNA™", "SoilTech Live™"] },
+                    { name: "GreenTrace", subnodes: ["GreenTrace Chain™", "GreenTrace Pulse™"] },
+                    { name: "CropVault", subnodes: ["CropVault Lock™", "CropVault Ledger™", "CropVault Cert™"] },
+                    { name: "AgriCast", subnodes: ["AgriCast Signal™", "AgriCast Feed™"] },
+                    { name: "TerraPulse", subnodes: ["TerraPulse Soil™", "TerraPulse Vault™"] },
+                    { name: "SoilTrace", subnodes: ["SoilTrace ID™", "SoilTrace Certify™"] },
+                    { name: "PulseAg", subnodes: ["CropCyclePulse", "GrowthStageMonitor", "HarvestWindow"] },
+                    { name: "GrowVault", subnodes: ["GrowVault Root™", "GrowVault Share™"] },
+                    { name: "FieldNet", subnodes: ["FieldNet Mesh™", "FieldNet Ping™"] },
+                    { name: "DroneSoil", subnodes: ["DroneSoil View™", "DroneSoil Trace™"] },
+                    { name: "SoilGrid", subnodes: ["SoilGrid X™", "SoilGrid Key™", "SoilGrid Base™"] },
+                    { name: "HarvestLoop", subnodes: ["HarvestLoop Yield™", "HarvestLoop Stack™"] },
+                    { name: "RuralMesh", subnodes: ["RuralMesh Net™", "RuralMesh Pulse™"] },
+                    { name: "FarmFlag", subnodes: ["FarmFlag Cert™", "FarmFlag Signal™"] },
+                    { name: "AgriFlow", subnodes: ["AgriFlow Path™", "AgriFlow Ledger™"] },
+                    { name: "SoilVault", subnodes: ["SoilVault Lock™", "SoilVault View™"] },
+                    { name: "FieldProof", subnodes: ["FieldProof Claim™", "FieldProof Relay™"] },
+                    { name: "DroneTrace", subnodes: ["DroneTrace Tag™", "DroneTrace Vault™"] },
+                    { name: "MarketRoots", subnodes: ["MarketRoots X™", "MarketRoots Grid™"] },
+                    { name: "NutrientPath", subnodes: ["NutrientPath Map™", "NutrientPath Scan™"] },
+                    { name: "CropPulse", subnodes: ["CropPulse Signal™", "CropPulse Ledger™"] },
+                    { name: "AgriPulse", subnodes: ["AgriPulse Loop™", "AgriPulse Ledger™"] },
+                    { name: "EcoSeed", subnodes: ["EcoSeed Vault™", "EcoSeed Sync™"] },
+                    { name: "AgriMetrics", subnodes: ["AgriMetrics Signal™", "AgriMetrics Vault™"] },
+                    { name: "DroneGrid", subnodes: ["DroneGrid Node™", "DroneGrid View™"] },
+                    { name: "GreenNode", subnodes: ["GreenNode Base™", "GreenNode Relay™"] },
+                    { name: "RootVault", subnodes: ["RootVault Claim™", "RootVault Transfer™"] },
+                    { name: "FieldToken", subnodes: ["FieldToken ID™", "FieldToken Pay™"] },
+                    { name: "AgriPlan", subnodes: ["AgriPlan Builder™", "AgriPlan Node™"] },
+                    { name: "SoilYield", subnodes: ["SoilYield Track™", "SoilYield Pulse™"] },
+                    { name: "SeedVault", subnodes: ["SeedVault ID™", "SeedVault Ledger™"] },
+                    { name: "MarketLink", subnodes: ["MarketLink Chain™", "MarketLink Signal™"] },
+                    { name: "CropFlow", subnodes: ["CropFlow Sync™", "CropFlow Vault™"] },
+                    { name: "RuralCast", subnodes: ["RuralCast Net™", "RuralCast Pulse™"] },
+                    { name: "AgriSyncPro", subnodes: ["AgriSyncPro UI™", "AgriSyncPro Lock™"] },
+                    { name: "SoilLine", subnodes: ["SoilLine Scan™", "SoilLine Pulse™"] },
+                    { name: "EcoAgri", subnodes: ["EcoAgri Cert™", "EcoAgri Grid™"] },
+                    { name: "HarvestNode", subnodes: ["HarvestNode Chain™", "HarvestNode Log™"] },
+                    { name: "TerraSoil", subnodes: ["TerraSoil View™", "TerraSoil DNA™"] },
+                    { name: "CropMesh", subnodes: ["CropMesh Grid™", "CropMesh Flow™"] },
+                    { name: "AgriSignal", subnodes: ["AgriSignal Node™", "AgriSignal Loop™"] },
+                    { name: "RuralVault", subnodes: ["RuralVault Lock™", "RuralVault Cert™"] },
+                    { name: "PulseGrow", subnodes: ["PulseGrow Timer™", "PulseGrow Sync™"] },
+                    { name: "MarketSoilX", subnodes: ["MarketSoilX Index™", "MarketSoilX Ledger™"] },
+                    { name: "AgriOmni", subnodes: ["AgriOmni Node™", "AgriOmni Relay™"] }
+                ]
+            },
+            "fsf": { 
+                name: "🥦 Food, Soil & Farming", 
+                repoName: "fsf-seedwave-admin", 
+                baseUrl: "fsf.seedwave.faa.zone", 
+                brands: [{ name: "FarmFlow", subnodes: ["SoilScan", "WaterNet", "CropMonitor"] }] 
+            },
+            "banking": { 
+                name: "🏦 Banking & Finance", 
+                repoName: "banking-seedwave-admin", 
+                baseUrl: "banking.seedwave.faa.zone", 
+                brands: [{ name: "CoinFlow", subnodes: ["LedgerTrack", "AssetVault"] }] 
+            },
+            "creative": { 
+                name: "🖋️ Creative Tech", 
+                repoName: "creative-seedwave-admin", 
+                baseUrl: "creative.seedwave.faa.zone", 
+                brands: [{ name: "PixelFlow", subnodes: ["RenderEngine", "SonicWave", "VisualStory"] }] 
+            },
+            "logistics": { 
+                name: "📦 Logistics & Packaging", 
+                repoName: "logistics-seedwave-admin", 
+                baseUrl: "logistics.seedwave.faa.zone", 
+                brands: [{ name: "CrateLogic", subnodes: ["RouteOptimize", "FleetTrack", "WarehouseSync"] }] 
+            },
+            "education-ip": { 
+                name: "📚 Education & IP", 
+                repoName: "education-seedwave-admin", 
+                baseUrl: "education-ip.seedwave.faa.zone", 
+                brands: [{ name: "EduNest", subnodes: ["CurriculumForge", "LicenseTrack"] }] 
+            },
+            "fashion": { 
+                name: "✂ Fashion & Identity", 
+                repoName: "fashion-seedwave-admin", 
+                baseUrl: "fashion.seedwave.faa.zone", 
+                brands: [{ name: "StyleFlow", subnodes: ["IdentityMesh", "TrendPulse"] }] 
+            },
+            "gaming": { 
+                name: "🎮 Gaming & Simulation", 
+                repoName: "gaming-seedwave-admin", 
+                baseUrl: "gaming.seedwave.faa.zone", 
+                brands: [{ name: "GameGrid", subnodes: ["SimEngine", "RenderNode"] }] 
+            },
+            "health": { 
+                name: "🧠 Health & Hygiene", 
+                repoName: "health-seedwave-admin", 
+                baseUrl: "health.seedwave.faa.zone", 
+                brands: [{ name: "MediVault", subnodes: ["DiagAI", "PatientLink"] }] 
+            },
+            "housing": { 
+                name: "🏗️ Housing & Infrastructure", 
+                repoName: "housing-seedwave-admin", 
+                baseUrl: "housing.seedwave.faa.zone", 
+                brands: [{ name: "BuildFlow", subnodes: ["SmartGrid", "UrbanMesh"] }] 
+            },
+            "justice": { 
+                name: "⚖ Justice & Ethics", 
+                repoName: "justice-seedwave-admin", 
+                baseUrl: "justice.seedwave.faa.zone", 
+                brands: [{ name: "EthiLock", subnodes: ["ComplianceScan", "VaultJustice"] }] 
+            },
+            "knowledge": { 
+                name: "📖 Knowledge & Archives", 
+                repoName: "knowledge-seedwave-admin", 
+                baseUrl: "knowledge.seedwave.faa.zone", 
+                brands: [{ name: "LoreKeeper", subnodes: ["ArchiveSync", "MetaGrid"] }] 
+            },
+            "micromesh": { 
+                name: "☰ Micro-Mesh Logistics", 
+                repoName: "micromesh-seedwave-admin", 
+                baseUrl: "micromesh.seedwave.faa.zone", 
+                brands: [{ name: "PicoFlow", subnodes: ["NanoTrack", "MicroRoute"] }] 
+            },
+            "media": { 
+                name: "🎬 Motion, Media & Sonic", 
+                repoName: "media-seedwave-admin", 
+                baseUrl: "media.seedwave.faa.zone", 
+                brands: [{ name: "SoundWave", subnodes: ["VisualSync", "SonicForge"] }] 
+            },
+            "nutrition": { 
+                name: "✿ Nutrition & Food Chain", 
+                repoName: "nutrition-seedwave-admin", 
+                baseUrl: "nutrition.seedwave.faa.zone", 
+                brands: [{ name: "NutriFlow", subnodes: ["FoodTrace", "YieldOpt"] }] 
+            },
+            "packaging": { 
+                name: "📦 Packaging & Materials", 
+                repoName: "packaging-seedwave-admin", 
+                baseUrl: "packaging.seedwave.faa.zone", 
+                brands: [{ name: "PackSync", subnodes: ["MaterialTrace", "EcoPack"] }] 
+            },
+            "quantum": { 
+                name: "✴️ Quantum Protocols", 
+                repoName: "quantum-seedwave-admin", 
+                baseUrl: "quantum.seedwave.faa.zone", 
+                brands: [{ name: "QuantumLock", subnodes: ["EntangleNode", "CipherStream"] }] 
+            },
+            "ritual": { 
+                name: "☯ Ritual & Culture", 
+                repoName: "ritual-seedwave-admin", 
+                baseUrl: "ritual.seedwave.faa.zone", 
+                brands: [{ name: "CultureMesh", subnodes: ["TraditionVault", "EthnoSync"] }] 
+            },
+            "saas": { 
+                name: "🔑 SaaS & Licensing", 
+                repoName: "saas-seedwave-admin", 
+                baseUrl: "saas.seedwave.faa.zone", 
+                brands: [{ name: "LicenseKey", subnodes: ["ClaimFlow", "TokenGate"] }] 
+            },
+            "trade": { 
+                name: "🧺 Trade Systems", 
+                repoName: "trade-seedwave-admin", 
+                baseUrl: "trade.seedwave.faa.zone", 
+                brands: [{ name: "TradeFlow", subnodes: ["MarketSync", "SupplyLink"] }] 
+            },
+            "utilities": { 
+                name: "🔋 Utilities & Energy", 
+                repoName: "utilities-seedwave-admin", 
+                baseUrl: "utilities.seedwave.faa.zone", 
+                brands: [{ name: "PowerGrid", subnodes: ["EnergyTrack", "DemandSync"] }] 
+            },
+            "voice": { 
+                name: "🎙️ Voice & Audio", 
+                repoName: "voice-seedwave-admin", 
+                baseUrl: "voice.seedwave.faa.zone", 
+                brands: [{ name: "SonicFlow", subnodes: ["VoiceID", "AudioMesh"] }] 
+            },
+            "webless": { 
+                name: "📡 Webless Tech & Nodes", 
+                repoName: "webless-seedwave-admin", 
+                baseUrl: "webless.seedwave.faa.zone", 
+                brands: [{ name: "ZeroWeb", subnodes: ["NodeConnect", "MeshPoint"] }] 
+            },
+            "nft": { 
+                name: "🔁 NFT & Ownership", 
+                repoName: "nft-seedwave-admin", 
+                baseUrl: "nft.seedwave.faa.zone", 
+                brands: [{ name: "TokenVault", subnodes: ["ClaimChain", "ArtFlow"] }] 
+            },
+            "education-youth": { 
+                name: "🎓 Education & Youth", 
+                repoName: "education-youth-seedwave-admin", 
+                baseUrl: "education-youth.seedwave.faa.zone", 
+                brands: [{ name: "FutureMind", subnodes: ["LearnPath", "SkillNode"] }] 
+            },
+            "zerowaste": { 
+                name: "♻️ Zero Waste", 
+                repoName: "zerowaste-seedwave-admin", 
+                baseUrl: "zerowaste.seedwave.faa.zone", 
+                brands: [{ name: "EcoCycle", subnodes: ["RecycleTrack", "WasteOpt"] }] 
+            },
+            "professional": { 
+                name: "🧾 Professional Services", 
+                repoName: "professional-seedwave-admin", 
+                baseUrl: "professional.seedwave.faa.zone", 
+                brands: [{ name: "ProServe", subnodes: ["ConsultFlow", "AdvisoryLink"] }] 
+            },
+            "payroll-mining": { 
+                name: "🪙 Payroll Mining & Accounting", 
+                repoName: "payroll-mining-seedwave-admin", 
+                baseUrl: "payroll-mining.seedwave.faa.zone", 
+                brands: [{ name: "PayMine", subnodes: ["AccountSync", "LedgerFlow"] }] 
+            },
+            "mining": { 
+                name: "⛏️ Mining & Resources", 
+                repoName: "mining-seedwave-admin", 
+                baseUrl: "mining.seedwave.faa.zone", 
+                brands: [{ name: "ResourceFlow", subnodes: ["MineTrack", "DrillNode"] }] 
+            },
+            "wildlife": { 
+                name: "🦁 Wildlife & Habitat", 
+                repoName: "wildlife-seedwave-admin", 
+                baseUrl: "wildlife.seedwave.faa.zone", 
+                brands: [{ name: "HabitatGuard", subnodes: ["EcoTrack", "BioLink"] }] 
+            },
+            "admin-panel": {
+                name: "⚙️ Admin Panel",
+                repoName: "admin-panel-seedwave-admin",
+                baseUrl: "admin-panel.seedwave.faa.zone/home.html",
+                brands: [{ name: "ControlCore", subnodes: ["MetricsView", "UserManage"] }]
+            }
+        };
+
+        function renderSectorOverview() {
+            const container = document.getElementById('sectorOverviewContainer');
+            if (!container) return;
+
+            let htmlContent = '';
+            for (const sectorKey in allSectorsData) {
+                const sector = allSectorsData[sectorKey];
+                htmlContent += `
+                    <div class="mb-8 p-6 rounded-lg bg-[#0D1B2A] shadow-lg border border-[#415A77]">
+                        <h3 class="text-2xl font-bold text-[#38A169] mb-4">${sector.name}</h3>
+                        <p class="text-md text-[#778DA9] mb-2">Repository: <span class="font-semibold text-[#E0E1DD]">${sector.repoName}</span></p>
+                        <p class="text-md text-[#778DA9] mb-6">Base URL: <a href="https://${sector.baseUrl}" target="_blank" class="text-[#63B3ED] hover:underline">${sector.baseUrl}</a></p>
+                        <h4 class="text-xl font-semibold text-[#F6AD55] mb-4">Brands & Subnodes:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                `;
+
+                sector.brands.forEach(brand => {
+                    htmlContent += `
+                        <div class="bg-[#1B263B] p-5 rounded-lg shadow-md border border-[#415A77]">
+                            <h5 class="text-lg font-bold text-[#E0E1DD] mb-3">${brand.name}</h5>
+                            <ul class="list-disc list-inside text-sm text-[#778DA9] space-y-1">
+                    `;
+                    brand.subnodes.forEach(subnode => {
+                        htmlContent += `
+                                <li>
+                                    ${subnode}
+                                    <a href="https://${sector.baseUrl}/sectors/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/${encodeURIComponent(subnode.toLowerCase().replace(/ /g, '-'))}/index" target="_blank" class="text-[#63B3ED] hover:underline text-xs ml-2">(View)</a>
+                                </li>
+                        `;
+                    });
+                    htmlContent += `
+                            </ul>
+                        </div>
+                    `;
+                });
+                htmlContent += `
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = htmlContent;
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCharts();
+            renderSectorOverview();
+        });
+
+        // Language data for i18n
+        window.languageData = window.languageData || {
+            en: {
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyright: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyright: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyright: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMesh: 'VaultMesh™',
+                footerFruitful: 'Fruitful™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyrightText: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            ar: {
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyright: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMesh: 'شبكة الكهف™',
+                footerFruitful: 'مثمر™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyrightText: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.'
+            },
+            zh: {
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyright: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMesh: '金库网格™',
+                footerFruitful: '丰碩™',
+                footerFAAZone: 'FAA.Zone™',
+                footerAbout: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyrightText: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        function updateFooterLanguage(lang) {
+            const footerElements = document.querySelectorAll('footer [data-i18n]');
+            footerElements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (window.languageData[lang] && window.languageData[lang][key]) {
+                    el.innerHTML = window.languageData[lang][key];
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('language') || 'en';
+            updateFooterLanguage(savedLang);
+        });
+    </script>
+</body>
+</html>

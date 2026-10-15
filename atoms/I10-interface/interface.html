@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fruitful Interface — Standard Theme Toggle Preview</title>
+<style>
+:root{
+  --ink:#231F20; --sage:#577D60; --mint:#A7DACB; --coral:#F16B6E;
+  --dustyrose:#B95F56; --artcream:#F0EEDA; --teal:#1E9F97; --red:#E63946; --cream:#FBF4E4;
+  --active: var(--teal);
+  --active-soft: color-mix(in srgb, var(--active) 18%, white);
+  --active-deep: color-mix(in srgb, var(--active) 70%, black);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  padding:0 0 60px;
+}
+header{
+  background:var(--ink); color:var(--cream);
+  padding:22px 28px; position:sticky; top:0; z-index:50;
+}
+header .inner{max-width:1180px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px}
+header h1{font-size:15px; letter-spacing:.12em; text-transform:uppercase; font-weight:700}
+header .sub{font-size:11px; opacity:.65; letter-spacing:.04em; margin-top:2px}
+.badge{
+  display:inline-block; font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:4px 10px; opacity:.85;
+}
+
+.wrap{max-width:1180px; margin:0 auto; padding:32px 28px}
+
+.notice{
+  background:#fff; border:2px solid var(--ink); border-radius:14px; padding:16px 20px;
+  font-size:13px; line-height:1.6; margin-bottom:28px;
+}
+.notice b{text-decoration:underline}
+
+h2.sec{
+  font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#555;
+  margin:36px 0 14px; padding-bottom:8px; border-bottom:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:space-between;
+}
+h2.sec .tag{font-size:10px; letter-spacing:.08em; color:#888; text-transform:none}
+
+/* ===== Toggle bar ===== */
+.toggle-bar{
+  display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px;
+}
+.swatch{
+  border:2px solid var(--ink); border-radius:10px; padding:10px 14px;
+  display:flex; align-items:center; gap:8px; cursor:pointer;
+  background:#fff; font-size:11px; font-weight:600; letter-spacing:.02em;
+  transition:transform .12s ease;
+}
+.swatch:hover{transform:translateY(-2px)}
+.swatch.active{outline:3px solid var(--ink); outline-offset:2px}
+.swatch .dot{width:18px; height:18px; border-radius:50%; border:1px solid rgba(0,0,0,.2); flex:none}
+.swatch.excluded{opacity:.55; border-style:dashed; cursor:not-allowed}
+.swatch.excluded:hover{transform:none}
+.swatch .hexlabel{font-weight:400; opacity:.6; font-size:10px}
+
+.flagnote{font-size:11px; color:#8a5a30; margin:10px 0 0; line-height:1.5}
+
+/* ===== Surface cards ===== */
+.surfaces{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:22px; margin-top:18px}
+.surface{
+  border:2px solid var(--ink); border-radius:16px; overflow:hidden; background:#fff;
+  display:flex; flex-direction:column;
+}
+.surface .s-head{
+  background:var(--active-deep); color:#fff; padding:10px 16px;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700;
+  display:flex; align-items:center; justify-content:space-between;
+  transition:background .25s ease;
+}
+.surface .s-head .pin{font-size:9px; opacity:.75; text-transform:none; letter-spacing:.02em}
+.surface .s-body{padding:18px; flex:1; display:flex; flex-direction:column; gap:12px}
+
+/* Kiosk / Attractor mock */
+.attractor{
+  aspect-ratio:9/13; background:var(--active); border-radius:12px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; position:relative; transition:background .25s ease;
+}
+.attractor .mark{
+  width:64px; height:64px; border-radius:50%; background:var(--cream);
+  display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800;
+  color:var(--active-deep); box-shadow:0 4px 10px rgba(0,0,0,.15); transition:color .25s ease;
+}
+.attractor .word{color:var(--cream); font-weight:800; font-size:15px; letter-spacing:.02em}
+.attractor .cta{
+  background:var(--cream); color:var(--active-deep); font-size:11px; font-weight:700;
+  padding:9px 18px; border-radius:999px; margin-top:6px; transition:color .25s ease;
+}
+
+/* Menu / Browse mock */
+.menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.menu-item{
+  border:1px solid #e4ddd0; border-radius:10px; padding:10px; background:var(--artcream);
+}
+.menu-item .thumb{
+  height:54px; border-radius:7px; background:var(--active-soft); margin-bottom:8px;
+  border:1px solid rgba(0,0,0,.06); transition:background .25s ease;
+}
+.menu-item .name{font-size:11px; font-weight:700}
+.menu-item .price{font-size:10px; color:var(--active-deep); font-weight:700; margin-top:2px; transition:color .25s ease}
+
+/* POS / Checkout mock */
+.pos-row{display:flex; justify-content:space-between; font-size:12px; padding:6px 0; border-bottom:1px dashed #e0d8c8}
+.pos-total{
+  display:flex; justify-content:space-between; font-size:14px; font-weight:800;
+  padding-top:10px; margin-top:4px; border-top:2px solid var(--ink);
+}
+.pos-pay{
+  background:var(--active); color:#fff; text-align:center; padding:12px; border-radius:10px;
+  font-size:12px; font-weight:800; letter-spacing:.04em; margin-top:6px; transition:background .25s ease;
+}
+.pos-pay .sub{display:block; font-weight:400; font-size:10px; opacity:.85; margin-top:2px}
+
+/* Monitor pending mock */
+.monitor{
+  aspect-ratio:16/9; border-radius:10px; border:2px dashed #b9b2a2; background:#f4f0e6;
+  display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px;
+  color:#8a8578; text-align:center; padding:16px;
+}
+.monitor .lock{font-size:22px}
+.monitor .t{font-size:11px; font-weight:700; color:#6b6656}
+.monitor .d{font-size:10px; max-width:220px; line-height:1.5}
+
+footer{
+  max-width:1180px; margin:40px auto 0; padding:20px 28px; border-top:1px solid #e4ddd0;
+  font-size:10.5px; color:#8a8578;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <div>
+      <h1>Fruitful Interface — Standard Theme Toggle</h1>
+      <div class="sub">Conceptual preview · SamFox CI Guide Master palette · non-destructive, style-only</div>
+    </div>
+    <span class="badge">Concept / Not Wired to Live Code</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="notice">
+    This is a <b>visual concept preview</b> of the toggle mechanism confirmed last turn — the same
+    9-swatch pattern from <code>banimalconnectoricon.html</code>, extended as a standard toggle across
+    interface, menu, and POS surfaces. Click any swatch below; every surface card updates live from the
+    same <code>--active</code> token, the way the real <code>ThemePalette</code> component would. Nothing
+    here is wired into the actual <code>fruitfulinterface</code> React app yet — this is for visual sign-off only.
+  </div>
+
+  <h2 class="sec">01 · Palette Toggle <span class="tag">source of truth: SamFox CI Guide Master</span></h2>
+  <div class="toggle-bar" id="toggleBar">
+    <button class="swatch active" data-color="teal" data-hex="#1E9F97"><span class="dot" style="background:#1E9F97"></span>TEAL <span class="hexlabel">#1E9F97</span></button>
+    <button class="swatch" data-color="mint" data-hex="#A7DACB"><span class="dot" style="background:#A7DACB"></span>MINT <span class="hexlabel">#A7DACB</span></button>
+    <button class="swatch" data-color="coral" data-hex="#F16B6E"><span class="dot" style="background:#F16B6E"></span>CORAL <span class="hexlabel">#F16B6E</span></button>
+    <button class="swatch" data-color="red" data-hex="#E63946"><span class="dot" style="background:#E63946"></span>RED <span class="hexlabel">#E63946</span></button>
+    <button class="swatch" data-color="sage" data-hex="#577D60"><span class="dot" style="background:#577D60"></span>SAGE <span class="hexlabel">#577D60</span></button>
+    <button class="swatch" data-color="dustyrose" data-hex="#B95F56"><span class="dot" style="background:#B95F56"></span>DUSTY ROSE <span class="hexlabel">#B95F56</span></button>
+    <button class="swatch" data-color="artcream" data-hex="#F0EEDA"><span class="dot" style="background:#F0EEDA"></span>ART CREAM <span class="hexlabel">#F0EEDA</span></button>
+    <button class="swatch" data-color="cream" data-hex="#FBF4E4"><span class="dot" style="background:#FBF4E4"></span>CREAM <span class="hexlabel">#FBF4E4</span></button>
+    <button class="swatch" data-color="ink" data-hex="#231F20"><span class="dot" style="background:#231F20"></span>INK <span class="hexlabel">#231F20</span></button>
+    <button class="swatch excluded" title="No CI Guide counterpart — flagged, awaiting your call">
+      <span class="dot" style="background:#E8B34A"></span>SUN <span class="hexlabel">not in guide</span>
+    </button>
+  </div>
+  <div class="flagnote">⚠ SUN (amber) has no source-of-truth counterpart — excluded from the toggle by default until you confirm whether it stays as a sanctioned 10th accent.</div>
+
+  <h2 class="sec">02 · Live Surfaces <span class="tag">same 4 real placements, kiosk-scale</span></h2>
+  <div class="surfaces">
+
+    <div class="surface">
+      <div class="s-head">Kiosk Interface <span class="pin">Root App wrapper</span></div>
+      <div class="s-body">
+        <div class="attractor">
+          <div class="mark">F</div>
+          <div class="word">fruitful™</div>
+          <div class="cta">Tap to begin</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface">
+      <div class="s-head">Menu / Browse <span class="pin">BrowseScreen.tsx</span></div>
+      <div class="s-body">
+        <div class="menu-grid">
+          <div class="menu-item"><div class="thumb"></div><div class="name">SamFox Print — Bush</div><div class="price">R 295</div></div>
+          <div class="menu-item"><div class="thumb"></div><div class="name">Wire Art Hat</div><div class="price">R 180</div></div>
+          <div class="menu-item"><div class="thumb"></div><div class="name">Kidswear — Bashedi</div><div class="price">R 220</div></div>
+          <div class="menu-item"><div class="thumb"></div><div class="name">Pancakes + Coffee</div><div class="price">R 65</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface">
+      <div class="s-head">Portal POS <span class="pin">CheckoutScreens.tsx</span></div>
+      <div class="s-body">
+        <div class="pos-row"><span>SamFox Print — Bush</span><span>R 295</span></div>
+        <div class="pos-row"><span>Pancakes + Coffee</span><span>R 65</span></div>
+        <div class="pos-total"><span>Total</span><span>R 360</span></div>
+        <div class="pos-pay">Pay with Paystack<span class="sub">ZAR · Test mode</span></div>
+      </div>
+    </div>
+
+    <div class="surface">
+      <div class="s-head">Monitors <span class="pin">Upper / Lower TV panels</span></div>
+      <div class="s-body">
+        <div class="monitor">
+          <div class="lock">🔒</div>
+          <div class="t">Pending confirmation</div>
+          <div class="d">Waiting on touch-vs-remote input answer and upper/lower screen purpose split before this mount is built.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  Fruitful Interface theme-toggle concept · palette sourced from Sam Fox™ Core CI Guide Master (unaltered) ·
+  companion concept to banimalconnectoricon.html · for visual review only, not yet implemented in code.
+</footer>
+
+<script>
+  var buttons = document.querySelectorAll('#toggleBar .swatch:not(.excluded)');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var hex = btn.getAttribute('data-hex');
+      document.documentElement.style.setProperty('--active', hex);
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
