@@ -1,0 +1,110 @@
+/* Sam Fox™ Core CI Guide master, pulled through the Banimal Connector (samfox-ci-guide skill;
+   ~/Projects/banimal/docs/brand/canonical-brand-manifest.json). The one visual source of truth for the app.
+   Every colour here is from the verified palette, or a tint of one of them:
+     Ink #231F20 · Cream #FBF4E4 · Art cream #F0EEDA · Sage #577D60 · Mint #A7DACB · Coral #F16B6E ·
+     Dusty rose #B95F56 · Teal #1E9F97 · Red #E63946 (alerts only)
+   Ratio: Cream 55 · Body 28 · Accent 12 · Ink 5. Display type: "Futura soul" (Jost, bold geometric), support: system sans.
+   Loaded by omnigrid-app.js after each page's own styles, so it overrides the page tokens without editing the pages.
+   The OmniGrid pulse noodle keeps its own colours: omnigrid-app.js pins them on the rope before this file loads. */
+
+:root {
+    --sf-ink: #231F20;
+    --sf-cream: #FBF4E4;
+    --sf-art-cream: #F0EEDA;
+    --sf-sage: #577D60;
+    --sf-mint: #A7DACB;
+    --sf-coral: #F16B6E;
+    --sf-dusty-rose: #B95F56;
+    --sf-teal: #1E9F97;
+    --sf-red: #E63946;
+    --sf-white: #FFFFFF;
+    --sf-ink-soft: color-mix(in srgb, #231F20 66%, #FBF4E4);
+    --sf-ink-line: color-mix(in srgb, #231F20 13%, #FBF4E4);
+    --sf-ink-raised: color-mix(in srgb, #231F20 90%, #FBF4E4);
+    --sf-ink-raised-2: color-mix(in srgb, #231F20 84%, #FBF4E4);
+    --sf-cream-soft: color-mix(in srgb, #FBF4E4 68%, #231F20);
+    --sf-cream-line: color-mix(in srgb, #FBF4E4 20%, #231F20);
+    --sf-display: 'Jost', 'Futura', 'Futura PT', 'Century Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --sf-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    /* the renderer's tokens (og-pages and every page built on its template) */
+    --text-color-light: var(--sf-ink);
+    --text-color-dark: var(--sf-cream);
+    --bg-color-light: var(--sf-cream);
+    --bg-color-dark: var(--sf-ink);
+    --card-bg-light: var(--sf-white);
+    --card-bg-dark: var(--sf-ink-raised);
+    --border-color-light: var(--sf-ink-line);
+    --border-color-dark: var(--sf-cream-line);
+    --primary-color: var(--sf-sage);
+    --secondary-color: var(--sf-teal);
+    --tertiary-color: var(--sf-red);
+    --amber-color: var(--sf-dusty-rose);
+    --muted-text-light: var(--sf-ink-soft);
+    --muted-text-dark: var(--sf-cream-soft);
+    --soft-light: var(--sf-art-cream);
+    --soft-dark: var(--sf-ink-raised-2);
+}
+body.dark-mode, .dark-mode, html.dark {
+    --primary-color: var(--sf-mint);
+    --secondary-color: var(--sf-teal);
+}
+
+/* typography: system sans for support copy, Futura soul for display */
+body { font-family: var(--sf-body); background: var(--bg-color-light); color: var(--text-color-light); }
+body.dark-mode { background: var(--bg-color-dark); color: var(--text-color-dark); }
+h1, h2, h3, .hero-title, .section-title, .logo-fruitful, .logo-omnigrid, .kicker, .og-display {
+    font-family: var(--sf-display);
+}
+h1, h2, .hero-title, .section-title { font-weight: 700; letter-spacing: -.01em; }
+h3 { font-weight: 600; }
+.kicker { color: var(--primary-color); letter-spacing: .12em; }
+::selection { background: var(--sf-mint); color: var(--sf-ink); }
+
+/* the shared header and footer */
+header.main-header { background: color-mix(in srgb, #FBF4E4 88%, transparent); border-bottom-color: var(--border-color-light); }
+.dark-mode header.main-header { background: color-mix(in srgb, #231F20 88%, transparent); border-bottom-color: var(--border-color-dark); }
+.eco-nav a:hover, .eco-nav a.active { color: var(--text-color-light); background: var(--soft-light); }
+.dark-mode .eco-nav a:hover, .dark-mode .eco-nav a.active { color: var(--text-color-dark); background: var(--soft-dark); }
+footer { background: var(--soft-light); }
+.dark-mode footer { background: var(--soft-dark); }
+
+/* cards, buttons and fields */
+.card, .content-card, .stat-card, details.group, .og-tile {
+    border-radius: 16px;
+    box-shadow: 0 1px 0 var(--sf-ink-line), 0 8px 24px -18px color-mix(in srgb, #231F20 45%, transparent);
+}
+.dark-mode .card, .dark-mode .content-card, .dark-mode .stat-card, .dark-mode details.group { box-shadow: none; }
+.btn, .button, button.primary, .cta, .og-btn, .cf-send {
+    font-family: var(--sf-display); font-weight: 600; letter-spacing: .01em;
+}
+.btn-primary, button.primary, .cta-primary, .cf-send {
+    background: var(--sf-ink) !important; color: var(--sf-cream) !important; border-color: var(--sf-ink) !important;
+}
+.dark-mode .btn-primary, .dark-mode button.primary, .dark-mode .cta-primary, .dark-mode .cf-send {
+    background: var(--sf-cream) !important; color: var(--sf-ink) !important; border-color: var(--sf-cream) !important;
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--sf-sage); outline-offset: 1px; }
+.dark-mode input:focus, .dark-mode textarea:focus, .dark-mode select:focus { outline-color: var(--sf-mint); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--sf-teal); outline-offset: 2px; }
+
+/* the canonical governance strip and bottom-right identity field (manifest "rendering": cream surface, ink marks,
+   never redrawn, retyped or recoloured; the strip stays cream in dark mode so the ink marks are never inverted) */
+.sf-governance {
+    background: var(--sf-cream); color: var(--sf-ink);
+    border-top: 1px solid var(--sf-ink-line);
+    font: 12px/1.5 var(--sf-body);
+}
+.sf-governance .sf-row {
+    max-width: 1200px; margin: 0 auto; padding: 14px 16px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px;
+}
+.sf-governance .sf-legal { opacity: .75; }
+.sf-governance .sf-legal b { font-family: var(--sf-display); font-weight: 600; opacity: 1; }
+.sf-governance .sf-id { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.sf-governance .sf-id img { display: block; height: 28px; width: auto; }
+.sf-governance .sf-id img.sf-icon { height: 30px; }
+@media (max-width: 600px) {
+    .sf-governance .sf-row { justify-content: center; text-align: center; }
+    .sf-governance .sf-id { margin: 0 auto; }
+}

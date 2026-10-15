@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAA™ | Treaty Grid</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="FAA™ Treaty Shell – Activate Scrolls, Vaults, and Alignment Layers" />
+  <link rel="icon" href="/favicon.ico" />
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+<header class="w-full py-6 px-8 flex justify-between items-center bg-gray-900 text-white">
+  <h1 class="text-xl font-bold tracking-wide">FAA Treaty Shell™</h1>
+  <nav class="space-x-6 text-sm">
+    <a href="#vault" class="hover:underline">Vault</a>
+    <a href="#scrolls" class="hover:underline">Scrolls</a>
+    <a href="#omnikey" class="hover:underline">OmniKey</a>
+    <a href="#treaty-grid" class="hover:underline">Treaty Grid</a>
+    <a href="#cta" class="bg-white text-gray-900 px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition">Enter</a>
+  </nav>
+</header>
+
+<section class="min-h-screen flex flex-col justify-center items-center text-center bg-gradient-to-br from-blue-600 to-purple-700 text-white px-6">
+  <h2 class="text-6xl font-black mb-4">🦍 FAA™</h2>
+  <p class="text-xl max-w-2xl mb-6">Primal Treaty Glyph Layer. Vault-aligned. Scroll-activated. Ready to converge.</p>
+  <a href="#vault" class="px-8 py-4 bg-white text-blue-700 font-semibold rounded-full shadow hover:bg-gray-100">Explore Vault</a>
+</section>
+
+<section id="vault" class="py-20 bg-white text-center">
+  <h3 class="text-4xl font-bold mb-6">Vault Alignment Portal</h3>
+  <p class="max-w-3xl mx-auto text-lg text-gray-700">FAA Vaults™ represent convergence points across treaty-based IP layers. This portal links scroll data, treaty licenses, and transactional glyphs under one sovereign signature.</p>
+</section>
+
+<section id="scrolls" class="py-20 bg-gray-100 text-center">
+  <h3 class="text-3xl font-bold mb-4">Active Scrolls</h3>
+  <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <h4 class="text-xl font-bold mb-2">vault@faa.zone</h4>
+      <p class="text-gray-600 text-sm">Central routing alias for inbound compliance, licensing, and vault maps.</p>
+    </div>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <h4 class="text-xl font-bold mb-2">ops@faa.zone</h4>
+      <p class="text-gray-600 text-sm">Scroll-layer dispatch and glyph-bound trigger routing operations.</p>
+    </div>
+    <div class="p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+      <h4 class="text-xl font-bold mb-2">scrolls@faa.zone</h4>
+      <p class="text-gray-600 text-sm">Scroll metadata ingestion & outbound Treaty communication layer.</p>
+    </div>
+  </div>
+</section>
+
+<section id="omnikey" class="py-20 bg-white text-center">
+  <h3 class="text-3xl font-bold mb-6">OmniKey™ License Activation</h3>
+  <p class="max-w-2xl mx-auto text-lg text-gray-700 mb-6">Activate your FAA Scroll by triggering OmniKey. Your wallet confirms, your scroll binds.</p>
+  <a href="licensing.html" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-full shadow inline-block transition">License This Vault</a>
+</section>
+
+<section id="treaty-grid" class="py-20 px-6 bg-slate-900 text-white">
+  <!-- Treaty Grid Live Status: from codenest packages/apps/desktop-commander/src/components/TreatyGrid.tsx (3046e87d).
+       Same four nodes and the same 9-second VaultMesh pulse; each node now reads the app's own live files instead of counting on a timer. -->
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div>
+        <h3 class="text-3xl font-bold">🛡️ Treaty Grid Live Status</h3>
+        <p class="text-sm text-slate-400 mt-1">Every node is re-read on the 9-second VaultMesh pulse. Green means the source answered just now.</p>
+      </div>
+      <div id="tg-pulse" class="px-3 py-2 rounded-lg border border-slate-500 text-sm font-semibold">⚡ Pulse starting…</div>
+    </div>
+    <div id="tg-nodes" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+    <div class="grid grid-cols-3 gap-4 p-4 bg-slate-800 rounded-lg text-center">
+      <div><div id="tg-pulses" class="text-2xl font-bold">0</div><div class="text-xs text-slate-400">pulses this visit</div></div>
+      <div><div id="tg-active" class="text-2xl font-bold">0/4</div><div class="text-xs text-slate-400">nodes answering</div></div>
+      <div><div id="tg-time" class="text-2xl font-bold">–</div><div class="text-xs text-slate-400">Pretoria time</div></div>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  var NODES = [
+    { id: 'pretoria-grid', name: 'Pretoria Grid', read: function () {
+        return fetch('https://api.open-meteo.com/v1/forecast?latitude=-25.7479&longitude=28.2293&current=temperature_2m,wind_speed_10m&timezone=Africa%2FJohannesburg', { cache: 'no-store' })
+          .then(function (r) { return r.json(); }).then(function (d) { return d.current.temperature_2m + ' °C · wind ' + d.current.wind_speed_10m + ' km/h (Open-Meteo, now)'; }); } },
+    { id: 'vaultmesh-pulse', name: 'VaultMesh Pulse (9s)', read: function () {
+        return fetch('omnigrid-pulse.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+          return (d.stations || []).length + ' stations · snapshot ' + String(d.generated_at).slice(0, 10); }); } },
+    { id: 'treaty-sync', name: 'TreatySync Protocol', read: function () {
+        return fetch('sector-pulses.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+          var s = d.sectors || {}; return Object.keys(s).length + ' sector families synced: ' + Object.keys(s).map(function (k) { return s[k].name + ' (' + s[k].status + ')'; }).join(', '); }); } },
+    { id: 'brand-registry', name: 'Brand Registry', read: function () {
+        return fetch('grid-data.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+          var b = 0, n = 0, k = 0; Object.keys(d.sectors).forEach(function (x) { var v = d.sectors[x]; if (v && v.brands) { k++; b += v.brands.length; (v.subNodes || []).forEach(function (l) { n += l.length; }); } });
+          return b.toLocaleString() + ' core brands · ' + n.toLocaleString() + ' subnodes · ' + k + ' sectors'; }); } }
+  ];
+  var state = NODES.map(function () { return { status: 'pending', detail: 'Waiting for the first pulse', last: null, count: 0 }; });
+  var pulses = 0;
+  function draw() {
+    document.getElementById('tg-nodes').innerHTML = NODES.map(function (n, i) {
+      var s = state[i], c = s.status === 'active' ? 'border-green-500 bg-green-500/10' : s.status === 'error' ? 'border-red-500 bg-red-500/10' : 'border-slate-500';
+      return '<div class="border rounded-lg p-4 ' + c + '"><div class="flex items-center justify-between mb-2"><h4 class="font-semibold">' +
+        (s.status === 'active' ? '✅ ' : s.status === 'error' ? '⚠️ ' : '⏳ ') + n.name + '</h4></div>' +
+        '<div class="text-sm text-slate-200 mb-1">' + s.detail.replace(/</g, '&lt;') + '</div>' +
+        '<div class="text-xs text-slate-400">Last sync: ' + (s.last ? s.last.toLocaleTimeString() : '–') + ' · Sync count: ' + s.count + '</div></div>';
+    }).join('');
+    var a = state.filter(function (s) { return s.status === 'active'; }).length;
+    document.getElementById('tg-active').textContent = a + '/4';
+    document.getElementById('tg-pulses').textContent = pulses;
+    var p = document.getElementById('tg-pulse');
+    p.textContent = a === 4 ? '⚡ 9s Pulse Active' : a ? '⚡ Pulse partial (' + a + '/4)' : '⚡ Pulse waiting';
+    p.className = 'px-3 py-2 rounded-lg border text-sm font-semibold ' + (a === 4 ? 'border-green-500 text-green-300' : 'border-yellow-500 text-yellow-300');
+  }
+  function pulse() {
+    pulses++;
+    Promise.all(NODES.map(function (n, i) {
+      return n.read().then(function (detail) { state[i] = { status: 'active', detail: detail, last: new Date(), count: state[i].count + 1 }; },
+        function (e) { state[i].status = 'error'; state[i].detail = 'Not answering right now (' + (e && e.message || 'network') + ')'; });
+    })).then(draw);
+    document.getElementById('tg-time').textContent = new Date().toLocaleTimeString('en-ZA', { timeZone: 'Africa/Johannesburg', hour: '2-digit', minute: '2-digit' });
+  }
+  draw(); pulse(); setInterval(pulse, 9000);
+})();
+</script>
+
+<section id="cta" class="py-20 px-6 text-center bg-blue-700 text-white">
+  <h2 class="text-4xl font-bold mb-6">Ready to Treaty?</h2>
+  <a href="checkout.html" class="px-10 py-5 bg-white text-blue-700 rounded-full font-bold hover:bg-gray-200 transition">Activate FAA™</a>
+</section>
+
+<footer class="py-10 px-6 text-center bg-gray-900 text-white text-sm">
+  © 2025 FAA™. Treaty Secured. MetaFlow™, Vault Builder™, OmniKey™, and Primal Glyph™ are protected scroll-licensed assets.
+</footer>
+
+<script src="/omnigrid-app.js"></script>
+</body>
+</html>
