@@ -1,0 +1,2832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Signal Sync | FAA Portal</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Apple inspired cleanliness */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #ffffff; /* Pure white */
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff; /* Pure white */
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --tertiary-color: #ff3b30; /* Vibrant Red */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+
+            /* Baobab specific colors (for the embedded dashboard only) */
+            --baobab-primary-dark: #1A1A1A; /* Deep Black for Baobab elements */
+            --baobab-secondary-dark: #222222;
+            --baobab-light-text: #EAEAEA;
+            --baobab-gold: #B8860B; /* DarkGoldenrod */
+            --baobab-muted-gray: #4A4A4A;
+            --baobab-border-gray: #4A4A4A;
+            --baobab-slate-light: #f1f5f9; /* slate-100 */
+            --baobab-slate-medium: #e2e8f0; /* slate-200 */
+            --baobab-slate-dark: #475569; /* slate-600 */
+            --baobab-slate-text-dark: #64748b; /* slate-500 for chart labels */
+
+            /* Hyper Theme overrides */
+            --hyper-primary: #EE44FF; /* Neon Pink/Purple */
+            --hyper-secondary: #00FFFF; /* Cyan */
+            --hyper-tertiary: #FFD700; /* Gold */
+            --hyper-bg: #1A0033; /* Deep Purple */
+            --hyper-card-bg: #2B0055;
+            --hyper-text: #F0F0FF;
+            --hyper-muted-text: #B080D0;
+            --hyper-border: #500080;
+
+            /* Dynamic properties for header positioning */
+            --announcement-bar-height: 0px;
+            --header-height: 0px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex; /* Ensures header and main content behave nicely */
+            flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+            overflow-x: hidden; /* Prevent horizontal scroll for the whole page */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--border-color-light);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+            border: 2px solid var(--border-color-light);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0066cc;
+        }
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: var(--border-color-dark);
+        }
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-color: var(--border-color-dark);
+        }
+        body.hyper-mode ::-webkit-scrollbar-track {
+            background: var(--hyper-border);
+        }
+        body.hyper-mode ::-webkit-scrollbar-thumb {
+            background: var(--hyper-primary);
+            border-color: var(--hyper-border);
+        }
+
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        body.dark-mode header.main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+        body.dark-mode .logo-group { color: var(--text-color-dark); }
+        body.dark-mode .logo-separator { color: var(--muted-text-dark); }
+        body.dark-mode .logo-omnigrid { color: var(--text-color-dark); }
+        body.dark-mode section.content-section {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.dark-mode section.content-section h2, 
+        body.dark-mode section.content-section h3,
+        body.dark-mode .feature-card h4,
+        body.dark-mode #price,
+        body.dark-mode .admin-portal-container .admin-main-content h2,
+        body.dark-mode .admin-portal-container .admin-main-content h3,
+        body.dark-mode .admin-portal-container .admin-main-content label,
+        body.dark-mode #admin-global-dashboard .dashboard-header-h2,
+        body.dark-mode #admin-global-dashboard .tech-pillar h3,
+        body.dark-mode #admin-global-dashboard #tech-stack-content,
+        body.dark-mode #admin-global-dashboard .explorer-brand-card,
+        body.dark-mode #admin-global-dashboard .sovereign-scrolls-info,
+        body.dark-mode .ledger-metric-card,
+        body.dark-mode .chart-options-default {
+            color: var(--text-color-dark);
+        }
+        body.dark-mode section.content-section p,
+        body.dark-mode .feature-card p,
+        body.dark-mode #timestamp,
+        body.dark-mode .admin-portal-container .admin-table tbody td,
+        body.dark-mode .admin-portal-container .metrics-grid h3,
+        body.dark-mode #admin-global-dashboard .dashboard-header-p,
+        body.dark-mode #admin-global-dashboard .dashboard-metric-card h3,
+        body.dark-mode #admin-global-dashboard .tech-pillar p,
+        body.dark-mode #admin-global-dashboard #tech-stack-content p,
+        body.dark-mode #admin-global-dashboard #tech-stack-content ul,
+        body.dark-mode #admin-global-dashboard .explorer-brand-card p,
+        body.dark-mode #admin-global-dashboard .sovereign-scrolls-info p,
+        body.dark-mode #admin-global-dashboard .sovereign-scrolls-info ul,
+        body.dark-mode .ledger-metric-card h3 {
+            color: var(--muted-text-dark);
+        }
+        body.dark-mode .feature-card,
+        body.dark-mode #seedwave .w-full.max-w-4xl,
+        body.dark-mode .admin-portal-container .admin-main-content .content-block,
+        body.dark-mode .admin-portal-container .metrics-grid a {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            border-top-color: #333;
+            color: #888;
+        }
+        body.dark-mode footer a { color: #e0e0e0; }
+        body.dark-mode footer a:hover { color: #f5f5f7; }
+        body.dark-mode #admin-portal-sidebar {
+            background-color: rgba(26, 26, 28, 0.9); /* Darker sidebar semi-transparent */
+            border-right-color: var(--border-color-dark);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+        }
+        body.dark-mode #admin-portal-sidebar h2 { color: var(--muted-text-dark); }
+        body.dark-mode #admin-portal-sidebar .menu-item { color: var(--text-color-dark); }
+        body.dark-mode #admin-portal-sidebar .menu-item:hover { background-color: rgba(255,255,255,0.05); }
+        body.dark-mode #admin-portal-sidebar .menu-item.active { background-color: rgba(0, 113, 227, 0.2); }
+        body.dark-mode .admin-portal-container .top-nav {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.dark-mode .admin-portal-container .top-nav a { color: var(--text-color-dark); }
+        body.dark-mode .admin-portal-container .top-nav a:hover { background-color: rgba(255,255,255,0.03); }
+        body.dark-mode .admin-portal-container .top-nav a.active { background-color: rgba(0, 113, 227, 0.2); }
+        body.dark-mode .admin-portal-container .admin-table thead {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+        }
+        body.dark-mode .admin-portal-container .admin-table th,
+        body.dark-mode .admin-portal-container .admin-table td {
+            border-color: var(--border-color-dark);
+        }
+        body.dark-mode .admin-portal-container .admin-table tbody tr { background-color: var(--bg-color-dark); }
+        body.dark-mode .admin-portal-container .admin-table tbody tr:hover { background-color: #2b2b2f; }
+        body.dark-mode .admin-portal-container .admin-table tbody tr:nth-child(odd) { background-color: var(--card-bg-dark); }
+        body.dark-mode .bg-gray-50 { background-color: var(--bg-color-dark) !important; } /* For text generation tool output */
+        body.dark-mode .bg-gray-100 { background-color: var(--card-bg-dark) !important; } /* For iframes loading background */
+
+        /* Hyper Style */
+        body.hyper-mode {
+            background-color: var(--hyper-bg);
+            color: var(--hyper-text);
+        }
+        body.hyper-mode header.main-header {
+            background-color: var(--hyper-card-bg);
+            border-bottom-color: var(--hyper-border);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.5);
+        }
+        body.hyper-mode .logo-fruitful { color: var(--hyper-primary); }
+        body.hyper-mode .logo-separator { color: var(--hyper-muted-text); }
+        body.hyper-mode .logo-omnigrid { color: var(--hyper-text); }
+        body.hyper-mode .noodle-dot { background-color: var(--hyper-secondary); }
+        body.hyper-mode .noodle-dot.dot-stepdad { background-color: var(--hyper-tertiary); }
+        body.hyper-mode .cta-button {
+            background-color: var(--hyper-primary);
+            box-shadow: 0 4px 15px rgba(238, 68, 255, 0.4);
+        }
+        body.hyper-mode .cta-button:hover { background-color: #CC33EE; box-shadow: 0 6px 20px rgba(238, 68, 255, 0.6); }
+        body.hyper-mode .cta-button.cta-button-secondary {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-text);
+            border-color: var(--hyper-border);
+            box-shadow: 0 2px 5px rgba(0,255,255,0.2);
+        }
+        body.hyper-mode .cta-button.cta-button-secondary:hover {
+            background-color: #3C0077;
+            color: var(--hyper-secondary);
+            box-shadow: 0 4px 10px rgba(0,255,255,0.4);
+        }
+        body.hyper-mode section.content-section {
+            background-color: var(--hyper-bg);
+            border-bottom-color: var(--hyper-border);
+        }
+        body.hyper-mode section.content-section h2, 
+        body.hyper-mode section.content-section h3,
+        body.hyper-mode .feature-card h4,
+        body.hyper-mode #price,
+        body.hyper-mode .admin-portal-container .admin-main-content h2,
+        body.hyper-mode .admin-portal-container .admin-main-content h3,
+        body.hyper-mode .admin-portal-container .admin-main-content label,
+        body.hyper-mode #admin-global-dashboard .dashboard-header-h2,
+        body.hyper-mode #admin-global-dashboard .tech-pillar h3,
+        body.hyper-mode #admin-global-dashboard #tech-stack-content,
+        body.hyper-mode #admin-global-dashboard .explorer-brand-card,
+        body.hyper-mode #admin-global-dashboard .sovereign-scrolls-info,
+        body.hyper-mode .ledger-metric-card,
+        body.hyper-mode .chart-options-default {
+            color: var(--hyper-text);
+        }
+        body.hyper-mode section.content-section p,
+        body.hyper-mode .feature-card p,
+        body.hyper-mode #timestamp,
+        body.hyper-mode .admin-portal-container .admin-table tbody td,
+        body.hyper-mode .admin-portal-container .metrics-grid h3,
+        body.hyper-mode #admin-global-dashboard .dashboard-header-p,
+        body.hyper-mode #admin-global-dashboard .dashboard-metric-card h3,
+        body.hyper-mode #admin-global-dashboard .tech-pillar p,
+        body.hyper-mode #admin-global-dashboard #tech-stack-content p,
+        body.hyper-mode #admin-global-dashboard #tech-stack-content ul,
+        body.hyper-mode #admin-global-dashboard .explorer-brand-card p,
+        body.hyper-mode #admin-global-dashboard .sovereign-scrolls-info p,
+        body.hyper-mode #admin-global-dashboard .sovereign-scrolls-info ul,
+        body.hyper-mode .ledger-metric-card h3 {
+            color: var(--hyper-muted-text);
+        }
+        body.hyper-mode .feature-card,
+        body.hyper-mode #seedwave .w-full.max-w-4xl,
+        body.hyper-mode .admin-portal-container .admin-main-content .content-block,
+        body.hyper-mode .admin-portal-container .metrics-grid a {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border);
+            box-shadow: 0 2px 10px rgba(0,255,255,0.15);
+        }
+        body.hyper-mode footer {
+            border-top-color: var(--hyper-border);
+            color: var(--hyper-muted-text);
+            background-color: var(--hyper-bg); /* Ensure footer background changes with hyper mode */
+        }
+        body.hyper-mode footer a { color: var(--hyper-muted-text); }
+        body.hyper-mode footer a:hover { color: var(--hyper-text); }
+        body.hyper-mode #admin-portal-sidebar {
+            background-color: rgba(26, 0, 51, 0.9); /* Darker sidebar semi-transparent */
+            border-right-color: var(--hyper-border);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+        }
+        body.hyper-mode #admin-portal-sidebar h2 { color: var(--hyper-muted-text); }
+        body.hyper-mode #admin-portal-sidebar .menu-item { color: var(--hyper-text); }
+        body.hyper-mode #admin-portal-sidebar .menu-item:hover { background-color: rgba(238, 68, 255, 0.1); }
+        body.hyper-mode #admin-portal-sidebar .menu-item.active { background-color: rgba(238, 68, 255, 0.2); }
+        body.hyper-mode .admin-portal-container .top-nav {
+            background-color: var(--hyper-card-bg);
+            border-bottom-color: var(--hyper-border);
+        }
+        body.hyper-mode .admin-portal-container .top-nav a { color: var(--hyper-text); }
+        body.hyper-mode .admin-portal-container .top-nav a:hover { background-color: rgba(0,255,255,0.05); }
+        body.hyper-mode .admin-portal-container .top-nav a.active { background-color: rgba(0, 255, 255, 0.2); }
+        body.hyper-mode .admin-portal-container .admin-table thead {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-text);
+        }
+        body.hyper-mode .admin-portal-container .admin-table th,
+        body.hyper-mode .admin-portal-container .admin-table td {
+            border-color: var(--hyper-border);
+        }
+        body.hyper-mode .admin-portal-container .admin-table tbody tr { background-color: var(--hyper-bg); }
+        body.hyper-mode .admin-portal-container .admin-table tbody tr:hover { background-color: #3C0077; }
+        body.hyper-mode .admin-portal-container .admin-table tbody tr:nth-child(odd) { background-color: var(--hyper-card-bg); }
+        body.hyper-mode .bg-gray-50 { background-color: var(--hyper-bg) !important; } /* For text generation tool output */
+        body.hyper-mode .bg-gray-100 { background-color: var(--hyper-card-bg) !important; } /* For iframes loading background */
+
+
+        /* Announcement Bar */
+        #announcement-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 70; /* Highest z-index */
+            transition: all 0.3s ease-out;
+            transform-origin: top;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        #announcement-bar.hidden {
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            transform: scaleY(0);
+        }
+        #announcement-bar a {
+            color: white;
+            font-weight: 600;
+            text-decoration: underline;
+            transition: opacity 0.2s ease;
+        }
+        #announcement-bar a:hover {
+            opacity: 0.8;
+        }
+        #announcement-bar .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            padding: 5px;
+            transition: transform 0.2s ease;
+        }
+        #announcement-bar .close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Global Header (always visible at the top) */
+        header.main-header {
+            background-color: var(--bg-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+            padding: 15px 20px;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: var(--announcement-bar-height, 0px); /* Dynamic top based on announcement bar */
+            z-index: 50; /* Below announcement, above main content sections */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box; /* Include padding in width */
+            transition: top 0.3s ease; /* Smooth transition for sticky header */
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+        .logo-group .logo-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .logo-fruitful {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+        .logo-separator {
+            color: var(--muted-text-light);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .logo-omnigrid {
+            color: var(--text-color-light);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        /* Pulse Grid Noodle Rope */
+        .pulse-grid-noodle-rope {
+            display: flex;
+            align-items: center;
+            height: 2px;
+            width: 120px;
+            background-color: var(--muted-text-light);
+            border-radius: 1px;
+            position: relative;
+            margin: 0 20px;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .pulse-grid-noodle-rope { display: none; }
+        }
+
+        .noodle-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            animation: pulse 3s infinite ease-in-out;
+        }
+        .noodle-dot.dot-stepdad {
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary-color);
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+        }
+
+        /* Desktop Nav Actions (Sign Up, etc.) */
+        .main-header .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto; /* Push to the right */
+        }
+        @media (max-width: 1023px) { /* Hide on tablet/mobile header */
+            .main-header .nav-actions {
+                display: none;
+            }
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            display: flex;
+            gap: 8px;
+            background-color: var(--border-color-light);
+            padding: 6px;
+            border-radius: 20px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .theme-switcher button {
+            background-color: transparent;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted-text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .theme-switcher button.active {
+            background-color: var(--bg-color-light);
+            color: var(--primary-color);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+        body.dark-mode .theme-switcher { background-color: var(--border-color-dark); }
+        body.dark-mode .theme-switcher button { color: var(--muted-text-dark); }
+        body.dark-mode .theme-switcher button.active {
+            background-color: var(--card-bg-dark);
+            color: var(--primary-color);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        }
+        body.hyper-mode .theme-switcher { background-color: var(--hyper-border); }
+        body.hyper-mode .theme-switcher button { color: var(--hyper-muted-text); }
+        body.hyper-mode .theme-switcher button.active {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-secondary);
+            box-shadow: 0 1px 5px rgba(0,255,255,0.2);
+        }
+
+
+        /* CTA Buttons (general styling for various buttons) */
+        .cta-button {
+            display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px;
+            background-color: var(--primary-color); color: white; text-decoration: none;
+            border-radius: 25px; font-weight: 600; font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); line-height: 1.2; flex-shrink: 0;
+            min-width: 140px; max-width: 160px; justify-content: center;
+        }
+        .cta-button:hover { background-color: #0066cc; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .cta-button.cta-button-secondary {
+            background-color: #e8e8ed; color: #424245; box-shadow: none; border: 1px solid #dcdcdc;
+        }
+        .cta-button.cta-button-secondary:hover {
+            background-color: #dcdcdc; color: #1d1d1f; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* Hamburger Menu (visible on mobile/tablet) */
+        .hamburger-menu {
+            display: none; /* Hidden by default */
+            background: none; border: none; font-size: 1.5rem; cursor: pointer;
+            color: var(--text-color-light); transition: color 0.3s ease;
+        }
+        @media (max-width: 1023px) { /* Show on tablet/mobile header */
+            .hamburger-menu { display: block; margin-left: auto; /* Push to the right */ }
+        }
+
+
+        /* Main Content Wrapper (the scrollable area for sections) */
+        main.main-content-wrapper {
+            flex-grow: 1; /* Takes remaining height below header/announcement */
+            overflow-y: auto; /* Enables scrolling for page content */
+            position: relative; /* For child positioning */
+        }
+
+        /* Generic Section Styling for all main content sections */
+        section.content-section {
+            padding: 8rem 2rem;
+            background-color: var(--bg-color-light);
+            box-shadow: none;
+            border-bottom: 1px solid var(--border-color-light);
+            text-align: center;
+            display: none; /* All content sections hidden by default, managed by JS */
+            animation: fadeIn 0.5s ease-out; /* Simple fade in animation */
+        }
+        section.content-section:last-of-type { border-bottom: none; }
+        section.content-section.active { display: block; } /* Active view is shown */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        section.content-section h2, section.content-section h3 {
+            color: var(--text-color-light); font-weight: 700; letter-spacing: -0.03em;
+            margin-bottom: 2rem; font-size: 2.2rem;
+        }
+        section.content-section p {
+            color: var(--muted-text-light); font-size: 1.1rem; line-height: 1.5;
+        }
+
+        /* Specific Content Section Styles (from previous Fruitful portal code) */
+
+        /* Hero Content Section (original first section) */
+        #innovate-connect-thrive { /* Now a content-section */
+            padding: 4rem 1.5rem; /* Adjusted for consistency */
+        }
+        #innovate-connect-thrive h2 {
+            font-size: 3.5rem; font-weight: 800; letter-spacing: -0.03em;
+            color: var(--text-color-light); line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        #innovate-connect-thrive h2 span { color: var(--primary-color); }
+        #innovate-connect-thrive p {
+            font-size: 1.2rem; font-weight: 400; color: var(--muted-text-light);
+            max-width: 800px; margin: 0 auto 2.5rem; line-height: 1.5;
+        }
+        #innovate-connect-thrive .cta-group {
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1rem;
+        }
+        /* Hero CTA Buttons reuse cta-button styles */
+
+        /* Rhythmic Canvas Section */
+        #rhythmic-canvas-section {
+            position: relative; min-height: 70vh; background-color: var(--bg-color-light);
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
+        }
+        #rhythmic-canvas-section #rhythmicCanvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;
+            z-index: 0; background-color: transparent;
+        }
+        #rhythmic-canvas-section .hero-canvas-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, rgba(0, 113, 227, 0.1) 0%, transparent 70%);
+            pointer-events: none; z-index: 1; animation: subtlePulse 5s infinite ease-in-out alternate;
+        }
+
+        /* Dynamic Planet Pulse Section */
+        #planet-pulse-section {
+            background: linear-gradient(135deg, var(--bg-color-light) 0%, var(--border-color-light) 100%);
+            color: var(--text-color-light);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        body.dark-mode #planet-pulse-section {
+            background: linear-gradient(135deg, var(--bg-color-dark) 0%, var(--card-bg-dark) 100%);
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.hyper-mode #planet-pulse-section {
+            background: linear-gradient(135deg, var(--hyper-bg) 0%, #4a008a 100%);
+            border-bottom-color: var(--hyper-border);
+        }
+
+        #planet-text {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin: 0;
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.5s ease-in-out;
+            will-change: opacity, transform;
+            color: var(--primary-color);
+        }
+        body.dark-mode #planet-text { color: var(--primary-color); }
+        body.hyper-mode #planet-text { color: var(--hyper-secondary); }
+
+        #planet-text.pulse-animation {
+            animation: textPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes textPulse {
+            0% { transform: scale(1); opacity: 1; text-shadow: 0 0 5px rgba(0,113,227,0.3); }
+            50% { transform: scale(1.05); opacity: 0.9; text-shadow: 0 0 15px rgba(0,113,227,0.7); }
+            100% { transform: scale(1); opacity: 1; text-shadow: 0 0 5px rgba(0,113,227,0.3); }
+        }
+        body.hyper-mode @keyframes textPulse {
+            0% { transform: scale(1); opacity: 1; text-shadow: 0 0 8px var(--hyper-primary); }
+            50% { transform: scale(1.05); opacity: 0.9; text-shadow: 0 0 20px var(--hyper-primary); }
+            100% { transform: scale(1); opacity: 1; text-shadow: 0 0 8px var(--hyper-primary); }
+        }
+
+
+        /* New Baobab Terminal Section (Public Facing) */
+        #baobab-terminal-access {
+            background-color: var(--baobab-primary-dark); color: var(--baobab-light-text);
+            padding: 8rem 2rem; text-align: center; border-bottom: 1px solid var(--baobab-border-gray);
+        }
+        #baobab-terminal-access h2 {
+            font-size: 3.5rem; font-weight: 800; letter-spacing: -0.03em;
+            color: var(--baobab-gold); line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        #baobab-terminal-access p {
+            font-size: 1.2rem; color: var(--baobab-light-text); max-width: 800px; margin: 0 auto 2.5rem;
+        }
+        #baobab-terminal-access .terminal-iframe-container {
+            width: 100%; max-width: 900px; height: 700px; margin: 3rem auto 0;
+            background-color: #0d0d0d; border: 2px solid var(--baobab-gold); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 0 20px rgba(184, 134, 11, 0.4); position: relative;
+        }
+        /* Iframe styling */
+        .iframe-pastel-bg {
+            background-color: #f0f0f5; /* Light pastel gray/blue */
+            border-radius: 12px;
+            border: 1px solid var(--border-color-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        body.dark-mode .iframe-pastel-bg {
+            background-color: #2a2a2e; /* Darker pastel for dark mode */
+            border-color: var(--border-color-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        body.hyper-mode .iframe-pastel-bg {
+            background-color: #3C0077; /* Hyper pastel */
+            border-color: var(--hyper-border);
+            box-shadow: 0 44px 15px rgba(0,255,255,0.2);
+        }
+
+        #baobab-terminal-access .terminal-iframe-container iframe { width: 100%; height: 100%; border: none; display: block; }
+        .baobab-terminal-btn {
+            background-color: var(--baobab-gold); color: var(--baobab-primary-dark);
+            padding: 1rem 2rem; border-radius: 25px; font-weight: 600; font-size: 1.1rem;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; margin-top: 2rem;
+        }
+        .baobab-terminal-btn:hover { background-color: #DAA520; transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+        .baobab-terminal-btn .icon { font-size: 1.3em; }
+
+        /* Feature Cards */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; } /* Tailwind default grid */
+        .feature-card {
+            background-color: var(--bg-color-light); border-radius: 12px; padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid var(--border-color-light);
+        }
+        .feature-card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
+        .feature-card div:first-child { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-color); }
+        .feature-card h4 { font-size: 1.2rem; font-weight: 600; color: var(--text-color-light); margin-bottom: 0.5rem; }
+        .feature-card p { font-size: 0.95rem; color: var(--muted-text-light); }
+
+        /* Share Signal Section */
+        #shareprice h2 { font-size: 1.8rem; font-weight: 600; margin-bottom: 0.5rem; }
+        #price { font-size: 3rem; font-weight: 700; color: var(--primary-color); letter-spacing: -0.02em; }
+        #timestamp { color: var(--muted-text-light); font-size: 0.85rem; }
+
+        /* Seedwave Growth */
+        #seedwave h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-color-light); }
+        #seedwave .w-full.max-w-4xl {
+            background-color: #fcfcfc; border: 1px solid var(--border-color-light); padding: 1.5rem;
+            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Media Data Pulse Section */
+        #media-data-pulse-section {
+            background-color: var(--bg-color-light);
+            border-bottom: 1px solid var(--border-color-light);
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+        body.dark-mode #media-data-pulse-section {
+            background-color: var(--bg-color-dark);
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.hyper-mode #media-data-pulse-section {
+            background-color: var(--hyper-bg);
+            border-bottom-color: var(--hyper-border);
+        }
+        #media-data-pulse-section h2 {
+            font-size: 3.5rem; font-weight: 800; letter-spacing: -0.03em;
+            color: var(--primary-color); line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        body.hyper-mode #media-data-pulse-section h2 { color: var(--hyper-secondary); }
+        #media-data-pulse-section p {
+            font-size: 1.2rem; font-weight: 400; color: var(--muted-text-light);
+            max-width: 800px; margin: 0 auto 2.5rem; line-height: 1.5;
+        }
+        body.dark-mode #media-data-pulse-section p { color: var(--muted-text-dark); }
+        body.hyper-mode #media-data-pulse-section p { color: var(--hyper-muted-text); }
+
+        .spotify-embed-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Standard Spotify embed width */
+            height: 152px; /* Standard Spotify embed height */
+            margin: 3rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .spotify-embed-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+        }
+        body.dark-mode .spotify-embed-container { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        body.hyper-mode .spotify-embed-container { box-shadow: 0 4px 20px rgba(0,255,255,0.3); }
+
+        .spotify-embed-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .data-pulse-visualizer {
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            background-color: #f0f8ff; /* AliceBlue */
+            border-radius: 12px;
+            margin: 2rem auto;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color-light);
+            box-shadow: inset 0 0 10px rgba(0,113,227,0.1);
+        }
+        body.dark-mode .data-pulse-visualizer {
+            background-color: #1f2937; /* Darker slate */
+            border-color: var(--border-color-dark);
+            box-shadow: inset 0 0 10px rgba(0,113,227,0.3);
+        }
+        body.hyper-mode .data-pulse-visualizer {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border);
+            box-shadow: inset 0 0 10px rgba(0,255,255,0.3);
+        }
+
+        .data-pulse-bar {
+            position: absolute;
+            bottom: 0;
+            width: 5%;
+            background-color: var(--primary-color);
+            opacity: 0.7;
+            animation: pulseBar 2s infinite ease-in-out alternate;
+            border-radius: 4px 4px 0 0;
+        }
+        body.hyper-mode .data-pulse-bar { background-color: var(--hyper-primary); }
+
+        @keyframes pulseBar {
+            0% { height: 10%; opacity: 0.7; }
+            50% { height: 80%; opacity: 1; }
+            100% { height: 10%; opacity: 0.7; }
+        }
+
+        .lifestyle-image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .lifestyle-image-card {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%; /* 4:3 aspect ratio */
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--bg-color-light); /* Fallback */
+            border: 1px solid var(--border-color-light);
+        }
+
+        .lifestyle-image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .lifestyle-image-card img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .lifestyle-image-card .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            color: white;
+            padding: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: left;
+        }
+        body.dark-mode .lifestyle-image-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        body.hyper-mode .lifestyle-image-card {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border);
+            box-shadow: 0 4px 10px rgba(0,255,255,0.2);
+        }
+
+
+        /* Founder's Note */
+        .founders-note-section h2 { font-size: 2.5rem; font-weight: 700; color: var(--text-color-light); }
+        .founders-note-section p { font-size: 1.1rem; color: var(--muted-text-light); max-width: 700px; margin-left: auto; margin-right: auto; }
+        .founders-note-section p.italic { color: var(--muted-text-light); font-style: italic; }
+        .founders-note-section p.font-semibold { color: var(--primary-color); font-weight: 600; margin-top: 2rem; }
+
+        /* Vault Terminal Access */
+        #vault-access h3 { font-size: 2.2rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 2.5rem; }
+        #vault-access .w-full.h-\[800px\] {
+            background-color: #f0f0f0; border: 1px solid #dcdcdc; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        #vault-access .w-full.h-\[800px\] iframe {
+            background-color: transparent; /* Allow iframe-pastel-bg to show through */
+        }
+
+        .terminal-btn {
+            background-color: #f0f0f0; color: #424245; padding: 1rem 1.5rem; border-radius: 8px;
+            font-weight: 500; transition: all 0.2s ease-in-out; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #dcdcdc; cursor: pointer;
+        }
+        .terminal-btn:hover { background-color: #e8e8ed; color: #1d1d1f; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .terminal-btn.ring { border-color: var(--primary-color); box-shadow: 0 0 0 2px var(--primary-color); }
+
+        /* Sector Scrolls */
+        .sector-scrolls-section h2 { font-size: 2.2rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 2.5rem; }
+        .glyph {
+            background-color: var(--bg-color-light); color: #424245; padding: 0.8rem 1.2rem;
+            border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color-light);
+            text-decoration: none; display: inline-flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .glyph:hover { background-color: #f0f0f0; color: #1d1d1f; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Treaty Section */
+        #treaty h2 { font-size: 2.2rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 1.5rem; }
+        #treaty p { font-size: 1.1rem; color: var(--muted-text-light); max-width: 600px; margin-left: auto; margin-right: auto; margin-bottom: 2rem; }
+        #treaty blockquote {
+            font-size: 1.5rem; color: var(--text-color-light); font-weight: 600; line-height: 1.4;
+            max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+        #treaty blockquote::before, #treaty blockquote::after {
+            content: '“'; font-size: 2.5em; line-height: 0.1; vertical-align: -0.4em;
+            color: #dcdcdc; margin-right: 0.1em;
+        }
+        #treaty blockquote::after { content: '”'; margin-left: 0.05em; }
+
+        /* Signal Packet */
+        .signal-packet-section {
+            background-color: #1d1d1f; color: #00e393; padding: 4rem 1.5rem;
+            border-bottom: 1px solid #333; text-align: center; font-size: 0.75rem;
+        }
+        .signal-packet-section pre {
+            background-color: #0a0a0a; border: 1px solid #333; border-radius: 8px;
+            padding: 1.5rem; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+            white-space: pre-wrap; word-break: break-all;
+        }
+
+        /* VaultMesh */
+        #vaultmesh h2 { font-size: 2.2rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 1.5rem; }
+        #vaultmesh h2.text-purple-400 { color: var(--primary-color); }
+        #vaultmesh h3 { font-size: 1.5rem; font-weight: 600; color: var(--text-color-light); margin-top: 2.5rem; margin-bottom: 1rem; }
+        #vaultmesh p { font-size: 1.05rem; color: var(--muted-text-light); line-height: 1.5; }
+        #vaultmesh ul { list-style-type: disc; margin-left: 1.5rem; color: var(--muted-text-light); }
+        #vaultmesh ul li { font-size: 1.05rem; margin-bottom: 0.5rem; }
+        #vaultmesh ul.list-decimal { list-style-type: decimal; }
+        #vaultmesh code {
+            background-color: #e8e8ed; padding: 0.2em 0.4em; border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; color: var(--text-color-light);
+        }
+
+        /* About Section */
+        #about h3 { font-size: 2.2rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 1.5rem; }
+        #about p { font-size: 1.1rem; color: var(--muted-text-light); max-width: 800px; margin-left: auto; margin-right: auto; }
+
+        /* Call to Action Section */
+        #cta h3 { font-size: 2.5rem; font-weight: 700; color: var(--text-color-light); margin-bottom: 1.5rem; }
+        #cta p { font-size: 1.2rem; color: var(--muted-text-light); max-width: 700px; margin-left: auto; margin-right: auto; margin-bottom: 2.5rem; }
+
+        /* Footer */
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem; /* Horizontal spacing */
+            margin-bottom: 0.5rem; /* Vertical spacing for wrapped items */
+            white-space: nowrap; /* Prevent links from breaking individually */
+        }
+        body.dark-mode footer .footer-links a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer .footer-links a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer .footer-links a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Admin Portal Container (main section on the page) */
+        #admin-portal-section {
+            background-color: var(--bg-color-light); /* Main background for this large section */
+            padding: 0; /* Remove padding from this wrapper, internal views will have it */
+            border-bottom: 1px solid var(--border-color-light);
+            display: none; /* Hidden by default, shown by showMainContentView */
+            box-sizing: border-box; /* Include padding in dimensions */
+            flex-grow: 1; /* Allow it to grow and fill available space */
+        }
+        #admin-portal-section.active {
+            display: flex; /* Display as flex to contain sidebar and main content */
+            flex-direction: row; /* Sidebar left, content right */
+        }
+
+        /* Admin Portal Sidebar (the actual sidebar element) */
+        #admin-portal-sidebar { /* Renamed from #sidebar to be specific to admin */
+            width: 290px;
+            flex-shrink: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color-light);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 1rem; /* Padding at the bottom of the sidebar */
+            overflow-y: auto; /* Enable scrolling for sidebar content */
+            z-index: 20; /* Lower than global header, but within admin section */
+        }
+        #admin-portal-sidebar h2 {
+            padding-left: 1rem;
+            padding-top: 1rem;
+        }
+        #admin-portal-sidebar .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem; /* Standard padding */
+            gap: 10px;
+            color: var(--text-color-light);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        #admin-portal-sidebar .menu-item:hover {
+            background-color: rgba(0,0,0,0.03);
+            color: var(--primary-color);
+        }
+        #admin-portal-sidebar .menu-item.active {
+            background-color: rgba(0, 113, 227, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        #admin-portal-sidebar .logo-container {
+            padding: 1rem;
+            text-align: center;
+        }
+        #admin-portal-sidebar .logo-full { display: block; max-width: 100%; height: auto; }
+        #admin-portal-sidebar .logo-collapsed { display: none; }
+
+
+        /* Admin Portal Main Content Area (for quick view, dashboard, etc.) */
+        #admin-portal-main-content-area {
+            flex-grow: 1;
+            padding: 0 2rem; /* Internal padding for views */
+            overflow-y: auto; /* Enable scrolling for the content within admin portal */
+            background-color: var(--baobab-slate-light); /* Background for content area */
+        }
+
+        /* Styles for individual views within the Admin Portal */
+        .admin-view-panel {
+            display: none; /* All admin views hidden by default, shown by JS */
+            padding-top: 2rem; /* Top padding for each internal view */
+            padding-bottom: 2rem; /* Bottom padding for each internal view */
+            animation: fadeIn 0.5s ease-out;
+        }
+        .admin-view-panel.active { display: block; } /* Show active admin view */
+
+        /* Admin Header Bar (internal to admin-portal-section) */
+        #admin-portal-section .admin-header {
+            background: #f5f5f7; color: var(--text-color-light); padding: 1.5rem 2rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05); border-bottom: 1px solid var(--border-color-light);
+            border-radius: 12px 12px 0 0; /* Rounded top corners */
+            margin-bottom: 1.5rem;
+        }
+        #admin-portal-section .admin-header h1 { font-size: 1.8rem; } /* Slightly smaller for internal header */
+
+        /* Admin Top Navigation (tabs within admin portal) */
+        .admin-portal-container .top-nav {
+            background-color: #f5f5f7; border-bottom: 1px solid var(--border-color-light);
+            box-shadow: none; border-radius: 0; margin-bottom: 2rem;
+            border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0.75rem 1.25rem;
+            display: flex; flex-wrap: wrap; justify-content: flex-start; /* Align tabs to start */
+        }
+        .admin-portal-container .top-nav a {
+            color: #424245; position: relative; padding: 0.5rem 0.8rem;
+            border-radius: 6px; font-weight: 500; transition: all 0.2s ease-in-out;
+            white-space: nowrap; /* Prevent tabs from breaking */
+        }
+        .admin-portal-container .top-nav a:hover { color: #1d1d1f; background-color: rgba(0, 0, 0, 0.03); transform: none; }
+        .admin-portal-container .top-nav a::after {
+            content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+            bottom: 0; width: 0; height: 2px; background: var(--primary-color); transition: width 0.3s ease;
+        }
+        .admin-portal-container .top-nav a.active { color: var(--primary-color); background-color: rgba(0, 113, 227, 0.05); }
+        .admin-portal-container .top-nav a.active::after { width: calc(100% - 1.6rem); }
+
+        /* General Admin Card/Content Styles */
+        .admin-portal-container .admin-main-content .content-block { /* Generic block for cards, inputs, tables */
+            background-color: var(--card-bg-light); border-radius: 12px; padding: 2rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1); border: 1px solid var(--border-color-light);
+            margin-bottom: 1.5rem; /* Spacing between content blocks */
+        }
+        .admin-portal-container .admin-main-content h2, .admin-portal-container .admin-main-content h3, .admin-portal-container .admin-main-content label {
+            color: var(--text-color-light);
+        }
+        .admin-portal-container .admin-main-content p, .admin-portal-container .admin-table tbody td {
+            color: #424245;
+        }
+        .admin-portal-container .admin-main-content #adminStatus { color: var(--muted-text-light); }
+        .admin-portal-container .snapshot-box {
+            background: #fcfcfc; border: 1px solid var(--border-color-light); color: var(--text-color-light);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem;
+        }
+        .admin-portal-container .snapshot-box h4 { color: var(--primary-color); }
+        .admin-portal-container .snapshot-box ul li { color: #424245; }
+        .admin-portal-container .bg-gray-700 { background-color: #fcfcfc; color: var(--text-color-light); }
+
+        /* FAA.ZONE INDEX Table Styling (Admin) */
+        .admin-portal-container .admin-table { box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden; }
+        .admin-portal-container .admin-table thead { background-color: #f5f5f7; color: #424245; }
+        .admin-portal-container .admin-table th, .admin-portal-container .admin-table td {
+            border-bottom: 1px solid var(--border-color-light); border-right: 1px solid var(--border-color-light);
+            padding: 0.8rem 1rem; text-align: left;
+        }
+        .admin-portal-container .admin-table th:last-child, .admin-portal-container .admin-table td:last-child { border-right: none; }
+        .admin-portal-container .admin-table tbody tr { background-color: var(--bg-color-light); }
+        .admin-portal-container .admin-table tbody tr:hover { background-color: #f0f0f5; }
+        .admin-portal-container .admin-table tbody tr:nth-child(odd) { background-color: #fcfcfc; }
+        .admin-portal-container .admin-table button.text-blue-400 { color: var(--primary-color); }
+        .admin-portal-container .admin-table button.text-blue-400:hover { background-color: rgba(0, 113, 227, 0.1); }
+        .admin-portal-container .admin-table button.text-green-400 { color: var(--secondary-color); }
+        .admin-portal-container .admin-table button.text-green-400:hover { background-color: rgba(48, 209, 88, 0.1); }
+
+        /* Admin Metrics Grid */
+        .admin-portal-container .metrics-grid a {
+            background-color: var(--bg-color-light); color: var(--text-color-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid var(--border-color-light);
+            padding: 1.5rem; border-radius: 12px; text-align: center; display: block;
+            transition: all 0.2s ease-in-out;
+        }
+        .admin-portal-container .metrics-grid a:hover {
+            background-color: #f0f0f5; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .admin-portal-container .metrics-grid h3 { color: var(--muted-text-light); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .admin-portal-container .metrics-grid p { color: var(--primary-color); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+
+        /* Baobab Global Dashboard specific styles (from baobab_spa_dashboard.html) */
+        #admin-global-dashboard { /* This section is a specific admin-view-panel */
+            background-color: var(--baobab-slate-light); /* Apply main dashboard background */
+            color: var(--text-color-light); /* Default text color */
+        }
+        #admin-global-dashboard .dashboard-header-h2 {
+             color: var(--text-color-light); font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;
+        }
+        #admin-global-dashboard .dashboard-header-p {
+             color: var(--muted-text-light);
+        }
+        #admin-global-dashboard .dashboard-metric-card {
+            background-color: var(--bg-color-light); padding: 1.5rem; border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05); border: 1px solid var(--border-color-light);
+            color: var(--text-color-light);
+        }
+        #admin-global-dashboard .dashboard-metric-card h3 {
+            font-weight: 600; color: var(--muted-text-light); font-size: 0.95rem; margin-bottom: 0.25rem;
+        }
+        #admin-global-dashboard .dashboard-metric-card p {
+            font-size: 2.5rem; font-weight: 700; color: var(--primary-color);
+        }
+        #admin-global-dashboard .tech-pillar {
+            background-color: var(--bg-color-light); border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; border-top-width: 4px; border-top-color: var(--border-color-light);
+        }
+        #admin-global-dashboard .tech-pillar:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        #admin-global-dashboard .tech-pillar h3 { color: var(--text-color-light); font-size: 1.25rem; font-weight: 700; }
+        #admin-global-dashboard .tech-pillar p { color: var(--muted-text-light); font-size: 0.875rem; margin-top: 0.25rem; }
+        #admin-global-dashboard #tech-stack-content {
+            background-color: #fcfcfc; border: 1px solid var(--border-color-light); border-radius: 12px;
+            padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); color: var(--text-color-light);
+        }
+        #admin-global-dashboard #tech-stack-content h3 { color: var(--primary-color); }
+        #admin-global-dashboard #tech-stack-content p, #admin-global-dashboard #tech-stack-content ul { color: var(--muted-text-light); }
+        #admin-global-dashboard #tech-stack-content ul li { font-size: 0.95rem; }
+        #admin-global-dashboard .explorer-brand-card {
+            background-color: var(--bg-color-light); border: 1px solid var(--border-color-light);
+            border-radius: 8px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            color: var(--text-color-light);
+        }
+        #admin-global-dashboard .explorer-brand-card h4 { color: var(--primary-color); font-weight: 600; font-size: 1rem; }
+        #admin-global-dashboard .explorer-brand-card p { font-size: 0.875rem; color: var(--muted-text-light); }
+        #admin-global-dashboard .progress-bar-container {
+            background-color: var(--border-color-light); border-radius: 10px; height: 30px; overflow: hidden;
+        }
+        #admin-global-dashboard .progress-bar {
+            background-color: var(--primary-color); height: 100%; border-radius: 10px;
+            color: white; font-weight: 600; display: flex; align-items: center; justify-content: center;
+            transition: width 0.5s ease-out;
+        }
+        #admin-global-dashboard .sovereign-scrolls-info {
+            background-color: #fcfcfc; border: 1px solid var(--border-color-light); border-radius: 12px;
+            padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); color: var(--text-color-light);
+        }
+        #admin-global-dashboard .sovereign-scrolls-info h3 { color: var(--text-color-light); }
+        #admin-global-dashboard .sovereign-scrolls-info p, #admin-global-dashboard .sovereign-scrolls-info ul { color: var(--muted-text-light); }
+        #admin-global-dashboard .ledger-metric-card {
+            background-color: var(--bg-color-light); border: 1px solid var(--border-color-light);
+            border-radius: 12px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center; color: var(--text-color-light);
+        }
+        #admin-global-dashboard .ledger-metric-card h3 {
+            color: var(--muted-text-light); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem;
+        }
+        #admin-global-dashboard .ledger-metric-card p {
+            color: var(--primary-color); font-size: 2rem; font-weight: 700;
+        }
+        /* Chart-specific styling for consistency across all charts within global dashboard */
+        #admin-global-dashboard .chart-options-default {
+            background-color: var(--bg-color-light); border-radius: 10px; padding: 1rem;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        #admin-global-dashboard .chart-options-default canvas { background-color: transparent; }
+        #admin-global-dashboard .chart-options-default .chart-container { height: 350px; }
+
+
+        /* Responsive adjustments for overall layout and content */
+        @media (max-width: 1023px) { /* Tablet and below */
+            aside#admin-portal-sidebar { /* Updated to target correct ID */
+                position: fixed; /* Use fixed position for mobile sidebar */
+                top: var(--announcement-bar-height, 0px); /* Position below announcement bar */
+                left: 0;
+                height: calc(100vh - var(--announcement-bar-height, 0px) - var(--header-height, 0px)); /* Full height minus header */
+                transform: translateX(-100%); /* Hidden by default */
+                transition: transform 0.3s ease-in-out;
+                z-index: 60; /* Higher than main content and mobile overlay */
+                width: 280px; /* Adjust sidebar width for mobile */
+                max-width: 80%; /* Don't let it be too wide on very small screens */
+            }
+            aside#admin-portal-sidebar.active {
+                transform: translateX(0%); /* Visible when active */
+                box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            }
+            #admin-portal-main-content-area { /* Updated to target correct ID */
+                margin-left: 0; /* No left margin on mobile */
+                width: 100%; /* Take full width */
+            }
+            .mobile-overlay { /* Mobile overlay for when sidebar is open */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 55; /* Between sidebar and main content */
+                display: none; /* Hidden by default */
+            }
+            .mobile-overlay.active {
+                display: block; /* Show overlay when sidebar is active */
+            }
+            .main-header .hamburger-menu { /* Show hamburger on mobile/tablet */
+                display: block;
+            }
+            .main-header .nav-actions { /* Hide desktop nav actions */
+                display: none;
+            }
+            /* Admin portal section for mobile */
+            #admin-portal-section.active {
+                flex-direction: column; /* Stack sidebar and content */
+                height: auto; /* Allow content to dictate height */
+                min-height: calc(100vh - var(--announcement-bar-height, 0px) - var(--header-height, 0px)); /* Ensure it still fills minimum height */
+            }
+            #admin-portal-sidebar {
+                width: 100%; /* Sidebar takes full width */
+                height: auto; /* Adjust height based on content */
+                max-height: 50vh; /* Limit height to prevent excessive scrolling within sidebar */
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-light); /* Bottom border when stacked */
+                overflow-y: auto; /* Still scrollable */
+            }
+            #admin-portal-main-content-area {
+                padding: 1rem 0; /* Less padding for inner content area */
+            }
+        }
+
+        @media (max-width: 768px) { /* Smaller mobile specific adjustments */
+            header.main-header {
+                padding: 10px 15px; /* Smaller header padding */
+            }
+            .logo-fruitful { font-size: 1.2rem; }
+            .logo-omnigrid { font-size: 1rem; }
+            .pulse-grid-noodle-rope { display: none; }
+            .hamburger-menu { font-size: 1.3rem; }
+
+            /* General section adjustments for mobile */
+            section.content-section { padding: 3rem 1rem; }
+            section.content-section h2, section.content-section h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+            section.content-section p { font-size: 0.95rem; }
+
+            /* Hero Content Section */
+            #innovate-connect-thrive h2 { font-size: 2rem; }
+            #innovate-connect-thrive p { font-size: 0.9rem; }
+            #innovate-connect-thrive .cta-group { flex-direction: column; gap: 0.75rem; }
+            #innovate-connect-thrive .hero-cta-button { width: 100%; max-width: 250px; }
+
+            /* Baobab Terminal Section */
+            #baobab-terminal-access h2 { font-size: 2rem; }
+            #baobab-terminal-access p { font-size: 1rem; }
+            #baobab-terminal-access .terminal-iframe-container { height: 350px; }
+            .baobab-terminal-btn { padding: 0.7rem 1.2rem; font-size: 0.9rem; }
+
+            /* Feature Cards */
+            .feature-grid { grid-template-columns: 1fr; }
+
+            /* Share Price */
+            #shareprice h2 { font-size: 1.3rem; }
+            #price { font-size: 2rem; }
+
+            /* Seedwave, Founder's Note, Vault Access, Sector Scrolls, Treaty, Signal Packet, VaultMesh, About, CTA */
+            #seedwave h2, .founders-note-section h2, #vault-access h3, .sector-scrolls-section h2, #treaty h2, #vaultmesh h2, #vaultmesh h3, #about h3, #cta h3 {
+                font-size: 1.8rem;
+            }
+            #vault-access .w-full.h-\[800px\] { height: 400px; } /* Smaller iframe on very small screens */
+            .terminal-btn { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+            #treaty blockquote { font-size: 1.1rem; }
+
+            /* Admin Portal internal adjustments for small screens */
+            #admin-portal-sidebar .menu-item { padding: 0.5rem 0.8rem; font-size: 0.9rem; }
+            #admin-portal-sidebar h2 { padding-left: 0.8rem; }
+            #admin-portal-sidebar .logo-full { display: none; }
+            #admin-portal-sidebar .logo-collapsed { display: block; }
+
+            .admin-portal-container .top-nav { padding: 0.5rem 0.8rem; gap: 0.5rem; justify-content: flex-start; }
+            .admin-portal-container .top-nav a { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+            .admin-portal-container .admin-header h1 { font-size: 1.5rem; }
+            .admin-portal-container .admin-main-content .content-block { padding: 1.5rem; }
+            .admin-portal-container .admin-table th, .admin-portal-container .admin-table td { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
+            #admin-global-dashboard .dashboard-metric-card p { font-size: 1.8rem; }
+            #admin-global-dashboard .tech-pillar { padding: 1rem; }
+            #admin-global-dashboard .tech-pillar h3 { font-size: 1rem; }
+            #admin-global-dashboard .tech-pillar p { font-size: 0.75rem; }
+            #admin-global-dashboard #tech-stack-content { padding: 1.5rem; }
+            #admin-global-dashboard #tech-stack-content ul li { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="announcement-bar">
+        <span>⚡️ NEW: Baobab Security Network™ Global Dashboard is Live!</span>
+        <a href="./admin-portal.html?view=admin-global-dashboard" data-view-id="admin-global-dashboard" class="announcement-link">Explore the Insights Now</a>
+        <button class="close-btn" aria-label="Close announcement">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="app-container">
+
+        <header class="main-header" id="main-header">
+            <div class="container header-content">
+                <div class="logo-group">
+                    <a href="./fruitful_dashboardvs2.0.html" class="logo-link" data-view-id="innovate-connect-thrive">
+                        <span class="logo-fruitful" data-i18n="fruitfulBrand">Fruitful™</span>
+                    </a>
+                    <span class="logo-separator">|</span>
+                    <span class="logo-omnigrid">OmniGrid™</span>
+                    <button class="hamburger-menu" aria-label="Toggle navigation" id="hamburger-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <div class="pulse-grid-noodle-rope">
+                    <span class="noodle-dot dot-1" style="left: 20%;"></span>
+                    <span class="noodle-dot dot-2" style="left: 40%;"></span>
+                    <span class="noodle-dot dot-3" style="left: 60%;"></span>
+                    <span class="noodle-dot dot-stepdad" style="left: 80%;"></span>
+                    <span class="noodle-dot dot-4" style="left: 100%;"></span>
+                    <span class="noodle-dot dot-5" style="left: 0%;"></span>
+                </div>
+                <nav class="nav-actions flex items-center">
+                    <div class="theme-switcher mr-4">
+                        <button id="theme-day-btn" class="active">☀️ Day</button>
+                        <button id="theme-night-btn">🌙 Night</button>
+                        <button id="theme-hyper-btn">✨ Hyper</button>
+                    </div>
+                    <div class="relative inline-block text-left">
+                        <select id="languageSwitcher" class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-blue-500 text-sm">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                            <option value="zh">中文</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                    <a href="./signup.html" class="cta-button ml-4" data-i18n="navSignUp">Sign Up</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content-wrapper">
+            <section id="signal-sync-feature" class="content-section active">
+                <div class="max-w-6xl mx-auto py-12 px-4">
+                    <h2 class="text-5xl font-extrabold text-center mb-8">📡 FAA.Zone Signal Sync Dashboard</h2>
+                    <p class="text-xl text-gray-600 text-center mb-12">VaultMesh Emission Grid · Real-Time Signal Diagnostics</p>
+
+                    <!-- CHART SECTION -->
+                    <div class="bg-white p-6 rounded-xl shadow-2xl mb-8 border border-gray-200">
+                        <h3 class="text-3xl font-bold text-gray-800 mb-4">📉 Signal Emission Monitor</h3>
+                        <p class="text-lg text-gray-500 mb-6">Dynamic signal emissions across uplinks and mesh zones.</p>
+                        <div class="h-96">
+                            <canvas id="pulseChart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- METRICS GRID -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
+                        <a href="node-activity.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">🛰️ Active Uplinks</h4><p class="text-blue-600 font-semibold text-lg">78 Channels</p>
+                        </a>
+                        <a href="license-grid.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">📶 Mesh Relays Online</h4><p class="text-blue-600 font-semibold text-lg">124 Relays</p>
+                        </a>
+                        <a href="vault-deployments.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">💡 Emission Stability</h4><p class="text-blue-600 font-semibold text-lg">91.4% Stable</p>
+                        </a>
+                        <a href="royalty-payouts.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">🔁 Last Signal Refresh</h4><p class="text-blue-600 font-semibold text-lg">19s ago</p>
+                        </a>
+                        <a href="placeholder-1.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">⚠ Pulse Drift Alerts</h4><p class="text-blue-600 font-semibold text-lg">3 Active</p>
+                        </a>
+                        <a href="placeholder-2.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">🧭 Zone Coverage</h4><p class="text-blue-600 font-semibold text-lg">84.2%</p>
+                        </a>
+                        <a href="placeholder-3.html" class="bg-white p-5 rounded-lg shadow-xl text-center hover:bg-blue-50 transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-105 border border-gray-200">
+                            <h4 class="text-md font-bold text-gray-700">📥 Synced Logs</h4><p class="text-blue-600 font-semibold text-lg">22,457 packets</p>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="py-8 px-6 md:px-12 text-center">
+            <div class="flex flex-wrap justify-center mb-4 text-sm footer-links">
+                <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+            </div>
+            <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+        </footer>
+    </div>
+
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <script>
+        // --- Centralized Data Store for ALL dashboards and admin functions ---
+        const appData = {
+            fruitful: {
+                sharePrice: { value: 88.88, timestamp: new Date().toLocaleTimeString() },
+                brandGrowth: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    data: [3, 7, 13, 21]
+                },
+                sectorMap: {
+                    payroll: './sectors/payroll/index.html', retail: './sectors/retail/index.html',
+                    'ai-logic': './sectors/ai-logic/index.html', design: './sectors/design/index.html',
+                    finance: './sectors/finance/index.html', webless: './sectors/webless/index.html',
+                    logistics: './sectors/logistics/index.html', food: './sectors/food/index.html',
+                    education: './sectors/education/index.html', health: './sectors/health/index.html',
+                    culture: './sectors/culture/index.html', housing: './sectors/housing/index.html',
+                    nft: './sectors/nft/index.html', media: './sectors/media/index.html',
+                    mining: './sectors/mining/index.html', wildlife: './sectors/wildlife/dashboard.html'
+                },
+                mockScrollProfiles: {
+                    media: {
+                        VisualPulse: { title: "VisualPulse™ Media Scroll", intro: "Advanced visual content orchestration with real-time rendering.", features: ["4K Streaming", "AI-driven Editing", "Dynamic Watermarking"], pricing: ["Tier 1: $50/month", "Tier 2: $150/month"], metadata: { id: "VP-001", vault: "MediaVault", layer: "Visual", bg: "bg-blue-900", height: "700px", width: "2770px" } },
+                        SonicScape: { title: "SonicScape™ Audio Scroll", intro: "Immersive audio experience with spatial sound design.", features: ["3D Audio Engine", "Adaptive Soundtracks", "Noise Cancellation"], pricing: ["Basic: $30/month", "Premium: $90/month"], metadata: { id: "SS-001", vault: "MediaVault", layer: "Audio", bg: "bg-purple-900", height: "700px", width: "2770px" } }
+                    }
+                },
+                sectorList: {
+                    "agriculture": "🌱 Agriculture & Biotech", "fsf": "🥦 Food, Soil & Farming",
+                    "banking": "🏦 Banking & Finance", "creative": "🖋️ Creative Tech",
+                    "logistics": "📦 Logistics & Packaging", "education-ip": "📚 Education & IP",
+                    "fashion": "✂ Fashion & Identity", "gaming": "🎮 Gaming & Simulation",
+                    "health-hygiene": "🧴 Health & Hygiene", "housing": "🏛️ Housing & Infrastructure",
+                    "justice": "⚖ Justice & Ethics", "knowledge": "🧠 Knowledge & Archives",
+                    "micromesh": "☰ Micro-Mesh Logistics", "media": "🎬 Motion, Media & Sonic",
+                    "nutrition": "✿ Nutrition & Food Chain", "packaging": "📦 Packaging & Materials",
+                    "quantum": "✴️ Quantum Protocols", "ritual": "☯ Ritual & Culture",
+                    "saas": "🔑 SaaS & Licensing", "trade": "🧺 Trade Systems",
+                    "utilities": "🔋 Utilities & Energy", "voice": "🎙️ Voice & Audio",
+                    "webless": "📡 Webless Tech & Nodes", "nft": "🔁 NFT & Ownership",
+                    "zerowaste": "♻️ Zero Waste", "professional": "🧾 Professional Services",
+                    "ai-logic": "🧠 AI, Logic & Grid Systems", "mining": "⛏️ Mining & Resources",
+                    "payroll": "💰 Payroll Core Systems", "wildlife": "🚁 Wildlife Sector",
+                    "admin": "⚙️ Admin & Manual Sync Panel", "global-index": "🌐 Global Brand Index"
+                },
+            },
+            admin: {
+                sectors: {
+                    "ai-logic": { name: "🧠 AI, Logic & Grid", brands: ["OmniAI", "GridSync"], nodes: ["AI Core", "Neural Net", "Data Mesh"] },
+                    "creative": { name: "🖋️ Creative Tech", brands: ["PixelFlow", "SonicWave"], nodes: ["Render Engine", "Audio Synth"] },
+                    "logistics": { name: "📦 Logistics & Packaging", brands: ["CrateLogic", "PackChain", "SortFleet", "RouteMesh", "LogiStack"], nodes: ["GPS Tracker", "Fleet Manager"] },
+                    "education-ip": { name: "📚 Education & IP", brands: ["EduNest", "FormFlex"], nodes: ["Curriculum Builder", "License Tracker"] },
+                    "fashion": { name: "✂️ Fashion & Identity", brands: ["StyleSync", "FabricFlow"], nodes: ["Design Studio", "Material Trace"] },
+                    "gaming": { name: "🎮 Gaming & Simulation", brands: ["GameForge", "SimulateX"], nodes: ["Physics Engine", "Render Farm"] },
+                    "health": { name: "🧠 Health & Hygiene", brands: ["MedVault", "CleanCast"], nodes: ["Diagnostic AI", "Patient Portal"] },
+                    "housing": { name: "🏗️ Housing & Infrastructure", brands: ["EcoBuild", "SmartHomeOS"], nodes: ["Modular Design", "Energy Monitor"] },
+                    "justice": { name: "⚖ Justice & Ethics", brands: ["LawLedger", "EthicShield"], nodes: ["Case Tracker", "Compliance Bot"] },
+                    "knowledge": { name: "📖 Knowledge & Archives", brands: ["InfoVault", "ArchiveFlow"], nodes: ["Knowledge Graph", "Document Index"] },
+                    "micromesh": { name: "☰ Micro-Mesh Logistics", brands: ["MicroLogix", "NanoRoute"], nodes: ["Tiny Package", "Drone Delivery"] },
+                    "media": { name: "🎬 Motion, Media & Sonic", brands: ["VisualPulse", "SonicScape"], nodes: ["Video Editor", "Audio Mixer"] },
+                    "nutrition": { name: "✿ Nutrition & Food Chain", brands: ["NutriFlow", "FarmTrack"], nodes: ["Recipe Optimizer", "Crop Monitor"] },
+                    "packaging": { name: "📦 Packaging & Materials", brands: ["PackSmart", "EcoWrap"], nodes: ["Material Optimizer", "Recycle Trace"] },
+                    "quantum": { name: "✴️ Quantum Protocols", brands: ["QuantumLink", "EntangleOS"], nodes: ["Qubit Manager", "Secure Comm"] },
+                    "ritual": { name: "☯ Ritual & Culture", brands: ["AuraFlow", "SpiritWeave"], nodes: ["Ceremony Guide", "Community Hub"] },
+                    "saas": { name: "🔑 SaaS & Licensing", brands: ["CloudFlow", "AppStack"], nodes: ["Subscription Manager", "API Gateway"] },
+                    "trade": { brands: ["TradeLink", "MarketPulse"], nodes: ["Supply Chain", "Demand Predictor"] },
+                    "utilities": { brands: ["PowerGrid", "WaterFlow"], nodes: ["Smart Meter", "Resource Opt"] },
+                    "voice": { brands: ["VoiceSynth", "AudioSense"], nodes: ["Speech Rec", "Sound Analysis"] },
+                    "webless": { brands: ["MeshNode", "OffGridLink"], nodes: ["Decentral Node", "Secure Tunnel"] },
+                    "nft": { brands: ["ArtChain", "TokenForge"], nodes: ["Minting Platform", "Royalty Engine"] },
+                    "education-youth": { brands: ["KidGenius", "FutureLearn"], nodes: ["Interactive Lessons", "Skill Tracker"] },
+                    "zerowaste": { brands: ["RecycleFlow", "CompostGen"], nodes: ["Waste Sorter", "Bio-Digester"] },
+                    "professional": { brands: ["ProServe", "ConsultHub"], nodes: ["Client Manager", "Project Tracker"] },
+                    "payroll-mining": { name: "🪙 Payroll Mining & Accounting", brands: ["MinePay", "CryptoLedger"], nodes: ["Payroll Automator", "Mining Pool"] },
+                    "wildlife": { name: "🦁 Wildlife & Habitat", brands: ["WildGuard", "EcoSense"], nodes: ["Animal Tracker", "Habitat Monitor"] },
+                    "food-soil-farming": { name: "🥦 Food, Soil & Farming", brands: ["FarmFlow", "SoilSense"], nodes: ["Crop Yield Monitor", "Soil Health Analyzer"] },
+                    "agriculture-biotech": { name: "🌾 Agriculture & Biotech", brands: ["BioCrop", "GeneHarvest"], nodes: ["Biotech Lab", "Seed Registry"] },
+                    "banking-finance": { name: "🏦 Banking & Finance", brands: ["CoinFlow", "LedgerPro"], nodes: ["Transaction Monitor", "Smart Contract Auditor"] }
+                },
+                globalMetrics: {
+                    totalBrands: 7038, coreBrands: 168, totalNodes: 700, totalPages: 780,
+                },
+                brandDistribution: {
+                    labels: ['Finance', 'Logistics', 'Health', 'Education', 'Agriculture', 'AI', 'Other'],
+                    data: [25, 22, 18, 15, 13, 11, 64]
+                },
+                sovereignScrolls: {
+                    generated: 1171, total: 7038,
+                },
+                techStack: {
+                    'tech-vercel': {
+                        title: 'Vercel: Frontend & Serverless', icon: '🚀',
+                        details: 'Vercel is the primary Continuous Deployment platform, connecting to GitHub to build and deploy all FAA.zone web projects. It handles static frontend assets and dynamic Node.js serverless functions, enabling rapid, scalable, and automated deployments.',
+                        features: ['Automatic Deployments from Git', 'Scalable Serverless Functions', 'Custom Domain Management', 'Secure Environment Variables', 'Instant Preview Deployments']
+                    },
+                    'tech-cloudflare': {
+                        title: 'Cloudflare: DNS, Edge & Security', icon: '☁️',
+                        details: 'Cloudflare acts as the global performance and security layer. It manages all DNS routing and protects the ecosystem with its WAF, DDoS mitigation, and global CDN, ensuring high availability and fast load times worldwide.',
+                        features: ['Global CDN Caching', 'Authoritative DNS Management', 'Web Application Firewall (WAF)', 'Universal SSL/TLS Encryption', 'Cloudflare Workers (Edge Computing)']
+                    },
+                    'tech-zoho': {
+                        title: 'Zoho: Email & Business APIs', icon: '✉️',
+                        details: 'Zoho serves as the central nervous system for business operations. It handles all corporate email via Zoho Mail and provides a rich suite of APIs (CRM, Books, Forms) for automating client management, billing, and communication workflows.',
+                        features: ['Enterprise Email Hosting (SMTP)', 'OAuth 2.0 for Authentication', 'CRM and Forms API for Data Sync', 'DMARC, SPF, DKIM for Email Security', 'Centralized User Management']
+                    },
+                    'tech-hetzner': {
+                        title: 'Hetzner: Backend & Storage', icon: '💾',
+                        details: 'Hetzner provides the foundational layer for persistent data, heavy computation, and specialized backend services. It offers cost-effective, high-performance dedicated resources that complement the serverless architecture.',
+                        features: ['Dedicated Cloud Servers', 'Persistent Block Storage Volumes', 'Scalable Object Storage', 'Private Networks & Firewalls', 'Load Balancers for High Availability']
+                    }
+                },
+                licenseLedger: {
+                    growth: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [
+                            { label: 'Tier 1 - Retail', data: [120, 140, 155, 178, 190, 204], borderColor: '#4f46e5', tension: 0.3, backgroundColor: 'rgba(79, 70, 229, 0.1)' },
+                            { label: 'Tier 2 - GovMesh', data: [75, 89, 94, 102, 110, 117], borderColor: '#10b981', tension: 0.3, backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+                            { label: 'Tier 3 - Enterprise', data: [62, 64, 70, 73, 78, 80], borderColor: '#f97316', tension: 0.3, backgroundColor: 'rgba(249, 115, 22, 0.1)' }
+                        ]
+                    },
+                    clauses: {
+                        labels: ['IP Clause 14A', 'Sovereign Export A3', 'Experimental Tag X7', 'Tier-Sync Accord', 'VaultMesh Override'],
+                        data: [722, 519, 312, 455, 188]
+                    }
+                },
+                pulseChartData: {
+                    labels: Array.from({length: 30}, (_, i) => `Day ${i + 1}`),
+                    datasets: [
+                        {
+                            label: 'Sync Success Rate (%)',
+                            data: Array.from({length: 30}, () => Math.floor(Math.random() * 20) + 80),
+                            borderColor: '#0071e3',
+                            backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'New Node Registrations',
+                            data: Array.from({length: 30}, () => Math.floor(Math.random() * 10) + 5),
+                            borderColor: '#30d158',
+                            backgroundColor: 'rgba(48, 209, 88, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                }
+            }
+        };
+
+        // --- Rhythmic Canvas Glyph Drawing Logic (Hero Background) ---
+        const canvas = document.getElementById('rhythmicCanvas');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        let animationFrameId;
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            if (canvas.width < 300) canvas.width = 300;
+            if (canvas.height < 150) canvas.height = 150;
+            lineAmplitude = canvas.height / 4;
+        }
+
+        let time = 0;
+        const numLines = 50;
+        let lineAmplitude;
+        const lineFrequency = 0.05;
+        const lineSpeed = 0.005;
+
+        function drawGlyph() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.0)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            time += lineSpeed;
+
+            for (let i = 0; i < numLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numLines);
+                
+                const colorHue = (time * 100 + i * 5) % 360;
+                ctx.strokeStyle = `hsla(${colorHue}, 80%, 60%, 0.7)`;
+                
+                ctx.lineWidth = 1.5;
+
+                for (let x = 0; x < canvas.width; x += 5) {
+                    const y = Math.sin(x * lineFrequency + time + offset) * (lineAmplitude * (Math.sin(time * 0.1 + i * 0.1) * 0.5 + 0.5)) + canvas.height / 2;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            animationFrameId = requestAnimationFrame(drawGlyph);
+        }
+
+        // --- Chart.js Instances Storage ---
+        let initializedCharts = {}; // Stores all Chart.js instances across the portal
+        let chartIntervals = {}; // Stores all setInterval IDs for charts
+
+        // --- Functions to manage main content views ---
+        function showMainContentView(viewId) {
+            const mainContentViews = document.querySelectorAll('.content-section');
+            mainContentViews.forEach(view => {
+                view.classList.remove('active'); // Hide all views
+            });
+
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.add('active'); // Show the target view
+                // Only scroll if not the admin portal view, which handles its own scrolling
+                if (viewId !== 'admin-portal-section') {
+                    targetView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Re-render charts for the active view to ensure they appear correctly
+                renderChartsForView(viewId);
+            } else {
+                console.error(`Error: Main content view with ID '${viewId}' not found.`);
+            }
+
+            // Update sidebar active state (if sidebar is present) - Specific for admin portal sidebar
+            const sidebarLinks = document.querySelectorAll('#admin-portal-sidebar .admin-sidebar-link');
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.adminView === viewId) { // Check data-admin-view for admin sidebar links
+                    link.classList.add('active');
+                }
+            });
+
+            // Update top nav active state for admin views
+            const topNavLinks = document.querySelectorAll('.admin-nav-link');
+            topNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.adminView === viewId) { // Check data-admin-view for admin top nav links
+                    link.classList.add('active');
+                }
+            });
+
+
+            // Specific logic for admin portal section visibility
+            const adminPortalSection = document.getElementById('admin-portal-section');
+            if (adminPortalSection) {
+                if (viewId.startsWith('admin-')) { // If an admin-specific view is requested
+                    adminPortalSection.classList.add('active');
+                    // For admin portal, scroll to top of its internal content
+                    const adminMainContentArea = document.getElementById('admin-portal-main-content-area');
+                    if (adminMainContentArea) {
+                        adminMainContentArea.scrollTop = 0;
+                    }
+                    // For mobile, ensure sidebar is not active if it was open
+                    const sidebar = document.getElementById('admin-portal-sidebar');
+                    const mobileOverlay = document.getElementById('mobile-overlay');
+                    if (sidebar && mobileOverlay && window.innerWidth < 1024) {
+                        sidebar.classList.remove('active');
+                        mobileOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+
+                } else { // If a non-admin view is requested, hide the admin portal section
+                    adminPortalSection.classList.remove('active');
+                }
+            }
+        }
+
+
+        function renderChartsForView(viewId) {
+            // Destroy all existing charts and clear their intervals before rendering new ones
+            for (const chartId in initializedCharts) {
+                if (initializedCharts[chartId]) {
+                    initializedCharts[chartId].destroy();
+                    initializedCharts[chartId] = null;
+                }
+                if (chartIntervals[chartId]) {
+                    clearInterval(chartIntervals[chartId]);
+                    chartIntervals[chartId] = null;
+                }
+            }
+
+            // Render charts specific to the requested view
+            switch (viewId) {
+                case 'innovate-connect-thrive':
+                    // No charts here, just static content
+                    break;
+                case 'shareprice':
+                    updateSharePrice(); // Ensure this updates
+                    break;
+                case 'seedwave':
+                    const brandChartCtx = document.getElementById('brandChart')?.getContext('2d');
+                    if (brandChartCtx) {
+                        initializedCharts.brandChart = new Chart(brandChartCtx, {
+                            type: 'line',
+                            data: {
+                                labels: appData.fruitful.brandGrowth.labels,
+                                datasets: [{
+                                    label: 'Treaty Brands Activated',
+                                    data: appData.fruitful.brandGrowth.data,
+                                    borderWidth: 2,
+                                    borderColor: 'var(--primary-color)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    backgroundColor: 'rgba(0, 113, 227, 0.1)',
+                                    pointRadius: 4,
+                                    pointBackgroundColor: 'var(--primary-color)',
+                                    pointBorderColor: '#fff',
+                                    pointHoverRadius: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: { beginAtZero: true, grid: { color: 'var(--border-color-light)', drawBorder: false }, ticks: { color: 'var(--muted-text-light)' } },
+                                    x: { grid: { color: 'var(--border-color-light)', drawBorder: false }, ticks: { color: 'var(--muted-text-light)' } }
+                                },
+                                plugins: { legend: { display: false, labels: { color: '#424245' } } }
+                            }
+                        });
+                    }
+                    break;
+                case 'admin-quick-view':
+                    // This view contains the admin panel for adding brands, etc.
+                    // Its internal elements are rendered by populateAdminSectorSelect and loadBrandDashboard.
+                    // The pulseChart is inside this section, render it here.
+                    const adminPulseCtx = document.getElementById('pulseChart')?.getContext('2d');
+                    if (adminPulseCtx) {
+                        const chart = new Chart(adminPulseCtx, {
+                            type: 'line',
+                            data: appData.admin.pulseChartData,
+                            options: {
+                                responsive: true, maintainAspectRatio: false,
+                                plugins: { legend: { position: 'top', labels: { color: 'var(--muted-text-light)' } } },
+                                scales: {
+                                    y: { beginAtZero: true, ticks: { color: 'var(--muted-text-light)' }, grid: { color: 'var(--border-color-light)' } },
+                                    x: { ticks: { color: 'var(--muted-text-light)' }, grid: { display: false } }
+                                }
+                            }
+                        });
+                        initializedCharts.adminPulseChart = chart;
+                        // No setInterval needed for this specific chart in admin-quick-view based on previous code.
+                    }
+                    // Also ensure these are populated/loaded when admin-quick-view is active
+                    populateAdminSectorSelect();
+                    loadBrandDashboard(appData.admin.sectors);
+                    break;
+                case 'admin-global-dashboard':
+                    // Populate metrics
+                    document.getElementById('dashboard-metric-total-brands').textContent = appData.admin.globalMetrics.totalBrands.toLocaleString();
+                    document.getElementById('dashboard-metric-core-brands').textContent = appData.admin.globalMetrics.coreBrands.toLocaleString();
+                    document.getElementById('dashboard-metric-total-nodes').textContent = appData.admin.globalMetrics.totalNodes.toLocaleString();
+                    document.getElementById('dashboard-metric-total-pages').textContent = appData.admin.globalMetrics.totalPages.toLocaleString() + '+';
+
+                    // Ecosystem Pulse Monitor Chart
+                    const globalPulseCtx = document.getElementById('globalPulseChart')?.getContext('2d');
+                    if (globalPulseCtx) {
+                        initializedCharts.globalPulseChart = new Chart(globalPulseCtx, {
+                            type: 'line',
+                            data: appData.admin.pulseChartData,
+                            options: {
+                                responsive: true, maintainAspectRatio: false,
+                                plugins: { legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: 'var(--baobab-slate-text-dark)' } } },
+                                scales: {
+                                    y: { beginAtZero: true, ticks: { color: 'var(--baobab-slate-text-dark)' }, grid: { color: 'var(--baobab-slate-medium)' } },
+                                    x: { ticks: { color: 'var(--baobab-slate-text-dark)' }, grid: { display: false } }
+                                }
+                            }
+                        });
+                    }
+
+                    // Brand Distribution Chart
+                    const brandDistributionCtx = document.getElementById('brandDistributionChart')?.getContext('2d');
+                    if (brandDistributionCtx) {
+                        initializedCharts.brandDistributionChart = new Chart(brandDistributionCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: appData.admin.brandDistribution.labels,
+                                datasets: [{
+                                    label: 'Core Brands',
+                                    data: appData.admin.brandDistribution.data,
+                                    backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#3b82f6', '#14b8a6'],
+                                    hoverOffset: 4
+                                }]
+                            },
+                            options: {
+                                responsive: true, maintainAspectRatio: false,
+                                plugins: { legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: 'var(--baobab-slate-text-dark)' } } },
+                                scales: { x: { display: false }, y: { display: false } }
+                            }
+                        });
+                    }
+
+                    // License Tier Growth Chart
+                    const tierGrowthCtx = document.getElementById('tierGrowthChart')?.getContext('2d');
+                    if (tierGrowthCtx) {
+                        initializedCharts.tierGrowthChart = new Chart(tierGrowthCtx, {
+                            type: 'bar',
+                            data: appData.admin.licenseLedger.growth,
+                            options: {
+                                responsive: true, maintainAspectRatio: false,
+                                plugins: { legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: 'var(--baobab-slate-text-dark)' } } },
+                                scales: {
+                                    x: { stacked: true, ticks: { color: 'var(--baobab-slate-text-dark)' }, grid: { display: false } },
+                                    y: { stacked: true, ticks: { color: 'var(--baobab-slate-text-dark)' }, grid: { color: 'var(--baobab-slate-medium)' } }
+                                }
+                            }
+                        });
+                    }
+
+                    // License Clause Allocation Chart
+                    const clauseAllocationCtx = document.getElementById('clauseAllocationChart')?.getContext('2d');
+                    if (clauseAllocationCtx) {
+                        initializedCharts.clauseAllocationChart = new Chart(clauseAllocationCtx, {
+                            type: 'polarArea',
+                            data: {
+                                labels: appData.admin.licenseLedger.clauses.labels,
+                                datasets: [{
+                                    label: 'Clause Allocations',
+                                    data: appData.admin.licenseLedger.clauses.data,
+                                    backgroundColor: ['#4f46e5B3', '#10b981B3', '#f59e0bB3', '#ef4444B3', '#8b5cf6B3'],
+                                }],
+                            },
+                            options: {
+                                responsive: true, maintainAspectRatio: false,
+                                plugins: { legend: { position: 'bottom', labels: { font: { size: 12, family: 'Inter' }, color: 'var(--baobab-slate-text-dark)' } } },
+                                scales: { r: { grid: { color: 'var(--baobab-slate-medium)' } } }
+                            }
+                        });
+                    }
+                    
+                    // Setup Tech Stack details and Ecosystem Explorer
+                    setupTechStackInteraction();
+                    // Simulate click on the first tech pillar to show content by default
+                    document.querySelector('#admin-global-dashboard .tech-pillar')?.click();
+                    populateEcosystemSectorFilter();
+                    // Display info for the first sector by default or the currently selected one
+                    displayEcosystemSectorInfo(document.getElementById('sector-filter')?.value || Object.keys(appData.admin.sectors)[0]);
+                    updateSovereignScrollsProgressBar();
+                    break;
+                case 'signal-sync-feature': // Specific to signal-sync.html
+                    const signalSyncChartCtx = document.getElementById('pulseChart')?.getContext('2d');
+                    if (signalSyncChartCtx) {
+                        const labels = [];
+                        const sectors = ['Uplink East', 'Relay Mesh Alpha', 'Signal Core', 'Drift Monitor', 'Carrier Beta', 'Grid Echo', 'Latency Zone 4'];
+
+                        const data = {
+                            labels,
+                            datasets: sectors.map((label, i) => ({
+                                label,
+                                data: [],
+                                borderColor: `hsl(${i * 40}, 70%, 50%)`,
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            }))
+                        };
+
+                        const chart = new Chart(signalSyncChartCtx, {
+                            type: 'line',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                animation: false,
+                                scales: {
+                                    y: {
+                                        min: 1500,
+                                        max: 5000,
+                                        ticks: {
+                                            callback: v => v + ' signals',
+                                            color: 'var(--muted-text-light)'
+                                        },
+                                        grid: {
+                                            color: 'var(--border-color-light)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'var(--muted-text-light)'
+                                        },
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                plugins: { 
+                                    legend: { 
+                                        position: 'bottom',
+                                        labels: {
+                                            color: 'var(--muted-text-light)'
+                                        }
+                                    } 
+                                }
+                            }
+                        });
+
+                        function pushSignalData() {
+                            if (initializedCharts.signalSyncChart) { // Ensure chart exists
+                                const time = new Date().toLocaleTimeString();
+                                if (labels.length > 30) {
+                                    labels.shift();
+                                    data.datasets.forEach(ds => ds.data.shift());
+                                }
+                                labels.push(time);
+                                data.datasets.forEach((ds, i) => {
+                                    const base = 2000 + i * 400;
+                                    ds.data.push(base + Math.random() * 300 - 150);
+                                });
+                                initializedCharts.signalSyncChart.update();
+                            }
+                        }
+
+                        if (chartIntervals.signalSyncChartInterval) {
+                            clearInterval(chartIntervals.signalSyncChartInterval);
+                        }
+                        chartIntervals.signalSyncChartInterval = setInterval(pushSignalData, 4000);
+                        initializedCharts.signalSyncChart = chart;
+                        pushSignalData(); // Initial call
+                    }
+                    break;
+                case 'sector-grid-feature': // This is actually the Sector Grid page now
+                    const sectorGridChartCtx = document.getElementById('pulseChart')?.getContext('2d');
+                    if (sectorGridChartCtx) {
+                        const labels = [];
+                        const sectors = ['Agriculture', 'Finance', 'Health', 'Housing', 'Media', 'Ritual', 'AI Systems'];
+
+                        const data = {
+                            labels,
+                            datasets: sectors.map((label, i) => ({
+                                label,
+                                data: [],
+                                borderColor: `hsl(${i * 50}, 70%, 50%)`,
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            }))
+                        };
+
+                        const chart = new Chart(sectorGridChartCtx, {
+                            type: 'line',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                animation: false,
+                                scales: {
+                                    y: {
+                                        min: 1500,
+                                        max: 5000,
+                                        ticks: {
+                                            callback: v => v + ' load',
+                                            color: 'var(--muted-text-light)' // Ensure tick color matches theme
+                                        },
+                                        grid: {
+                                            color: 'var(--border-color-light)' // Ensure grid color matches theme
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'var(--muted-text-light)' // Ensure tick color matches theme
+                                        },
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                plugins: { 
+                                    legend: { 
+                                        position: 'bottom',
+                                        labels: {
+                                            color: 'var(--muted-text-light)' // Ensure legend color matches theme
+                                        }
+                                    } 
+                                }
+                            }
+                        });
+
+                        function pushData() {
+                            // Ensure the chart instance exists before updating
+                            if (initializedCharts.sectorGridChart) {
+                                const time = new Date().toLocaleTimeString();
+                                if (labels.length > 30) {
+                                    labels.shift();
+                                    data.datasets.forEach(ds => ds.data.shift());
+                                }
+                                labels.push(time);
+                                data.datasets.forEach((ds, i) => {
+                                    const base = 2000 + i * 350;
+                                    ds.data.push(base + Math.random() * 400 - 200);
+                                });
+                                initializedCharts.sectorGridChart.update();
+                            }
+                        }
+
+                        // Clear any existing interval for this chart before setting a new one
+                        if (chartIntervals.sectorGridChartInterval) {
+                            clearInterval(chartIntervals.sectorGridChartInterval);
+                        }
+                        chartIntervals.sectorGridChartInterval = setInterval(pushData, 4000); // Store interval ID
+                        initializedCharts.sectorGridChart = chart; // Store the chart instance
+                        pushData(); // Initial call to populate chart
+                    }
+                    break;
+                case 'node-index-feature': // New case for Node Index page
+                    const nodeIndexChartCtx = document.getElementById('pulseChart')?.getContext('2d');
+                    if (nodeIndexChartCtx) {
+                        const labels = [];
+                        const sectors = ['Node Core', 'Edge Relay', 'Low Latency Ring', 'Border Mesh', 'Uptime Band', 'Zone Echo'];
+
+                        const data = {
+                            labels,
+                            datasets: sectors.map((label, i) => ({
+                                label,
+                                data: [],
+                                borderColor: `hsl(${i * 40}, 70%, 50%)`,
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            }))
+                        };
+
+                        const chart = new Chart(nodeIndexChartCtx, {
+                            type: 'line',
+                            data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                animation: false,
+                                scales: {
+                                    y: {
+                                        min: 1500,
+                                        max: 5000,
+                                        ticks: {
+                                            callback: v => v + ' pings',
+                                            color: 'var(--muted-text-light)'
+                                        },
+                                        grid: {
+                                            color: 'var(--border-color-light)'
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            color: 'var(--muted-text-light)'
+                                        },
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                plugins: { 
+                                    legend: { 
+                                        position: 'bottom',
+                                        labels: {
+                                            color: 'var(--muted-text-light)'
+                                        }
+                                    } 
+                                }
+                            }
+                        });
+
+                        function pushNodeData() {
+                            if (initializedCharts.nodeIndexChart) { // Ensure chart exists
+                                const time = new Date().toLocaleTimeString();
+                                if (labels.length > 30) {
+                                    labels.shift();
+                                    data.datasets.forEach(ds => ds.data.shift());
+                                }
+                                labels.push(time);
+                                data.datasets.forEach((ds, i) => {
+                                    const base = 2000 + i * 400;
+                                    ds.data.push(base + Math.random() * 300 - 150);
+                                });
+                                initializedCharts.nodeIndexChart.update();
+                            }
+                        }
+
+                        if (chartIntervals.nodeIndexChartInterval) {
+                            clearInterval(chartIntervals.nodeIndexChartInterval);
+                        }
+                        chartIntervals.nodeIndexChartInterval = setInterval(pushNodeData, 4000);
+                        initializedCharts.nodeIndexChart = chart;
+                        pushNodeData(); // Initial call
+                    }
+                    break;
+                default:
+                    // Any other views that might have charts in the future
+                    break;
+            }
+        }
+
+        // --- Live Share Price Update ---
+        function updateSharePrice() {
+            const priceElement = document.getElementById('price');
+            const timestampElement = document.getElementById('timestamp');
+            if (priceElement && timestampElement) {
+                // Simulate a price fluctuation
+                const oldPrice = appData.fruitful.sharePrice.value;
+                const newPrice = (oldPrice + (Math.random() - 0.5) * 2).toFixed(2); // +/- 1
+                appData.fruitful.sharePrice.value = parseFloat(newPrice);
+                appData.fruitful.sharePrice.timestamp = new Date().toLocaleTimeString();
+
+                priceElement.textContent = `$${appData.fruitful.sharePrice.value}`;
+                timestampElement.textContent = appData.fruitful.sharePrice.timestamp;
+            }
+        }
+        // Update price every 5 seconds
+        setInterval(updateSharePrice, 5000);
+
+
+        // --- Admin Portal Specifics (functions called from showMainContentView) ---
+
+        // populateAdminSectorSelect (populates dropdown in Admin Quick View)
+        function populateAdminSectorSelect() {
+            const select = document.getElementById('sectorSelect');
+            if (select) {
+                select.innerHTML = '<option value="">Select a Sector</option>';
+                Object.entries(appData.admin.sectors).forEach(([key, value]) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = value.name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Fallback if name is missing
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        // addBrandToSector (function for the 'Add Brand' button in Admin Quick View)
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'add-brand-btn') {
+                const sector = document.getElementById("sectorSelect")?.value;
+                const brand = document.getElementById("brandInput")?.value.trim();
+                const subnodesInput = document.getElementById("subnodesInput")?.value;
+                const subnodes = subnodesInput ? subnodesInput.split(",").map(n => n.trim()).filter(Boolean) : [];
+                const adminStatusDiv = document.getElementById("adminStatus");
+
+                if (!sector || !brand || subnodes.length === 0) {
+                    if (adminStatusDiv) adminStatusDiv.innerHTML = "<span style='color: var(--tertiary-color);'>⚠️ Please select a sector, fill in the brand name, and at least one subnode.</span>";
+                    return;
+                }
+
+                if (!appData.admin.sectors[sector]) {
+                    appData.admin.sectors[sector] = { name: appData.fruitful.sectorList[sector] || sector, brands: [], nodes: [] };
+                }
+
+                if (!appData.admin.sectors[sector].brands.includes(brand)) {
+                    appData.admin.sectors[sector].brands.push(brand);
+                }
+                subnodes.forEach(node => {
+                    if (!appData.admin.sectors[sector].nodes.includes(node)) {
+                        appData.admin.sectors[sector].nodes.push(node);
+                    }
+                });
+
+                if (adminStatusDiv) adminStatusDiv.innerHTML = `<span style='color: var(--secondary-color);'>✅ Added <strong>${brand}</strong> to <strong>${appData.admin.sectors[sector].name}</strong> (${subnodes.length} nodes).</span>`;
+
+                loadBrandDashboard(appData.admin.sectors);
+                console.log("💾 Updated Admin Data:", appData.admin.sectors);
+
+                document.getElementById("brandInput").value = "";
+                document.getElementById("subnodesInput").value = "";
+            }
+        });
+
+        // loadBrandDashboard (renders the "Saved Brand Overview" in Admin Quick View)
+        function loadBrandDashboard(data) {
+            const dashboard = document.getElementById("brandDashboard");
+            if (!dashboard) return;
+            dashboard.innerHTML = '';
+
+            Object.entries(data).forEach(([key, val]) => {
+                // Check if 'name' property exists, otherwise format the key
+                const label = val.name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+                const section = document.createElement("div"); // Changed from <section> to <div> to avoid nested <section> in HTML5
+                section.className = "mb-8 bg-white p-6 rounded-lg shadow-sm";
+                section.innerHTML = `
+                    <h3 class="text-md font-semibold mb-2">${label}</h3>
+                    <div id="${key}-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 px-0"></div>
+                    <div class="mt-4" id="${key}-snapshots"></div>
+                `;
+                dashboard.appendChild(section);
+
+                const grid = section.querySelector(`#${key}-grid`);
+                (val.brands || []).forEach(brandName => {
+                    const tag = document.createElement("div");
+                    tag.className = "bg-fcfcfc text-1d1d1f px-3 py-1 rounded text-sm text-center shadow cursor-pointer hover:bg-e8e8ed transition-colors border border-e8e8ed";
+                    tag.textContent = brandName;
+                    tag.onclick = () => showSmartSnapshot(key, brandName, val.nodes || []);
+                    grid.appendChild(tag);
+                });
+            });
+        }
+
+        // showSmartSnapshot (displays brand details in Admin Quick View)
+        window.showSmartSnapshot = function(sectorKey, brandName, nodes) {
+            // Remove previous snapshot boxes within the same sector, not globally
+            document.querySelectorAll(`#${sectorKey}-snapshots .snapshot-box`).forEach(box => box.remove());
+
+            const container = document.getElementById(`${sectorKey}-snapshots`);
+            if (!container) return;
+
+            const box = document.createElement("div");
+            box.className = "snapshot-box"; // Uses the .snapshot-box style
+            box.innerHTML = `
+                <h4 class="text-lg font-bold mb-2">${brandName}™ Snapshot</h4>
+                <p class="text-xs text-muted-text-light mb-2">Associated nodes for this brand:</p>
+                <ul class="list-disc pl-6 space-y-1 text-sm">
+                    ${nodes.map(node => `<li>${node}</li>`).join('')}
+                </ul>
+                <button class="mt-4 cta-button cta-button-secondary text-sm" onclick="this.closest('.snapshot-box').remove()">Dismiss</button>
+            `;
+            container.appendChild(box);
+        }
+
+        // setupTechStackInteraction (for Global Dashboard)
+        function setupTechStackInteraction() {
+            const techPillars = document.querySelectorAll('#admin-global-dashboard .tech-pillar');
+            const techContentContainer = document.getElementById('tech-stack-content');
+
+            techPillars.forEach(pillar => {
+                pillar.removeEventListener('click', handleTechPillarClick); // Prevent duplicates
+                pillar.addEventListener('click', handleTechPillarClick);
+            });
+
+            function handleTechPillarClick(e) {
+                const contentKey = e.currentTarget.dataset.content;
+                const contentData = appData.admin.techStack[contentKey];
+                if (contentData) {
+                    techContentContainer.innerHTML = `
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">${contentData.icon}</span>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">${contentData.title}</h3>
+                                <p class="mt-2 text-slate-600">${contentData.details}</p>
+                                <ul class="mt-4 list-disc list-inside text-sm text-slate-500 space-y-1">
+                                    ${contentData.features.map(f => `<li>${f}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    techContentContainer.innerHTML = `<p class="text-center text-slate-500">Details not available for this pillar.</p>`;
+                }
+            }
+        }
+
+        // populateEcosystemSectorFilter (for Global Dashboard)
+        function populateEcosystemSectorFilter() {
+            const sectorFilter = document.getElementById('sector-filter');
+            if (sectorFilter) {
+                sectorFilter.innerHTML = '';
+                // Sort sectors alphabetically by their display name
+                const sortedSectorKeys = Object.keys(appData.admin.sectors).sort((a, b) => {
+                    const nameA = appData.admin.sectors[a].name || a.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    const nameB = appData.admin.sectors[b].name || b.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    return nameA.localeCompare(nameB);
+                });
+
+                sortedSectorKeys.forEach(key => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = appData.admin.sectors[key].name || key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    sectorFilter.appendChild(option);
+                });
+                sectorFilter.removeEventListener('change', handleSectorFilterChange); // Prevent duplicates
+                sectorFilter.addEventListener('change', handleSectorFilterChange);
+            }
+        }
+
+        function handleSectorFilterChange(e) {
+            displayEcosystemSectorInfo(e.target.value);
+        }
+
+        // displayEcosystemSectorInfo (for Global Dashboard)
+        function displayEcosystemSectorInfo(sectorKey) {
+            const explorerContent = document.getElementById('explorer-content');
+            const sector = appData.admin.sectors[sectorKey];
+            if (!explorerContent || !sector) {
+                explorerContent.innerHTML = `<p class="text-center text-slate-500">Select a sector to view its details.</p>`;
+                return;
+            }
+
+            explorerContent.innerHTML = `
+                <div class="dashboard-metric-card">
+                    <h3 class="dashboard-header-h2">${sector.name || sectorKey.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</h3>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-slate-600">Core Brands</h4>
+                            <ul class="mt-2 list-disc list-inside text-slate-500">
+                                ${sector.brands.length > 0 ? sector.brands.map(b => `<li>${b}™</li>`).join('') : '<li>No brands listed.</li>'}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-600">Node Count</h4>
+                            <p class="text-3xl font-bold text-slate-700 mt-1">${sector.nodes.length}</p>
+                            <p class="text-sm text-slate-500">active product nodes</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // updateSovereignScrollsProgressBar (for Global Dashboard)
+        function updateSovereignScrollsProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const pagesGeneratedSpan = document.getElementById('pages-generated');
+            const pagesTotalSpan = document.getElementById('pages-total');
+
+            if (!progressBar || !pagesGeneratedSpan || !pagesTotalSpan) return;
+
+            const generated = appData.admin.sovereignScrolls.generated;
+            const total = appData.admin.sovereignScrolls.total;
+            const progress = (generated / total) * 100;
+
+            progressBar.style.width = `${progress.toFixed(1)}%`;
+            progressBar.textContent = `${progress.toFixed(1)}%`;
+            pagesGeneratedSpan.textContent = `${generated.toLocaleString()} Generated`;
+            pagesTotalSpan.textContent = `${total.toLocaleString()} Total`;
+        }
+
+        // --- Sector Glyphs and Iframe Loading (from main page) ---
+        // This is still needed for the main #sector-scrolls-section
+        const sectorGlyphsContainer = document.getElementById('sector-glyphs-container');
+        if (sectorGlyphsContainer) {
+            sectorGlyphsContainer.innerHTML = ''; // Clear for dynamic population
+
+            const sortedSectorSlugs = Object.keys(appData.fruitful.sectorList).sort((a, b) => {
+                const nameA = appData.fruitful.sectorList[a];
+                const nameB = appData.fruitful.sectorList[b];
+                // Push 'admin' and 'global-index' to the end of the sorted list
+                if (a === 'admin' || a === 'global-index') return 1;
+                if (b === 'admin' || b === 'global-index') return -1;
+                return nameA.localeCompare(nameB);
+            });
+
+            sortedSectorSlugs.forEach(slug => {
+                // Ensure 'admin' and 'global-index' are not added to the public sector glyphs
+                if (slug !== 'admin' && slug !== 'global-index') {
+                    const display = appData.fruitful.sectorList[slug];
+                    const fileName = (slug === 'wildlife') ? 'dashboard.html' : 'index.html'; // Special case for wildlife
+                    const url = `./sectors/${slug}/${fileName}`; // Use relative path
+                    
+                    const glyphLink = document.createElement('a');
+                    glyphLink.href = "#"; // Prevent default navigation for internal handling
+                    glyphLink.className = "glyph"; // Apply the existing glyph styling
+                    glyphLink.setAttribute('data-vault', slug); // Custom data attribute to identify the sector
+                    glyphLink.innerHTML = display;
+
+                    glyphLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const clickedSectorSlug = e.currentTarget.getAttribute('data-vault');
+                        const iframeUrl = `https://faa.zone/sectors/${clickedSectorSlug}/${(clickedSectorSlug === 'wildlife' ? 'dashboard.html' : 'index.html')}`; // Updated to FAA.zone base URL
+                        const sectorContentContainer = document.getElementById('sector-content-container');
+
+                        if (sectorContentContainer && iframeUrl) {
+                            const loadingMessageText = appData.fruitful.sectorList[clickedSectorSlug] || clickedSectorSlug.charAt(0).toUpperCase() + clickedSectorSlug.slice(1).replace('-', ' ');
+                            sectorContentContainer.innerHTML =
+                                `<div class="text-gray-600 text-sm mb-2">🔄 Loading sector: ${loadingMessageText}...</div>
+                                <iframe src="${iframeUrl}" class="w-full h-[900px] border-none rounded-xl bg-gray-100 iframe-pastel-bg" title="${loadingMessageText} Sector"></iframe>`;
+                        } else if (sectorContentContainer) {
+                            sectorContentContainer.innerHTML =
+                                `<div class="text-red-500 text-sm mb-2">Error: Sector URL not found for ${clickedSectorSlug}.</div>`;
+                        }
+                    });
+                    sectorGlyphsContainer.appendChild(glyphLink);
+                }
+            });
+        }
+
+        // --- Centralized Event Listener for ALL View Switches (main sections, announcement bar) ---
+        // This targets elements with `data-view-id` which are used for general page section navigation
+        document.querySelectorAll('[data-view-id]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewId = e.currentTarget.dataset.viewId; // Use currentTarget to get the element with data-view-id
+                showMainContentView(viewId);
+
+                // If it's an admin view specifically, also activate its corresponding internal admin panel
+                if (viewId.startsWith('admin-')) {
+                    const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                    adminViews.forEach(view => view.classList.remove('active')); // Hide all internal admin panels
+                    const targetAdminView = document.getElementById(viewId);
+                    if (targetAdminView) {
+                        targetAdminView.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // --- Admin Sidebar Links Event Listeners ---
+        // These are specific to navigating *within* the admin portal
+        document.querySelectorAll('.admin-sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewId = this.dataset.adminView; // Get the data-admin-view attribute
+                showMainContentView('admin-portal-section'); // First, make sure the overall admin portal is visible
+                
+                // Then, activate the specific view within the admin portal
+                const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                adminViews.forEach(view => view.classList.remove('active')); // Hide all admin panels
+                
+                const targetView = document.getElementById(viewId);
+                if (targetView) {
+                    targetView.classList.add('active'); // Show the clicked panel
+                }
+
+                // Update active state for sidebar links
+                document.querySelectorAll('.admin-sidebar-link').forEach(item => item.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update active state for top nav links (to sync if sidebar is used)
+                document.querySelectorAll('.admin-nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                    if (navLink.dataset.adminView === viewId) {
+                        navLink.classList.add('active');
+                    }
+                });
+
+                // Ensure charts are rendered/re-rendered for the newly active view
+                renderChartsForView(viewId);
+            });
+        });
+
+        // --- Admin Top Navigation Links Event Listeners ---
+        // These are for navigating within the main content area of the admin portal
+        document.querySelectorAll('.admin-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewId = this.dataset.adminView;
+                
+                const adminViews = document.querySelectorAll('#admin-portal-main-content-area .admin-view-panel');
+                adminViews.forEach(view => view.classList.remove('active'));
+                
+                const targetView = document.getElementById(viewId);
+                if (targetView) {
+                    targetView.classList.add('active');
+                }
+
+                // Update active state for top nav links
+                document.querySelectorAll('.admin-nav-link').forEach(navLink => navLink.classList.remove('active'));
+                this.classList.add('active');
+
+                // Ensure charts are rendered/re-rendered for the newly active view
+                renderChartsForView(viewId);
+            });
+        });
+
+        // --- Hamburger Menu Logic ---
+        document.getElementById('hamburger-btn').addEventListener('click', () => {
+            const sidebar = document.getElementById('admin-portal-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            sidebar.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        });
+
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            const sidebar = document.getElementById('admin-portal-sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            sidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // --- Announcement Bar Close Button ---
+        document.querySelector('#announcement-bar .close-btn').addEventListener('click', () => {
+            const announcementBar = document.getElementById('announcement-bar');
+            announcementBar.classList.add('hidden');
+            // Adjust header top position after hiding announcement bar
+            document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+            // Store preference in localStorage to keep it hidden on subsequent visits
+            localStorage.setItem('hideAnnouncementBar', 'true');
+        });
+
+        // --- Theme Switching Logic ---
+        const themeDayBtn = document.getElementById('theme-day-btn');
+        const themeNightBtn = document.getElementById('theme-night-btn');
+        const themeHyperBtn = document.getElementById('theme-hyper-btn');
+
+        function setTheme(theme) {
+            document.body.classList.remove('dark-mode', 'hyper-mode');
+            themeDayBtn.classList.remove('active');
+            themeNightBtn.classList.remove('active');
+            themeHyperBtn.classList.remove('active');
+
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeNightBtn.classList.add('active');
+            } else if (theme === 'hyper') {
+                document.body.classList.add('hyper-mode');
+                themeHyperBtn.classList.add('active');
+            } else {
+                themeDayBtn.classList.add('active');
+            }
+            localStorage.setItem('fruitfulTheme', theme);
+            // Re-render charts to ensure they pick up new theme colors
+            const activeViewId = document.querySelector('.content-section.active')?.id || 
+                                 document.querySelector('#admin-portal-main-content-area .admin-view-panel.active')?.id;
+            if (activeViewId) {
+                renderChartsForView(activeViewId);
+            }
+        }
+
+        if (themeDayBtn) {
+            themeDayBtn.addEventListener('click', () => setTheme('day'));
+            themeNightBtn.addEventListener('click', () => setTheme('dark'));
+            themeHyperBtn.addEventListener('click', () => setTheme('hyper'));
+
+            // Load saved theme on startup
+            const savedTheme = localStorage.getItem('fruitfulTheme') || 'day';
+            setTheme(savedTheme);
+        }
+
+        // --- Language Switcher Logic ---
+        const languageSwitcher = document.getElementById('languageSwitcher');
+        
+        // Language data for i18n
+        window.languageData = {
+            en: {
+                pageTitle: 'Signal Sync | FAA Portal',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                // Footer links (for i18n in JS, if needed, though HTML data-i18n is used above)
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                pageTitle: 'Sincronización de Señales | Portal FAA',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyrightLink: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                pageTitle: 'Synchronisation des Signaux | Portail FAA',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À Propos',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            de: {
+                pageTitle: 'Signal Sync | FAA Portal',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Funktionen',
+                navSignal: 'Signal',
+                navVault: 'Tresor',
+                navTreaty: 'Vertrag',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Über Uns',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Karriere',
+                navSecureSign: 'Sichere Anmeldung',
+                navSignUp: 'Anmelden',
+                footerPrivacy: 'Datenschutz',
+                footerTerms: 'Bedingungen',
+                footerContact: 'Kontakt',
+                footerCopyrightLink: 'Urheberrecht',
+                footerDevelopers: 'Entwickler',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Über Uns',
+                footerAccessibility: 'Barrierefreiheit',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Alle Rechte vorbehalten.',
+                footerPoweredBy: 'Betrieben mit 🦍 Glyphen + Vault API. Mit Seedwave™ synchronisiert.'
+            },
+            zh: {
+                pageTitle: '信号同步 | FAA门户',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyrightLink: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMeshLink: '金库网格',
+                footerFruitfulLink: '丰硕',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        if (languageSwitcher) {
+            languageSwitcher.addEventListener('change', (e) => {
+                const selectedLang = e.target.value;
+                updateLanguage(selectedLang);
+                localStorage.setItem('language', selectedLang);
+            });
+        }
+        
+        function updateLanguage(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (window.languageData[lang] && window.languageData[lang][key]) {
+                    el.innerHTML = window.languageData[lang][key];
+                }
+            });
+            document.title = window.languageData[lang]?.pageTitle || 'FAA Portal'; // Fallback title
+        }
+
+
+        // --- On Load Initializations (for all shared pages) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Initialize dynamic header top position based on announcement bar
+            const announcementBar = document.getElementById('announcement-bar');
+            const mainHeader = document.getElementById('main-header');
+            if (announcementBar && mainHeader) {
+                const updateHeaderTop = () => {
+                    if (!announcementBar.classList.contains('hidden')) {
+                        const announcementHeight = announcementBar.offsetHeight;
+                        document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                    }
+                    document.documentElement.style.setProperty('--header-height', `${mainHeader.offsetHeight}px`);
+                };
+
+                // Check localStorage for announcement bar preference
+                if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                    announcementBar.classList.add('hidden');
+                    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                } else {
+                    announcementBar.classList.remove('hidden'); // Ensure visible if not hidden
+                    updateHeaderTop(); // Set initial height
+                }
+                
+                // Update on resize
+                window.addEventListener('resize', updateHeaderTop);
+                // Also update after fonts/images might load and affect layout
+                window.addEventListener('load', updateHeaderTop);
+            }
+
+            // Initialize Rhythmic Canvas (only if present on the page)
+            const canvas = document.getElementById('rhythmicCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            if (canvas && ctx) {
+                resizeCanvas();
+                drawGlyph();
+                window.addEventListener('resize', resizeCanvas);
+            }
+
+            // Set initial language and theme
+            const savedLang = localStorage.getItem('language') || 'en';
+            if (languageSwitcher) {
+                languageSwitcher.value = savedLang;
+            }
+            updateLanguage(savedLang);
+
+            const savedTheme = localStorage.getItem('fruitfulTheme') || 'day';
+            setTheme(savedTheme);
+
+            // Activate the current section for this page
+            const currentPageSection = document.getElementById('signal-sync-feature'); // This ID now refers to the Signal Sync content
+            if (currentPageSection) {
+                currentPageSection.classList.add('active');
+                currentPageSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Update main navigation links to reflect active page if part of the shared header
+            const currentPath = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('header.main-header .nav-actions a');
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref && linkHref.includes(currentPath)) {
+                    link.classList.add('active-nav-item'); // Add a class for styling
+                } else {
+                    link.classList.remove('active-nav-item');
+                }
+            });
+
+            // Ensure header logo link goes back to dashboard
+            const logoLink = document.querySelector('.logo-link');
+            if (logoLink) {
+                logoLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = './fruitful_dashboardvs2.0.html'; // Or your base path
+                });
+            }
+        });
+
+        // Load terminal iframe function (if applicable for this page)
+        window.loadTerminal = function(iframeSrc) {
+            const vaultFrame = document.getElementById('vault-frame');
+            if (vaultFrame) {
+                vaultFrame.src = iframeSrc;
+                document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring'));
+                event.target.classList.add('ring');
+            }
+        };
+
+        // If this page had a planet text element, you'd include its logic here.
+        // For signal-sync.html, assuming it doesn't, we can omit or keep it separate.
+        // const planetTextElement = document.getElementById('planet-text');
+        // if (planetTextElement) { /* ... planet text logic ... */ }
+
+        // If this page had a Gemini API Text Generation tool, you'd include its logic here.
+        // const generateTextBtn = document.getElementById('generateTextBtn');
+        // if (generateTextBtn) { /* ... Gemini API logic ... */ }
+
+    </script>
+</body>
+</html>

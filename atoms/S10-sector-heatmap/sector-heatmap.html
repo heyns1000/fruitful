@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sector Heatmap | OmniGrid™ Ecosystem Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f0f1e;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+        }
+
+        header h1 {
+            color: #4ECDC4;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4ECDC4;
+        }
+
+        .pulse-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4ECDC4;
+            border-radius: 50%;
+            margin-left: 8px;
+            animation: pulse 9s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7); }
+            50% { opacity: 0.5; transform: scale(1.3); box-shadow: 0 0 0 10px rgba(78, 205, 196, 0); }
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sector-card {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sector-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .sector-card.emerald {
+            border-color: #4ECDC4;
+            background: linear-gradient(135deg, #1e3f3f 0%, #2d5f5f 100%);
+        }
+
+        .sector-card.amber {
+            border-color: #ffa500;
+            background: linear-gradient(135deg, #3f2e1e 0%, #5f4a2d 100%);
+        }
+
+        .sector-card.red {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #3f1e1e 0%, #5f2d2d 100%);
+        }
+
+        .sector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sector-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .sector-health {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .sector-card.emerald .sector-health {
+            color: #4ECDC4;
+        }
+
+        .sector-card.amber .sector-health {
+            color: #ffa500;
+        }
+
+        .sector-card.red .sector-health {
+            color: #ff6b6b;
+        }
+
+        .sector-status {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.5rem;
+        }
+
+        .status-emerald {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ECDC4;
+            border: 1px solid #4ECDC4;
+        }
+
+        .status-amber {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+            border: 1px solid #ffa500;
+        }
+
+        .status-red {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+        }
+
+        .sector-brands {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brands-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .brand-list {
+            display: none;
+            margin-top: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .brand-list.active {
+            display: block;
+        }
+
+        .brand-item {
+            padding: 0.3rem 0;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .legend {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .legend h3 {
+            color: #4ECDC4;
+            margin-bottom: 1rem;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid;
+        }
+
+        .legend-emerald {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ECDC4;
+        }
+
+        .legend-amber {
+            background: rgba(255, 165, 0, 0.2);
+            border-color: #ffa500;
+        }
+
+        .legend-red {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .auto-refresh {
+            margin-top: 1rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #4ECDC4;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(78, 205, 196, 0.2);
+            border-top: 4px solid #4ECDC4;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ecosystem-status {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            text-align: center;
+        }
+
+        .ecosystem-status h3 {
+            color: #4ECDC4;
+            margin-bottom: 1rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .status-item-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-item-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4ECDC4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗺️ Sector Heatmap Dashboard</h1>
+            <p style="color: #888; font-size: 1.1rem;">
+                Real-time ecosystem health monitoring | OmniGrid™ Total Evolutionary Consolidation
+                <span class="pulse-indicator"></span>
+            </p>
+
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Total Sectors</div>
+                    <div class="stat-value" id="totalSectors">16</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Total Brands</div>
+                    <div class="stat-value" id="totalBrands">149</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Avg Health</div>
+                    <div class="stat-value" id="avgHealth">95%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Pulse Cycle</div>
+                    <div class="stat-value">9s</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Last Update</div>
+                    <div class="stat-value" id="lastUpdate" style="font-size: 1rem;">-</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Health Status Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color legend-emerald"></div>
+                    <div>
+                        <div style="font-weight: 600; color: #4ECDC4;">Emerald</div>
+                        <div style="font-size: 0.85rem; color: #888;">95-100% Health</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-amber"></div>
+                    <div>
+                        <div style="font-weight: 600; color: #ffa500;">Amber</div>
+                        <div style="font-size: 0.85rem; color: #888;">85-94% Health</div>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-red"></div>
+                    <div>
+                        <div style="font-weight: 600; color: #ff6b6b;">Red</div>
+                        <div style="font-size: 0.85rem; color: #888;">&lt;85% Health</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Loading sector data from CodeNest...</div>
+        </div>
+
+        <!-- Heatmap Grid -->
+        <div class="heatmap-grid" id="heatmapGrid" style="display: none;">
+            <!-- Sector cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Ecosystem Status -->
+        <div class="ecosystem-status" style="display: none;" id="ecosystemStatus">
+            <h3>🌐 OmniGrid™ Ecosystem Status</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-item-label">Emerald Sectors</div>
+                    <div class="status-item-value" id="emeraldCount">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-label">Amber Sectors</div>
+                    <div class="status-item-value" id="amberCount" style="color: #ffa500;">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-label">Red Sectors</div>
+                    <div class="status-item-value" id="redCount" style="color: #ff6b6b;">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-label">Total Templates</div>
+                    <div class="status-item-value">17,000+</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-label">Active Repos</div>
+                    <div class="status-item-value">87</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-item-label">Active Nodes</div>
+                    <div class="status-item-value">12,934</div>
+                </div>
+            </div>
+
+            <div class="auto-refresh">
+                <button class="refresh-btn" onclick="refreshHeatmap()">🔄 Refresh Now</button>
+                <div style="margin-top: 1rem;">
+                    Auto-refresh: Every 9 seconds (pulse cycle) | Next update in: <span id="nextUpdate">9</span>s
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================================================
+        // SECTOR HEATMAP - JAVASCRIPT
+        // ====================================================================
+
+        const CONFIG = {
+            codenestApiUrl: 'http://localhost:8000',
+            refreshInterval: 9000,  // 9 seconds (pulse cycle)
+            mockMode: true  // Set to false when CodeNest API is running
+        };
+
+        let refreshTimer = null;
+        let countdownTimer = null;
+        let nextUpdateSeconds = 9;
+
+        // ====================================================================
+        // DATA FETCHING
+        // ====================================================================
+
+        async function fetchSectorData() {
+            if (CONFIG.mockMode) {
+                // Mock data matching the export script output
+                return getMockSectorData();
+            }
+
+            try {
+                const response = await fetch(`${CONFIG.codenestApiUrl}/sectors/all`);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch sector data:', error);
+                // Fallback to mock data
+                return getMockSectorData();
+            }
+        }
+
+        function getMockSectorData() {
+            return [
+                {
+                    sector: "Legal_Tech_Compliance",
+                    health: 98,
+                    status: "emerald",
+                    brand_count: 21,
+                    color: "#4ECDC4",
+                    brands: ["Actuary™", "Affidavit Precision™", "AgentFlow™", "BrandPath™", "CertifyCore™", "ClaimPro™", "ComplianceGrid™", "ContractNet™", "CourtSync™", "Deed Tracker™", "E-Notary360™", "JurisdictionHub™", "Legal Index™", "Marken™", "NotaryCore™", "PolicyStream™", "Proof Protocol™", "RegulatoryLine™", "RiskGuard™", "VerifyX™", "WitnessStream™"]
+                },
+                {
+                    sector: "IP_Patent_Systems",
+                    health: 97,
+                    status: "emerald",
+                    brand_count: 30,
+                    color: "#667eea",
+                    brands: ["BrandGuard™", "Brandweave™", "CitationFlow™", "ClaimBuilder™", "DesignReg™", "ExamFlow™", "FilePro IP™", "GrantPath™", "IntellectCore™", "IP Navigator™", "LicenseLink™", "Logo Registry™", "MarkMatcher™", "OfficeAction AI™", "PatentBase™", "PatentPulse™", "PriorArtEngine™", "ProtocolIP™", "PublishTrack™", "RegAuth™", "SearchBeam™", "SerialSync™", "Sovereignmark™", "SpecBuilder™", "TrademarkOS™", "TradeMesh™", "UseProfiler™", "VaultPat™", "ViewClaim™", "WordMarkIQ™"]
+                },
+                {
+                    sector: "Performance_Analytics",
+                    health: 95,
+                    status: "emerald",
+                    brand_count: 10,
+                    color: "#764ba2",
+                    brands: ["AlgoMetrics™", "BenchmarkIQ™", "DashCore™", "DataLoop™", "KPI Navigator™", "MetricFlow™", "PerformanceX™", "PulseAnalytics™", "ReportSync™", "TrendEngine™"]
+                },
+                {
+                    sector: "Algorithmic_Verification",
+                    health: 95,
+                    status: "emerald",
+                    brand_count: 20,
+                    color: "#44A08D",
+                    brands: ["AlgoChain™", "AlgoStack™", "AuditFlow™", "AuthVerify™", "ChainProof™", "CodeValidator™", "ConsensusCore™", "CryptoVerify™", "DataIntegrity™", "HashChain™", "IntegrityX™", "ProofEngine™", "SecureAlgo™", "TimestampPro™", "TrustChain™", "ValidateX™", "VerifyChain™", "VerifyCore™", "VerifyPro™", "ZeroKnowledgePro™"]
+                },
+                {
+                    sector: "Global_Expansion",
+                    health: 87,
+                    status: "amber",
+                    brand_count: 10,
+                    color: "#ffa500",
+                    brands: ["BorderlessIP™", "CrossBorderFlow™", "ExpansionEngine™", "GlobalBrandHub™", "GlobalPatent™", "InternationalIP™", "MarketExpand™", "MultiJurisdiction™", "RegionalSync™", "WorldwideMark™"]
+                },
+                {
+                    sector: "Payment_Infrastructure",
+                    health: 96,
+                    status: "emerald",
+                    brand_count: 15,
+                    color: "#93F9B9",
+                    brands: ["BankVault™", "CashFlow360™", "CryptoGate™", "FraudGuard™", "PaymentHub™", "PaySecure™", "SettlementX™", "TransactCore™", "VaultMesh™", "VaultPay™", "VaultPro™", "VaultSecure™", "VaultStream™", "VaultSync™", "VaultX™"]
+                },
+                {
+                    sector: "Wildlife_Conservation",
+                    health: 98,
+                    status: "emerald",
+                    brand_count: 8,
+                    color: "#50C878",
+                    brands: ["Banimal™", "CareLoop™", "ConservationTech™", "EcoGuard™", "SpeciesTrack™", "WildlifeHub™", "WildlifeNet™", "WildTrack™"]
+                },
+                {
+                    sector: "Quantum_Security",
+                    health: 97,
+                    status: "emerald",
+                    brand_count: 12,
+                    color: "#9370DB",
+                    brands: ["CrystalSec™", "EncryptionX™", "KeyVault™", "QuantumCrypt™", "QuantumGuard™", "QuantumKey™", "QuantumSafe™", "QuantumVault™", "SecureQuantum™", "TwinCustody™", "ZeroTrustX™", "ZKProof™"]
+                },
+                {
+                    sector: "Township_Economy",
+                    health: 92,
+                    status: "amber",
+                    brand_count: 6,
+                    color: "#FFD700",
+                    brands: ["HSOMNI 9000™", "KasiConnect™", "KasiHub™", "MealDrop™", "ProjectKasi™", "TownshipTech™"]
+                },
+                {
+                    sector: "Data_Warehouse",
+                    health: 96,
+                    status: "emerald",
+                    brand_count: 5,
+                    color: "#4682B4",
+                    brands: ["DataVault™", "HypercubeDB™", "Omnigrid™", "StorageX™", "WarehouseCore™"]
+                },
+                {
+                    sector: "Deployment_Infrastructure",
+                    health: 98,
+                    status: "emerald",
+                    brand_count: 4,
+                    color: "#FF6347",
+                    brands: ["BuildNest™", "CodeNest™", "HotStack™", "ToyNest™"]
+                },
+                {
+                    sector: "Integration_Protocols",
+                    health: 95,
+                    status: "emerald",
+                    brand_count: 3,
+                    color: "#20B2AA",
+                    brands: ["PulseEngine™", "SIMUNYE™", "SyncProtocol™"]
+                },
+                {
+                    sector: "Agricultural_Tech",
+                    health: 88,
+                    status: "amber",
+                    brand_count: 2,
+                    color: "#8B4513",
+                    brands: ["FruitfulHoldings™", "FruitfulPlanetChange™"]
+                },
+                {
+                    sector: "Business_Intelligence",
+                    health: 94,
+                    status: "emerald",
+                    brand_count: 1,
+                    color: "#2F4F4F",
+                    brands: ["Zoho Integration™"]
+                },
+                {
+                    sector: "Communication_Systems",
+                    health: 93,
+                    status: "emerald",
+                    brand_count: 1,
+                    color: "#FF1493",
+                    brands: ["Telegram Gateway™"]
+                },
+                {
+                    sector: "Identity_Management",
+                    health: 96,
+                    status: "emerald",
+                    brand_count: 1,
+                    color: "#00CED1",
+                    brands: ["NameStream™"]
+                }
+            ];
+        }
+
+        // ====================================================================
+        // RENDERING
+        // ====================================================================
+
+        async function renderHeatmap() {
+            const loading = document.getElementById('loading');
+            const grid = document.getElementById('heatmapGrid');
+            const ecosystemStatus = document.getElementById('ecosystemStatus');
+
+            // Show loading
+            loading.style.display = 'block';
+            grid.style.display = 'none';
+            ecosystemStatus.style.display = 'none';
+
+            // Fetch data
+            const sectors = await fetchSectorData();
+
+            // Hide loading
+            loading.style.display = 'none';
+
+            // Render sector cards
+            grid.innerHTML = '';
+            sectors.forEach(sector => {
+                const card = createSectorCard(sector);
+                grid.appendChild(card);
+            });
+
+            grid.style.display = 'grid';
+            ecosystemStatus.style.display = 'block';
+
+            // Update stats
+            updateStats(sectors);
+        }
+
+        function createSectorCard(sector) {
+            const card = document.createElement('div');
+            card.className = `sector-card ${sector.status}`;
+            card.onclick = () => toggleBrandList(sector.sector);
+
+            const statusClass = `status-${sector.status}`;
+
+            card.innerHTML = `
+                <div class="sector-header">
+                    <div class="sector-name">${sector.sector.replace(/_/g, ' ')}</div>
+                    <div class="sector-health">${sector.health}%</div>
+                </div>
+                <div>
+                    <span class="sector-status ${statusClass}">${sector.status.toUpperCase()}</span>
+                </div>
+                <div class="sector-brands">
+                    <div class="brands-label">Brands</div>
+                    <div class="brand-count">${sector.brand_count} FAA™ Brands</div>
+                    <div class="brand-list" id="brandList_${sector.sector}">
+                        ${sector.brands.map(brand => `<div class="brand-item">• ${brand}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function toggleBrandList(sectorId) {
+            const brandList = document.getElementById(`brandList_${sectorId}`);
+            brandList.classList.toggle('active');
+        }
+
+        function updateStats(sectors) {
+            // Total stats
+            document.getElementById('totalSectors').textContent = sectors.length;
+            document.getElementById('totalBrands').textContent = sectors.reduce((sum, s) => sum + s.brand_count, 0);
+
+            // Average health
+            const avgHealth = Math.round(sectors.reduce((sum, s) => sum + s.health, 0) / sectors.length);
+            document.getElementById('avgHealth').textContent = avgHealth + '%';
+
+            // Last update
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+
+            // Status counts
+            const emeraldCount = sectors.filter(s => s.status === 'emerald').length;
+            const amberCount = sectors.filter(s => s.status === 'amber').length;
+            const redCount = sectors.filter(s => s.status === 'red').length;
+
+            document.getElementById('emeraldCount').textContent = emeraldCount;
+            document.getElementById('amberCount').textContent = amberCount;
+            document.getElementById('redCount').textContent = redCount;
+        }
+
+        // ====================================================================
+        // AUTO-REFRESH
+        // ====================================================================
+
+        function startAutoRefresh() {
+            // Refresh every 9 seconds (pulse cycle)
+            refreshTimer = setInterval(() => {
+                refreshHeatmap();
+            }, CONFIG.refreshInterval);
+
+            // Countdown timer
+            startCountdown();
+        }
+
+        function startCountdown() {
+            nextUpdateSeconds = 9;
+            document.getElementById('nextUpdate').textContent = nextUpdateSeconds;
+
+            countdownTimer = setInterval(() => {
+                nextUpdateSeconds--;
+                document.getElementById('nextUpdate').textContent = nextUpdateSeconds;
+
+                if (nextUpdateSeconds <= 0) {
+                    nextUpdateSeconds = 9;
+                }
+            }, 1000);
+        }
+
+        function refreshHeatmap() {
+            renderHeatmap();
+            // Reset countdown
+            clearInterval(countdownTimer);
+            startCountdown();
+        }
+
+        // ====================================================================
+        // INITIALIZATION
+        // ====================================================================
+
+        async function init() {
+            console.log('🗺️ Sector Heatmap Dashboard initializing...');
+            console.log('🌐 OmniGrid™ Total Evolutionary Consolidation');
+            console.log('⏱️ Pulse Cycle: 9 seconds');
+
+            // Initial render
+            await renderHeatmap();
+
+            // Start auto-refresh
+            startAutoRefresh();
+
+            console.log('✅ Heatmap ready');
+        }
+
+        // Start on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

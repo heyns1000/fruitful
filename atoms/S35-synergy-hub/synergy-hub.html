@@ -1,0 +1,3368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 Global Synergy Hub - Seedwave™ | VaultMesh™ | Banimal™</title>
+    <!-- PayPal SDK for Hosted Buttons -->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
+    </script>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for the new pulse graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Consolidated Base Styles and Theme Variables */
+        :root {
+            /* Text Colors */
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+
+            /* Background Colors */
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c; /* Default dark background for most sections */
+            --dark-bg-seedwave: #0a0a0d; /* Slightly darker for specific Seedwave sections like hero canvas background */
+
+            /* Card/Element Backgrounds */
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e; /* General card background */
+            --card-bg-seedwave: #1c1c21; /* Darker card background for Seedwave metrics/spotify */
+
+            /* Border Colors */
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e; /* General border color */
+            --border-dark-seedwave: #3a3a42; /* Slightly darker border for Seedwave elements */
+
+            /* Primary/Accent Colors */
+            --primary-color: #0071e3; /* Apple Blue (General primary for MindLift) */
+            --mindlift-color: #7B68EE; /* MediumPurple for MindLift theme */
+            --mindlift-accent-color: #9370DB; /* Brighter purple for MindLift */
+            --primary-glow-seedwave: #00e393; /* Greenish glow, Tesla-inspired (Seedwave) */
+            --secondary-glow-seedwave: #007bff; /* Blue glow, Google/Apple-inspired (Seedwave) */
+            --seedwave-green-glow-text: #00e393; /* Specific lime green glow for Seedwave header */
+            --accent-red-seedwave: #ff4d4d; /* Red accent for Seedwave charts */
+
+            /* Specific Card Colors (for Pricing and other sections) */
+            --pro-card-bg-light: #f0e6fa;
+            --pro-card-bg-dark: #3c3c42;
+            --pro-border-light: #c2a7e7;
+            --pro-border-dark: #5c5c63;
+            --pro-button-color: #8A2BE2;
+            --pro-button-hover-color: #6A1FB8;
+
+            --enterprise-card-bg-light: #e6f0ff;
+            --enterprise-card-bg-dark: #222225;
+            --enterprise-border-light: #a0c3ff;
+            --enterprise-border-dark: #4a4a50;
+            --enterprise-button-color: #483D8B;
+            --enterprise-button-hover-color: #382D7B;
+
+            --banimal-card-bg-light: #e0ffe0;
+            --banimal-card-bg-dark: #1f3d2f;
+            --banimal-border-light: #a8d5a8;
+            --banimal-border-dark: #3a5c3e;
+            --banimal-button-color: #4CAF50;
+            --banimal-button-hover-color: #388E3C;
+
+            /* Other Specific Colors */
+            --fcu-color: #4CAF50; /* Green for announcement bar, matches banimal button */
+            --fcu-accent-color: #66BB6A;
+
+            --secure-sign-purple: #8A2BE2;
+            --secure-sign-blue: #4169E1;
+            --secure-sign-purple-hover: #7b27cb;
+            --secure-sign-blue-hover: #375ac7;
+
+            /* Dynamic Heights for Layout (managed by JS) */
+            --announcement-bar-height: 0px;
+
+            /* Hyper Mode Colors */
+            --hyper-bg-color: #000033;
+            --hyper-text-color: #FFCCFF;
+            --hyper-card-bg: #110044;
+            --hyper-border-color: #330066;
+            --hyper-primary-color: #FF00FF; /* Magenta */
+            --hyper-accent-color: #FF69B4; /* HotPink */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Default to dark mode */
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .section-padding {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .section-title {
+            color: var(--text-color-light);
+        }
+        .light-mode .feature-card,
+        .light-mode .metadata-card,
+        .light-mode .pricing-card,
+        .light-mode .currency-converter-section,
+        .light-mode .fixed-pricing-section,
+        .light-mode #top-tracks-list,
+        .light-mode #playlist-message,
+        .light-mode #audio-players,
+        .light-mode #spotify-album-embed {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .light-mode .pricing-card.pro-card { background-color: var(--pro-card-bg-light); border-color: var(--pro-border-light); }
+        .light-mode .pricing-card.enterprise-card { background-color: var(--enterprise-card-bg-light); border-color: var(--enterprise-border-light); }
+        .light-mode .pricing-card.banimal-card { background-color: var(--banimal-card-bg-light); border-color: var(--banimal-border-light); }
+        .light-mode .feature-card h3,
+        .light-mode .metadata-card h3,
+        .light-mode .pricing-card h3,
+        .light-mode .currency-converter-section h2,
+        .light-mode .fixed-pricing-section h2,
+        .light-mode #top-tracks-list h3 {
+            color: var(--text-color-light);
+        }
+        .light-mode .feature-card p,
+        .light-mode .metadata-card ul li,
+        .light-mode .pricing-card p,
+        .light-mode .pricing-card ul li,
+        .light-mode #top-tracks-list li {
+            color: var(--muted-text-light);
+        }
+        .light-mode .metadata-card ul li strong { color: var(--text-color-light); }
+        .light-mode .ai-help-section h3 { color: var(--text-color-light); }
+        .light-mode .ai-help-section .form-label { color: var(--muted-text-light); }
+        .light-mode .ai-help-section .form-input, .light-mode .ai-help-section .form-select {
+            background-color: #f0f0f0;
+            border-color: var(--border-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .ai-help-section .form-input::placeholder { color: #888; }
+        .light-mode #node-pulse-graph .w-full { background-color: #e8e8ed; border-color: #d1d1d1; }
+        .light-mode #node-pulse-graph p { color: var(--muted-text-light); }
+        .light-mode footer.new-footer { background-color: #d1d1d1; border-top-color: #a0a0a5; }
+        .light-mode footer.new-footer h1 { color: var(--text-color-light); }
+        .light-mode footer.new-footer p { color: var(--muted-text-light); }
+        .light-mode footer.new-footer a { color: var(--primary-color); }
+        .light-mode .theme-controls button,
+        .light-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-light);
+            color: var(--text-color-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .theme-controls #theme-day-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .light-mode .theme-controls #theme-night-btn,
+        .light-mode .theme-controls #theme-hyper-btn {
+            background-color: var(--card-bg-light);
+            color: var(--muted-text-light);
+            border-color: var(--border-color-light);
+        }
+        .light-mode .theme-controls #languageSwitcher {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236e6e73'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .light-mode .header-content-wrapper {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom-color: var(--border-color-light);
+        }
+        .light-mode .logo-group {
+            color: var(--text-color-light);
+        }
+        .light-mode .logo-fruitful { color: var(--primary-color); }
+        .light-mode .logo-separator { color: var(--muted-text-light); }
+        .light-mode .logo-seedwave { color: var(--primary-glow-seedwave); text-shadow: 0 0 10px rgba(0, 227, 147, 0.3); }
+        .light-mode #header-pulse-canvas { background-color: transparent; }
+        .light-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+        }
+        .light-mode .pulse-container {
+            background-color: #f8f8f8;
+            border-color: var(--border-color-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .light-mode .pulse-container canvas { background-color: transparent; }
+        .light-mode .whimsical-card {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .light-mode .whimsical-card h3 { color: var(--text-color-light); }
+        .light-mode .whimsical-card p { color: var(--muted-text-light); }
+        .light-mode .whimsical-icon { text-shadow: 0 0 15px rgba(0, 227, 147, 0.2); }
+        .light-mode .spotify-btn-secondary { background-color: #ddd; color: #333; border-color: #bbb; }
+        .light-mode .spotify-btn-secondary:hover { background-color: #ccc; }
+        .light-mode .currency-converter-section input,
+        .light-mode .currency-converter-section select {
+            background-color: #f0f0f0;
+            border-color: var(--border-color-light);
+            color: var(--text-color-light);
+        }
+        .light-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--primary-color), var(--mindlift-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .feature-card,
+        .dark-mode .metadata-card,
+        .dark-mode .pricing-card,
+        .dark-mode .currency-converter-section,
+        .dark-mode .fixed-pricing-section,
+        .dark-mode #top-tracks-list,
+        .dark-mode #playlist-message,
+        .dark-mode #audio-players,
+        .dark-mode #spotify-album-embed {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .dark-mode .pricing-card.pro-card { background-color: var(--pro-card-bg-dark); border-color: var(--pro-border-dark); }
+        .dark-mode .pricing-card.enterprise-card { background-color: var(--enterprise-card-bg-dark); border-color: var(--enterprise-border-dark); }
+        .dark-mode .pricing-card.banimal-card { background-color: var(--banimal-card-bg-dark); border-color: var(--banimal-border-dark); }
+        .dark-mode .feature-card h3,
+        .dark-mode .metadata-card h3,
+        .dark-mode .pricing-card h3,
+        .dark-mode .currency-converter-section h2,
+        .dark-mode .fixed-pricing-section h2,
+        .dark-mode #top-tracks-list h3 {
+            color: var(--text-color-dark);
+        }
+        .dark-mode .feature-card p,
+        .dark-mode .metadata-card ul li,
+        .dark-mode .pricing-card p,
+        .dark-mode .pricing-card ul li,
+        .dark-mode #top-tracks-list li {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .metadata-card ul li strong { color: var(--text-color-dark); }
+        .dark-mode .ai-help-section h3 { color: var(--text-color-dark); }
+        .dark-mode .ai-help-section .form-label { color: var(--muted-text-dark); }
+        .dark-mode .ai-help-section .form-input, .dark-mode .ai-help-section .form-select {
+            background-color: #3a3a3e;
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+        }
+        .dark-mode .ai-help-section .form-input::placeholder { color: #718096; }
+        .dark-mode #node-pulse-graph .w-full { background-color: #0a0a0d; border-color: #3a3a3e; }
+        .dark-mode #node-pulse-graph p { color: var(--muted-text-dark); }
+        .dark-mode footer.new-footer { background-color: #1a1a1a; border-top-color: #2a2a2e; }
+        .dark-mode footer.new-footer h1 { color: #ffffff; }
+        .dark-mode footer.new-footer p { color: #d1d5db; }
+        .dark-mode footer.new-footer a { color: #60a5fa; }
+        .dark-mode .theme-controls button,
+        .dark-mode .theme-controls #languageSwitcher {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .theme-controls #theme-night-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .dark-mode .theme-controls #theme-day-btn,
+        .dark-mode .theme-controls #theme-hyper-btn {
+            background-color: var(--card-bg-dark);
+            color: var(--muted-text-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .theme-controls #languageSwitcher {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a0a0a5'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .dark-mode header {
+            background-color: rgba(10, 10, 13, 0.8);
+            border-bottom-color: var(--border-dark-seedwave);
+        }
+        .dark-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+        }
+        .dark-mode .pulse-container {
+            background-color: var(--card-bg-seedwave);
+            border-color: var(--border-dark-seedwave);
+        }
+        .dark-mode .whimsical-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+        }
+        .dark-mode .spotify-btn-secondary { background-color: #333; color: #fff; border-color: #555; }
+        .dark-mode .spotify-btn-secondary:hover { background-color: #555; }
+        .dark-mode .currency-converter-section input,
+        .dark-mode .currency-converter-section select {
+            background-color: #2a2a30;
+            border-color: var(--border-color-dark);
+            color: var(--light-text);
+        }
+        .dark-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--primary-glow-seedwave), var(--secondary-glow-seedwave));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hyper Mode */
+        body.hyper-mode {
+            background-color: var(--hyper-bg-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .mindlift-hero {
+            background: linear-gradient(135deg, var(--hyper-primary-color) 0%, var(--hyper-accent-color) 100%);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+        }
+        .hyper-mode .section-padding {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .section-title {
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .feature-card,
+        .hyper-mode .metadata-card,
+        .hyper-mode .pricing-card,
+        .hyper-mode .currency-converter-section,
+        .hyper-mode .fixed-pricing-section,
+        .hyper-mode #top-tracks-list,
+        .hyper-mode #playlist-message,
+        .hyper-mode #audio-players,
+        .hyper-mode #spotify-album-embed {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+        .hyper-mode .pricing-card.pro-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .pricing-card.enterprise-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .pricing-card.banimal-card { background-color: var(--hyper-card-bg); border-color: var(--hyper-border-color); }
+        .hyper-mode .feature-card h3,
+        .hyper-mode .metadata-card h3,
+        .hyper-mode .pricing-card h3,
+        .hyper-mode .currency-converter-section h2,
+        .hyper-mode .fixed-pricing-section h2,
+        .hyper-mode #top-tracks-list h3 {
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .feature-card .icon,
+        .hyper-mode .ai-help-section h3 i {
+            color: var(--hyper-accent-color);
+        }
+        .hyper-mode .feature-card p,
+        .hyper-mode .metadata-card ul li,
+        .hyper-mode .pricing-card p,
+        .hyper-mode .pricing-card ul li,
+        .hyper-mode #top-tracks-list li {
+            color: var(--hyper-text-color); /* Adjusted for better contrast in hyper mode */
+        }
+        .hyper-mode .metadata-card ul li strong { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section h3 { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section .form-label { color: var(--hyper-text-color); }
+        .hyper-mode .ai-help-section .form-input, .hyper-mode .ai-help-section .form-select {
+            background-color: #000022;
+            border-color: var(--hyper-border-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .ai-help-section .form-input::placeholder { color: #FFCCFF; }
+        .hyper-mode #node-pulse-graph .w-full { background-color: #000011; border-color: #330066; }
+        .hyper-mode #node-pulse-graph p { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer { background-color: var(--hyper-card-bg); border-top-color: var(--hyper-border-color); }
+        .hyper-mode footer.new-footer h1 { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer p { color: var(--hyper-text-color); }
+        .hyper-mode footer.new-footer a { color: var(--hyper-text-color); }
+        .hyper-mode .theme-controls button,
+        .hyper-mode .theme-controls #languageSwitcher {
+            background-color: var(--hyper-card-bg);
+            color: var(--hyper-text-color);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .theme-controls #theme-hyper-btn.active {
+            background-color: var(--hyper-primary-color);
+            color: white;
+            border-color: var(--hyper-primary-color);
+        }
+        .hyper-mode .theme-controls #theme-day-btn,
+        .hyper-mode .theme-controls #theme-night-btn {
+            background-color: var(--hyper-card-bg);
+            color: var(--muted-text-dark); /* Use a muted version of hyper-text for non-active */
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .theme-controls #languageSwitcher {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23FFCCFF'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .hyper-mode header {
+            background-color: rgba(0, 0, 15, 0.8);
+            border-bottom-color: var(--hyper-border-color);
+        }
+        .hyper-mode .logo-group {
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .logo-fruitful { color: var(--hyper-primary-color); }
+        .hyper-mode .logo-separator { color: var(--hyper-text-color); }
+        .hyper-mode .logo-seedwave { color: var(--hyper-accent-color); text-shadow: 0 0 10px rgba(255, 0, 255, 0.6); }
+        .hyper-mode #header-pulse-canvas { background-color: transparent; }
+        .hyper-mode .hero-section {
+            background: radial-gradient(circle at center, rgba(255, 0, 255, 0.08) 0%, transparent 60%);
+        }
+        .hyper-mode .pulse-container {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .whimsical-card {
+            background-color: var(--hyper-card-bg);
+            border-color: var(--hyper-border-color);
+        }
+        .hyper-mode .whimsical-card h3 { color: var(--hyper-text-color); }
+        .hyper-mode .whimsical-card p { color: var(--hyper-text-color); }
+        .hyper-mode .whimsical-icon { text-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+        .hyper-mode .spotify-btn-primary { background: linear-gradient(45deg, #00FF00, #00AA00); box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4); }
+        .hyper-mode .spotify-btn-primary:hover { background: linear-gradient(45deg, #00AA00, #00FF00); box-shadow: 0 6px 20px rgba(0, 255, 0, 0.6); }
+        .hyper-mode .spotify-btn-secondary { background-color: #220044; color: var(--hyper-text-color); border-color: #5500AA; }
+        .hyper-mode .spotify-btn-secondary:hover { background-color: #5500AA; }
+        .hyper-mode .currency-converter-section input,
+        .hyper-mode .currency-converter-section select {
+            background-color: #000022;
+            border-color: var(--hyper-border-color);
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .pricing-card .price { /* Apply gradient for default pricing */
+            background: linear-gradient(90deg, var(--hyper-primary-color), var(--hyper-accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        }
+        .hyper-mode .pricing-card.pro-card .price,
+        .hyper-mode .pricing-card.enterprise-card .price,
+        .hyper-mode .pricing-card.banimal-card .price { /* No special color override in hyper mode for consistency */
+            color: var(--hyper-text-color);
+        }
+        .hyper-mode .pricing-card.pro-card ul li i,
+        .hyper-mode .pricing-card.enterprise-card ul li i,
+        .hyper-mode .pricing-card.banimal-card ul li i {
+            color: var(--hyper-text-color);
+        }
+
+
+        /* Global Container & Section Defaults */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 80px 20px;
+            border-bottom: 1px solid var(--border-color-dark);
+            border-top: 1px solid var(--border-color-dark);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            transition: color 0.3s ease;
+        }
+
+        /* Announcement Bar Styling */
+        #announcement-bar {
+            background-color: var(--fcu-color);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #announcement-bar .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #announcement-bar.hidden {
+            display: none;
+        }
+
+        /* Header Specifics */
+        header {
+            background-color: rgba(10, 10, 13, 0.8); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid var(--border-dark-seedwave);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: var(--announcement-bar-height); /* Position header below announcement bar */
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header-content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light-text);
+            transition: color 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .logo-fruitful {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo-separator {
+            color: var(--muted-text-dark);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .logo-seedwave {
+            color: var(--seedwave-green-glow-text);
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.6);
+        }
+
+        #header-pulse-canvas {
+            flex-grow: 1;
+            height: 40px;
+            background-color: transparent;
+            margin: 0 20px;
+            max-width: 600px;
+        }
+
+        /* Hero Sections (MindLift and Seedwave Pulse Grid) */
+        .mindlift-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--mindlift-color) 0%, var(--mindlift-accent-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(123, 104, 238, 0.4);
+            z-index: 9; /* Ensure it is below header but above general content */
+        }
+        .mindlift-hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.05em;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .mindlift-hero p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .mindlift-hero .cta-button {
+            background-color: white;
+            color: var(--mindlift-color);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .mindlift-hero .cta-button:hover {
+            background-color: #f0f0f0;
+            color: var(--mindlift-accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .global-pulse-grid-section {
+            padding: 6rem 2rem;
+            text-align: center;
+            background-color: var(--dark-bg-seedwave); /* Matches Seedwave section bg */
+            border-top: 1px solid var(--border-dark-seedwave);
+            border-bottom: 1px solid var(--border-dark-seedwave);
+        }
+        .global-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            width: 100%;
+            height: 60vh; /* Adjust height as needed */
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .pulse-container {
+            position: relative;
+            background-color: var(--card-bg-seedwave);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-dark-seedwave);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Added min-dimensions for rendering visibility */
+            min-width: 150px;
+            min-height: 150px;
+        }
+        .pulse-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: transparent;
+            z-index: 1;
+        }
+
+        /* Metrics / Info Cards (Seedwave) */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .metric-card {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 227, 147, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+        .metric-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        .metric-card-icon {
+            font-size: 3.5rem;
+            color: var(--primary-glow-seedwave);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5);
+        }
+        .metric-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-text);
+            margin-bottom: 0.5rem;
+        }
+        .metric-card p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .metric-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary-glow-seedwave), var(--secondary-glow-seedwave));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.5);
+            margin-top: 1rem;
+            display: block;
+        }
+
+        /* Master License Brands & Whimsical Ventures (Seedwave) */
+        .whimsical-card-grid, .master-brands-grid { /* Reusing styles for master brands as well */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .whimsical-card {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .whimsical-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+        .whimsical-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1;
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5);
+        }
+        .whimsical-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--light-text);
+            margin-bottom: 0.75rem;
+        }
+        .whimsical-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            flex-grow: 1;
+        }
+
+        /* Feature Grid Layout (MindLift) */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .feature-card {
+            background-color: var(--card-bg-dark);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-dark);
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card .icon {
+            font-size: 2.5rem;
+            color: var(--mindlift-color);
+            margin-bottom: 15px;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .feature-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        /* Metadata Metrics Section (MindLift) */
+        .metadata-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .metadata-card {
+            background-color: var(--card-bg-dark); /* Using general card bg */
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color-dark);
+            text-align: left;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+        }
+        .metadata-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .metadata-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .metadata-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Pricing Section (MindLift with Banimal Loop Plan) */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            align-items: start;
+            justify-content: center;
+        }
+        @media (min-width: 1024px) {
+            .pricing-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .pricing-card {
+            background-color: var(--card-bg-dark); /* Using general card bg */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+            height: 100%;
+            text-align: left;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .pricing-card.highlight { /* Used for Pro plan in MindLift original */
+            border-color: var(--mindlift-color);
+            box-shadow: 0 8px 25px rgba(123, 104, 238, 0.3);
+        }
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .pricing-card .price-description {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .pricing-card ul li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .pricing-card ul li i {
+            color: var(--mindlift-color); /* Default checkmark color */
+            margin-right: 10px;
+        }
+        /* Overrides for specific pricing card checkmark colors */
+        .pricing-card.pro-card ul li i { color: var(--pro-button-color); }
+        .pricing-card.enterprise-card ul li i { color: var(--enterprise-button-color); }
+        .pricing-card.banimal-card ul li i { color: var(--banimal-button-color); }
+
+        /* Currency Converter (Seedwave) */
+        .currency-converter-section {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+            max-width: 800px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+        .currency-converter-section h2 {
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: var(--primary-glow-seedwave);
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.4);
+        }
+        .currency-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        .currency-input-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .currency-input-group label {
+            font-size: 1.1rem;
+            color: var(--light-text);
+            white-space: nowrap;
+        }
+        .currency-input-group input,
+        .currency-input-group select {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-dark-seedwave);
+            background-color: #2a2a30;
+            color: var(--light-text);
+            font-size: 1rem;
+        }
+        .currency-input-group input:focus,
+        .currency-input-group select:focus {
+            outline: none;
+            border-color: var(--primary-glow-seedwave);
+            box-shadow: 0 0 0 3px rgba(0, 227, 147, 0.3);
+        }
+        .convert-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+        }
+        .convert-button:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .conversion-result {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--light-text);
+        }
+
+        /* Spotify Integration (Seedwave) */
+        .spotify-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+        .spotify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .spotify-btn-primary {
+            background: linear-gradient(45deg, #1DB954, #128A3C);
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+        }
+        .spotify-btn-primary:hover {
+            background: linear-gradient(45deg, #128A3C, #1DB954);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6);
+            transform: translateY(-2px);
+        }
+        .spotify-btn-secondary {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .spotify-btn-secondary:hover {
+            background-color: #555;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        #top-tracks-list, #playlist-message, #audio-players, #spotify-album-embed {
+            background-color: var(--card-bg-seedwave);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-dark-seedwave);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+        #top-tracks-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #top-tracks-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+        }
+        #top-tracks-list li:last-child {
+            border-bottom: none;
+        }
+        #top-tracks-list li strong {
+            color: var(--primary-glow-seedwave);
+        }
+        #playlist-message {
+            color: var(--light-text);
+            font-weight: 500;
+        }
+        #audio-players {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        #audio-players iframe {
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            border: none;
+        }
+        #spotify-album-embed iframe {
+            width: 100%;
+            border-radius: 12px;
+            border: none;
+        }
+
+        /* Node.js Infiltration Pulse Graph (Seedwave) */
+        #node-pulse-graph .w-full {
+            background-color: #0a0a0d; /* Matching seedwave dark bg */
+            padding: 6px; /* Reduced padding to look sleek */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark-seedwave);
+        }
+        #node-pulse-graph p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 1rem;
+        }
+
+        /* AI Help/FAQ Section (MindLift) */
+        .ai-help-section h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .ai-help-section h3 i {
+            color: var(--mindlift-accent-color);
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+        .ai-help-section .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .ai-help-section .form-input, .ai-help-section .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color-dark);
+            border-radius: 8px;
+            background-color: #3a3a3e;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .ai-help-section .form-input::placeholder {
+            color: #718096;
+        }
+        .ai-help-section .form-input:focus, .ai-help-section .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+        }
+        .ai-help-section .checkout-action-button {
+            display: block;
+            width: 100%;
+            height: 56px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: var(--secure-sign-purple);
+        }
+        .ai-help-section .checkout-action-button:hover {
+            background-color: var(--secure-sign-purple-hover);
+            transform: translateY(-2px);
+        }
+        .ai-help-section .hidden {
+            display: none;
+        }
+        .ai-help-section .result-text {
+            white-space: pre-wrap;
+            margin-top: 1rem;
+        }
+
+        /* Disclaimer Section */
+        .disclaimer-section {
+            background-color: var(--card-bg-dark); /* Changed to dark card bg */
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #cc0000;
+            border-top: 1px solid var(--border-color-dark);
+            margin-top: 40px;
+        }
+        .disclaimer-section p strong {
+            font-weight: 700;
+        }
+
+        /* Planet Pulse Text Styling */
+        #planet-text {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            color: var(--mindlift-color);
+            overflow: hidden;
+            white-space: nowrap;
+            animation: pulse-glow 3s infinite alternate;
+            transition: all 0.5s ease-in-out;
+            text-shadow: none;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Consolidated Footer */
+        .new-footer {
+            background-color: #050508; /* Even darker footer from Seedwave template */
+            color: rgba(255, 255, 255, 0.5); /* Muted text */
+            padding: 2.5rem; /* Matches Seedwave template padding */
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid #2a2a30; /* Matches Seedwave template border */
+            font-size: 0.9rem;
+        }
+        .new-footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .new-footer a:hover {
+            color: var(--primary-glow-seedwave); /* Using Seedwave glow for consistency */
+        }
+        .banimal-footer-content {
+            max-width: 48rem;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2rem; /* Add space for content above copyright */
+        }
+        .banimal-footer-content h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        .banimal-footer-content .text-blue-400 {
+            color: #60a5fa;
+        }
+        .banimal-footer-content p {
+            font-size: 1rem;
+            line-height: 1.625;
+            color: #d1d5db;
+            margin-bottom: 1.5rem;
+        }
+        .new-footer .cta-button {
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition-property: background-color;
+            transition-duration: 0.2s;
+            text-decoration: none;
+        }
+        .new-footer .cta-button:hover {
+            background-color: #2563eb;
+        }
+        .new-footer .cta-button .ml-2 {
+            margin-left: 0.5rem;
+        }
+        .new-footer .copyright {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 2rem;
+        }
+
+        /* Theme Controls */
+        .theme-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            space-x: 4px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .theme-controls button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .theme-controls #languageSwitcher {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color-dark);
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-dark);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a0a0a5'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            padding-right: 2.5rem;
+            width: fit-content;
+            min-width: 120px;
+            max-width: 180px;
+            flex-grow: 0;
+            flex-shrink: 1;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .global-pulse-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                height: auto; /* Allow height to adjust */
+            }
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+            }
+        }
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.4rem; }
+            .logo-separator { font-size: 1.2rem; }
+            #header-pulse-canvas { display: none; }
+            .mindlift-hero h1 { font-size: 2.8rem; }
+            .mindlift-hero p { font-size: 1.2rem; }
+            .global-pulse-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                max-height: none;
+            }
+            .section-title { font-size: 2.2rem; }
+            .section-padding { padding: 4rem 1rem; }
+            .metrics-grid, .whimsical-card-grid, .feature-grid, .metadata-metrics-grid, .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            .metric-card-icon { font-size: 3rem; }
+            .metric-card h3 { font-size: 1.5rem; }
+            .metric-value { font-size: 2.2rem; }
+            .whimsical-icon { font-size: 3.5rem; }
+            .whimsical-card h3 { font-size: 1.8rem; }
+            .whimsical-card p { font-size: 1rem; }
+            .currency-converter-section { padding: 2rem; }
+            .currency-converter-section h2 { font-size: 2rem; }
+            .pricing-card { padding: 30px; }
+            .pricing-card h3 { font-size: 1.6rem; }
+            .pricing-card .price { font-size: 2rem; }
+            .spotify-controls { flex-direction: column; }
+            #node-pulse-graph .w-full { padding: 10px; }
+            .ai-help-section h3 { font-size: 1.3rem; flex-direction: column; text-align: center; }
+            .ai-help-section h3 i { margin-right: 0; margin-bottom: 10px; }
+            #planet-text { font-size: 1.5rem; }
+            .new-footer { padding: 1.5rem; }
+            .banimal-footer-content h1 { font-size: 2.25rem; }
+            .banimal-footer-content p { font-size: 0.9rem; }
+            .new-footer .cta-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NEW: Announcement Bar from MindLift template -->
+    <div id="announcement-bar" class="bg-fcu-color text-white text-center p-2 text-sm relative z-50">
+        <div class="container flex justify-center items-center">
+            <span data-lang-key="announcement-text">🚀 Accelerate Your Workflow! Get 15% off Pro Grid for a limited time!</span>
+            <button class="close-btn text-white text-lg ml-4" aria-label="Close Announcement">&times;</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-content-wrapper">
+            <div class="logo-group">
+                <a href="#" class="logo-fruitful">Fruitful™</a>
+                <span class="logo-separator">|</span>
+                <span class="logo-seedwave">Seedwave™</span>
+            </div>
+            <!-- New: Stock Exchange Pulse Canvas in Header -->
+            <canvas id="header-pulse-canvas"></canvas>
+        </div>
+    </header>
+
+    <main>
+        <!-- MindLift Hero Section -->
+        <section id="overview" class="mindlift-hero">
+            <div class="container">
+                <h1>VaultMesh™ | AgroChain™ Core Protocol</h1>
+                <p>AgroChain™ is a powerful FAA.zone™ framework empowering the Agriculture & Biotech sector with advanced automation and data management. It connects effortlessly to the PulseGrid™ for optimized workflow and compliance.</p>
+                <a href="#pricing" class="cta-button">View Pricing &rarr;</a>
+            </div>
+        </section>
+
+        <!-- Global Pulse Grid Section (from Seedwave template) -->
+        <section class="global-pulse-grid-section">
+            <h2 class="section-title text-light-text">Global Data Pulse & Innovation</h2>
+            <div class="global-pulse-grid">
+                <div class="pulse-container">
+                    <canvas id="canvas-rhythmic"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-concentric"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-shooting"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-particles"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-radial-bursts"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-hyperspace"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Metrics Section (from Seedwave template) -->
+        <section id="metrics" class="section-padding">
+            <h2 class="section-title text-light-text">Our Interstellar Impact</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-globe"></i></div>
+                        <h3>Global Node Reach</h3>
+                        <p>Expanding our network across all digital frontiers.</p>
+                        <span class="metric-value">92%</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-rocket"></i></div>
+                        <h3>Launch Velocity</h3>
+                        <p>Accelerating brands into new market orbits.</p>
+                        <span class="metric-value">x10.5</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-seedling"></i></div>
+                        <h3>Seed Planted</h3>
+                        <p>New projects cultivated and thriving within the ecosystem.</p>
+                        <span class="metric-value">7000+</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Master License Brands Section (from Seedwave template) -->
+        <section id="master-brands" class="section-padding">
+            <h2 class="section-title text-light-text">Seedwave™ Global Master License Brands</h2>
+            <div class="max-w-4xl mx-auto text-lg text-gray-400 leading-relaxed space-y-4">
+                <p>
+                    Seedwave™ is the nexus for a diverse portfolio of Master License Brands, spanning both established digital enterprises and groundbreaking non-digital ventures. Our platform cultivates growth for innovative brands that define tomorrow's industries.
+                </p>
+                <p>
+                    From high-velocity tech deployments infiltrating global repos to unique, tangible brands expanding their physical presence, we power the pulse of expansion across all frontiers. Explore the dynamic ecosystem where every brand is a node in our network, driving collective impact.
+                </p>
+            </div>
+            <div class="mt-12 master-brands-grid">
+                <div class="whimsical-card"> <!-- Reusing whimsical-card for styling consistency -->
+                    <h3 class="text-2xl font-bold text-primary-glow-seedwave mb-4">Digital Innovators</h3>
+                    <p class="text-gray-400">
+                        Showcasing leading digital brands, their Node.js integrations, rapid deployments, and extensive array counts contributing to the global data fabric.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-500 mt-4 text-sm">
+                        <li>Node.js Package Infiltrations</li>
+                        <li>Repo Deployment Metrics</li>
+                        <li>Scalable Array Counts</li>
+                        <li>Real-time Data Streams</li>
+                    </ul>
+                </div>
+                <div class="whimsical-card"> <!-- Reusing whimsical-card for styling consistency -->
+                    <h3 class="text-2xl font-bold text-secondary-glow-seedwave mb-4">Non-Digital Trailblazers</h3>
+                    <p class="text-gray-400">
+                        Highlighting groundbreaking non-digital brands leveraging Seedwave's infrastructure for supply chain optimization, physical asset tracking, and global market penetration.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-500 mt-4 text-sm">
+                        <li>Tangible Asset Integration</li>
+                        <li>Supply Chain Optimization</li>
+                        <li>Physical Network Expansion</li>
+                        <li>Real-world Impact Metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Whimsical Ventures Section (from Seedwave template) -->
+        <section id="whimsical-ventures" class="section-padding">
+            <h2 class="section-title text-light-text">Whimsical Ventures: Noodle Soup & Job Ant Huts</h2>
+            <div class="max-w-4xl mx-auto text-lg text-gray-400 leading-relaxed space-y-4">
+                <p>
+                    At Seedwave™, we believe in fostering innovation that spans the practical and the playfully imaginative. Our latest ventures explore the untapped potential of 'Noodle Soup Innovations' and the intricate logistics of 'Job Ant Huts', bringing delightful efficiency to unexpected places.
+                </p>
+                <p>
+                    From optimizing the perfect noodle-to-broth ratio using quantum algorithms to managing bustling ant-colony logistics with distributed ledger technology, we're building the future, one whimsical step at a time.
+                </p>
+            </div>
+            <div class="mt-12 whimsical-card-grid">
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">🍜</span>
+                    <h3>Noodle Soup Innovations</h3>
+                    <p>
+                        Crafting culinary excellence with data-driven ingredient sourcing, predictive broth temperature, and hyper-efficient noodle hydration. Experience the future of gourmet.
+                    </p>
+                </div>
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">🐜🏡</span>
+                    <h3>Job Ant Huts Management</h3>
+                    <p>
+                        Revolutionizing ant colony productivity with real-time task assignment, resource allocation, and miniature infrastructure development. Tiny workers, massive impact.
+                    </p>
+                </div>
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">💡✨</span>
+                    <h3>Rhino Strike Protocols</h3>
+                    <p>
+                        Implementing advanced behavioral algorithms for simulated rhino interactions, ensuring optimal engagement and unexpected delightful outcomes in virtual environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features Section (from MindLift template) -->
+        <section id="features" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Key Features of AgroChain™</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-link icon"></i>
+                        <h3>Direct Integration</h3>
+                        <p>Direct integration with FAA 🧾 Professional Services Mes</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-sync-alt icon"></i>
+                        <h3>Advanced Data Sync</h3>
+                        <p>Real-time data synchronization with YieldNode™ for up-to-t</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt icon"></i>
+                        <h3>Real-time Compliance</h3>
+                        <p>Ensure robust regulatory adherence with VaultLink™ (agric</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-expand-arrows-alt icon"></i>
+                        <h3>Scalable Architecture</h3>
+                        <p>Unleash massive scalability for x21 power expansion, ens</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line icon"></i>
+                        <h3>Predictive Analytics</h3>
+                        <p>Leverage our advanced predictive analytics module for Agro</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-puzzle-piece icon"></i>
+                        <h3>Open API Access</h3>
+                        <p>Gain full API access for seamless interoperability, allowin</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lock icon"></i>
+                        <h3>Blockchain Security</h3>
+                        <p>Benefit from immutable, blockchain-secured data provenanc</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-file-invoice icon"></i>
+                        <h3>One-click Reporting</h3>
+                        <p>Generate comprehensive regulatory reports and detailed au</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-network-wired icon"></i>
+                        <h3>Self-optimizing Nodes</h3>
+                        <p>Achieve peak operational efficiency with intelligent, self</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-brain icon"></i>
+                        <h3>Secure Multi-party Computation</h3>
+                        <p>Enable secure, collaborative data analysis with multiple st</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Trust VaultMesh Section -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Why Trust 🌐 VaultMesh™?</h2>
+                <p class="text-lg mb-4 max-w-2xl mx-auto" style="color: var(--muted-text-dark);">
+                    At <strong>VaultMesh™</strong>, we are the architects of the core infrastructure that powers the entire FAA.zone™ ecosystem. Our purpose is to provide a <strong>robust, immutable, and universally accessible fabric</strong> for critical information and distributed processes, enabling global compliance, efficiency, and innovation across heavily regulated sectors.
+                </p>
+                <p class="text-lg mb-4 max-w-2xl mx-auto" style="color: var(--muted-text-dark);">
+                    We specialize in <strong>Decentralized Data Integrity</strong>, <strong>Secure Data Orchestration</strong>, and building <strong>Scalable & Resilient Infrastructure</strong>. Our solutions offer <strong>Verifiable Trust & Identity</strong> and comprehensive <strong>Compliance & Audit Trails</strong>.
+                </p>
+                <div class="text-center mt-6">
+                    <p class="text-lg font-semibold" style="color: var(--text-color-dark);">Built on principles by:</p>
+                    <p class="text-xl font-bold mt-1" style="color: var(--mindlift-color);">Heyns Schoeman™</p>
+                    <p class="text-md" style="color: var(--muted-text-dark);">Founder | FAA Global™ | FAA.zone™ 🌍<br>"Sustain. Protect. Empower."</p>
+                    <a href="vaultmesh-about-us-page.html" class="cta-button">Learn More About Us</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- VaultMesh Subnodes Section -->
+        <section class="section-padding">
+            <div class="container">
+                <h2 class="section-title">VaultMesh™ Subnodes</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-seedling icon"></i>
+                        <h3>YieldNode™</h3>
+                        <p>Specialized nodes for optimizing agricultural yield data processing, ensuring maximum productivity and resource utilization.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-search-location icon"></i>
+                        <h3>SoilScan™</h3>
+                        <p>Advanced subnode for granular soil analysis and real-time environmental data collection, enabling precision agriculture.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-bug icon"></i>
+                        <h3>PestDetect™</h3>
+                        <p>Intelligent detection and tracking of agricultural pests with AI-driven insights, minimizing crop damage and chemical use.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-barcode icon"></i>
+                        <h3>CropTrace™</h3>
+                        <p>Comprehensive traceability for crop origin and lifecycle management, providing transparent, farm-to-fork insights for consumers and regulators.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAA Metadata & Real-Time Metrics Section -->
+        <section class="metadata-metrics-section section-padding">
+            <div class="container">
+                <h2 class="section-title">FAA Metadata & Real-Time Metrics</h2>
+                <div class="metadata-metrics-grid">
+                    <div class="metadata-card">
+                        <h3>FAA Metadata & Compliance</h3>
+                        <ul>
+                            <li><strong>Product ID:</strong> AGROC-2537</li>
+                            <li><strong>VaultID:</strong> VAULT-9869</li>
+                            <li><strong>Signal Echo Layer:</strong> Layer Beta v4.3</li>
+                            <li><strong>Deployment Zone:</strong> Zone E 8</li>
+                            <li><strong>Security Rating:</strong> FAA-SEC B+</li>
+                            <li><strong>Active Nodes:</strong> 493</li>
+                            <li><strong>Last Audit:</strong> 2025-08-04</li>
+                            <li><strong>Compliance Status:</strong> Active & Certified</li>
+                        </ul>
+                    </div>
+                    <div class="metadata-card">
+                        <h3>Real-Time Metrics Overview</h3>
+                        <ul>
+                            <li><strong>Current Pulse Activity:</strong> 65.08 pulses/sec</li>
+                            <li><strong>Data Volume Processed (24h):</strong> 108.02 TB</li>
+                            <li><strong>Latency Average:</strong> 40.82 ms</li>
+                        </ul>
+                        <h4 style="margin-top: 20px; font-size: 1.2rem; color: var(--text-color-dark);">VaultTrace™ Ledger Entries:</h4>
+                        <ul>
+                            <li>#7756 - AGROC Pulse Tx - Confirmed</li>
+                            <li>#6954 - AGRIC Data Sync - Completed</li>
+                            <li>#7848 - Node Activation Confirm - Offline</li>
+                            <li>#3206 - VaultTrace™ Audit - Passed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section (MindLift with Banimal Loop Plan) -->
+        <section id="pricing" class="pricing-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Flexible Pricing for Every Operation</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>🌱 Agriculture & Biotech Starter Package</h3>
+                        <p class="price">$30.52</p>
+                        <p class="price-description">
+                            Unlock powerful features for Starter success.
+                        </p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Basic API Access</li>
+                            <li><i class="fas fa-check-circle"></i> Standard Analytics Dashboard</li>
+                            <li><i class="fas fa-check-circle"></i> Community Support</li>
+                            <li><i class="fas fa-check-circle"></i> Up to 5 Users</li>
+                            <li><i class="fas fa-check-circle"></i> 50 GB Data Storage</li>
+                        </ul>
+                        <div class="quantity-selector">
+                            <label for="starter-quantity">Quantity:</label>
+                            <select id="starter-quantity">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div id="paypal-container-EMWGPGHNN8Y8E"></div>
+                        <script>
+                          paypal.HostedButtons({
+                            hostedButtonId: "EMWGPGHNN8Y8E",
+                          }).render("#paypal-container-EMWGPGHNN8Y8E")
+                        </script>
+                    </div>
+
+                    <div class="pricing-card highlight pro-card">
+                        <h3>🌱 Agriculture & Biotech Pro Package</h3>
+                        <p class="price">$76.30</p>
+                        <p class="price-description">
+                            Unlock powerful features for Pro success.
+                        </p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Advanced API Access</li>
+                            <li><i class="fas fa-check-circle"></i> Premium Analytics & Reporting</li>
+                            <li><i class="fas fa-check-circle"></i> Dedicated Priority Support</li>
+                            <li><i class="fas fa-check-circle"></i> Unlimited Users</li>
+                            <li><i class="fas fa-check-circle"></i> Custom Data Integrations</li>
+                        </ul>
+                        <div class="quantity-selector">
+                            <label for="pro-quantity">Quantity:</label>
+                            <select id="pro-quantity">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div id="paypal-container-QGU3ZUQCMD49Q"></div>
+                        <script>
+                          paypal.HostedButtons({
+                            hostedButtonId: "QGU3ZUQCMD49Q",
+                          }).render("#paypal-container-QGU3ZUQCMD49Q")
+                        </script>
+                    </div>
+
+                    <div class="pricing-card enterprise-card">
+                        <h3>🌱 Agriculture & Biotech Enterprise Package</h3>
+                        <p class="price">$152.60</p>
+                        <p class="price-description">
+                            Unlock powerful features for Enterprise success.
+                        </p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> All Business Package Features</li>
+                            <li><i class="fas fa-check-circle"></i> Dedicated Account Manager</li>
+                            <li><i class="fas fa-check-circle"></i> 24/7 Phone Support</li>
+                            <li><i class="fas fa-check-circle"></i> Enhanced Custom Integrations</li>
+                            <li><i class="fas fa-check-circle"></i> On-site Training & Setup</li>
+                        </ul>
+                        <div class="quantity-selector">
+                            <label for="enterprise-quantity">Quantity:</label>
+                            <select id="enterprise-quantity">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div id="paypal-container-9C88S44F93M5J"></div>
+                        <script>
+                          paypal.HostedButtons({
+                            hostedButtonId: "9C88S44F93M5J",
+                          }).render("#paypal-container-9C88S44F93M5J")
+                        </script>
+                    </div>
+
+                    <!-- NEW: Banimal Loop Plan -->
+                    <div class="pricing-card banimal-card">
+                        <h3>🐑 Banimal Loop Plan</h3>
+                        <p class="price">$499.00</p>
+                        <p class="price-description">
+                            Drive ethical impact with advanced Banimal-specific features.
+                        </p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Global Impact Automation</li>
+                            <li><i class="fas fa-check-circle"></i> Creature Data Synthesis</li>
+                            <li><i class="fas fa-check-circle"></i> Baobab Network Integration</li>
+                            <li><i class="fas fa-check-circle"></i> Ethical Loop Verification</li>
+                            <li><i class="fas fa-check-circle"></i> Dedicated Animal Welfare Support</li>
+                            <li><i class="fas fa-check-circle"></i> Unlimited Data Loops</li>
+                        </ul>
+                        <div class="quantity-selector">
+                            <label for="banimal-quantity">Quantity:</label>
+                            <select id="banimal-quantity">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div id="paypal-container-YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE"></div>
+                        <script>
+                          paypal.HostedButtons({
+                            hostedButtonId: "YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE", // REPLACE WITH YOUR ACTUAL PAYPAL BUTTON ID
+                          }).render("#paypal-container-YOUR_BANIMAL_PAYPAL_BUTTON_ID_HERE")
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency Converter Section -->
+        <section class="currency-converter-section section-padding">
+            <h2>Global Currency Converter</h2>
+            <p class="text-gray-400 mb-8">Seamlessly convert between major currencies to understand your global financial reach.</p>
+            <div class="currency-inputs">
+                <div class="currency-input-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" value="100" min="0" step="0.01">
+                </div>
+                <div class="currency-input-group">
+                    <label for="fromCurrency">From:</label>
+                    <select id="fromCurrency">
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="CHF">CHF - Swiss Franc</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="ZAR">ZAR - South African Rand</option>
+                    </select>
+                </div>
+                <div class="currency-input-group">
+                    <label for="toCurrency">To:</label>
+                    <select id="toCurrency">
+                        <option value="EUR">EUR - Euro</option>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="GBP">GBP - British Pound</option>
+                        <option value="JPY">JPY - Japanese Yen</option>
+                        <option value="AUD">AUD - Australian Dollar</option>
+                        <option value="CAD">CAD - Canadian Dollar</option>
+                        <option value="CHF">CHF - Swiss Franc</option>
+                        <option value="CNY">CNY - Chinese Yuan</option>
+                        <option value="ZAR">ZAR - South African Rand</option>
+                    </select>
+                </div>
+            </div>
+            <button class="convert-button" id="convertCurrencyBtn">Convert</button>
+            <div class="conversion-result mt-8">
+                <p id="convertedResult">100 USD = ...</p>
+            </div>
+        </section>
+
+        <!-- Spotify Integration Section -->
+        <section id="spotify-integration" class="section-padding">
+            <h2 class="section-title text-light-text">Spotify Music Pulse</h2>
+            <div class="max-w-4xl mx-auto">
+                <p class="text-lg text-gray-400 mb-6">
+                    Connect to your Spotify account to discover your top tracks, create a new playlist, and listen to the pulse of your music.
+                </p>
+
+                <div class="spotify-controls">
+                    <button id="getTopTracksBtn" class="spotify-btn spotify-btn-primary">
+                        <i class="fab fa-spotify"></i> Get My Top 5 Tracks
+                    </button>
+                    <button id="createPlaylistBtn" class="spotify-btn spotify-btn-secondary">
+                        <i class="fas fa-save"></i> Save to Playlist
+                    </button>
+                    <button id="playTracksBtn" class="spotify-btn spotify-btn-secondary">
+                        <i class="fas fa-play-circle"></i> Listen Now
+                    </button>
+                </div>
+
+                <div id="top-tracks-list" class="hidden">
+                    <h3 class="text-2xl font-semibold mb-4">Your Top Tracks:</h3>
+                    <ul></ul>
+                </div>
+
+                <div id="playlist-message" class="hidden mt-6 p-4 bg-green-800 bg-opacity-30 rounded-lg border border-green-700">
+                    <!-- Messages about playlist creation will appear here -->
+                </div>
+
+                <div id="audio-players" class="mt-6">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/6fi2uM0hYrLOTK7jIhuAUr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+
+                <!-- New: Spotify Album Embed -->
+                <div id="spotify-album-embed" class="mt-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-left">Featured Album:</h3>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/5zFzB0f8z6T2L8B5R3q2m0?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Node.js Infiltration Pulse Graph Section -->
+        <section id="node-pulse-graph" class="section-padding">
+            <h2 class="section-title text-light-text">Node.js Infiltration Pulse</h2>
+            <div class="w-full max-w-5xl mx-auto bg-gray-900 p-6 rounded-xl shadow-lg border border-gray-700">
+                <canvas id="nodePulseChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 max-w-2xl mx-auto">
+                Real-time visualization of Node.js package infiltration, repo deployments, and array count growth across sectors.
+            </p>
+        </section>
+
+        <!-- AI-Powered Help/FAQ Section -->
+        <section class="section-padding ai-help-section">
+            <div class="container">
+                <h3 data-lang-key="ai-help-heading"><i class="fas fa-question-circle"></i>AI Help & FAQ Answers</h3>
+                <p class="text-sm mb-4 text-center text-muted-text-dark" data-lang-key="ai-help-slogan">Ask your question about AgroChain™, Banimal Loop™ or FAA.zone, and our AI will answer.</p>
+                <div class="form-group">
+                    <label for="faqPromptInput" class="form-label" data-lang-key="your-question-label">Your Question:</label>
+                    <textarea id="faqPromptInput" class="form-input" rows="4" data-lang-key="faq-placeholder" placeholder="e.g., What is the core protocol of AgroChain™?"></textarea>
+                </div>
+                <button id="getFaqAnswerBtn" class="checkout-action-button purple mt-4" data-lang-key="get-answer-button">Get Answer ✨</button>
+                <div id="faqLoadingIndicator" class="hidden text-center mt-2 text-blue-400">
+                    <i class="fas fa-spinner fa-spin mr-2"></i> <span data-lang-key="generating-answer-loading">Generating answer...</span>
+                </div>
+                <p id="faqAnswerOutput" class="result-text mt-4 whitespace-pre-wrap"></p>
+            </div>
+        </section>
+
+        <section class="disclaimer-section">
+            <div class="container">
+                <p><strong>Disclaimer:</strong> This page is a static HTML demonstration. It does NOT process any real financial transactions, exchange real currency, or interact with live payment gateways or cryptocurrency networks. All displayed prices, rates, and transaction statuses are simulated for illustrative purposes only. Do NOT enter any real personal or financial information. For actual FAA.zone™ services and transactions, please refer to our official and secure platforms.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Planet Pulse Text from MindLift template -->
+    <p id="planet-text" class="text-center text-xl font-bold mt-8 mb-8" data-lang-key="planet-pulse-text">fruchtbarer.planet.wandel</p>
+
+    <!-- Consolidated Footer Section -->
+    <footer class="new-footer">
+        <div class="banimal-footer-content text-center max-w-2xl mx-auto">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-white mb-2">
+                <span data-lang-key="banimal-footer-heading">Banimal™:</span> <br>
+                <span class="text-blue-400" data-lang-key="banimal-footer-slogan">🐑Kind Creatures. Global Impact.</span>
+            </h1>
+            <p class="text-base md:text-lg text-gray-300 leading-relaxed mb-6" data-lang-key="banimal-footer-text">Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.</p>
+            <a href="global_brands.html" class="cta-button">
+                Explore Banimal's World <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <p class="copyright text-sm text-gray-500 mt-8" data-lang-key="copyright-text-footer">&copy; 👟2025 Banimal™. All rights reserved.</p>
+        <p class="copyright text-sm text-gray-500" data-lang-key="powered-by-text">A proud initiative of <a href="https://fruitful.faa.zone/" target="_blank" class="text-blue-400 hover:underline">Fruitful™ Treaty System™</a></p>
+
+        <!-- Theme & Language Controls -->
+        <div class="theme-controls flex items-center justify-center space-x-4 mt-4 flex-wrap gap-2">
+            <button id="theme-day-btn" data-lang-key="light-mode-button">Light Mode</button>
+            <button id="theme-night-btn" data-lang-key="dark-mode-button">Dark Mode</button>
+            <button id="theme-hyper-btn" data-lang-key="hyper-mode-button">Hyper Mode</button>
+            <select id="languageSwitcher" class="form-select">
+                <!-- Options populated dynamically by JS -->
+            </select>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Object to hold all translations
+        const translations = {
+            en: {
+                "lang-name": "English",
+                "announcement-text": "🚀 Accelerate Your Workflow! Get 15% off Pro Grid for a limited time!",
+                "header-slogan": "Buy one item, and we sponsor one! ❤️",
+                "back-to-shop": "← Back to Shop",
+                "complete-purchase": "Complete Your Purchase",
+                "shipping-step": "Shipping",
+                "payment-step": "Payment",
+                "review-step": "Review",
+                "shipping-info-heading": "Shipping Information",
+                "full-name-label": "Full Name",
+                "full-name-placeholder": "John Doe",
+                "address-label": "Address",
+                "address-placeholder": "123 Main Street",
+                "city-label": "City",
+                "city-placeholder": "Luxembourg City",
+                "zip-code-label": "Zip Code",
+                "zip-code-placeholder": "12345",
+                "payment-method-heading": "Payment Method",
+                "card-number-label": "Card Number",
+                "month-label": "Month",
+                "year-label": "Year",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Order Summary",
+                "product-item-1": "Product Item 1",
+                "product-item-2": "Product Item 2",
+                "shipping-cost": "Shipping",
+                "total-cost": "Total",
+                "ai-help-heading": "AI Help & FAQ Answers",
+                "ai-help-slogan": "Ask your question about AgroChain™, Banimal Loop™ or FAA.zone, and our AI will answer.",
+                "your-question-label": "Your Question:",
+                "faq-placeholder": "e.g., What is the core protocol of AgroChain™?",
+                "get-answer-button": "Get Answer ✨",
+                "generating-answer-loading": "Generating answer...",
+                "error-no-ai-answer": "Error: No answer from AI. Please try again later.",
+                "reason": "Reason:",
+                "error-ai-connection": "Error: Could not connect to language model. Check console for network issues.",
+                "please-enter-question": "Please enter a question to get an answer.",
+                "finalize-button": "Finalize & Confirm Order",
+                "review-order-button": "Review Order Details",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Kind Creatures. Global Impact.",
+                "banimal-footer-text": "Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.",
+                "explore-banimal-button": "Explore Banimal's World",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. All rights reserved.",
+                "powered-by-text": "A proud initiative of Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            lb: {
+                "lang-name": "Lëtzebuergesch",
+                "announcement-text": "🚀 Beschleunegt Äre Workflow! Kritt 15% Rabatt op Pro Grid fir eng limitéiert Zäit!",
+                "header-slogan": "Kaaft keen Artikel a mir sponseren een! ❤️",
+                "back-to-shop": "← Zréck an de Buttek",
+                "complete-purchase": "Komplett Äre Kaf",
+                "shipping-step": "Versand",
+                "payment-step": "Bezuelung",
+                "review-step": "Iwwerpréiwen",
+                "shipping-info-heading": "Versandinformatioun",
+                "full-name-label": "Voll Numm",
+                "full-name-placeholder": "Max Mustermann",
+                "address-label": "Adress",
+                "address-placeholder": "123 Haaptstrooss",
+                "city-label": "Stad",
+                "city-placeholder": "Stad Lëtzebuerg",
+                "zip-code-label": "Postleetzuel",
+                "zip-code-placeholder": "L-1234",
+                "payment-method-heading": "Bezuelmethod",
+                "card-number-label": "Kaartennummer",
+                "month-label": "Mount",
+                "year-label": "Joer",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Bestellungsresumé",
+                "product-item-1": "Produkt Artikel 1",
+                "product-item-2": "Produkt Artikel 2",
+                "shipping-cost": "Versand",
+                "total-cost": "Total",
+                "ai-help-heading": "AI Hëllef & FAQ Äntwerten",
+                "ai-help-slogan": "Stellt Är Fro iwwer AgroChain™, Banimal Loop™ oder FAA.zone, an eis KI äntwert.",
+                "your-question-label": "Är Fro:",
+                "faq-placeholder": "z.B. Wat ass de Kärprotokoll vun AgroChain™?",
+                "get-answer-button": "Kritt Äntwert ✨",
+                "generating-answer-loading": "Äntwert gëtt generéiert...",
+                "error-no-ai-answer": "Feeler: Keng Äntwert vun der KI. Probéiert et w.e.g. méi spéit nach eng Kéier.",
+                "reason": "Grond:",
+                "error-ai-connection": "Feeler: Konnt net mat der Sproochemodell verbannen. Kuckt d'Konsol fir Netzproblemer.",
+                "please-enter-question": "Gitt w.e.g. eng Fro an, fir eng Äntwert ze kréien.",
+                "finalize-button": "Finaliséieren & Bestätegen Bestellung",
+                "review-order-button": "Bestellungsdetailer iwwerpréiwen",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Kind Creatures. Global Impact.",
+                "banimal-footer-text": "Entdeckt d'Welt vu Banimal's nodenkleche Baby-Essentials an innovative Beliichtung. Fir all Kaf liwwere mir deeselwechten Artikel un e Kand an Nout, identifizéiert duerch d'Date-driven Abléck vum Baobab Sécherheetsnetz.",
+                "explore-banimal-button": "Entdeckt d'Welt vu Banimal",
+                "copyright-text-footer": "&copy; 2025 Banimal™. All Rechter reservéiert.",
+                "powered-by-text": "A proud initiative of Fruitful™ Treaty System™",
+                "light-mode-button": "Liicht Modus",
+                "dark-mode-button": "Däischter Modus",
+                "hyper-mode-button": "Hyper Modus"
+            },
+            es: { // Spanish translations
+                "lang-name": "Español",
+                "announcement-text": "🚀 ¡Acelera tu flujo de trabajo! ¡Obtén un 15% de descuento en Pro Grid por tiempo limitado!",
+                "header-slogan": "¡Compra un artículo y nosotros patrocinamos uno! ❤️",
+                "back-to-shop": "← Volver a la Tienda",
+                "complete-purchase": "Completar Tu Compra",
+                "shipping-step": "Envío",
+                "payment-step": "Pago",
+                "review-step": "Revisar",
+                "shipping-info-heading": "Información de Envío",
+                "full-name-label": "Nombre Completo",
+                "full-name-placeholder": "Juan Pérez",
+                "address-label": "Dirección",
+                "address-placeholder": "123 Calle Principal",
+                "city-label": "Ciudad",
+                "city-placeholder": "Ciudad de Luxemburgo",
+                "zip-code-label": "Código Postal",
+                "zip-code-placeholder": "28001",
+                "payment-method-heading": "Método de Pago",
+                "card-number-label": "Número de Tarjeta",
+                "month-label": "Mes",
+                "year-label": "Año",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Resumen del Pedido",
+                "product-item-1": "Artículo del Producto 1",
+                "product-item-2": "Artículo del Producto 2",
+                "shipping-cost": "Envío",
+                "total-cost": "Total",
+                "ai-help-heading": "Ayuda de IA y Preguntas Frecuentes",
+                "ai-help-slogan": "Haz tu pregunta sobre AgroChain™, Banimal Loop™ o FAA.zone, y nuestra IA te responderá.",
+                "your-question-label": "Tu Pregunta:",
+                "faq-placeholder": "Ejemplo: ¿Cuál es el protocolo principal de AgroChain™?",
+                "get-answer-button": "Obtener Respuesta ✨",
+                "generating-answer-loading": "Generando respuesta...",
+                "error-no-ai-answer": "Error: No hay respuesta de la IA. Por favor, inténtalo de nuevo más tarde.",
+                "reason": "Razón:",
+                "error-ai-connection": "Error: No se pudo conectar al modelo de lenguaje. Verifica la consola por problemas de red.",
+                "please-enter-question": "Por favor, introduce una pregunta para obtener una respuesta.",
+                "finalize-button": "Finalizar y Confirmar Pedido",
+                "review-order-button": "Revisar Detalles del Pedido",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Criaturas Amables. Impacto Global.",
+                "banimal-footer-text": "Descubre el mundo de Banimal de artículos esenciales para bebés y soluciones de iluminación innovadoras. Por cada compra, entregamos el mismo artículo a un niño necesitado, identificado por los datos de la Red de Seguridad Baobab.",
+                "explore-banimal-button": "Explorar el Mundo de Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Todos los derechos reservados.",
+                "powered-by-text": "Una orgullosa iniciativa de Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            fr: { // French translations
+                "lang-name": "Français",
+                "announcement-text": "🚀 Accélérez votre flux de travail ! Obtenez 15% de réduction sur Pro Grid para un temps limité !",
+                "header-slogan": "Achetez un article, et nous en parrainons un ! ❤️",
+                "back-to-shop": "← Retour à la Boutique",
+                "complete-purchase": "Finaliser Votre Achat",
+                "shipping-step": "Expédition",
+                "payment-step": "Paiement",
+                "review-step": "Vérifier",
+                "shipping-info-heading": "Informations de Livraison",
+                "full-name-label": "Nom Complet",
+                "full-name-placeholder": "Jean Dupont",
+                "address-label": "Adresse",
+                "address-placeholder": "123 Rue Principale",
+                "city-label": "Ville",
+                "city-placeholder": "Ville de Luxembourg",
+                "zip-code-label": "Code Postal",
+                "zip-code-placeholder": "L-1111",
+                "payment-method-heading": "Méthode de Paiement",
+                "card-number-label": "Numéro de Carte",
+                "month-label": "Mois",
+                "year-label": "Année",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Récapitulatif de Commande",
+                "product-item-1": "Article Produit 1",
+                "product-item-2": "Article Produit 2",
+                "shipping-cost": "Livraison",
+                "total-cost": "Total",
+                "ai-help-heading": "Aide IA & Réponses FAQ",
+                "ai-help-slogan": "Posez votre question sur AgroChain™, Banimal Loop™ ou FAA.zone, et notre IA vous répondra.",
+                "your-question-label": "Votre Question :",
+                "faq-placeholder": "Ex: Quel est le protocole de base d'AgroChain™ ?",
+                "get-answer-button": "Obtenir la Réponse ✨",
+                "generating-answer-loading": "Génération de la réponse...",
+                "error-no-ai-answer": "Erreur : Pas de réponse de l'IA. Veuillez réessayer plus tard.",
+                "reason": "Raison :",
+                "error-ai-connection": "Erreur : Impossible de se connecter au modèle de langage. Vérifiez la console pour les problèmes de réseau.",
+                "please-enter-question": "Veuillez saisir une question pour obtenir une réponse.",
+                "finalize-button": "Finaliser et Confirmer la Commande",
+                "review-order-button": "Vérifier les Détails de la Commande",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™ :",
+                "banimal-footer-slogan": "🐑Créatures Douces. Impact Mondial.",
+                "banimal-footer-text": "Découvrez le monde de Banimal : des essentiels pour bébés et des solutions d'éclairage innovantes. Pour chaque achat, nous livrons le même article à un enfant dans le besoin, identifié grâce aux données du Réseau de Sécurité Baobab.",
+                "explore-banimal-button": "Explorer le Monde de Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Tous droits réservés.",
+                "powered-by-text": "Une fière initiative de Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            de: { // German translations
+                "lang-name": "Deutsch",
+                "announcement-text": "🚀 Beschleunigen Sie Ihren Workflow! Erhalten Sie 15% Rabatt auf Pro Grid für begrenzte Zeit!",
+                "header-slogan": "Kaufen Sie einen Artikel, und wir sponsern einen! ❤️",
+                "back-to-shop": "← Zurück zum Shop",
+                "complete-purchase": "Kauf abschließen",
+                "shipping-step": "Versand",
+                "payment-step": "Zahlung",
+                "review-step": "Überprüfung",
+                "shipping-info-heading": "Versandinformationen",
+                "full-name-label": "Vollständiger Name",
+                "full-name-placeholder": "Max Mustermann",
+                "address-label": "Adresse",
+                "address-placeholder": "Musterstraße 123",
+                "city-label": "Stadt",
+                "city-placeholder": "Luxemburg-Stadt",
+                "zip-code-label": "Postleitzahl",
+                "zip-code-placeholder": "12345",
+                "payment-method-heading": "Zahlungsmethode",
+                "card-number-label": "Kartennummer",
+                "month-label": "Monat",
+                "year-label": "Jahr",
+                "cvv-label": "CVV",
+                "order-summary-heading": "Bestellübersicht",
+                "product-item-1": "Produktartikel 1",
+                "product-item-2": "Produktartikel 2",
+                "shipping-cost": "Versand",
+                "total-cost": "Gesamt",
+                "ai-help-heading": "KI-Hilfe & FAQ-Antworten",
+                "ai-help-slogan": "Stellen Sie Ihre Frage zu AgroChain™, Banimal Loop™ oder FAA.zone, und unsere KI wird antworten.",
+                "your-question-label": "Ihre Frage:",
+                "faq-placeholder": "z.B. Was ist das Kernprotokoll von AgroChain™?",
+                "get-answer-button": "Antwort erhalten ✨",
+                "generating-answer-loading": "Antwort wird generiert...",
+                "error-no-ai-answer": "Fehler: Keine Antwort von der KI. Bitte versuchen Sie es später noch einmal.",
+                "reason": "Grund:",
+                "error-ai-connection": "Fehler: Verbindung zum Sprachmodell konnte nicht hergestellt werden. Überprüfen Sie die Konsole auf Netzwerkprobleme.",
+                "please-enter-question": "Bitte geben Sie eine Frage ein, um eine Antwort zu erhalten.",
+                "finalize-button": "Bestellung abschließen & bestätigen",
+                "review-order-button": "Bestelldetails überprüfen",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑Freundliche Kreaturen. Globaler Einfluss.",
+                "banimal-footer-text": "Entdecken Sie Banimals Welt der durchdachten Babyartikel und innovativen Beleuchtung. Für jeden Kauf liefern wir den gleichen Artikel an ein bedürftiges Kind, identifiziert durch die datengestützten Erkenntnisse des Baobab Sicherheitsnetzwerks.",
+                "explore-banimal-button": "Entdecken Sie Banimals Welt",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. Alle Rechte vorbehalten.",
+                "powered-by-text": "Eine stolze Initiative von Fruitful™ Treaty System™",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            zh: { // Chinese Simplified translations
+                "lang-name": "简体中文",
+                "announcement-text": "🚀 加速您的工作流程！限时享受 Pro Grid 15% 折扣！",
+                "header-slogan": "买一件，我们赞助一件！❤️",
+                "back-to-shop": "← 返回商店",
+                "complete-purchase": "完成您的购买",
+                "shipping-step": "配送",
+                "payment-step": "支付",
+                "review-step": "审查",
+                "shipping-info-heading": "配送信息",
+                "full-name-label": "全名",
+                "full-name-placeholder": "张三",
+                "address-label": "地址",
+                "address-placeholder": "主街123号",
+                "city-label": "城市",
+                "city-placeholder": "卢森堡市",
+                "zip-code-label": "邮政编码",
+                "zip-code-placeholder": "100000",
+                "payment-method-heading": "支付方式",
+                "card-number-label": "卡号",
+                "month-label": "月",
+                "year-label": "年",
+                "cvv-label": "CVV",
+                "order-summary-heading": "订单摘要",
+                "product-item-1": "商品1",
+                "product-item-2": "商品2",
+                "shipping-cost": "运费",
+                "total-cost": "总计",
+                "ai-help-heading": "AI 帮助和常见问题解答",
+                "ai-help-slogan": "提出您关于 AgroChain™、Banimal Loop™ 或 FAA.zone 的问题，我们的 AI 将为您解答。",
+                "your-question-label": "您的问题：",
+                "faq-placeholder": "例如：AgroChain™ 的核心协议是什么？",
+                "get-answer-button": "获取答案 ✨",
+                "generating-answer-loading": "正在生成答案...",
+                "error-no-ai-answer": "错误：AI 没有返回答案。请稍后再试。",
+                "reason": "原因：",
+                "error-ai-connection": "错误：无法连接到语言模型。请检查控制台以查看网络问题。",
+                "please-enter-question": "请输入问题以获取答案。",
+                "finalize-button": "完成并确认订单",
+                "review-order-button": "查看订单详情",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™：",
+                "banimal-footer-slogan": "🐑善良生物。全球影响。",
+                "banimal-footer-text": "探索 Banimal 的世界：周到的婴儿必需品和创新的照明产品。每次购买，我们都会将相同的物品捐赠给巴奥巴安全网络数据洞察识别出的有需要的儿童。",
+                "explore-banimal-button": "探索 Banimal 的世界",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™。保留所有权利。",
+                "powered-by-text": "Fruitful™ Treaty System™ 的一项自豪倡议",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            hi: { // Hindi translations
+                "lang-name": "हिंदी",
+                "announcement-text": "🚀 अपने वर्कफ़्लो को तेज़ करें! सीमित समय के लिए प्रो ग्रिड पर 15% की छूट पाएं!",
+                "header-slogan": "एक आइटम खरीदें, और हम एक को प्रायोजित करते हैं! ❤️",
+                "back-to-shop": "← दुकान पर वापस",
+                "complete-purchase": "अपनी खरीद पूरी करें",
+                "shipping-step": "शिपिंग",
+                "payment-step": "भुगतान",
+                "review-step": "समीक्षा",
+                "shipping-info-heading": "शिपिंग जानकारी",
+                "full-name-label": "पूरा नाम",
+                "full-name-placeholder": "जॉन डो",
+                "address-label": "पता",
+                "address-placeholder": "123 मुख्य सड़क",
+                "city-label": "शहर",
+                "city-placeholder": "लक्ज़मबर्ग शहर",
+                "zip-code-label": "ज़िप कोड",
+                "zip-code-placeholder": "110001",
+                "payment-method-heading": "भुगतान विधि",
+                "card-number-label": "कार्ड नंबर",
+                "month-label": "महीना",
+                "year-label": "साल",
+                "cvv-label": "CVV",
+                "order-summary-heading": "आर्डर सारांश",
+                "product-item-1": "उत्पाद आइटम 1",
+                "product-item-2": "उत्पाद आइटम 2",
+                "shipping-cost": "शिपिंग",
+                "total-cost": "कुल",
+                "ai-help-heading": "एआई मदद और अक्सर पूछे जाने वाले प्रश्न",
+                "ai-help-slogan": "AgroChain™, Banimal Loop™ या FAA.zone के बारे में अपना प्रश्न पूछें, और हमारी एआई जवाब देगी।",
+                "your-question-label": "आपका प्रश्न:",
+                "faq-placeholder": "उदाहरण के लिए, AgroChain™ का मुख्य प्रोटोकॉल क्या है?",
+                "get-answer-button": "उत्तर प्राप्त करें ✨",
+                "generating-answer-loading": "उत्तर उत्पन्न हो रहा है...",
+                "error-no-ai-answer": "त्रुटि: एआई से कोई जवाब नहीं। कृपया बाद में पुनः प्रयास करें।",
+                "reason": "कारण:",
+                "error-ai-connection": "त्रुटि: भाषा मॉडल से कनेक्ट नहीं हो सका। नेटवर्क समस्याओं के लिए कंसोल जांचें।",
+                "please-enter-question": "कृपया उत्तर प्राप्त करने के लिए एक प्रश्न दर्ज करें।",
+                "finalize-button": "ऑर्डर को अंतिम रूप दें और पुष्टि करें",
+                "review-order-button": "ऑर्डर विवरण की समीक्षा करें",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑दयालु जीव। वैश्विक प्रभाव।",
+                "banimal-footer-text": "विचारशील शिशु आवश्यक वस्तुओं और अभिनव प्रकाश व्यवस्था की Banimal दुनिया की खोज करें। प्रत्येक खरीद के लिए, हम बाओबाब सुरक्षा नेटवर्क के डेटा-संचालित अंतर्दृष्टि द्वारा पहचाने गए जरूरतमंद बच्चे को वही आइटम वितरित करते हैं।",
+                "explore-banimal-button": "Banimal की दुनिया का अन्वेषण करें",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. सभी अधिकार सुरक्षित।",
+                "powered-by-text": "फ्रूटफुल™ ट्रीटी सिस्टम™ की एक गर्वपूर्ण पहल",
+                "light-mode-button": "Light Mode",
+                "dark-mode-button": "Dark Mode",
+                "hyper-mode-button": "Hyper Mode"
+            },
+            ar: { // Arabic translations
+                "lang-name": "العربية",
+                "announcement-text": "🚀 سارع بتحسين سير عملك! احصل على خصم 15% على برو جريد لفترة محدودة!",
+                "header-slogan": "اشترِ منتجًا واحدًا، ونحن نرعى واحدًا! ❤️",
+                "back-to-shop": "← العودة إلى المتجر",
+                "complete-purchase": "إتمام عملية الشراء",
+                "shipping-step": "الشحن",
+                "payment-step": "الدفع",
+                "review-step": "المراجعة",
+                "shipping-info-heading": "معلومات الشحن",
+                "full-name-label": "الاسم الكامل",
+                "full-name-placeholder": "محمد علي",
+                "address-label": "العنوان",
+                "address-placeholder": "123 الشارع الرئيسي",
+                "city-label": "المدينة",
+                "city-placeholder": "مدينة لوكسمبورغ",
+                "zip-code-label": "الرمز البريدي",
+                "zip-code-placeholder": "10000",
+                "payment-method-heading": "طريقة الدفع",
+                "card-number-label": "رقم البطاقة",
+                "month-label": "الشهر",
+                "year-label": "السنة",
+                "cvv-label": "CVV",
+                "order-summary-heading": "ملخص الطلب",
+                "product-item-1": "المنتج 1",
+                "product-item-2": "المنتج 2",
+                "shipping-cost": "الشحن",
+                "total-cost": "الإجمالي",
+                "ai-help-heading": "مساعدة الذكاء الاصطناعي والإجابات الشائعة",
+                "ai-help-slogan": "اطرح سؤالك حول AgroChain™، Banimal Loop™ أو FAA.zone، وسيقوم الذكاء الاصطناعي لدينا بالإجابة.",
+                "your-question-label": "سؤالك:",
+                "faq-placeholder": "مثال: ما هو البروتوكول الأساسي لـ AgroChain™؟",
+                "get-answer-button": "احصل على الإجابة ✨",
+                "generating-answer-loading": "جارٍ إنشاء الإجابة...",
+                "error-no-ai-answer": "خطأ: لا توجد إجابة من الذكاء الاصطناعي. يرجى المحاولة مرة أخرى لاحقًا.",
+                "reason": "السبب:",
+                "error-ai-connection": "خطأ: لم يتمكن من الاتصال بنموذج اللغة. تحقق من وحدة التحكم لمشاكل الشبكة.",
+                "please-enter-question": "الرجاء إدخال سؤال للحصول على إجابة.",
+                "finalize-button": "إنهاء وتأكيد الطلب",
+                "review-order-button": "مراجعة تفاصيل الطلب",
+                "planet-pulse-text": "fruchtbarer.planet.wandel",
+                "banimal-footer-heading": "Banimal™:",
+                "banimal-footer-slogan": "🐑مخلوقات طيبة. تأثير عالمي.",
+                "banimal-footer-text": "اكتشف عالم Banimal من أساسيات الأطفال المدروسة وحلول الإضاءة المبتكرة. مقابل كل عملية شراء، نقدم نفس العنصر لطفل محتاج، يتم تحديده من خلال رؤى شبكة أمان الباوباب المستندة إلى البيانات.",
+                "explore-banimal-button": "استكشف عالم Banimal",
+                "copyright-text-footer": "&copy; 👟2025 Banimal™. جميع الحقوق محفوظة.",
+                "powered-by-text": "مبادرة فخرية من Fruitful™ Treaty System™"
+            }
+        };
+
+        // Global setLanguage function (moved to global scope)
+        function setLanguage(lang) {
+            document.body.lang = lang;
+            localStorage.setItem('selectedLanguage', lang);
+
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                const translation = translations[lang] && translations[lang][key] !== undefined
+                    ? translations[lang][key]
+                    : (translations['en'] && translations['en'][key] !== undefined ? translations['en'][key] : undefined);
+
+                if (translation !== undefined) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translation;
+                    } else if (key === "explore-banimal-button" || key === "get-answer-button") {
+                        const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                        element.innerHTML = translation + (iconHtml ? ' ' + iconHtml[0] : '');
+                    } else if (key === "ai-help-heading") {
+                        const iconHtml = element.innerHTML.match(/<i class=".*"><\/i>/);
+                        element.innerHTML = (iconHtml ? iconHtml[0] + ' ' : '') + translation;
+                    } else if (key === "light-mode-button" || key === "dark-mode-button" || key === "hyper-mode-button" || key === "lang-name") {
+                        element.textContent = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                } else {
+                    console.warn(`Missing translation for key '${key}' in language '${lang}'. Falling back to English if available.`);
+                }
+            });
+
+            // Update AI response area messages (specific logic to re-translate errors/prompts)
+            const faqAnswerOutput = document.getElementById('faqAnswerOutput');
+            const faqPromptInput = document.getElementById('faqPromptInput');
+            if (faqAnswerOutput && faqPromptInput) {
+                // If the current message is a known English error/prompt, translate it
+                if (faqAnswerOutput.textContent === translations['en']['please-enter-question']) {
+                    faqAnswerOutput.textContent = translations[lang]['please-enter-question'];
+                } else if (faqAnswerOutput.textContent.startsWith(translations['en']['error-no-ai-answer'])) {
+                    const englishErrorMessage = faqAnswerOutput.textContent;
+                    const englishReasonMatch = englishErrorMessage.match(new RegExp(`${translations['en']['reason']}\\s*(.*)`));
+                    const englishReason = englishReasonMatch ? englishReasonMatch[1] : '';
+
+                    let translatedMessage = translations[lang]['error-no-ai-answer'];
+                    if (englishReason) {
+                        translatedMessage += ` ${translations[lang]['reason']} ${englishReason}`;
+                    }
+                    faqAnswerOutput.textContent = translatedMessage;
+                } else if (faqAnswerOutput.textContent.startsWith(translations['en']['error-ai-connection'])) {
+                    faqAnswerOutput.textContent = translations[lang]['error-ai-connection'];
+                }
+            }
+        }
+
+
+        // Canvas animation objects (from Seedwave template)
+        const canvases = {
+            rhythmic: { canvas: null, ctx: null, time: 0, animationId: null },
+            concentric: { canvas: null, ctx: null, time: 0, animationId: null },
+            shooting: { canvas: null, ctx: null, time: 0, animationId: null, pulses: [] },
+            particles: { canvas: null, ctx: null, time: 0, animationId: null, particles: [] },
+            radialBursts: { canvas: null, ctx: null, time: 0, animationId: null, bursts: [] },
+            hyperspace: { canvas: null, ctx: null, time: 0, animationId: null }
+        };
+
+        const headerPulse = {
+            canvas: null,
+            ctx: null,
+            time: 0,
+            animationId: null,
+            data: [],
+            maxDataPoints: 50,
+            valueRange: 100,
+            speed: 0.8
+        };
+
+        // Helper to initialize and resize a canvas
+        function setupCanvas(canvasId, obj) {
+            obj.canvas = document.getElementById(canvasId);
+            if (obj.canvas) {
+                obj.ctx = obj.canvas.getContext('2d');
+                // console.log(`Canvas ${canvasId} found. Context:`, obj.ctx); // Debugging line
+                if (obj.ctx) {
+                    resizeCanvasElement(obj.canvas);
+                    // console.log(`Canvas ${canvasId} resized to: ${obj.canvas.width}x${obj.canvas.height}`); // Debugging line
+                    if (obj.canvas.width === 0 || obj.canvas.height === 0) {
+                        console.warn(`Canvas ${canvasId} has zero dimensions initially. This might affect rendering.`);
+                    }
+                } else {
+                    console.error(`Could not get 2D context for canvas ${canvasId}.`);
+                }
+            } else {
+                console.error(`Canvas element with ID "${canvasId}" not found in the DOM.`);
+            }
+        }
+
+        // Helper to resize a single canvas element
+        function resizeCanvasElement(canvas) {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        // Resize all canvases
+        function resizeAllCanvases() {
+            if (headerPulse.canvas) {
+                resizeCanvasElement(headerPulse.canvas);
+            }
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    resizeCanvasElement(canvases[key].canvas);
+                }
+            }
+            // Re-render node pulse chart on resize
+            if (nodePulseChartInstance) {
+                nodePulseChartInstance.resize();
+            }
+        }
+
+        // --- Header "Stock Exchange Pulse" Animation ---
+        function drawHeaderPulse() {
+            const { canvas, ctx, data, maxDataPoints, valueRange } = headerPulse;
+            if (!ctx || !canvas) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const lastValue = data.length > 0 ? data[data.length - 1] : valueRange / 2;
+            let newValue = lastValue + (Math.random() - 0.5) * 10;
+            newValue = Math.max(5, Math.min(valueRange - 5, newValue));
+            data.push(newValue);
+
+            if (data.length > maxDataPoints) {
+                data.shift();
+            }
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 227, 147, 0.9)';
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(0, 227, 147, 0.7)';
+
+            const pointWidth = canvas.width / (maxDataPoints - 1);
+            for (let i = 0; i < data.length; i++) {
+                const x = i * pointWidth;
+                const y = canvas.height - (data[i] / valueRange) * canvas.height;
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+
+            headerPulse.animationId = requestAnimationFrame(drawHeaderPulse);
+        }
+
+        function startHeaderPulseAnimation() {
+            for(let i = 0; i < headerPulse.maxDataPoints; i++) {
+                headerPulse.data.push(Math.random() * headerPulse.valueRange);
+            }
+            drawHeaderPulse();
+        }
+
+        // --- Pulse Animation Classes & Functions (for Hero Grid) ---
+        function drawRhythmicPulse(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const numRhythmicLines = 40;
+            const rhythmicLineAmplitude = canvas.height / 2.5;
+            const rhythmicLineFrequency = 0.1;
+            const rhythmicLineSpeed = 0.015;
+            canvasObj.time += rhythmicLineSpeed;
+            for (let i = 0; i < numRhythmicLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numRhythmicLines);
+                const colorHue = (canvasObj.time * 200 + i * 15) % 360;
+                ctx.strokeStyle = `hsla(${colorHue}, 95%, 75%, 0.9)`;
+                ctx.lineWidth = 2.5;
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = Math.sin(x * rhythmicLineFrequency + canvasObj.time + offset) * (rhythmicLineAmplitude * (Math.sin(canvasObj.time * 0.3 + i * 0.15) * 0.5 + 0.5)) + canvas.height / 2;
+                    if (x === 0) { ctx.moveTo(x, y); } else { ctx.lineTo(x, y); }
+                }
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRhythmicPulse(canvasObj));
+        }
+
+        function drawConcentricWaves(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const numWaves = 20;
+            const waveSpeed = 0.02;
+            const waveThickness = 4;
+            const waveSpacing = 12;
+            canvasObj.time += waveSpeed;
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                const radius = (canvasObj.time * waveSpacing + i * waveSpacing) % (Math.max(canvas.width, canvas.height) / 1.2) + 5;
+                const hue = (i * 20 + canvasObj.time * 100) % 360;
+                ctx.strokeStyle = `hsla(${hue}, 95%, 80%, ${0.95 - (radius / (Math.max(canvas.width, canvas.height) / 1.2))})`;
+                ctx.lineWidth = waveThickness;
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                if (i < 7) {
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${hue + 70}, 100%, 85%, ${0.6 - (radius / (Math.max(canvas.width, canvas.height) / 1.2)) * 0.6})`;
+                    ctx.fill();
+                }
+            }
+            const coreRadius = 20 + Math.sin(canvasObj.time * 10) * 8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 227, 147, ${0.95 + Math.sin(canvasObj.time * 10) * 0.05})`;
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(0, 227, 147, 1.0)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            canvasObj.animationId = requestAnimationFrame(() => drawConcentricWaves(canvasObj));
+        }
+
+        class ShootingPulse {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.initialRadius = 1;
+                this.currentRadius = this.initialRadius;
+                this.maxRadius = Math.random() * 150 + 80;
+                this.speed = Math.random() * 4 + 2;
+                this.alpha = 1;
+                this.decayRate = Math.random() * 0.012 + 0.006;
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+                this.numRings = Math.floor(Math.random() * 6) + 5;
+                this.glowStrength = Math.random() * 25 + 15;
+            }
+            update() {
+                this.currentRadius += this.speed;
+                this.alpha -= this.decayRate;
+                return this.alpha > 0 && this.currentRadius < this.maxRadius;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2.5;
+                for (let i = 0; i < this.numRings; i++) {
+                    const ringRadius = this.currentRadius - (i * (this.currentRadius / this.numRings));
+                    if (ringRadius > this.initialRadius) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.initialRadius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.glowStrength;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+        }
+
+        function drawShootingPulses(canvasObj) {
+            const { canvas, ctx, pulses } = canvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const shootingPulseSpawnRate = 0.3;
+            const maxShootingPulses = 50;
+            if (Math.random() < shootingPulseSpawnRate && pulses.length < maxShootingPulses) {
+                pulses.push(new ShootingPulse(canvas));
+            }
+            for (let i = pulses.length - 1; i >= 0; i--) {
+                const pulse = pulses[i];
+                if (pulse.update()) {
+                    pulse.draw(ctx);
+                } else {
+                    pulses.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawShootingPulses(canvasObj));
+        }
+
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * 2.5 + 1.5;
+                this.speedX = (Math.random() * 2 - 1);
+                this.speedY = (Math.random() * 2 - 1);
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+                this.alpha = 1;
+                this.decay = 0.002;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                if (this.alpha < 0 || this.x < -20 || this.x > this.canvas.width + 20 || this.y < -20 || this.y > this.canvas.height + 20) {
+                    this.alpha = 1;
+                    this.x = Math.random() * this.canvas.width;
+                    this.y = Math.random() * this.canvas.height;
+                    this.speedX = (Math.random() * 2 - 1);
+                    this.speedY = (Math.random() * 2 - 1);
+                }
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawParticlesWithConnections(canvasObj) {
+            const { canvas, ctx, particles } = canvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (particles.length === 0) {
+                for (let i = 0; i < 150; i++) {
+                    particles.push(new Particle(canvas));
+                }
+            }
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(ctx);
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 123, 255, ${particles[i].alpha * particles[j].alpha * (1 - (distance / 120)) * 1.0})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+            canvasObj.animationId = requestAnimationFrame(() => drawParticlesWithConnections(canvasObj));
+        }
+
+        class RadialBurst {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 200 + 100;
+                this.speed = Math.random() * 5 + 3;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.numLines = Math.floor(Math.random() * 20) + 15;
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`;
+            }
+            update() {
+                this.radius += this.speed;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+                for (let i = 0; i < this.numLines; i++) {
+                    const angle = (Math.PI * 2 / this.numLines) * i;
+                    const startX = this.x + Math.cos(angle) * this.radius * 0.1;
+                    const startY = this.y + Math.sin(angle) * this.radius * 0.1;
+                    const endX = this.x + Math.cos(angle) * this.radius;
+                    const endY = this.y + Math.sin(angle) * this.radius;
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawRadialBursts(canvasObj) {
+            const { canvas, ctx, bursts } = canvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const burstSpawnRate = 0.12;
+            const maxBursts = 20;
+            if (Math.random() < burstSpawnRate && bursts.length < maxBursts) {
+                bursts.push(new RadialBurst(canvas));
+            }
+            for (let i = bursts.length - 1; i >= 0; i--) {
+                const burst = bursts[i];
+                if (burst.update()) {
+                    burst.draw(ctx);
+                } else {
+                    bursts.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRadialBursts(canvasObj));
+        }
+
+        function drawHyperspaceWarp(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            canvasObj.time += 0.06;
+            const gridSpacing = 25;
+            const lineCountX = Math.ceil(canvas.width / gridSpacing);
+            const lineCountY = Math.ceil(canvas.height / gridSpacing);
+            const colorProgress = (Math.sin(canvasObj.time * 0.8) + 1) / 2;
+            const r = Math.floor(0 + colorProgress * (0 - 0));
+            const g = Math.floor(123 + colorProgress * (227 - 123));
+            const b = Math.floor(255 + colorProgress * (147 - 255));
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.7 + colorProgress * 0.3})`;
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i <= lineCountY; i++) {
+                const y = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(0, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.lineTo(canvas.width, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= lineCountX; i++) {
+                const x = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, 0);
+                ctx.lineTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, canvas.height);
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawHyperspaceWarp(canvasObj));
+        }
+
+        // Function to start the animation for a specific canvas (hero grid)
+        function startCanvasAnimation(key) {
+            const canvasObj = canvases[key];
+            if (!canvasObj.ctx) {
+                console.warn(`Cannot start animation for ${key}: context is null.`);
+                return;
+            }
+            if (canvasObj.animationId) {
+                cancelAnimationFrame(canvasObj.animationId);
+            }
+            switch (key) {
+                case 'rhythmic': drawRhythmicPulse(canvasObj); break;
+                case 'concentric': drawConcentricWaves(canvasObj); break;
+                case 'shooting': drawShootingPulses(canvasObj); break;
+                case 'particles':
+                    if (canvasObj.particles.length === 0) {
+                        for (let i = 0; i < 150; i++) { canvasObj.particles.push(new Particle(canvasObj.canvas)); }
+                    }
+                    drawParticlesWithConnections(canvasObj);
+                    break;
+                case 'radialBursts': drawRadialBursts(canvasObj); break;
+                case 'hyperspace': drawHyperspaceWarp(canvasObj); break;
+            }
+            // console.log(`Animation started for: ${key}`); // Debugging line
+        }
+
+        // Chart.js for Node Pulse Graph
+        let nodePulseChartInstance = null;
+        function renderNodePulseChart() {
+            const ctx = document.getElementById('nodePulseChart')?.getContext('2d');
+            if (!ctx) {
+                // console.warn("Node Pulse Chart canvas or context not found."); // Debugging line
+                return;
+            }
+
+            if (nodePulseChartInstance) {
+                nodePulseChartInstance.destroy();
+            }
+
+            const dataPoints = 50;
+            const labels = Array.from({length: dataPoints}, (_, i) => `Tick ${i+1}`);
+            const coreNodeData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 50 + (i * 1.5) + (Math.random() - 0.5) * 40)));
+            const arrayCountData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 100 + (i * 2) + (Math.random() - 0.5) * 60)));
+            const repoInfiltrationData = Array.from({length: dataPoints}, (v, i) => Math.floor(Math.max(0, 10 + (i * 0.8) + (Math.random() - 0.5) * 20)));
+
+            nodePulseChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Core Nodes (Thousands)', data: coreNodeData, borderColor: 'rgba(0, 227, 147, 0.9)', backgroundColor: 'rgba(0, 227, 147, 0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Array Counts (Hundreds)', data: arrayCountData, borderColor: 'rgba(0, 123, 255, 0.9)', backgroundColor: 'rgba(0, 123, 255, 0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { label: 'Repo Infiltrations', data: repoInfiltrationData, borderColor: 'rgba(255, 77, 77, 0.9)', backgroundColor: 'rgba(255, 77, 77, 0.1)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 },
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: 'rgba(255, 255, 255, 0.9)' } }
+                    }
+                }
+            });
+
+            setInterval(() => {
+                if (!nodePulseChartInstance) return; // Ensure instance still exists
+                const lastCore = nodePulseChartInstance.data.datasets[0].data[nodePulseChartInstance.data.datasets[0].data.length - 1];
+                const lastArray = nodePulseChartInstance.data.datasets[1].data[nodePulseChartInstance.data.datasets[1].data.length - 1];
+                const lastRepo = nodePulseChartInstance.data.datasets[2].data[nodePulseChartInstance.data.datasets[2].data.length - 1];
+
+                const newDataPointCore = Math.floor(Math.max(0, lastCore + (Math.random() - 0.5) * 20));
+                const newDataPointArray = Math.floor(Math.max(0, lastArray + (Math.random() - 0.5) * 30));
+                const newDataPointRepo = Math.floor(Math.max(0, lastRepo + (Math.random() - 0.5) * 10));
+
+                nodePulseChartInstance.data.labels.push(`Tick ${nodePulseChartInstance.data.labels.length + 1}`);
+                nodePulseChartInstance.data.datasets[0].data.push(newDataPointCore);
+                nodePulseChartInstance.data.datasets[1].data.push(newDataPointArray);
+                nodePulseChartInstance.data.datasets[2].data.push(newDataPointRepo);
+
+                if (nodePulseChartInstance.data.labels.length > dataPoints) {
+                    nodePulseChartInstance.data.labels.shift();
+                    nodePulseChartInstance.data.datasets[0].data.shift();
+                    nodePulseChartInstance.data.datasets[1].data.shift();
+                    nodePulseChartInstance.data.datasets[2].data.shift();
+                }
+                nodePulseChartInstance.update();
+            }, 1000);
+        }
+
+        // Spotify API Integration
+        const spotifyToken = 'BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhUhB-X6koPd92H9S0rQBqZ0HSKpsb04HiAme_FtqVLket7_s07gH9y1nxuPhbRyxp0r59oXtovV-uw0lCt2B7Mh5OmN3untEAGhfg6a6AZsaWLsv02dh6zKOQ_6DXHvCHZWxcVmoggu4eLA2NrqAf8rFRSNOw6HQpaN-VZkJWblznWQ0pT7ynzjpKOPlM_70N7vOLIZF8XnRmN1Oe784V-XfYNV-j1x1kdXGEpzlx1'; // Replace with valid token
+        let globalTopTracks = [];
+        let spotifyUserId = null;
+
+        async function fetchWebApi(endpoint, method, body) {
+            try {
+                const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+                    headers: {
+                        Authorization: `Bearer ${spotifyToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    method,
+                    body: body ? JSON.stringify(body) : null
+                });
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    console.error('Spotify API Error:', errorData);
+                    displaySpotifyMessage(`Error: ${errorData.error.message || 'Something went wrong with Spotify API.'}`, 'red');
+                    return null;
+                }
+                return await res.json();
+            } catch (error) {
+                console.error('Network or other error:', error);
+                displaySpotifyMessage(`Network error: ${error.message}`, 'red');
+                return null;
+            }
+        }
+
+        async function getSpotifyUserProfile() {
+            return await fetchWebApi('v1/me', 'GET');
+        }
+
+        async function getTopTracks() {
+            displaySpotifyMessage('Fetching your top tracks...', 'gray');
+            const topTracksListElement = document.getElementById('top-tracks-list');
+            const topTracksUl = topTracksListElement?.querySelector('ul');
+            if (topTracksUl) topTracksUl.innerHTML = '';
+            topTracksListElement?.classList.remove('hidden');
+            document.getElementById('audio-players').innerHTML = '';
+
+            try {
+                const response = (await fetchWebApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET'));
+                if (response && response.items && response.items.length > 0) {
+                    globalTopTracks = response.items;
+                    globalTopTracks.forEach(track => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${track.name}</strong> by ${track.artists.map(artist => artist.name).join(', ')}`;
+                        topTracksUl?.appendChild(li);
+                    });
+                    displaySpotifyMessage('Top 5 tracks fetched successfully!', 'green');
+                } else {
+                    if (topTracksUl) topTracksUl.innerHTML = '<li>No top tracks found or an error occurred.</li>';
+                    displaySpotifyMessage('Could not retrieve top tracks. Please check your token and try again.', 'red');
+                    globalTopTracks = [];
+                }
+            } catch (error) {
+                console.error('Error getting top tracks:', error);
+                displaySpotifyMessage('Failed to fetch top tracks.', 'red');
+                globalTopTracks = [];
+            }
+        }
+
+        async function createPlaylistAndSaveSongs() {
+            if (globalTopTracks.length === 0) {
+                displaySpotifyMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+            displaySpotifyMessage('Creating playlist and adding songs...', 'gray');
+            try {
+                const userProfile = await getSpotifyUserProfile();
+                if (!userProfile || !userProfile.id) {
+                    displaySpotifyMessage('Could not retrieve user profile to create playlist. Is your token valid?', 'red');
+                    return;
+                }
+                spotifyUserId = userProfile.id;
+                const playlistName = `My Seedwave Top Tracks - ${new Date().toLocaleDateString()}`;
+                const playlistDescription = "Top 5 tracks generated by Seedwave's Global Synergy Hub!";
+                const createPlaylistResponse = await fetchWebApi(
+                    `v1/users/${spotifyUserId}/playlists`, 'POST', { name: playlistName, public: false, description: playlistDescription }
+                );
+                if (!createPlaylistResponse || !createPlaylistResponse.id) {
+                    displaySpotifyMessage('Failed to create playlist.', 'red');
+                    return;
+                }
+                const playlistId = createPlaylistResponse.id;
+                const trackUris = globalTopTracks.map(track => track.uri);
+                const addItemsResponse = await fetchWebApi(
+                    `v1/playlists/${playlistId}/tracks`, 'POST', { uris: trackUris }
+                );
+                if (addItemsResponse && addItemsResponse.snapshot_id) {
+                    displaySpotifyMessage(`Playlist "${playlistName}" created and tracks added successfully!`, 'green');
+                } else {
+                    displaySpotifyMessage('Failed to add tracks to playlist.', 'red');
+                }
+            } catch (error) {
+                console.error('Error creating/saving playlist:', error);
+                displaySpotifyMessage('Failed to create or save playlist.', 'red');
+            }
+        }
+
+        async function playTopTracks() {
+            if (globalTopTracks.length === 0) {
+                displaySpotifyMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+            displaySpotifyMessage('Loading audio players...', 'gray');
+            const audioPlayersDiv = document.getElementById('audio-players');
+            if (audioPlayersDiv) audioPlayersDiv.innerHTML = '';
+            globalTopTracks.forEach(track => {
+                const trackId = track.id;
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+                iframe.width = "100%";
+                iframe.height = "80";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                audioPlayersDiv?.appendChild(iframe);
+            });
+            displaySpotifyMessage('Audio players loaded!', 'green');
+        }
+
+        function displaySpotifyMessage(message, type = 'gray') {
+            const msgBox = document.getElementById('playlist-message');
+            if (msgBox) {
+                msgBox.textContent = message;
+                msgBox.className = 'mt-6 p-4 rounded-lg border';
+                msgBox.classList.remove('hidden');
+                if (type === 'green') { msgBox.classList.add('bg-green-800', 'bg-opacity-30', 'border-green-700'); }
+                else if (type === 'red') { msgBox.classList.add('bg-red-800', 'bg-opacity-30', 'border-red-700'); }
+                else if (type === 'orange') { msgBox.classList.add('bg-orange-800', 'bg-opacity-30', 'border-orange-700'); }
+                else { msgBox.classList.add('bg-gray-800', 'bg-opacity-30', 'border-gray-700'); }
+            }
+        }
+
+        // Currency Converter Logic
+        async function convertCurrency() {
+            const amountInput = document.getElementById('amount');
+            const fromCurrencySelect = document.getElementById('fromCurrency');
+            const toCurrencySelect = document.getElementById('toCurrency');
+            const resultElement = document.getElementById('convertedResult');
+
+            if (!amountInput || !fromCurrencySelect || !toCurrencySelect || !resultElement) return;
+
+            const amount = parseFloat(amountInput.value);
+            const fromCurrency = fromCurrencySelect.value;
+            const toCurrency = toCurrencySelect.value;
+
+            if (isNaN(amount) || amount <= 0) {
+                resultElement.textContent = 'Please enter a valid amount.';
+                return;
+            }
+
+            resultElement.textContent = `Converting ${amount} ${fromCurrency} to ${toCurrency}...`;
+
+            const exchangeRates = {
+                "USD": {"EUR": 0.92, "GBP": 0.79, "JPY": 157.80, "AUD": 1.50, "CAD": 1.37, "CHF": 0.90, "CNY": 7.26, "ZAR": 18.25},
+                "EUR": {"USD": 1.08, "GBP": 0.86, "JPY": 171.00, "AUD": 1.63, "CAD": 1.48, "CHF": 0.98, "CNY": 7.87, "ZAR": 19.80},
+                "GBP": {"USD": 1.27, "EUR": 1.16, "JPY": 198.80, "AUD": 1.90, "CAD": 1.73, "CHF": 1.15, "CNY": 9.15, "ZAR": 23.00},
+                "JPY": {"USD": 0.0063, "EUR": 0.0058, "GBP": 0.0050, "AUD": 0.0095, "CAD": 0.0087, "CHF": 0.0057, "CNY": 0.046, "ZAR": 0.11},
+                "AUD": {"USD": 0.67, "EUR": 0.61, "GBP": 0.53, "JPY": 105.00, "CAD": 0.92, "CHF": 0.60, "CNY": 4.80, "ZAR": 12.10},
+                "CAD": {"USD": 0.73, "EUR": 0.67, "GBP": 0.58, "JPY": 115.00, "AUD": 1.09, "CHF": 0.66, "CNY": 5.29, "ZAR": 13.30},
+                "CHF": {"USD": 1.11, "EUR": 1.02, "GBP": 0.87, "JPY": 174.00, "AUD": 1.65, "CAD": 1.51, "CNY": 8.00, "ZAR": 20.15},
+                "CNY": {"USD": 0.14, "EUR": 0.13, "GBP": 0.11, "JPY": 21.60, "AUD": 0.21, "CAD": 0.19, "CHF": 0.12, "ZAR": 2.51},
+                "ZAR": {"USD": 0.055, "EUR": 0.050, "GBP": 0.043, "JPY": 8.90, "AUD": 0.083, "CAD": 0.075, "CHF": 0.049, "CNY": 0.39}
+            };
+
+            const rate = exchangeRates[fromCurrency] ? exchangeRates[fromCurrency][toCurrency] : null;
+
+            if (fromCurrency === toCurrency) {
+                resultElement.textContent = `${amount.toFixed(2)} ${fromCurrency} = ${amount.toFixed(2)} ${toCurrency}`;
+                return;
+            }
+
+            if (rate) {
+                const convertedAmount = amount * rate;
+                resultElement.textContent = `${amount.toFixed(2)} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+            } else {
+                resultElement.textContent = 'Conversion rate not available for selected currencies.';
+            }
+        }
+
+        // Planet Pulse Text Logic
+        const planetPhrases = [
+            { text: "fruchtbarer.planet.wandel", lang: "de" },
+            { text: "fertile.planet.change", lang: "en" },
+            { text: "planète.fertile.changement", lang: "fr" },
+            { text: "planeta.fértil.cambio", lang: "es" },
+            { text: "丰饶。星球。变革", lang: "zh" },
+            { text: "उर्वर। ग्रह। परिवर्तन", lang: "hi" },
+            { text: "كوكب.خصب.تغيير", lang: "ar" }
+        ];
+        let currentPhraseIndex = 0;
+
+        function updatePlanetText() {
+            const planetTextElement = document.getElementById('planet-text');
+            if (planetTextElement) {
+                planetTextElement.style.animation = 'none';
+                void planetTextElement.offsetWidth;
+                planetTextElement.style.animation = '';
+
+                currentPhraseIndex = (currentPhraseIndex + 1) % planetPhrases.length;
+                const nextPhrase = planetPhrases[currentPhraseIndex];
+                
+                planetTextElement.textContent = nextPhrase.text;
+                planetTextElement.lang = nextPhrase.lang;
+            }
+        }
+
+        // AI-Powered Help/FAQ Logic
+        async function getFaqAnswer() {
+            const faqPromptInput = document.getElementById('faqPromptInput');
+            const faqAnswerOutput = document.getElementById('faqAnswerOutput');
+            const faqLoadingIndicator = document.getElementById('faqLoadingIndicator');
+            const getFaqAnswerBtn = document.getElementById('getFaqAnswerBtn');
+
+            if (!faqPromptInput || !faqAnswerOutput || !faqLoadingIndicator || !getFaqAnswerBtn) {
+                console.warn("AI text generation elements not found in DOM.");
+                return;
+            }
+
+            const prompt = faqPromptInput.value.trim();
+            if (!prompt) {
+                faqAnswerOutput.textContent = translations[document.body.lang]['please-enter-question'];
+                faqAnswerOutput.style.color = "red";
+                return;
+            }
+
+            faqAnswerOutput.textContent = '';
+            faqAnswerOutput.style.color = "var(--text-color-dark)";
+            faqLoadingIndicator.classList.remove('hidden');
+            getFaqAnswerBtn.disabled = true;
+
+            try {
+                const fullPrompt = `The user has a question about AgroChain™, Banimal Loop™, or FAA.zone. Answer this question as precisely and concisely as possible. If the question is not related to AgroChain™, Banimal Loop™, or FAA.zone, please state that you can only answer questions on these topics.
+
+                User's question: "${prompt}"
+
+                Information to consider:
+                - AgroChain™ is a powerful FAA.zone™ framework empowering the Agriculture & Biotech sector with advanced automation and data management, connecting to PulseGrid™ for optimized workflow and compliance.
+                - Banimal Loop™ focuses on ethical impact, creature data synthesis, Baobab Network integration, and ethical loop verification, related to thoughtful baby essentials and innovative lighting, sponsoring an item for a child in need for every purchase.
+                - FAA.zone™ is an ecosystem for critical information and distributed processes, focusing on Decentralized Data Integrity, Secure Data Orchestration, Scalable & Resilient Infrastructure, Verifiable Trust & Identity, and Compliance & Audit Trails.
+                - VaultMesh™ is the core infrastructure powering FAA.zone™.
+
+                Answer:`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: fullPrompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    faqAnswerOutput.textContent = text;
+                } else {
+                    faqAnswerOutput.textContent = translations[document.body.lang]['error-no-ai-answer'];
+                    faqAnswerOutput.style.color = "red";
+                    if (result.error && result.error.message) {
+                        faqAnswerOutput.textContent += ` ${translations[document.body.lang]['reason']} ${result.error.message}`;
+                    }
+                }
+            } catch (error) {
+                faqAnswerOutput.textContent = translations[document.body.lang]['error-ai-connection'];
+                faqAnswerOutput.style.color = "red";
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                faqLoadingIndicator.classList.add('hidden');
+                getFaqAnswerBtn.disabled = false;
+            }
+        }
+
+
+        // Document Ready / Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // console.log("DOMContentLoaded event fired. Starting initializations."); // Debugging line
+
+            const announcementBar = document.getElementById('announcement-bar');
+
+            // --- Announcement Bar Logic ---
+            const updateAnnouncementBarPosition = () => {
+                const announcementHeight = announcementBar && !announcementBar.classList.contains('hidden') ? announcementBar.offsetHeight : 0;
+                document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                // console.log(`Announcement bar height set to: ${announcementHeight}px`); // Debugging line
+            };
+
+            if (announcementBar && announcementBar.querySelector('.close-btn')) {
+                announcementBar.querySelector('.close-btn').addEventListener('click', () => {
+                    announcementBar.classList.add('hidden');
+                    updateAnnouncementBarPosition();
+                    localStorage.setItem('hideAnnouncementBar', 'true');
+                    // console.log("Announcement bar closed."); // Debugging line
+                });
+            }
+            if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                announcementBar?.classList.add('hidden');
+                // console.log("Announcement bar hidden (preference)."); // Debugging line
+            }
+            updateAnnouncementBarPosition(); // Initial positioning
+            window.addEventListener('resize', updateAnnouncementBarPosition);
+            // console.log("Announcement bar logic initialized."); // Debugging line
+
+
+            // --- Theme Switching Logic ---
+            const themeDayBtn = document.getElementById('theme-day-btn');
+            const themeNightBtn = document.getElementById('theme-night-btn');
+            const themeHyperBtn = document.getElementById('theme-hyper-btn');
+
+            function setTheme(theme) {
+                document.body.classList.remove('light-mode', 'dark-mode', 'hyper-mode');
+                themeDayBtn?.classList.remove('active');
+                themeNightBtn?.classList.remove('active');
+                themeHyperBtn?.classList.remove('active');
+
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeNightBtn?.classList.add('active');
+                } else if (theme === 'hyper') {
+                    document.body.classList.add('hyper-mode');
+                    themeHyperBtn?.classList.add('active');
+                } else {
+                    document.body.classList.add('light-mode');
+                    themeDayBtn?.classList.add('active');
+                }
+                localStorage.setItem('themeMode', theme);
+                // console.log(`Theme set to: ${theme}`); // Debugging line
+                // Re-render chart for theme consistency
+                if (nodePulseChartInstance) {
+                    renderNodePulseChart();
+                    // console.log("Node Pulse Chart re-rendered for new theme."); // Debugging line
+                }
+            }
+
+            if (themeDayBtn && themeNightBtn && themeHyperBtn) {
+                themeDayBtn.addEventListener('click', () => setTheme('day'));
+                themeNightBtn.addEventListener('click', () => setTheme('dark'));
+                themeHyperBtn.addEventListener('click', () => setTheme('hyper'));
+
+                const savedTheme = localStorage.getItem('themeMode') || 'dark'; // Default to dark mode
+                setTheme(savedTheme);
+                // console.log(`Initial theme loaded: ${savedTheme}`); // Debugging line
+            } else {
+                console.warn("Theme buttons not found in DOM.");
+            }
+
+            // --- Language Switcher Logic ---
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            if (languageSwitcher) {
+                for (const langCode in translations) {
+                    const option = document.createElement('option');
+                    option.value = langCode;
+                    option.textContent = translations[langCode]["lang-name"] || langCode.toUpperCase();
+                    languageSwitcher.appendChild(option);
+                }
+                languageSwitcher.addEventListener('change', (e) => {
+                    const selectedLang = e.target.value;
+                    setLanguage(selectedLang);
+                    // console.log(`Language changed to: ${selectedLang}`); // Debugging line
+                });
+                const initialLang = localStorage.getItem('selectedLanguage') || 'en';
+                languageSwitcher.value = initialLang;
+                setLanguage(initialLang);
+                // console.log(`Initial language loaded: ${initialLang}`); // Debugging line
+            } else {
+                console.warn("Language switcher not found in DOM.");
+            }
+
+            // --- Initialize all canvases and start animations ---
+            // console.log("Initializing canvas elements..."); // Debugging line
+            setupCanvas('header-pulse-canvas', headerPulse);
+            if (headerPulse.canvas) startHeaderPulseAnimation();
+
+            setupCanvas('canvas-rhythmic', canvases.rhythmic);
+            setupCanvas('canvas-concentric', canvases.concentric);
+            setupCanvas('canvas-shooting', canvases.shooting);
+            setupCanvas('canvas-particles', canvases.particles);
+            setupCanvas('canvas-radial-bursts', canvases.radialBursts);
+            setupCanvas('canvas-hyperspace', canvases.hyperspace);
+
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    startCanvasAnimation(key);
+                } else {
+                    console.error(`Skipping animation for ${key} as its canvas element was not found during setup.`);
+                }
+            }
+            // console.log("Canvas initializations and animations started (check console for individual canvas status)."); // Debugging line
+
+            // Initial resize and subsequent resize listener for all canvases
+            resizeAllCanvases();
+            window.addEventListener('resize', resizeAllCanvases);
+            // console.log("Canvas resize listeners attached."); // Debugging line
+
+            // Render Node Pulse Chart
+            renderNodePulseChart();
+            // console.log("Node Pulse Chart initialized."); // Debugging line
+
+            // Smooth scrolling for navigation links (if any, though removed from header, good for CTA buttons)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href'))?.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            // console.log("Smooth scroll listeners attached."); // Debugging line
+
+            // Add event listeners for Spotify buttons
+            document.getElementById('getTopTracksBtn')?.addEventListener('click', getTopTracks);
+            document.getElementById('createPlaylistBtn')?.addEventListener('click', createPlaylistAndSaveSongs);
+            document.getElementById('playTracksBtn')?.addEventListener('click', playTopTracks);
+            // console.log("Spotify button listeners attached."); // Debugging line
+
+            // Add event listener for Currency Converter button
+            document.getElementById('convertCurrencyBtn')?.addEventListener('click', convertCurrency);
+            convertCurrency(); // Initial conversion on page load
+            // console.log("Currency converter initialized."); // Debugging line
+
+            // Start Planet Pulse Text animation
+            setInterval(updatePlanetText, 3000);
+            // console.log("Planet pulse text animation started."); // Debugging line
+
+            // Add event listener for AI Help/FAQ button
+            document.getElementById('getFaqAnswerBtn')?.addEventListener('click', getFaqAnswer);
+            // console.log("AI Help button listener attached."); // Debugging line
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seedwaveâ„¢ Global Portal | Master License System</title>
+    <style>
+        :root {
+            --fruitful-pink: #FF006E;
+            --fruitful-yellow: #FFBE0B;
+            --fruitful-teal: #06D6A0;
+            --fruitful-blue: #118AB2;
+            --fruitful-dark: #073B4C;
+            --seedwave-navy: #1a2332;
+            --seedwave-cyan: #00d4ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--seedwave-navy) 0%, #0a0e1a 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 35, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--seedwave-cyan);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--seedwave-cyan), var(--fruitful-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--seedwave-cyan);
+        }
+
+        .user-badge {
+            background: linear-gradient(135deg, var(--fruitful-pink), var(--fruitful-yellow));
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(6, 214, 160, 0.1));
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, white, var(--seedwave-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--seedwave-cyan);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--seedwave-cyan), var(--fruitful-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Brand Selector */
+        .brand-selector {
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .brand-selector h2 {
+            margin-bottom: 1.5rem;
+            color: var(--seedwave-cyan);
+        }
+
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .brand-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .brand-card:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--seedwave-cyan);
+            transform: translateY(-3px);
+        }
+
+        .brand-card.active {
+            background: linear-gradient(135deg, var(--fruitful-pink), var(--fruitful-yellow));
+            border-color: var(--fruitful-yellow);
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .brand-url {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* SSO Login Section */
+        .sso-section {
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .sso-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--seedwave-cyan);
+        }
+
+        .login-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--seedwave-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--seedwave-cyan), var(--fruitful-teal));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Digital Art NFT Section */
+        .nft-section {
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .nft-card {
+            background: linear-gradient(135deg, var(--fruitful-pink), var(--fruitful-yellow));
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nft-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .nft-card:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        /* Treaty API Section */
+        .treaty-section {
+            background: rgba(26, 35, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .treaty-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--seedwave-cyan);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .api-key-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--seedwave-cyan);
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+
+        /* Pulse Animation */
+        .pulse-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: var(--fruitful-teal);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--fruitful-teal), var(--seedwave-cyan));
+            height: 100%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Seedwaveâ„¢ Global Portal</div>
+            <nav class="nav-links">
+                <a href="#brands">Brands</a>
+                <a href="#sso">SSO Login</a>
+                <a href="#nft">Digital Art</a>
+                <a href="#treaty">Treaty API</a>
+                <span class="user-badge" id="userBadge">Guest</span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Innovate. Connect. Thrive.</h1>
+            <p>
+                Seedwaveâ„¢: The Nexus. A Portfolio of Innovation.<br>
+                Digital Enterprises and Beyond. Groundbreaking Non-Digital Ventures.<br>
+                Cultivating Tomorrow. Rapid Deployments. Global Repositories.
+            </p>
+            <p style="font-size: 1rem; color: var(--seedwave-cyan);">
+                <span class="pulse-indicator"></span>
+                Pulse Rate: 9s intervals | Completion: 100%
+            </p>
+        </section>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">183</div>
+                <div class="stat-label">Core Brands</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1,098</div>
+                <div class="stat-label">Sub Brands</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2,380</div>
+                <div class="stat-label">Atom URLs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">183</div>
+                <div class="stat-label">Treaties</div>
+            </div>
+        </div>
+
+        <!-- Scroll Expansion Progress -->
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;">100% FULL</div>
+        </div>
+
+        <!-- Brand Selector -->
+        <section class="brand-selector" id="brands">
+            <h2>ðŸ›ï¸ Master License Brands</h2>
+            <div class="brand-grid" id="brandGrid">
+                <!-- Brands will be populated here -->
+            </div>
+        </section>
+
+        <!-- SSO Login -->
+        <section class="sso-section" id="sso">
+            <h2>ðŸ” Global SSO Portal</h2>
+            <div class="login-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="emailInput" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="passwordInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+                </div>
+                <button class="btn btn-primary" onclick="handleLogin()">
+                    ðŸš€ Sign In & Get Your Digital Art
+                </button>
+                <p style="text-align: center; margin-top: 1rem; color: rgba(255, 255, 255, 0.5);">
+                    New user? Get a random digital art NFT on signup!
+                </p>
+            </div>
+        </section>
+
+        <!-- Digital Art NFT Section -->
+        <section class="nft-section" id="nft">
+            <h2>ðŸŽ¨ Your Digital Art Collection</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">
+                50,000+ original ecosystem builds. Each user receives a unique digital art piece upon signup.
+            </p>
+            <div class="nft-grid" id="nftGrid">
+                <!-- NFTs will be populated here -->
+            </div>
+        </section>
+
+        <!-- Treaty API Section -->
+        <section class="treaty-section" id="treaty">
+            <h2>ðŸ”‘ Treaty API System</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">
+                Start OneDrop in HotStack to receive your Treaty API key. Your key connects you to all 183 treaties across the Seedwave ecosystem.
+            </p>
+            <div class="treaty-card">
+                <h3 style="color: var(--seedwave-cyan); margin-bottom: 1rem;">Your Treaty API Key</h3>
+                <div class="api-key-display" id="apiKeyDisplay">
+                    treaty_a5ba09fc-5583-41fa-b7ed-49967afa1b76_onedrop_hotstack
+                </div>
+                <p style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">
+                    This key provides access to all master license systems, payment gateways, and checkout flows across:
+                </p>
+                <ul style="margin-top: 1rem; padding-left: 2rem; color: rgba(255, 255, 255, 0.8);">
+                    <li>fruitful-global-deployment.faa.zone</li>
+                    <li>banimal.faa.zone</li>
+                    <li>homemart.africa</li>
+                    <li>+ 180 more ecosystem brands</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Seedwaveâ„¢ Global Master License Brands | Every Brand, A Node. Driving Collective Impact.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+            Connected to: DATABASE (Neon PostgreSQL) | PAYMENTS (SendGrid) | CLOUD (AWS af-south-1) | AI (Google Gemini)
+        </p>
+    </footer>
+
+    <script>
+        // Master brand registry
+        const masterBrands = [
+            { emoji: 'ðŸŽ', name: 'Fruitfulâ„¢ HOME', url: 'fruitful.faa.zone', category: 'retail' },
+            { emoji: 'ðŸ¦', name: 'Banimal', url: 'banimal.faa.zone', category: 'retail' },
+            { emoji: 'ðŸ ', name: 'HomeMart', url: 'homemart.africa', category: 'retail' },
+            { emoji: 'ðŸŒ', name: 'OmniGrid', url: 'omnigrid.faa.zone', category: 'infrastructure' },
+            { emoji: 'ðŸ”’', name: 'VaultMesh', url: 'vaultmesh.faa.zone', category: 'security' },
+            { emoji: 'ðŸ”¥', name: 'HotStack', url: 'hotstack.faa.zone', category: 'deployment' },
+            { emoji: 'ðŸ“¦', name: 'TaskPilot', url: 'taskpilot.faa.zone', category: 'productivity' },
+            { emoji: 'âš¡', name: 'Nexus_Nair', url: 'nexus.faa.zone', category: 'platform' },
+            { emoji: 'ðŸ’³', name: 'Payâ„¢', url: 'pay.faa.zone', category: 'payments' },
+            { emoji: 'ðŸŽ®', name: 'Studio AI', url: 'studio.faa.zone', category: 'creative' },
+            // Add 173 more brands here to reach 183 total
+        ];
+
+        // NFT emoji collection (50k+ variants)
+        const nftEmojis = [
+            'ðŸŽ¨', 'ðŸ–¼ï¸', 'ðŸŒˆ', 'âœ¨', 'ðŸ’Ž', 'ðŸ”®', 'ðŸŽ­', 'ðŸŽª', 'ðŸŽ¨', 'ðŸŽ¯',
+            'ðŸš€', 'ðŸŒŸ', 'ðŸ’«', 'â­', 'ðŸŒ ', 'ðŸ”¥', 'ðŸ’¥', 'âš¡', 'ðŸŒŠ', 'ðŸŒ¸',
+            'ðŸ¦„', 'ðŸ‰', 'ðŸ¦‹', 'ðŸŒº', 'ðŸŒ»', 'ðŸŒ¼', 'ðŸŒ·', 'ðŸŒ¹', 'ðŸ¥€', 'ðŸµï¸'
+        ];
+
+        // Populate brands
+        function populateBrands() {
+            const brandGrid = document.getElementById('brandGrid');
+            masterBrands.forEach(brand => {
+                const card = document.createElement('div');
+                card.className = 'brand-card';
+                card.innerHTML = `
+                    <div class="brand-logo">${brand.emoji}</div>
+                    <div class="brand-name">${brand.name}</div>
+                    <div class="brand-url">${brand.url}</div>
+                `;
+                card.onclick = () => selectBrand(brand);
+                brandGrid.appendChild(card);
+            });
+        }
+
+        // Populate NFT grid
+        function populateNFTs() {
+            const nftGrid = document.getElementById('nftGrid');
+            for (let i = 0; i < 12; i++) {
+                const nft = document.createElement('div');
+                nft.className = 'nft-card';
+                const randomEmoji = nftEmojis[Math.floor(Math.random() * nftEmojis.length)];
+                nft.textContent = randomEmoji;
+                nft.onclick = () => alert(`Digital Art #${Math.floor(Math.random() * 50000)} - ${randomEmoji}\n\nThis is your unique NFT from the Seedwave ecosystem!`);
+                nftGrid.appendChild(nft);
+            }
+        }
+
+        // Handle brand selection
+        function selectBrand(brand) {
+            const cards = document.querySelectorAll('.brand-card');
+            cards.forEach(card => card.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            alert(`Selected: ${brand.name}\n\nRedirecting to: https://${brand.url}\n\nYour Treaty API key will be automatically applied for checkout.`);
+        }
+
+        // Handle login
+        function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            if (!email || !password) {
+                alert('Please enter both email and password!');
+                return;
+            }
+
+            // Simulate login and NFT assignment
+            const randomNFT = nftEmojis[Math.floor(Math.random() * nftEmojis.length)];
+            const nftId = Math.floor(Math.random() * 50000);
+            
+            document.getElementById('userBadge').textContent = email.split('@')[0];
+            
+            alert(`âœ… Login Successful!\n\nðŸŽ¨ You received Digital Art #${nftId}: ${randomNFT}\n\nðŸ”‘ Your Treaty API Key has been activated!\n\nAccess to all 183 brands enabled.`);
+
+            // Add new NFT to collection
+            const nftGrid = document.getElementById('nftGrid');
+            const nft = document.createElement('div');
+            nft.className = 'nft-card';
+            nft.textContent = randomNFT;
+            nft.style.animation = 'pulse 1s';
+            nftGrid.insertBefore(nft, nftGrid.firstChild);
+
+            // Scroll to NFT section
+            document.getElementById('nft').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize on page load
+        window.onload = () => {
+            populateBrands();
+            populateNFTs();
+
+            // Simulate pulse updates every 9 seconds
+            setInterval(() => {
+                console.log('Pulse: System sync at 9s intervals');
+            }, 9000);
+        };
+
+        // Environment configuration
+        const envConfig = {
+            DATABASE_URL: "REDACTED_ROTATE_ME",
+            SENDGRID_API: "REDACTED_ROTATE_ME",
+            AWS_REGION: "af-south-1",
+            GOOGLE_AI_API_KEY: "REDACTED_ROTATE_ME",
+            TREATY_USER_ID: "a5ba09fc-5583-41fa-b7ed-49967afa1b76"
+        };
+    </script>
+</body>
+</html>

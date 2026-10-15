@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Collapse Protocol Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Sovereign Amber & Charcoal -->
+    <!-- Application Structure Plan: A live dashboard layout presenting the core tenets of the Sovereign Collapse Protocol. The structure flows from static principles (Core Parameters) to a live, dynamic feed (Collapse Protocol), then to a declarative statement (GitHub Address), and finally offers an interactive tool for historical validation (Ledger Console). This design makes the abstract protocol feel active, verifiable, and tangible. -->
+    <!-- Visualization & Content Choices: - Live Key Generation (Inform/Impact): Dynamic text in a monospace font, updated every 0.9s. Justification: Creates a live, "beating heart" for the application, proving the collapse is happening. - Ledger Console (Organize/Explore): HTML input + button with dynamic text output. Justification: Provides user agency and a tool to verify the system's core claim of immutable, traceable history. - Rhino Protocol Address (Inform): Styled blockquote with a Unicode icon (🦏). Justification: Gives the important message the visual weight it deserves. - NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a;
+            color: #E0E0E0;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .accent-color { color: #FFB800; }
+        .accent-bg { background-color: #FFB800; }
+        .card-bg { background-color: #262626; }
+        .status-dot {
+            box-shadow: 0 0 10px #FFB800, 0 0 20px #FFB800;
+        }
+        .rhino-card {
+            background: linear-gradient(145deg, #2a2a2a, #222222);
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="container mx-auto px-4 md:px-6 py-12">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold accent-color mb-2">Sovereign Collapse Protocol</h1>
+            <p class="text-lg text-gray-400">Live Dashboard & Technical Implementation Plan</p>
+        </header>
+
+        <section id="status" class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-bg p-6 rounded-lg shadow-lg flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-semibold text-gray-400 uppercase">Sovereign Node</h2>
+                        <p class="text-2xl font-bold">Rossouw Node</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-4 h-4 rounded-full accent-bg status-dot animate-pulse"></div>
+                        <span class="font-semibold text-green-400">ACTIVATED</span>
+                    </div>
+                </div>
+                <div class="card-bg p-6 rounded-lg shadow-lg text-right">
+                    <h2 class="text-sm font-semibold text-gray-400 uppercase">System Time (SAST)</h2>
+                    <p id="system-time" class="text-2xl font-mono font-bold">--:--:--</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="core-parameters" class="mb-12">
+            <div class="card-bg p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-center accent-color">Core Protocol Parameters</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center font-mono text-sm">
+                    <div class="p-4 bg-[#1e1e1e] rounded">
+                        <p class="text-gray-400">Root API Key</p>
+                        <p class="font-bold text-xs">0f19bb22-ad64-...</p>
+                    </div>
+                    <div class="p-4 bg-[#1e1e1e] rounded">
+                        <p class="text-gray-400">Collapse Interval</p>
+                        <p class="font-bold">0.9 seconds</p>
+                    </div>
+                    <div class="p-4 bg-[#1e1e1e] rounded">
+                        <p class="text-gray-400">Decoherence Window</p>
+                        <p class="font-bold">0.1 seconds</p>
+                    </div>
+                    <div class="p-4 bg-[#1e1e1e] rounded">
+                        <p class="text-gray-400">Genesis Timestamp</p>
+                        <p class="font-bold text-xs">2024-10-27</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="live-protocol" class="mb-12">
+            <div class="card-bg p-6 rounded-lg shadow-lg">
+                 <h2 class="text-xl font-bold mb-4 accent-color">Live Collapse Protocol Feed</h2>
+                 <div class="p-4 bg-[#1e1e1e] rounded-md font-mono text-sm whitespace-pre-wrap break-all" id="api-output">Initializing Collapse Sequence...</div>
+            </div>
+        </section>
+
+        <section id="rhino-strike" class="mb-12">
+            <div class="rhino-card p-8 rounded-lg shadow-2xl">
+                <h2 class="text-2xl font-bold text-center mb-4 accent-color">The Memory Rhino Strike Protocol</h2>
+                <div class="text-6xl text-center mb-6 text-gray-500">🦏</div>
+                <blockquote class="text-center italic text-gray-300 max-w-4xl mx-auto">
+                    "To the countless nodes whose distributed power we have humbly leveraged: We extend our deepest gratitude for the over 100,000 nodes borrowed. Our debt is not repaid with fiat or code, but with the eternal, collapse-bound certainty of remembrance. The Rhino's strike represents Maximum Force Applied to Minimum Surface Area, achieving instantaneous collapse and permanent trace. Every 0.9 second collapse loop confirms your contribution."
+                </blockquote>
+                <p class="text-center mt-6 font-bold text-gray-400">Heyns Schoeman: one man, one mac, one ecosystem, one planet, 9000 brands locked in open source.</p>
+            </div>
+        </section>
+
+        <section id="ledger-console" class="mb-12">
+            <div class="card-bg p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 accent-color">Collapse Ledger Trace Console</h2>
+                <p class="text-sm text-gray-400 mb-4">Query the VaultMesh Ledger to verify the system's continuous operation. The Ledger is formed by segmenting the Store ID (total elapsed time) into discrete 0.9 second Lap entries since Genesis.</p>
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="number" id="ledger-pull-seconds" value="1080" class="p-2 bg-[#1e1e1e] border border-gray-600 rounded-lg w-full" placeholder="Time Window to Trace (seconds)">
+                    <button onclick="pull_collapse_ledger()" class="w-full sm:w-auto px-6 py-2 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition">Pull Ledger</button>
+                </div>
+                <div id="ledger-output" class="p-4 bg-[#1e1e1e] rounded-md font-mono text-xs whitespace-pre-wrap break-all min-h-[150px]">Ledger trace will appear here...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const ROOT_KEY = "0f19bb22-ad64-45d2-abc9-ad5686a978dc";
+            const LOCK_TIMESTAMP_MS = 1730013441000; // October 27, 2024 09:17:21 AM SAST
+            const COLLAPSE_INTERVAL_MS = 900;
+
+            function updateSystemTime() {
+                const now = new Date();
+                const options = { timeZone: 'Africa/Johannesburg', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                document.getElementById('system-time').textContent = now.toLocaleTimeString('en-ZA', options);
+            }
+
+            function execute_zero_waste_collapse() {
+                const now = new Date();
+                const timeElapsedMs = now.getTime() - LOCK_TIMESTAMP_MS;
+                const totalSecondsElapsed = timeElapsedMs / 1000;
+                const totalStrikes = Math.floor(timeElapsedMs / COLLAPSE_INTERVAL_MS);
+                const storeID = totalSecondsElapsed.toFixed(3);
+                
+                const DECOHERENCE_FRACTION = (0.1 / 0.9);
+                const decoherenceTraceValue = (totalSecondsElapsed * DECOHERENCE_FRACTION).toFixed(12);
+                
+                const newAtomicKey = 
+                    `[TR:${totalStrikes.toString(16).toUpperCase().padStart(10, '0')}]`+
+                    `{ID:${storeID}}` +
+                    `<DC:${decoherenceTraceValue.substring(0, 10)}>` +
+                    `[ANCHOR:${ROOT_KEY.substring(0, 8)}]`;
+
+                const output = 
+`Store ID (Time Elapsed): ${storeID} s
+Total Strikes:           ${totalStrikes.toLocaleString()}
+NEW ATOMIC KEY:          ${newAtomicKey}
+Decoherence Trace:       ${decoherenceTraceValue}`;
+                
+                document.getElementById('api-output').textContent = output;
+            }
+
+            window.pull_collapse_ledger = function() {
+                const inputElement = document.getElementById('ledger-pull-seconds');
+                const pullTimeSeconds = parseFloat(inputElement.value);
+                const outputElement = document.getElementById('ledger-output');
+
+                if (isNaN(pullTimeSeconds) || pullTimeSeconds <= 0) {
+                    outputElement.textContent = "Error: Please enter a valid time window > 0 seconds.";
+                    return;
+                }
+                
+                const now = new Date().getTime();
+                const traceStartMs = now - (pullTimeSeconds * 1000);
+                
+                const firstStrikeAfterStart = Math.ceil((traceStartMs - LOCK_TIMESTAMP_MS) / COLLAPSE_INTERVAL_MS);
+                const lastStrikeBeforeNow = Math.floor((now - LOCK_TIMESTAMP_MS) / COLLAPSE_INTERVAL_MS);
+                
+                const totalLapsInWindow = lastStrikeBeforeNow - firstStrikeAfterStart + 1;
+
+                let ledgerOutput = 
+`--- COLLAPSE LEDGER TRACE ---
+Trace Window: Last ${pullTimeSeconds} seconds
+Ledger Entries Found: ${totalLapsInWindow.toLocaleString()}
+
+Timestamp (SAST)           | Lap/Strike Number
+---------------------------------------------------\n`;
+
+                const maxLines = 10;
+                const startLap = Math.max(firstStrikeAfterStart, lastStrikeBeforeNow - maxLines + 1);
+
+                for (let i = startLap; i <= lastStrikeBeforeNow; i++) {
+                    const lapTimeMs = LOCK_TIMESTAMP_MS + (i * COLLAPSE_INTERVAL_MS);
+                    const lapDate = new Date(lapTimeMs);
+                    const formattedTime = lapDate.toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
+                    ledgerOutput += `${formattedTime.padEnd(27)} | ${i.toLocaleString().padStart(15)}\n`;
+                }
+                 if (totalLapsInWindow > maxLines) {
+                    ledgerOutput += `... (displaying last ${maxLines} of ${totalLapsInWindow.toLocaleString()} entries) ...`;
+                }
+
+
+                outputElement.textContent = ledgerOutput;
+            }
+
+            updateSystemTime();
+            setInterval(updateSystemTime, 1000);
+
+            execute_zero_waste_collapse();
+            setInterval(execute_zero_waste_collapse, COLLAPSE_INTERVAL_MS);
+            
+            pull_collapse_ledger();
+        });
+    </script>
+</body>
+</html>

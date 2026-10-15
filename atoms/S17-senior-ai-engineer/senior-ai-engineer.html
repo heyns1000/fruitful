@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen bg-black text-white overflow-x-hidden">
+<head>
+    <meta charset="UTF-8" />
+    <title>FAA.ZONE™ | Senior AI Engineer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Canvas styling for the main body graph */
+        #pulseGraphCanvas {
+            background-color: transparent;
+            display: block;
+            width: 100%;
+            height: 400px;
+            border-radius: 0.5rem;
+        }
+        /* Footer Pulse Graph Canvas styling */
+        #footerGraphCanvas {
+            display: block;
+            background-color: #0d1117;
+            width: 100%;
+            height: 300px;
+        }
+        /* Footer container for positioning elements on top of canvas */
+        .footer-container {
+            position: relative;
+            width: 100%;
+            min-height: 300px;
+            background-color: #0d1117;
+        }
+        /* Content overlaying the canvas */
+        .footer-content-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: white;
+            padding: 2rem 1rem;
+        }
+        .footer-content-overlay a {
+            color: #60a5fa;
+            transition: color 0.2s ease-in-out;
+        }
+        .footer-content-overlay a:hover {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between items-center p-0 md:p-8">
+
+    <main class="flex flex-col items-center flex-grow w-full max-w-screen-2xl p-4 md:p-10">
+        <section class="w-full max-w-4xl p-8 md:p-12 bg-white text-gray-800 rounded-lg shadow-lg mt-12 mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+                🧠 Senior AI Engineer: Architecting Tomorrow's Intelligence
+            </h1>
+            <p class="text-gray-600 text-lg mb-6">(Remote)</p>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">About This Pivotal Role</h3>
+            <p class="text-gray-700 mb-6">
+                We are seeking a visionary and highly experienced Senior AI Engineer to join our groundbreaking team. You will be instrumental in conceptualizing, developing, and deploying cutting-edge AI models and intelligent systems that not only power our core platforms but also *ignite new product capabilities*. This pivotal role demands a deep understanding of advanced machine learning algorithms, robust data pipelines, and scalable AI infrastructure, all contributing to a truly *fruitful* technological landscape.
+            </p>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Transformative Responsibilities</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                <li>Lead the intricate design, meticulous development, and impactful deployment of advanced AI/ML models.</li>
+                <li>Collaborate seamlessly with dynamic cross-functional teams to identify unparalleled opportunities for AI integration and optimization.</li>
+                <li>Construct and meticulously maintain robust, scalable, and highly efficient data pipelines essential for AI training and inference.</li>
+                <li>Engage in continuous, cutting-edge research to stay at the forefront of the latest advancements in AI and machine learning, bringing a *breath of fresh air* to our methodologies.</li>
+                <li>Optimize AI models for peak performance, unparalleled accuracy, and exceptional resource efficiency.</li>
+                <li>Inspire and mentor junior engineers, fostering their growth and contributing significantly to the overall technical brilliance of the team.</li>
+                <li>Ensure the ethical and responsible development and deployment of all AI systems, ensuring positive societal impact.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-3">Your Expertise, Our Future</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                <li>Master's or Ph.D. in Computer Science, Artificial Intelligence, Machine Learning, or a related quantitative field that showcases your intellectual depth.</li>
+                <li>5+ years of transformative experience in AI/ML development, with a compelling portfolio of successfully deployed projects that demonstrate your impact.</li>
+                <li>Expertise in Python and relevant AI/ML frameworks (e.g., TensorFlow, PyTorch, scikit-learn), ready to *innovate and build*.</li>
+                <li>Profound understanding of deep learning, natural language processing, computer vision, or reinforcement learning, enabling you to tackle complex challenges.</li>
+                <li>Extensive experience with leading cloud platforms (AWS, GCP, Azure) and a proven track record in MLOps practices.</li>
+                <li>Exceptional problem-solving skills and ability to work independently and collaboratively.</li>
+                <li>Strong, articulate communication and compelling presentation skills, capable of conveying complex ideas with clarity and inspiration.</li>
+            </ul>
+
+            <div class="text-center mt-8">
+                <a href="https://faa.zone/careers/contact-us" class="px-8 py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors text-lg">
+                    Apply Now & Shape Intelligence
+                </a>
+            </div>
+
+            <div class="mt-16 pt-8 border-t border-gray-700 w-full">
+                <h2 class="text-2xl md:text-3xl font-bold text-emerald-400 mb-8 text-center">
+                    📈 The Rhythmic Pulse of AI Innovation
+                </h2>
+                <p class="text-lg text-gray-300 mb-8">
+                    This "Rhythmic Pulse Graph" visualizes the dynamic energy of our AI research and development, illustrating how groundbreaking ideas and intelligent solutions constantly pulse and evolve.
+                </p>
+                <canvas id="pulseGraphCanvas"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-container">
+        <canvas id="footerGraphCanvas"></canvas>
+        <div class="footer-content-overlay">
+            <div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center text-sm md:text-xs lg:text-sm w-full">
+                <div class="mb-6 md:mb-0 md:w-1/3">
+                    <div class="text-xl md:text-2xl font-bold mb-2 text-blue-600">FAA.zone <span class="text-gray-200">/ BuildNest™</span></div>
+                    <p class="text-gray-400">© 2025 FAA.zone. All systems, symbols, and brand echoes <br> protected by the Omni Present Copyright™.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-8 md:gap-x-12 lg:gap-x-16">
+                    <div>
+                        <h3 class="font-bold text-gray-200 mb-2">BuildNest™</h3>
+                        <ul class="space-y-1 text-gray-400">
+                            <li><a href="https://faa.zone/buildnest/features" class="hover:text-blue-400 transition-colors">Features</a></li>
+                            <li><a href="https://faa.zone/buildnest/use-cases" class="hover:text-blue-400 transition-colors">Use Cases</a></li>
+                            <li><a href="https://faa.zone/buildnest/pricing" class="hover:text-blue-400 transition-colors">Pricing</a></li>
+                            <li><a href="https://faa.zone/buildnest/modules" class="hover:text-blue-400 transition-colors">Modules</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-200 mb-2">FAA.zone</h3>
+                        <ul class="space-y-1 text-gray-400">
+                            <li><a href="https://faa.zone/about" class="hover:text-blue-400 transition-colors">About FAA Systems™</a></li>
+                            <li><a href="https://faa.zone/omni-grid" class="hover:text-blue-400 transition-colors">Omni Grid™</a></li>
+                            <li><a href="https://faa.zone/baobab-archive" class="hover:text-blue-400 transition-colors">Compliance</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-200 mb-2">Careers</h3>
+                        <ul class="space-y-1 text-gray-400">
+                            <li><a href="https://faa.zone/careers" class="hover:text-blue-400 transition-colors">Open Roles</a></li>
+                            <li><a href="https://faa.zone/careers/culture" class="hover:text-blue-400 transition-colors">Our Culture</a></li>
+                            <li><a href="https://faa.zone/careers/benefits" class="hover:text-blue-400 transition-colors">Benefits</a></li>
+                            <li><a href="https://faa.zone/careers/faq" class="hover:text-blue-400 transition-colors">FAQ</a></li>
+                            <li><a href="https://faa.zone/careers/team" class="hover:text-blue-400 transition-colors">Meet the Team</a></li>
+                            <li><a href="https://faa.zone/careers/life-at-faa" class="hover:text-blue-400 transition-colors">Life at FAA.ZONE™</a></li>
+                            <li><a href="https://faa.zone/careers/internships" class="hover:text-blue-400 transition-colors">Internships</a></li>
+                            <li><a href="https://faa.zone/careers/diversity" class="hover:text-blue-400 transition-colors">Diversity & Inclusion</a></li>
+                            <li><a href="https://faa.zone/careers/contact-us" class="hover:text-blue-400 transition-colors">Contact Careers</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.onload = function() {
+            // --- Main Pulse Graph Canvas ---
+            const mainCanvas = document.getElementById('pulseGraphCanvas');
+            const mainCtx = mainCanvas.getContext('2d');
+            const mainNumLines = 150;
+            const mainLineData = [];
+            const mainPulseDuration = 3000;
+            const mainPulseAmplitude = 0.6;
+
+            for (let i = 0; i < mainNumLines; i++) {
+                mainLineData.push({
+                    offset: Math.random() * Math.PI * 2,
+                    amplitude: Math.random() * 0.2 + 0.05,
+                    frequency: Math.random() * 0.03 + 0.005,
+                    color: `rgba(${Math.floor(Math.random() * 50) + 50}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 50) + 200}, ${Math.random() * 0.8 + 0.2})`,
+                    thickness: Math.random() * 5 + 3
+                });
+            }
+
+            function resizeMainCanvas() {
+                mainCanvas.width = mainCanvas.offsetWidth;
+                mainCanvas.height = mainCanvas.offsetHeight;
+            }
+            resizeMainCanvas();
+            window.addEventListener('resize', resizeMainCanvas);
+
+            let mainStartTime = Date.now();
+
+            function animateMainGraph() {
+                requestAnimationFrame(animateMainGraph);
+                mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+                const currentTime = Date.now();
+                const elapsedTime = currentTime - mainStartTime;
+                const pulseProgress = (elapsedTime % mainPulseDuration) / mainPulseDuration;
+                const pulseEffect = Math.sin(pulseProgress * Math.PI * 2) * mainPulseAmplitude;
+
+                for (let i = 0; i < mainNumLines; i++) {
+                    const line = mainLineData[i];
+                    mainCtx.beginPath();
+                    mainCtx.strokeStyle = line.color;
+                    mainCtx.lineWidth = line.thickness;
+                    mainCtx.lineCap = 'round';
+
+                    for (let x = 0; x <= mainCanvas.width; x += 5) {
+                        const y = mainCanvas.height / 2 +
+                                  Math.sin(x * line.frequency + line.offset + pulseEffect * 3) * (line.amplitude * mainCanvas.height / 2) +
+                                  Math.sin(pulseProgress * Math.PI * 2 + i * 0.05) * (mainCanvas.height / 8);
+
+                        if (x === 0) {
+                            mainCtx.moveTo(x, y);
+                        } else {
+                            mainCtx.lineTo(x, y);
+                        }
+                    }
+                    mainCtx.stroke();
+                }
+            }
+            animateMainGraph();
+
+            // --- Footer Pulse Graph Canvas ---
+            const footerCanvas = document.getElementById('footerGraphCanvas');
+            const footerCtx = footerCanvas.getContext('2d');
+            const footerNumLines = 1000;
+            const footerLineData = [];
+            const footerPulseDuration = 3000;
+            const footerPulseAmplitude = 0.8;
+
+            for (let i = 0; i < footerNumLines; i++) {
+                footerLineData.push({
+                    offset: Math.random() * Math.PI * 2,
+                    amplitude: Math.random() * 0.1 + 0.01,
+                    frequency: Math.random() * 0.1 + 0.005,
+                    color: `rgba(${Math.floor(Math.random() * 50) + 10}, ${Math.floor(Math.random() * 150) + 100}, ${Math.floor(Math.random() * 50) + 200}, ${Math.random() * 0.5 + 0.1})`,
+                    thickness: Math.random() * 0.8 + 0.1
+                });
+            }
+
+            function resizeFooterCanvas() {
+                footerCanvas.width = footerCanvas.offsetWidth;
+                footerCanvas.height = footerCanvas.offsetHeight;
+            }
+            resizeFooterCanvas();
+            window.addEventListener('resize', resizeFooterCanvas);
+
+            let footerStartTime = Date.now();
+
+            function animateFooterGraph() {
+                requestAnimationFrame(animateFooterGraph);
+                footerCtx.clearRect(0, 0, footerCanvas.width, footerCanvas.height);
+                const currentTime = Date.now();
+                const elapsedTime = currentTime - footerStartTime;
+                const pulseProgress = (elapsedTime % footerPulseDuration) / footerPulseDuration;
+
+                for (let i = 0; i < footerNumLines; i++) {
+                    const line = footerLineData[i];
+                    footerCtx.beginPath();
+                    footerCtx.strokeStyle = line.color;
+                    footerCtx.lineWidth = line.thickness;
+                    footerCtx.lineCap = 'round';
+
+                    const pulseEffect = Math.sin(pulseProgress * Math.PI * 2) * footerPulseAmplitude;
+
+                    for (let x = 0; x <= footerCanvas.width; x += 10) {
+                        const y = footerCanvas.height / 2 +
+                                  Math.sin(x * line.frequency + line.offset + pulseEffect * 5) * (line.amplitude * footerCanvas.height / 2) +
+                                  Math.sin(pulseProgress * Math.PI * 2 + i * 0.1) * (footerCanvas.height / 10);
+
+                        if (x === 0) {
+                            footerCtx.moveTo(x, y);
+                        } else {
+                            footerCtx.lineTo(x, y);
+                        }
+                    }
+                    footerCtx.stroke();
+                }
+            }
+            animateFooterGraph();
+        };
+    </script>
+</body>
+</html>
+

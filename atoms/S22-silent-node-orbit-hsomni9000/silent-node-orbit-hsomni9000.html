@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛸 Silent Node Orbit • HSOMNI9000</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0071e3;
+            --primary-dark: #0056b3;
+            --secondary: #facc15;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0a0e27;
+            --dark-200: #1a1f3a;
+            --dark-300: #2a2f4a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-orbit: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.1;
+            background:
+                radial-gradient(ellipse at top left, var(--primary) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, var(--secondary) 0%, transparent 50%),
+                radial-gradient(ellipse at center, #764ba2 0%, transparent 50%);
+            animation: bgPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.15; }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: #764ba2;
+            top: 50%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, -100px) scale(1.1); }
+            50% { transform: translate(-50px, 100px) scale(0.9); }
+            75% { transform: translate(-100px, -50px) scale(1.05); }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 4rem;
+            animation: rotate 20s linear infinite;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: var(--gradient-orbit);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--dark-200);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Activity Feed */
+        .section {
+            margin: 3rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .activity-feed {
+            background: var(--dark-200);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            transition: background 0.2s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--dark-300);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.success {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .activity-icon.warning {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .activity-icon.info {
+            background: rgba(0, 113, 227, 0.2);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .activity-meta {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Sources Grid */
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .source-card {
+            background: var(--dark-200);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .source-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-orbit);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .source-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .source-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .source-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .source-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .source-status {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-active {
+            color: var(--success);
+        }
+
+        .status-syncing {
+            color: var(--warning);
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 2rem 0;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: var(--dark-200);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 1.5rem 2rem;
+            font-size: 1.1rem;
+            color: var(--light);
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: var(--gray);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--gradient-orbit);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--dark-300);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-200);
+        }
+
+        /* Pulse animation for live indicator */
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            margin-right: 0.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-200);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sources-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Loading animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .loading {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(90deg, var(--dark-200) 0%, var(--dark-300) 50%, var(--dark-200) 100%);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">🛸</div>
+            <h1>Silent Node Orbit</h1>
+            <p class="subtitle">
+                <span class="live-indicator"></span>
+                HSOMNI9000 × HotStack × CodeNest Integration
+            </p>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-value" id="files-synced">0</div>
+                <div class="stat-label">Files Synced</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value" id="sync-speed">0ms</div>
+                <div class="stat-label">Avg Sync Speed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔐</div>
+                <div class="stat-value" id="secrets-found">0</div>
+                <div class="stat-label">Secrets Protected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-value" id="sources-active">8</div>
+                <div class="stat-label">Sources Active</div>
+            </div>
+        </div>
+
+        <!-- ScrollBinder Search -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🔍 ScrollBinder Search</h2>
+            </div>
+            <div class="search-container">
+                <input
+                    type="text"
+                    class="search-bar"
+                    placeholder="Search across Mac, Google Drive, R2, GitHub, HotStack, and more..."
+                    id="search-input"
+                >
+            </div>
+        </div>
+
+        <!-- Search Sources -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">🌍 Connected Sources</h2>
+            </div>
+            <div class="sources-grid">
+                <div class="source-card">
+                    <div class="source-icon">💻</div>
+                    <div class="source-name">Mac Local</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">📁</div>
+                    <div class="source-name">Google Drive</div>
+                    <div class="source-status status-syncing">● Syncing</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">☁️</div>
+                    <div class="source-name">iCloud Drive</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">📦</div>
+                    <div class="source-name">OneDrive</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">🌐</div>
+                    <div class="source-name">Cloudflare R2</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">🗄️</div>
+                    <div class="source-name">Zoho Creator</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">🐙</div>
+                    <div class="source-name">GitHub</div>
+                    <div class="source-status status-active">● Active</div>
+                </div>
+                <div class="source-card">
+                    <div class="source-icon">🔥</div>
+                    <div class="source-name">HotStack</div>
+                    <div class="source-status status-syncing">● Syncing</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📊 Live Activity</h2>
+                <button class="btn btn-secondary" onclick="clearActivity()">Clear</button>
+            </div>
+            <div class="activity-feed" id="activity-feed">
+                <div class="activity-item">
+                    <div class="activity-icon success">✓</div>
+                    <div class="activity-content">
+                        <div class="activity-title">System Initialized</div>
+                        <div class="activity-meta">Silent Node Orbit daemon started • Just now</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated real-time updates
+        let filesCount = 0;
+        let secretsCount = 0;
+
+        function updateStats() {
+            filesCount += Math.floor(Math.random() * 3);
+            secretsCount += Math.random() > 0.8 ? 1 : 0;
+
+            document.getElementById('files-synced').textContent = filesCount.toLocaleString();
+            document.getElementById('secrets-found').textContent = secretsCount;
+            document.getElementById('sync-speed').textContent = Math.floor(Math.random() * 500 + 100) + 'ms';
+        }
+
+        function addActivity(icon, title, meta, type = 'success') {
+            const feed = document.getElementById('activity-feed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `
+                <div class="activity-icon ${type}">${icon}</div>
+                <div class="activity-content">
+                    <div class="activity-title">${title}</div>
+                    <div class="activity-meta">${meta}</div>
+                </div>
+            `;
+            feed.insertBefore(item, feed.firstChild);
+
+            // Keep only last 10 items
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        function clearActivity() {
+            document.getElementById('activity-feed').innerHTML = '';
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                if (query) {
+                    addActivity('🔍', `Searching for "${query}"`, 'Scanning all sources...', 'info');
+                    setTimeout(() => {
+                        const results = Math.floor(Math.random() * 50 + 10);
+                        addActivity('✓', `Found ${results} results for "${query}"`, 'Search completed', 'success');
+                    }, 1500);
+                }
+            }
+        });
+
+        // Simulate activity
+        setInterval(() => {
+            const activities = [
+                { icon: '📁', title: 'File synced to R2', meta: 'document.pdf → hotstack/2025-01-01/', type: 'success' },
+                { icon: '🔐', title: 'Secret detected and secured', meta: 'API key stored in Vault', type: 'warning' },
+                { icon: '⚡', title: 'Duplicate skipped', meta: 'invoice.pdf already exists', type: 'info' },
+                { icon: '📊', title: 'Indexed in Zoho Creator', meta: 'FILE00001234 created', type: 'success' },
+                { icon: '🔍', title: 'Mac Spotlight updated', meta: 'Metadata synchronized', type: 'success' }
+            ];
+
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            addActivity(activity.icon, activity.title, activity.meta, activity.type);
+            updateStats();
+        }, 5000);
+
+        // Initial stats update
+        updateStats();
+    </script>
+</body>
+</html>

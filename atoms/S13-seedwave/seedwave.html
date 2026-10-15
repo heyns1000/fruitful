@@ -1,0 +1,580 @@
+Minutes of Meeting: FAA™ Seedwave Admin Portal Setup 🦍
+Project: FAA™ Seedwave Admin Portal (seedwave.faa.zone)
+GitHub Repository: heyns1000/seedwave
+License: Apache License 2.0
+README Description: "Central admin portal and backend functions for FAA™ Global Ecosystem."
+Date Generated: June 10, 2025 (Updated)
+
+1. Introduction: The New Central Nervous System for FAA™ Global Operations
+This blueprint details the foundational setup for the new FAA™ Seedwave Admin Portal, to be hosted at seedwave.faa.zone. This portal is envisioned as the single, comprehensive hub for managing the entire FAA™ Global Ecosystem, addressing the complexities encountered with previous admin.faa.zone deployments.
+
+Our core objective is to achieve a "minimal work" deployment strategy by leveraging Serverless Functions (Vercel Functions). This approach eliminates the need for you to manage traditional backend servers, thereby accelerating deployment and reducing operational overhead.
+
+1.1. Strategic Purpose & Comprehensive Scope:
+The seedwave.faa.zone portal will serve as the central control panel for all aspects of your FAA™ ecosystem, including:
+
+Centralized User Authentication & Management:
+
+Admin login and registration for internal staff (Loyalty, Shareholder, Service Provider, Family Access).
+
+Client login and registration for all product users (e.g., MindLift, LabelCast, Smart Toys™).
+
+Unified identity provider (IdP) via Zoho Identity/OAuth 2.0 for all faa.zone properties, ensuring Single Sign-On (SSO).
+
+Secure handling of user sessions and role-based access control (RBAC).
+
+"Plesk-like" Service Integration & Provisioning:
+
+Integration with Zoho products (CRM, Mail, Books, etc.) via their APIs for automated business processes (e.g., lead creation, billing, email confirmations, renewals, payment failure notifications).
+
+Automated provisioning and management of client "brands" and "nodes" (e.g., setting up domains/subdomains, configuring email, deploying application packages) by orchestrating APIs from Hetzner, Cloudflare, and Zoho.
+
+Managing all "settings in the universe" for your 7038 Brands™, 168 Core Brands, and ~700 Nodes.
+
+Tiered Deployments & Dynamic Dashboard Access: Support for different access tiers (e.g., Basic, Pro, Enterprise) for clients. Dashboards and features will be dynamically enabled/disabled and populated with data based on authenticated user roles and purchased products.
+
+1.2. Core Architectural Principles:
+Serverless-First: All backend logic will be implemented as discrete, scalable, and maintenance-free Node.js Serverless Functions (on Vercel).
+
+Clean Repository: A brand new, dedicated GitHub repository (heyns1000/seedwave) will house this portal, ensuring no inherited "mess" or conflicting configurations.
+
+Centralized Authentication: Zoho OAuth 2.0 will be the sole method for user authentication across all FAA™ properties, with the seedwave.faa.zone backend functions acting as the secure intermediary.
+
+API Orchestration: Serverless functions will make direct API calls to third-party services (Zoho, Hetzner, Cloudflare, StartGlobal) to perform desired actions, without requiring a full-fledged backend server to be managed.
+
+Static Frontend with Dynamic Content: The primary user interfaces (admin-portal.html, quick-view.html, and sector-*.html dashboards) will be static HTML files, styled with Tailwind CSS and enhanced with vanilla JavaScript for dynamic interactions and data population.
+
+2. Local Development Environment Setup
+This section outlines the prerequisites and initial setup steps to prepare your local machine for developing the seedwave portal.
+
+2.1. Prerequisites:
+Node.js and npm: Ensure Node.js (v18+ recommended) and npm are installed.
+
+Git: For version control and GitHub interaction.
+
+Vercel CLI: For local development and deployment to Vercel. Install globally: npm install -g vercel.
+
+Text Editor: Any code editor (VS Code, Sublime Text, etc.).
+
+2.2. Initial Project Setup & Directory Structure:
+Create a New GitHub Repository:
+
+Go to GitHub and create a new, empty repository.
+
+Name it: seedwave.
+
+Initialize it without a README.md or .gitignore for a truly empty start, or add them if preferred.
+
+Clone the Repository Locally:
+
+git clone https://github.com/heyns1000/seedwave.git
+cd seedwave
+
+Create Essential Directories:
+
+public/: This directory will host your static frontend assets (HTML, CSS, images, client-side JS). Vercel automatically serves content from here.
+
+api/: This directory will host your Node.js Serverless Functions. Vercel automatically detects and deploys functions placed here.
+
+mkdir public api
+
+2.3. Initial package.json Configuration:
+Create a package.json file in the root of your seedwave repository. This defines your project's metadata and its dependencies for the serverless functions.
+
+{
+  "name": "seedwave",
+  "version": "1.0.0",
+  "description": "Central admin portal and backend functions for FAA™ Global Ecosystem.",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["faa", "seedwave", "admin", "portal", "serverless", "zoho", "vercel"],
+  "author": "Heyns Schoeman",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.2.0"
+  }
+}
+
+2.4. Install Dependencies:
+From the root of your seedwave repository, run:
+
+npm install
+
+This will install all the necessary Node.js modules (axios, express, express-session, cookie-parser) into your node_modules directory, making them available to your serverless functions.
+
+3. Core File Configuration
+This section outlines the setup for your primary frontend and the central serverless function that will orchestrate your backend logic.
+
+3.1. Frontend HTML Files (public/)
+Place the content of your existing admin-portal.html into public/admin-portal.html.
+
+Additionally, the following HTML files have been or will be created and should be placed in the public/ directory:
+
+public/quick-view.html: The "Quick View Admin Dashboard" (as provided in Canvas quick-view-dashboard).
+
+public/licensing.html: The "License Ledger Dashboard" (as provided in Canvas license-ledger-dashboard).
+
+public/clause-index.html: The "FAA.Zone — Clause Index" dashboard (as provided in Canvas clause-index-dashboard).
+
+public/scrollmap.html: The "FAA.Zone — ScrollMap Dashboard" (as provided in Canvas scrollmap-dashboard).
+
+public/node-status.html: The "FAA.Zone — Node Index" dashboard (as provided in Canvas node-index-dashboard).
+
+public/pulse-monitor.html: The "FAA.Zone — Signal Sync Dashboard" (as provided in Canvas signal-sync-dashboard).
+
+public/sector-grid.html: The "FAA.Zone — Sector Grid" dashboard (as provided in Canvas sector-grid-dashboard).
+
+public/ecosystem-dashboard.html: The "FAA™ Global Ecosystem - Interactive SPA" (as provided in Canvas faa-ecosystem-spa). This is your new comprehensive dashboard.
+
+You will also likely have numerous other generated sector-specific dashboard files (e.g., public/sector-agriculture.html, public/sector-banking.html, etc.) in the public/ directory, which will be created by your html-page-generator.py (Sovereign Scrolls Generator).
+
+Role: These HTML files will serve as the primary user interfaces for the Seedwave Admin Portal and its various dashboards. They will display brand and node management, real-time metrics, and initiate authentication flows.
+
+Styling: Continues to use Tailwind CSS for its responsive and modern design.
+
+Interactivity: Client-side JavaScript will make asynchronous fetch calls to your new serverless functions located in the api/ directory to fetch dynamic data and manage UI states.
+
+3.2. api/index.js (Central API Gateway & Session Handler)
+Create an index.js file inside your api/ directory. This file acts as the primary entry point for all API requests to your serverless backend. It will handle session management crucial for user authentication across multiple requests and serve as a gateway to other specific functions.
+
+// api/index.js
+const express = require('express');
+const path = require('path');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const axios = require('axios'); // Will be used for Zoho API calls
+
+const app = express();
+
+// Middleware to parse cookies
+app.use(cookieParser());
+
+// Configure session middleware
+// IMPORTANT SECURITY NOTE:
+// 1. process.env.SESSION_SECRET MUST be a strong, random string generated in production.
+//    NEVER hardcode it for production. Store it securely in Vercel Environment Variables.
+// 2. secure: true MUST be set for production environments (HTTPS).
+// 3. domain: '.faa.zone' is CRUCIAL for Single Sign-On (SSO) across your main domain
+//    and all subdomains (admin.faa.zone, seedwave.faa.zone, portal.faa.zone, etc.).
+//    Ensure this is correctly configured for your production domain.
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'a_placeholder_secret_CHANGE_THIS_IN_PRODUCTION', // Replace with a strong secret from environment variables
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production with HTTPS
+        httpOnly: true, // Prevent client-side JavaScript access to the cookie
+        maxAge: 24 * 60 * 60 * 1000, // Session duration (24 hours)
+        domain: process.env.NODE_ENV === 'production' ? '.faa.zone' : undefined // Set for cross-subdomain SSO in production
+    }
+}));
+
+// Serve static files from the 'public' directory
+// On Vercel, files in 'public/' are automatically served. This is primarily for local testing with `vercel dev`.
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Basic test route for the API gateway
+app.get('/api/hello', (req, res) => {
+    res.status(200).json({ message: 'Hello from Seedwave API Gateway!' });
+});
+
+// Route to check authentication status and user info for the frontend
+app.get('/api/auth/check-session', (req, res) => {
+    if (req.session.user && req.session.user.isAuthenticated) {
+        res.json({
+            isAuthenticated: true,
+            user: {
+                email: req.session.user.email,
+                role: req.session.user.role // e.g., 'admin', 'client', 'shareholder'
+            }
+        });
+    } else {
+        res.status(401).json({ isAuthenticated: false, message: 'Not authenticated.' });
+    }
+});
+
+// Example logout route
+app.get('/api/auth/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ message: 'Could not log out.', error: err.message });
+        }
+        res.clearCookie('connect.sid', { // Clear the session cookie (name depends on session middleware)
+            domain: process.env.NODE_ENV === 'production' ? '.faa.zone' : undefined,
+            path: '/'
+        });
+        res.json({ message: 'Logged out successfully.' });
+    });
+});
+
+// --- Zoho OAuth Login Initiation Route ---
+app.get('/api/auth/zoho-login', (req, res) => {
+    const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
+    const ZOHO_REDIRECT_URI = process.env.ZOHO_REDIRECT_URI;
+    const ZOHO_ACCOUNTS_URL = 'https://accounts.zoho.com'; // Adjust for your Zoho domain if different (e.g., accounts.zoho.eu)
+
+    // Store the intended return URL in session so we can redirect back after Zoho login
+    // This allows different frontends (admin-portal.html, quick-view.html, sector-*.html)
+    // to initiate login and return to their specific page.
+    if (req.query.returnTo) {
+        req.session.returnTo = req.query.returnTo;
+    } else {
+        // Default return to admin-portal.html if no specific returnTo is provided
+        req.session.returnTo = '/admin-portal.html';
+    }
+
+    const scope = 'aaaserver.profile.READ'; // Define required Zoho scopes
+    // Add other scopes as needed (e.g., 'ZohoCRM.modules.ALL', 'ZohoMail.accounts.ALL')
+
+    const authUrl = `${ZOHO_ACCOUNTS_URL}/oauth/v2/auth?` +
+                    `scope=${encodeURIComponent(scope)}&` +
+                    `client_id=${ZOHO_CLIENT_ID}&` +
+                    `response_type=code&` +
+                    `redirect_uri=${encodeURIComponent(ZOHO_REDIRECT_URI)}&` +
+                    `access_type=offline`; // Request a refresh token for long-term access
+
+    res.redirect(authUrl);
+});
+
+// --- Zoho OAuth Callback Route ---
+app.get('/api/auth/zoho/callback', async (req, res) => {
+    const code = req.query.code;
+    const redirectUrl = req.session.returnTo || '/admin-portal.html'; // Where to redirect after login
+
+    if (!code) {
+        console.error('Zoho Callback: Authorization code missing.');
+        return res.status(400).send('Authentication failed: Authorization code missing.');
+    }
+
+    try {
+        const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
+        const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
+        const ZOHO_REDIRECT_URI = process.env.ZOHO_REDIRECT_URI;
+        const ZOHO_ACCOUNTS_URL = 'https://accounts.zoho.com';
+
+        // Step 1: Exchange authorization code for access and refresh tokens
+        const tokenResponse = await axios.post(`${ZOHO_ACCOUNTS_URL}/oauth/v2/token`, null, {
+            params: {
+                code: code,
+                client_id: ZOHO_CLIENT_ID,
+                client_secret: ZOHO_CLIENT_SECRET,
+                redirect_uri: ZOHO_REDIRECT_URI,
+                grant_type: 'authorization_code'
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        const accessToken = tokenResponse.data.access_token;
+        const refreshToken = tokenResponse.data.refresh_token; // Store this securely and persistently!
+
+        // Step 2: Use access token to fetch user profile from Zoho Identity
+        const profileResponse = await axios.get(`${ZOHO_ACCOUNTS_URL}/oauth/v2/user/info`, {
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${accessToken}`
+            }
+        });
+
+        const zohoUser = profileResponse.data;
+        console.log('Zoho User Profile:', zohoUser);
+
+        // Step 3: Establish user session in your application and determine role
+        let userRole = 'client'; // Default role for any authenticated Zoho user
+        let userHasAccess = false;
+
+        // Implement your role-based logic here!
+        // This is where you connect Zoho user info to your internal FAA™ roles and purchased products.
+        // For production, this would likely involve a database lookup.
+        // Example: Check if user's email domain or specific email grants admin privileges
+        if (zohoUser.Email && (zohoUser.Email.endsWith('@faa.zone') || zohoUser.Email === 'heynsschoeman@gmail.com')) {
+            userRole = 'admin';
+            userHasAccess = true;
+        } else {
+            // Placeholder: For now, assume any authenticated Zoho user has client access.
+            // In a real scenario, you'd check a database for their purchased products/licenses.
+            userHasAccess = true; // Assuming any successful login gets at least client access
+        }
+
+        // Store user info in session
+        req.session.user = {
+            isAuthenticated: true,
+            id: zohoUser.ZUID, // Zoho User ID
+            email: zohoUser.Email,
+            fullName: zohoUser.full_name,
+            role: userRole, // 'admin', 'client', 'shareholder', etc.
+            zohoAccessToken: accessToken, // Store if you need to make further Zoho API calls for this user
+            // NEVER store zohoRefreshToken directly in session for user-facing flows.
+            // It should be stored encrypted in a secure database for background refresh.
+            access: { // Example of storing granular access flags for dashboards/features
+                isAdminPortal: userRole === 'admin',
+                hasQuickView: userHasAccess, // Everyone logged in can see quick-view for now
+                hasLicenseLedger: userHasAccess, // Example: All authenticated users can see license ledger
+                hasClauseIndex: userHasAccess,
+                hasScrollMap: userHasAccess,
+                hasNodeIndex: userHasAccess,
+                hasSignalSync: userHasAccess,
+                hasSectorGrid: userHasAccess,
+                hasEcosystemDashboard: userHasAccess, // New SPA dashboard access
+                // ... more products/sectors here from database lookup ...
+            }
+        };
+
+        // Clear the returnTo URL
+        delete req.session.returnTo;
+
+        // Redirect to the intended page after successful login
+        res.redirect(redirectUrl);
+
+    } catch (error) {
+        console.error('Zoho OAuth Callback Error:', error.response ? error.response.data : error.message);
+        res.status(500).send('Authentication failed. Please check backend logs.');
+    }
+});
+
+// IMPORTANT: This is the standard way to export an Express app for Vercel Serverless Functions
+module.exports = app;
+
+// For local development only (allows running directly with `node api/index.js` if needed)
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000; // Use port 3000 for local dev if 5000 is used by other backend
+    app.listen(PORT, () => {
+        console.log(`Seedwave API Gateway listening on http://localhost:${PORT}`);
+        console.log(`Access admin portal at http://localhost:${PORT}/admin-portal.html`);
+    });
+}
+
+4. Zoho OAuth 2.0 Integration (Core Authentication)
+This is the mandatory component for centralizing all FAA™ user authentication through Zoho Identity. We will create dedicated serverless functions for each step of the OAuth flow.
+
+4.1. Zoho API Console Setup (New Zoho Client)
+You already have an faa_zone_admin_portal client. Now, create a new, dedicated Zoho client specifically for the seedwave backend.
+
+Go to the Zoho API Console: https://api-console.zoho.com/
+
+Click "Add Client" and select "Server-based Applications".
+
+Fill in the details:
+
+Client Name: Seedwave_FAA_Zone_Backend
+
+Homepage URL: https://seedwave.faa.zone
+
+Authorized Redirect URIs: https://seedwave.faa.zone/api/auth/zoho/callback
+
+Click "Create". You will receive your Client ID and Client Secret.
+
+Client ID: 1000.QRFGJSZQMGT8HN3I6DJQKOVA9E4GOB
+
+Client Secret: 4ad9cace10cc694e6b0425f982c2757af2acff5218
+
+4.2. Securely Storing Zoho Credentials (Vercel Environment Variables)
+All Zoho credentials and the session secret have been securely added to Vercel Environment Variables.
+
+Go to your Vercel Project Dashboard for seedwave.
+
+Navigate to Project Settings -> Environment Variables.
+
+The following environment variables have been added:
+
+Key: ZOHO_CLIENT_ID
+Value: 1000.QRFGJSZQMGT8HN3I6DJQKOVA9E4GOB
+Environments: Production, Preview, Development
+
+Key: ZOHO_CLIENT_SECRET
+Value: 4ad9cace10cc694e6b0425f982c2757af2acff5218
+Environments: Production, Preview, Development
+Status: Marked as Sensitive.
+
+Key: ZOHO_REDIRECT_URI
+Value: https://seedwave.faa.zone/api/auth/zoho/callback
+Environments: Production, Preview, Development
+
+Key: SESSION_SECRET
+Value: (A unique, very long random string)
+Environments: Production, Preview, Development
+Status: Marked as Sensitive.
+
+5. GitHub & Vercel Deployment
+This section outlines how to link your new repository to Vercel for automatic serverless deployments.
+
+5.1. Link GitHub Repository to Vercel:
+The seedwave GitHub repository (heyns1000/seedwave) has been linked to a new Vercel project named seedwave under the FAA Systems' projects team.
+
+Vercel has automatically detected the Node.js project and its build settings.
+
+The initial deployment of the project has been successfully completed.
+
+5.2. Vercel Configuration for vercel.json (Optional but Recommended for Routing)
+To ensure clean URLs and proper routing for your static HTML files and serverless functions, create a vercel.json file in the root of your seedwave repository.
+
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/public/admin-portal.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/public/login.html"
+    },
+    {
+      "source": "/unauthorized.html",
+      "destination": "/public/unauthorized.html"
+    },
+    {
+      "source": "/quick-view.html",
+      "destination": "/public/quick-view.html"
+    },
+    {
+      "source": "/licensing.html",
+      "destination": "/public/licensing.html"
+    },
+    {
+      "source": "/clause-index.html",
+      "destination": "/public/clause-index.html"
+    },
+    {
+      "source": "/scrollmap.html",
+      "destination": "/public/scrollmap.html"
+    },
+    {
+      "source": "/node-status.html",
+      "destination": "/public/node-status.html"
+    },
+    {
+      "source": "/pulse-monitor.html",
+      "destination": "/public/pulse-monitor.html"
+    },
+    {
+      "source": "/sector-grid.html",
+      "destination": "/public/sector-grid.html"
+    },
+    {
+      "source": "/ecosystem-dashboard.html",
+      "destination": "/public/ecosystem-dashboard.html"
+    },
+    // Pattern for other generated sector pages, e.g.:
+    {
+      "source": "/sector-:slug.html",
+      "destination": "/public/sector-:slug.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    }
+    // Add other static file rewrites if you have them, e.g.:
+    // { "source": "/images/(.*)", "destination": "/public/images/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }, // Adjust for specific origins in production
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-Requested-With, Content-Type, Accept" }
+      ]
+    }
+  ]
+}
+
+rewrites:
+
+https://seedwave.faa.zone/ will serve /public/admin-portal.html.
+
+https://seedwave.faa.zone/login.html will serve /public/login.html.
+
+https://seedwave.faa.zone/unauthorized.html will serve /public/unauthorized.html.
+
+https://seedwave.faa.zone/quick-view.html will serve /public/quick-view.html.
+
+https://seedwave.faa.zone/licensing.html will serve /public/licensing.html.
+
+https://seedwave.faa.zone/clause-index.html will serve /public/clause-index.html.
+
+https://seedwave.faa.zone/scrollmap.html will serve /public/scrollmap.html.
+
+https://seedwave.faa.zone/node-status.html will serve /public/node-status.html.
+
+https://seedwave.faa.zone/pulse-monitor.html will serve /public/pulse-monitor.html.
+
+https://seedwave.faa.zone/sector-grid.html will serve /public/sector-grid.html.
+
+https://seedwave.faa.zone/ecosystem-dashboard.html will serve /public/ecosystem-dashboard.html.
+
+https://seedwave.faa.zone/sector-ANY_SLUG.html will serve /public/sector-ANY_SLUG.html.
+
+Requests to https://seedwave.faa.zone/api/* will be routed to your api/index.js serverless function.
+
+headers: These are important for CORS if your frontend and backend were on different subdomains (which they won't be on seedwave.faa.zone with this setup, but good practice). In production, set Access-Control-Allow-Origin to your specific frontend domains, not *.
+
+6. Testing the Setup (Local & Deployed)
+6.1. Local Testing:
+From the root of your seedwave repo, run: vercel dev
+
+Vercel CLI will provide a local URL (e.g., http://localhost:3000).
+
+Test Frontend: Open http://localhost:3000 (this should now serve admin-portal.html due to vercel.json). Also test http://localhost:3000/quick-view.html, http://localhost:3000/ecosystem-dashboard.html, etc.
+
+Test API Gateway: Open http://localhost:3000/api/hello. You should see {"message":"Hello from Seedwave API Gateway!"}.
+
+Test Zoho Login Flow (Initiate from a page):
+
+IMPORTANT: To test the full login flow with proper redirection, you should modify a button or link in your admin-portal.html (or a login.html page that you'll create) to point to /api/auth/zoho-login.
+
+Example for a Login Button/Link (in public/login.html or a relevant link):
+
+<!-- Replace your existing login button/link with this -->
+<a href="/api/auth/zoho-login?returnTo=/admin-portal.html">
+    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-lg transition-colors duration-200 glow-btn flex items-center justify-center">
+        Login with Zoho
+    </button>
+</a>
+
+Navigate to the page with this button (e.g., http://localhost:3000/login.html). Click the "Login with Zoho" button. This should redirect you to Zoho's login page. After logging in, Zoho should redirect you back to http://localhost:3000/api/auth/zoho/callback. If successful, it should redirect you back to the returnTo URL (e.g., http://localhost:3000/admin-portal.html), and in your local vercel dev console, you should see the Zoho user profile information. The checkUserSessionAndAccess script on the page should then display the content.
+
+Remember to create public/login.html and public/unauthorized.html as simple placeholder HTML files, as mentioned in previous discussions, to prevent 404 errors during redirects.
+
+6.2. Deployed Testing:
+Push your changes to GitHub: git add . && git commit -m "Initial Seedwave portal setup" && git push
+
+Vercel will automatically deploy. Once deployed, get your project's Vercel URL (e.g., https://seedwave-R1t0CzIOLwuoYTBsBykxJ8NQ.vercel.app).
+
+Test API Endpoint: Go to https://seedwave-R1t0CzIOLwuoYTBsBykxJ8NQ.vercel.app/api/hello.
+
+Test Zoho Login: Use the same a tag structure (e.g., https://seedwave-R1t0CzIOLwuoYTBsBykxJ8NQ.vercel.app/api/auth/zoho-login?returnTo=/admin-portal.html) to test the full OAuth flow.
+
+Set Custom Domain (Configured and Verified):
+
+The custom domain seedwave.faa.zone has been successfully added to your Vercel project.
+
+Vercel has provided the necessary DNS records (TXT for verification, CNAME for routing).
+
+These records have been added to your Cloudflare DNS, and the domain seedwave.faa.zone has been configured correctly and is verified by Vercel. Your portal should now be accessible at https://seedwave.faa.zone.
+
+7. Future Integrations (Serverless Orchestration)
+Once basic authentication is stable, you can progressively add more functionalities as dedicated serverless functions in the api/ directory.
+
+api/brands/add.js: For adding new brands and subnodes (from admin-portal.html's "Add Brand" form). This function would make API calls to your Hetzner database (where brand data is stored) and potentially Zoho CRM (to create a new client record).
+
+api/provision/client-site.js: Orchestrates the "Plesk-like" provisioning by calling Hetzner API (to create servers/VMs), Cloudflare API (to manage DNS), and Zoho API (to set up email accounts for the new client domain).
+
+api/payments/process-renewal.js: Integrates with Zoho Books or a payment gateway to handle renewals and update client licenses.
+
+api/data/get-dashboard-metrics.js: Fetches real-time metrics for quick-view.html and other sector-*.html dashboards from your centralized data hub (Hetzner database, Zoho Analytics). This function will be critical for populating your charts and metrics grids.
+
+Each of these is a small, focused backend function, deployed and scaled by Vercel, aligning with your "no more traditional backends" strategy.
+
+8. Conclusion: A Clean, Scalable, and Minimal-Work Foundation
+This manual outlines the foundational steps for building your seedwave.faa.zone portal as the central hub for FAA™. By meticulously following these steps, you will establish a clean, serverless-first architecture that leverages Zoho for identity, Vercel for deployment, and prepares the groundwork for integrating with Hetzner and Cloudflare. This approach aims to dramatically reduce your backend development and management burden, enabling faster deployment and greater focus on your core business logic.
+
+This document serves as your definitive reference. Keep it updated as you expand your functionality.
