@@ -1,0 +1,1952 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seedwave™ - Global Pulse & Master Brands</title>
+    <link rel="icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js is no longer directly used for the Node.js graph, but kept for other potential uses if needed elsewhere -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Base Styles - More dynamic and modern for Seedwave */
+        :root {
+            /* Keep original dark theme colors for hero grid elements only */
+            --dark-bg: #0a0a0d; /* Very dark almost black */
+            --primary-glow: #00e393; /* Greenish glow, Tesla-inspired */
+            --secondary-glow: #007bff; /* Blue glow, Google/Apple-inspired */
+            --accent-red: #ff4d4d;
+            --card-bg-dark: #1c1c21;
+            --border-dark: #3a3a42;
+            --font-inter: 'Inter', sans-serif;
+
+            /* Fruitful Branding Colors - now unified and white for header */
+            --fruitful-logo-color: #ffffff; /* Unified white for Fruitful™ | Seedwave™ */
+            --fruitful-separator-color: #bbbbbb; /* Lighter grey for separator */
+
+            /* NEW: General page background and text colors (Black & White - Day Mode) */
+            --page-bg-light: #ffffff; /* Pure white background */
+            --page-text-dark: #000000; /* Pure black text */
+            --page-muted-text: #333333; /* Dark grey muted muted text */
+            --page-border-light: #cccccc; /* Light grey border */
+            --card-bg-light: #ffffff;
+            --input-bg-light: #f9fafb;
+            --input-border-light: #d1d5db;
+
+            /* NEW: Accent colors for metrics/charts in B&W theme (subtle grey tones) */
+            --accent-blue-light: #555555; /* Medium grey for icons/values */
+            --accent-green-light: #777777; /* Slightly lighter grey */
+            /* IMPORTANT: The canvas animations and Chart.js lines will retain their vibrant colors explicitly in JS */
+
+            /* Theme Variables - Default (Day Mode) */
+            --bg-color: var(--page-bg-light);
+            --text-color: var(--page-text-dark);
+            --muted-text-color: var(--page-muted-text);
+            --border-color: var(--page-border-light);
+            --card-bg: var(--card-bg-light);
+            --button-bg: #ffffff;
+            --button-text: #000000;
+            --input-bg: var(--input-bg-light);
+            --input-border: var(--input-border-light);
+            --tertiary-color: #dc2626; /* For error messages, etc. */
+
+            /* Dynamic Header Top Position */
+            --announcement-bar-height: 0px; /* Default to 0, adjusted by JS */
+            --header-height: 0px; /* Adjusted by JS */
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #121212; /* Deep dark background */
+            --text-color: #e0e0e0; /* Light grey text */
+            --muted-text-color: #aaaaaa; /* Lighter grey muted text */
+            --border-color: #444444; /* Darker border */
+            --card-bg: #1c1c1c; /* Darker card background */
+            --button-bg: #282828;
+            --button-text: #ffffff;
+            --input-bg: #333333;
+            --input-border: #555555;
+            --tertiary-color: #ef4444; /* Brighter red */
+        }
+
+        /* Hyper Mode (More vibrant, techy feel) */
+        body.hyper-mode {
+            --bg-color: #0d0d1a; /* Dark blue-purple */
+            --text-color: #c0f0ff; /* Light cyan text */
+            --muted-text-color: #88ccee; /* Muted cyan text */
+            --border-color: #3a1a5a; /* Dark purple border */
+            --card-bg: #1a1a33; /* Darker purple card */
+            --button-bg: #6a0dad; /* Deep purple button */
+            --button-text: #e0e0e0;
+            --input-bg: #2b0c4b;
+            --input-border: #6a0dad;
+            --tertiary-color: #ff6666; /* Vibrant red */
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: var(--bg-color); /* Apply theme background */
+            color: var(--text-color); /* Apply theme text color */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Announcement Bar */
+        #announcement-bar {
+            background-color: #00e393; /* Primary glow color */
+            color: #121212;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 60; /* Higher than header */
+            transition: all 0.3s ease-in-out;
+        }
+        #announcement-bar.hidden {
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        #announcement-bar .close-btn {
+            background: none;
+            border: none;
+            color: #121212;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        #announcement-bar .close-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header - Background remains dark, logos are white */
+        header {
+            background-color: #0a0a0d; /* Solid dark background for header */
+            backdrop-filter: none; /* No blur, solid dark */
+            border-bottom: 1px solid var(--border-dark);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: var(--announcement-bar-height); /* Dynamic top based on announcement bar */
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: top 0.3s ease-in-out;
+        }
+
+        .header-content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* Colors defined directly on logo elements now */
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        /* Unified Fruitful™ | Seedwave™ Logo (white and steady) */
+        .logo-fruitful, .logo-seedwave {
+            color: var(--fruitful-logo-color); /* White */
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+            text-shadow: none; /* No glow/pulse */
+            transition: none; /* No transitions */
+        }
+        .logo-separator {
+            color: var(--fruitful-separator-color); /* Lighter grey for separator */
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: none; /* No glow/pulse */
+        }
+
+        /* Header Controls (Theme and Language) */
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .theme-switcher-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.5rem 0.8rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .theme-switcher-btn.active {
+            background-color: var(--primary-glow); /* Greenish for active */
+            color: #121212; /* Dark text on active */
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(0, 227, 147, 0.4);
+        }
+        .theme-switcher-btn:hover {
+            opacity: 0.8;
+        }
+
+        #languageSwitcher {
+            background-color: var(--card-bg-dark); /* Dark dropdown */
+            color: var(--fruitful-logo-color); /* White text */
+            border: 1px solid var(--border-dark);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+
+        /* New: Stock Exchange Pulse Canvas in Header */
+        #header-pulse-canvas {
+            flex-grow: 1; /* Take up available space */
+            height: 40px; /* Fixed height for the pulse */
+            background-color: transparent;
+            margin: 0 20px; /* Space between logo and right edge */
+            max-width: 600px; /* Limit width to keep it narrow */
+            min-width: 100px; /* Ensure it has some width even on smaller desktops */
+        }
+
+        /* Hero Section - Still dark and funky, as requested */
+        .hero-section {
+            position: relative;
+            height: 90vh; /* Taller hero section */
+            display: flex;
+            flex-direction: column; /* Stack button and grid */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            /* Background radial gradient based on original glow colors */
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+            padding: 2rem; /* Add padding for breathing room */
+            background-color: var(--dark-bg); /* Ensure dark background */
+        }
+
+        .hero-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            grid-template-rows: repeat(2, 1fr); /* 2 rows */
+            gap: 1rem; /* Space between canvas blocks */
+            width: 100%;
+            height: 100%; /* Fill hero section */
+            max-width: 1200px; /* Limit overall grid size */
+            max-height: 80vh; /* Adjust max height to leave space for button */
+            margin-top: 2rem; /* Space below the button */
+        }
+
+        .pulse-container {
+            position: relative;
+            background-color: var(--card-bg-dark); /* Dark background for each pulse block */
+            border-radius: 0.75rem; /* Rounded corners */
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: transparent; /* Ensure canvas background is transparent */
+            z-index: 1;
+        }
+
+        /* Discover button with new styling and embedded canvas */
+        .hero-cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center; /* Center content horizontally */
+            gap: 10px;
+            padding: 0.5rem 1.5rem; /* Reduced padding for more compact button */
+            background-color: var(--button-bg); /* White background */
+            color: var(--button-text); /* Black text */
+            text-decoration: none;
+            border-radius: 1rem; /* Rounded corners */
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Softer shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color); /* Light border */
+            
+            width: 280px; /* Fixed width to align with blocks below */
+            margin: 0 auto 2rem auto; /* Centered with bottom margin */
+            position: relative;
+            z-index: 20;
+            height: 60px; /* Fixed height for the button */
+            overflow: hidden; /* Hide overflow from canvas */
+        }
+        .hero-cta-button:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .hero-cta-button .button-text {
+            position: relative;
+            z-index: 2; /* Ensure text is above canvas */
+        }
+        .hero-cta-button canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Below text */
+        }
+
+
+        /* General Section Styling (for content below hero) */
+        section {
+            padding: 6rem 0rem; /* Removed horizontal padding to allow blocks to stretch to edges */
+            background-color: var(--bg-color); /* Now uses theme background */
+            border-top: 1px solid var(--border-color); /* Theme border */
+            text-align: center;
+            color: var(--text-color); /* Theme text color */
+        }
+        section:last-of-type {
+            border-bottom: none; /* Remove bottom border for the last section */
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-color); /* Theme text color */
+            margin-bottom: 3rem; /* Default spacing */
+            text-shadow: none; /* No text shadow for clean look */
+            /* Removed max-width here, will apply directly in HTML for specific headings */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Operational Blocks (Auto Design, Auto Build, Auto Deploy) */
+        .operational-blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem; /* Gap between blocks */
+            padding: 0 2rem; /* Restore padding to grid container */
+            max-width: 1200px; /* Limit width */
+            margin: 0 auto; /* Center the grid */
+        }
+
+        .operational-block {
+            background-color: var(--card-bg); /* Pure white block background */
+            border-radius: 1rem; /* Rounded corners */
+            padding: 2.5rem; /* Standard padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Softer shadow */
+            border: 1px solid var(--border-color); /* Light border */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0; /* No negative margins, rely on gap for spacing */
+            width: auto; /* Auto width within grid */
+        }
+        .operational-block:hover {
+            transform: translateY(-5px) scale(1.01); /* Softer hover effect */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .operational-block h3 {
+            font-size: 2rem; /* Larger font for impact */
+            font-weight: 900; /* Extra bold */
+            color: var(--text-color); /* Theme color */
+            line-height: 1.2;
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+
+
+        /* Master License Brands Section */
+        #master-brands {
+            background-color: var(--bg-color); /* Consistent theme background */
+            color: var(--text-color);
+            padding-bottom: 0; /* Adjust padding for contiguous block below */
+        }
+        #master-brands h2 {
+            color: var(--text-color);
+            text-shadow: none;
+            max-width: 800px; /* Specific width for this heading */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #master-brands .art-typo-container {
+            text-align: left;
+            font-family: monospace;
+            line-height: 1;
+            font-size: 1.1rem;
+            color: var(--muted-text-color);
+            max-width: 700px; /* Adjusted to align with heading width */
+            margin: 0 auto 3rem auto;
+            white-space: pre-wrap;
+        }
+
+
+        /* New styling for the brand blocks */
+        .master-brand-blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem; /* Consistent gap */
+            padding: 0 2rem; /* Restore padding to grid container */
+            max-width: 1200px; /* Max width for the grid */
+            margin: 0 auto; /* Center the grid */
+        }
+
+        .master-brand-block {
+            background-color: var(--card-bg); /* Theme card background */
+            border-radius: 1rem; /* Rounded corners */
+            padding: 2.5rem; /* Standard padding */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-color);
+            margin: 0; /* No negative margins */
+            width: auto; /* Auto width within grid */
+        }
+        .master-brand-block:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .master-brand-block h3 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--text-color);
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Node.js Pulse Graph Blocks */
+        #node-pulse-sections {
+            padding-top: 6rem; /* Restore top padding to match other sections */
+            padding-bottom: 6rem; /* Restore bottom padding to match other sections */
+            padding-left: 2rem; /* Restore padding to section */
+            padding-right: 2rem; /* Restore padding to section */
+            background-color: var(--bg-color); /* Restore theme background for the section */
+            border-top: 1px solid var(--border-color); /* Restore border top */
+            position: relative; /* For the absolute positioning of the black container */
+            overflow: hidden; /* Hide anything that goes outside */
+        }
+
+        /* The black block for the Node.js pulse graph */
+        .node-pulse-container-wrapper { /* New wrapper for the black block */
+            background-color: #000000; /* Solid black background for this entire block */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Subtle shadow */
+            border-radius: 1rem; /* Rounded corners for the black block (RESTORED) */
+            padding: 1rem; /* Padding inside the black block for the grid */
+            max-width: 1200px; /* Max width, centered */
+            margin: 0 auto;
+            position: relative; /* For relative positioning of titles if needed */
+            /* Removed fixed height here, let grid height dictate it */
+        }
+
+        .node-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            gap: 1rem; /* RESTORED GAP between canvases */
+            width: 100%; /* Full width of its wrapper */
+            height: 250px; /* Fixed height for the entire grid */
+            /* No borders/shadows/radius here, handled by wrapper */
+            margin: 0; /* No margin */
+        }
+
+        .node-pulse-block {
+            background-color: transparent; /* Make background transparent (allowing node-pulse-container-wrapper to show black) */
+            position: relative; /* For canvas positioning */
+            height: 100%; /* Fill parent grid item height */
+            overflow: hidden;
+            border-radius: 1rem; /* Rounded corners (RESTORED) */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle white border for each block */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effects */
+        }
+        .node-pulse-block:hover {
+            transform: translateY(-5px) scale(1.02); /* Slight lift */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* White glow on hover */
+        }
+        .node-pulse-block h3 {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2; /* Above canvas */
+            color: rgba(255, 255, 255, 0.7); /* White text for headings */
+            font-size: 1.2rem; /* Smaller heading for sub-charts */
+            font-weight: 700;
+        }
+
+        .node-pulse-block canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            background-color: transparent; /* Canvas itself is transparent */
+            z-index: 1;
+        }
+
+        /* Planet Pulse Text Styling */
+        #planet-text-container {
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+        }
+        #planet-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.5); /* Subtle glow */
+            animation: none; /* Start without animation */
+            transition: color 0.5s ease;
+        }
+        #planet-text.pulse-animation {
+            animation: textPulse 1.5s ease-in-out forwards;
+        }
+        @keyframes textPulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        /* Gemini API Section Styling */
+        #gemini-api-section {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        #gemini-api-container {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        #gemini-api-container h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        #promptInput {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--input-border);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            resize: vertical;
+        }
+        #promptInput:focus {
+            outline: none;
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 3px rgba(0, 227, 147, 0.3);
+        }
+        #generateTextBtn {
+            padding: 0.8rem 2rem;
+            border-radius: 0.75rem;
+            background-color: var(--primary-glow);
+            color: #121212;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 227, 147, 0.3);
+        }
+        #generateTextBtn:hover {
+            background-color: #00c77f;
+            transform: translateY(-2px);
+        }
+        #generateTextBtn:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        #loadingIndicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: var(--muted-text-color);
+        }
+        #loadingIndicator.hidden {
+            display: none;
+        }
+        #generatedTextOutput {
+            background-color: var(--input-bg);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--input-border);
+            min-height: 150px;
+            white-space: pre-wrap; /* Preserves whitespace and line breaks */
+            word-wrap: break-word; /* Breaks long words */
+            overflow-y: auto;
+            max-height: 400px;
+            color: var(--text-color);
+        }
+
+        /* Footer (Updated for light theme) */
+        footer {
+            background-color: #f5f5f7; /* Very light grey footer */
+            border-top: 1px solid var(--page-border-light);
+            padding: 2.5rem;
+            text-align: center;
+            color: var(--page-muted-text); /* Muted dark text */
+            font-size: 0.9rem;
+            background-color: var(--bg-color); /* Theme background */
+            color: var(--muted-text-color); /* Theme muted text */
+            border-top: 1px solid var(--border-color);
+        }
+        footer a {
+            color: var(--muted-text-color); /* Muted link color */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--accent-blue-light); /* Hover to accent color (now grey) */
+        }
+
+        /* Animations (remain, but apply to relevant elements only) */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) { /* Adjust grid for tablets */
+            .hero-pulse-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+                grid-template-rows: repeat(3, 1fr); /* 3 rows on tablet */
+            }
+            .node-pulse-grid {
+                grid-template-columns: repeat(1, 1fr); /* Stack on tablets as well */
+            }
+            .operational-block, .master-brand-block {
+                margin: 0; /* Ensure no negative margin on tablets */
+                width: 100%; /* Full width */
+            }
+            section {
+                padding: 6rem 2rem; /* Restore normal padding on tablets */
+            }
+            .header-controls {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.5rem;
+            }
+            .theme-switcher-btn, #languageSwitcher {
+                width: fit-content;
+            }
+        }
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.4rem; }
+            .logo-separator { font-size: 1.2rem; }
+
+            #header-pulse-canvas {
+                display: none; /* Hide header pulse on mobile to save space */
+            }
+
+            .hero-pulse-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                grid-template-rows: repeat(6, 1fr); /* 6 rows on mobile */
+                max-height: none; /* Allow grid to stretch */
+            }
+            .hero-cta-button { padding: 0.8rem 2rem; font-size: 1.1rem; } /* Slightly larger button on mobile */
+            h2 { font-size: 2.2rem; }
+            section { padding: 4rem 1rem; }
+            .operational-blocks-grid, .master-brand-blocks-grid { grid-template-columns: 1fr; } /* Stack on mobile */
+            .operational-block h3, .master-brand-block h3 { font-size: 1.5rem; }
+            .art-typo-container { font-size: 0.9rem; } /* Adjust font size for art typo on mobile */
+            footer { padding: 1.5rem; }
+            #planet-text { font-size: 1.8rem; }
+            #gemini-api-container h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement Bar -->
+    <div id="announcement-bar" class="announcement-bar">
+        <span>🎉 Exciting News: Seedwave™ is now live! Explore our enhanced platform.</span>
+        <button class="close-btn" aria-label="Close Announcement">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <header id="main-header">
+        <div class="header-content-wrapper">
+            <div class="logo-group">
+                <a href="#" class="logo-fruitful logo-link">Fruitful™</a>
+                <span class="logo-separator">|</span>
+                <span class="logo-seedwave">Seedwave™</span>
+            </div>
+            <!-- New: Stock Exchange Pulse Canvas in Header -->
+            <canvas id="header-pulse-canvas"></canvas>
+            <!-- Header Controls (Theme and Language) -->
+            <div class="header-controls">
+                <div class="theme-switcher-group flex gap-2">
+                    <button id="theme-day-btn" class="theme-switcher-btn active">Day</button>
+                    <button id="theme-night-btn" class="theme-switcher-btn">Night</button>
+                    <button id="theme-hyper-btn" class="theme-switcher-btn">Hyper</button>
+                </div>
+                <select id="languageSwitcher" class="text-xs">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="zh">Chinese</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" id="pulse">
+            <!-- Text content removed -->
+            <a href="homepage.html" class="hero-cta-button" id="discover-button">
+                <span class="button-text">Discover the Future</span>
+                <canvas id="button-arrow-canvas"></canvas>
+            </a>
+            <div class="hero-pulse-grid">
+                <div class="pulse-container">
+                    <canvas id="canvas-rhythmic"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-concentric"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-shooting"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-particles"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-radial-bursts"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-hyperspace"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Operational Pillars - now with rounded blocks and proper gaps -->
+        <section id="operational-pillars" class="py-16 px-6 text-center">
+            <div class="operational-blocks-grid">
+                <div class="operational-block">
+                    <h3>Auto Design</h3>
+                </div>
+                <div class="operational-block">
+                    <h3>Auto Build</h3>
+                </div>
+                <div class="operational-block">
+                    <h3>Auto Deploy</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Master License Brands Section - now with rounded blocks and proper gaps -->
+        <section id="master-brands" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8" style="max-width: 800px; margin-left: auto; margin-right: auto;">Seedwave™ Global Master License Brands</h2>
+            <div class="art-typo-container">
+<pre>
+Seedwave™:
+    The Nexus.
+      A Portfolio of Innovation.
+        Digital Enterprises and Beyond.
+          Groundbreaking Non-Digital Ventures.
+            Cultivating Tomorrow.
+              Rapid Deployments.
+                Global Repositories.
+                  Tangible Presence.
+                    The Pulse of Expansion.
+                      Across All Frontiers.
+                        Every Brand, A Node.
+                          Driving Collective Impact.
+</pre>
+            </div>
+            <!-- Master Brand Blocks - now with rounded blocks and proper gaps -->
+            <div class="mt-12 operational-blocks-grid master-brand-blocks-grid">
+                <a href="https://samfox.faa.zone" target="_blank" class="master-brand-block">
+                    <h3>Samfox™</h3>
+                </a>
+                <a href="https://seedwave.faa.zone" target="_blank" class="master-brand-block">
+                    <h3>Seedwave™</h3>
+                </a>
+                <a href="https://faa.zone/" target="_blank" class="master-brand-block">
+                    <h3>FAA.ZONE™</h3>
+                </a>
+            </div>
+        </section>
+
+
+        <!-- Node.js Infiltration Pulse Section with three distinct canvases -->
+        <section id="node-pulse-sections" class="py-16 px-6 text-center">
+            <!-- Updated h2 text and styling to align with Seedwave heading -->
+            <h2 class="text-4xl font-bold mb-8" style="max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.2;">Noodle Juice Gorilla Combe™ Infiltrations</h2>
+            <div class="node-pulse-container-wrapper">
+                <div class="node-pulse-grid">
+                    <!-- Samfox™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-samfox-node-pulse"></canvas>
+                    </div>
+                    <!-- Seedwave™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-seedwave-node-pulse"></canvas>
+                    </div>
+                    <!-- FAA.ZONE™ Node Pulse -->
+                    <div class="node-pulse-block">
+                        <canvas id="canvas-faa-zone-node-pulse"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Removed paragraph here -->
+        </section>
+
+        <!-- Planet Pulse Text Section (New) -->
+        <section id="planet-pulse-text-section" class="py-16 px-6 text-center">
+            <div id="planet-text-container">
+                <h2 id="planet-text" class="text-5xl font-extrabold pulse-animation">fruitful.planet.change</h2>
+            </div>
+        </section>
+
+        <!-- Gemini API Text Generation Section (New) -->
+        <section id="gemini-api-section" class="py-16 px-6 text-center">
+            <div id="gemini-api-container">
+                <h2>Generate AI-Powered Text</h2>
+                <div class="flex flex-col items-start w-full">
+                    <label for="promptInput" class="text-sm font-medium mb-2" style="color: var(--muted-text-color);">Enter your prompt:</label>
+                    <textarea id="promptInput" placeholder="e.g., Describe the future of AI in a creative way..."></textarea>
+                </div>
+                <button id="generateTextBtn">Generate Text</button>
+                <div id="loadingIndicator" class="hidden">
+                    <i class="fas fa-spinner fa-spin mr-2"></i> Generating...
+                </div>
+                <div class="flex flex-col items-start w-full">
+                    <label class="text-sm font-medium mb-2" style="color: var(--muted-text-color);">Generated Output:</label>
+                    <div id="generatedTextOutput">
+                        Your AI-generated text will appear here.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <!-- Copyright removed -->
+    </footer>
+
+    <!-- Placeholder for admin portal content (not visible, but for JS to find) -->
+    <div id="admin-portal-main-content-area" class="hidden">
+        <div id="some-admin-view-panel" class="admin-view-panel"></div>
+    </div>
+    <!-- Placeholder for terminal iframe (not visible, but for JS to find) -->
+    <iframe id="vault-frame" src="" class="hidden"></iframe>
+
+    <script>
+        // Store canvas elements and their contexts
+        const canvases = {
+            rhythmic: { canvas: document.getElementById('canvas-rhythmic'), ctx: null, time: 0, animationId: null },
+            concentric: { canvas: document.getElementById('canvas-concentric'), ctx: null, time: 0, animationId: null },
+            shooting: { canvas: document.getElementById('canvas-shooting'), ctx: null, time: 0, animationId: null, pulses: [] },
+            particles: { canvas: document.getElementById('canvas-particles'), ctx: null, time: 0, animationId: null, particles: [] },
+            radialBursts: { canvas: document.getElementById('canvas-radial-bursts'), ctx: null, time: 0, animationId: null, bursts: [] },
+            hyperspace: { canvas: document.getElementById('canvas-hyperspace'), ctx: null, time: 0, animationId: null },
+            // New canvas objects for the Node.js pulses
+            samfoxNodePulse: { canvas: document.getElementById('canvas-samfox-node-pulse'), ctx: null, time: 0, animationId: null, history: [], particles: [] },
+            seedwaveNodePulse: { canvas: document.getElementById('canvas-seedwave-node-pulse'), ctx: null, time: 0, animationId: null, history: [], waves: [] },
+            faaZoneNodePulse: { canvas: document.getElementById('canvas-faa-zone-node-pulse'), ctx: null, time: 0, animationId: null, history: [], circles: [] }
+        };
+
+        // New: Header Pulse Canvas object
+        const headerPulse = {
+            canvas: document.getElementById('header-pulse-canvas'),
+            ctx: null,
+            time: 0,
+            animationId: null,
+            data: [], // Stores data points for the graph
+            maxDataPoints: 50, // Number of points visible
+            valueRange: 100, // Max value for fluctuations
+            speed: 0.8 // Speed of the graph scroll
+        };
+
+        // New: Discover Button Noodle Arrow Canvas Object
+        const discoverButtonArrow = {
+            canvas: document.getElementById('button-arrow-canvas'),
+            ctx: null,
+            time: 0,
+            animationId: null,
+            knittingDepth: 0.4, // Deeper loops for button arrow
+            knittingFrequency: 0.08, // More frequent loops
+            speed: 0.03, // Slower for a distinct feel
+            color: 'white', // White arrow
+            lineWidth: 1.5 // Thinner line
+        };
+
+
+        // Initialize contexts and start animation loops for each canvas
+        function initCanvases() {
+            // Initialize header pulse canvas first
+            if (headerPulse.canvas) {
+                headerPulse.ctx = headerPulse.canvas.getContext('2d');
+                resizeHeaderPulseCanvas();
+                startHeaderPulseAnimation();
+            }
+
+            // Initialize discover button arrow canvas
+            if (discoverButtonArrow.canvas) {
+                discoverButtonArrow.ctx = discoverButtonArrow.canvas.getContext('2d');
+                resizeCanvas(discoverButtonArrow.canvas); // Use generic resize for now
+                startDiscoverButtonArrowAnimation();
+            }
+
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    canvases[key].ctx = canvases[key].canvas.getContext('2d');
+                    resizeCanvas(canvases[key].canvas); // Initial resize
+                    startAnimation(key);
+                }
+            }
+        }
+
+        // Resize individual canvas elements
+        function resizeCanvas(canvas) {
+            if (canvas) { /* Check if canvas exists before accessing properties */
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+        }
+
+        // Resize header pulse canvas
+        function resizeHeaderPulseCanvas() {
+            if (headerPulse.canvas) {
+                headerPulse.canvas.width = headerPulse.canvas.offsetWidth;
+                headerPulse.canvas.height = headerPulse.canvas.offsetHeight;
+            }
+        }
+
+        // Handle window resize for all canvases
+        window.addEventListener('resize', () => {
+            resizeHeaderPulseCanvas(); // Resize header pulse
+            if (discoverButtonArrow.canvas) {
+                resizeCanvas(discoverButtonArrow.canvas);
+            }
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    resizeCanvas(canvases[key].canvas);
+                }
+            }
+        });
+
+        // --- Header "Stock Exchange Pulse" Animation ---
+        function drawHeaderPulse() {
+            const { canvas, ctx, data, maxDataPoints, valueRange, speed } = headerPulse;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.05)'; // Subtle trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add new data point (random walk for stock-like feel)
+            const lastValue = data.length > 0 ? data[data.length - 1] : valueRange / 2;
+            let newValue = lastValue + (Math.random() - 0.5) * 10; // Fluctuation
+            newValue = Math.max(5, Math.min(valueRange - 5, newValue)); // Keep within bounds
+            data.push(newValue);
+
+            // Keep only maxDataPoints
+            if (data.length > maxDataPoints) {
+                data.shift();
+            }
+
+            // Draw the pulse line with knitting effect for header
+            const headerKnittingDepth = canvas.height * 0.15; // Deeper loops for header
+            const headerKnittingFrequency = 0.3; // More frequent loops
+            const headerLoopSpeed = 0.05; // Adjust loop speed for header pulse
+
+            headerPulse.time += headerLoopSpeed;
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'; // Changed to white glow
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.7)'; // Changed to white glow
+
+            const pointWidth = canvas.width / (maxDataPoints - 1);
+            for (let i = 0; i < data.length; i++) {
+                const x = i * pointWidth;
+                const yBase = canvas.height - (data[i] / valueRange) * canvas.height;
+                const yLoop = Math.sin((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) * headerKnittingDepth; // Loop effect
+                const y = yBase + yLoop;
+
+                const phase = ((x / canvas.width) * Math.PI * 8 + headerPulse.time * 5) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+                ctx.globalAlpha = alphaMod * 0.7 + 0.3; // Make it fade in/out
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset alpha
+
+            headerPulse.animationId = requestAnimationFrame(drawHeaderPulse);
+        }
+
+        function startHeaderPulseAnimation() {
+            // Initialize data with some random values
+            for(let i = 0; i < headerPulse.maxDataPoints; i++) {
+                headerPulse.data.push(Math.random() * headerPulse.valueRange);
+            }
+            drawHeaderPulse();
+        }
+
+        // --- Discover Button Noodle Arrow Animation ---
+        function drawDiscoverButtonArrow(canvasObj) {
+            const { canvas, ctx, time, knittingDepth, knittingFrequency, speed, color, lineWidth } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear fully for crisp line
+
+            canvasObj.time += speed;
+
+            ctx.beginPath();
+            ctx.strokeStyle = color; // Already white
+            ctx.lineWidth = lineWidth;
+            ctx.shadowBlur = 3; // Subtle glow for button arrow
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.6)'; // Already white glow
+
+            const startX = 0;
+            const endX = canvas.width;
+            const step = 2; // Smaller steps for smoother line
+
+            for (let x = startX; x <= endX; x += step) {
+                const yBase = canvas.height / 2;
+                const yLoop = Math.sin((x / canvas.width) * Math.PI * 4 + time) * (canvas.height * knittingDepth);
+                const y = yBase + yLoop;
+
+                const phase = ((x / canvas.width) * Math.PI * 4 + time) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+
+                ctx.globalAlpha = alphaMod * 0.8 + 0.2; // Modulate alpha for disappearing effect
+
+                if (x === startX) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset global alpha
+
+            canvasObj.animationId = requestAnimationFrame(() => drawDiscoverButtonArrow(canvasObj));
+        }
+
+        function startDiscoverButtonArrowAnimation() {
+            if (discoverButtonArrow.canvas) {
+                discoverButtonArrow.time = Math.random() * 100; // Random starting phase
+                drawDiscoverButtonArrow(discoverButtonArrow);
+            }
+        }
+
+
+        // --- Pulse Animation Classes & Functions (for Hero Grid) ---
+
+        // Rhythmic Pulse (from fruitful.faa.zone/index.html, v5.0/v6.0)
+        function drawRhythmicPulse(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const numRhythmicLines = 40;
+            const rhythmicLineAmplitude = canvas.height / 2.5;
+            const rhythmicLineFrequency = 0.1;
+            const rhythmicLineSpeed = 0.015;
+
+            canvasObj.time += rhythmicLineSpeed;
+
+            for (let i = 0; i < numRhythmicLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numRhythmicLines);
+                // Original was HSL, changing to white with varied alpha for rhythmic feel
+                const alpha = 0.95 - (i / numRhythmicLines) * 0.8; // Vary alpha for depth
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`; // Changed to white
+                ctx.lineWidth = 2.5;
+
+                for (let x = 0; x < canvas.width; x += 2) {
+                    const y = Math.sin(x * rhythmicLineFrequency + canvasObj.time + offset) * (rhythmicLineAmplitude * (Math.sin(canvasObj.time * 0.3 + i * 0.15) * 0.5 + 0.5)) + canvas.height / 2;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRhythmicPulse(canvasObj));
+        }
+
+        // Concentric Waves (from v3.0)
+        function drawConcentricWaves(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const numWaves = 20;
+            const waveSpeed = 0.02;
+            const waveThickness = 4;
+            const waveSpacing = 12;
+
+            canvasObj.time += waveSpeed;
+
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                const radius = (canvasObj.time * waveSpacing + i * waveSpacing) % (Math.max(canvas.width, canvas.height) / 1.2) + 5;
+                // Original was HSL, changing to white with varied alpha
+                ctx.strokeStyle = `rgba(255, 255, 255, ${0.95 - (radius / (Math.max(canvas.width, canvas.height) / 1.2))})`; // Changed to white
+                ctx.lineWidth = waveThickness;
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (i < 7) {
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.6 - (radius / (Math.max(canvas.width, canvas.height) / 1.2)) * 0.6})`; // Changed to white
+                    ctx.fill();
+                }
+            }
+
+            const coreRadius = 20 + Math.sin(canvasObj.time * 10) * 8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.95 + Math.sin(canvasObj.time * 10) * 0.05})`; // Changed to white
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = 'rgba(255, 255, 255, 1.0)'; // Changed to white
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            canvasObj.animationId = requestAnimationFrame(() => drawConcentricWaves(canvasObj));
+        }
+
+        // Shooting Pulses (from v4.0/v6.0)
+        class ShootingPulse {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.initialRadius = 1;
+                this.currentRadius = this.initialRadius;
+                this.maxRadius = Math.random() * 150 + 80;
+                this.speed = Math.random() * 4 + 2;
+                this.alpha = 1;
+                this.decayRate = Math.random() * 0.012 + 0.006;
+                this.color = `rgba(255, 255, 255, 1)`; // Changed to white
+                this.numRings = Math.floor(Math.random() * 6) + 5;
+                this.glowStrength = Math.random() * 25 + 15;
+            }
+            update() {
+                this.currentRadius += this.speed;
+                this.alpha -= this.decayRate;
+                return this.alpha > 0 && this.currentRadius < this.maxRadius;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2.5;
+                for (let i = 0; i < this.numRings; i++) {
+                    const ringRadius = this.currentRadius - (i * (this.currentRadius / this.numRings));
+                    if (ringRadius > this.initialRadius) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.initialRadius * 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.glowStrength;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+        }
+
+        function drawShootingPulses(canvasObj) {
+            const { canvas, ctx, pulses } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const shootingPulseSpawnRate = 0.3;
+            const maxShootingPulses = 50;
+
+            if (Math.random() < shootingPulseSpawnRate && pulses.length < maxShootingPulses) {
+                pulses.push(new ShootingPulse(canvas));
+            }
+
+            for (let i = pulses.length - 1; i >= 0; i--) {
+                const pulse = pulses[i];
+                if (pulse.update()) {
+                    pulse.draw(ctx);
+                } else {
+                    pulses.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawShootingPulses(canvasObj));
+        }
+
+        // Particle Grid (from v2.0)
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * 2.5 + 1.5;
+                this.speedX = (Math.random() * 2 - 1);
+                this.speedY = (Math.random() * 2 - 1);
+                this.color = `rgba(255, 255, 255, 1)`; // Changed to white
+                this.alpha = 1;
+                this.decay = 0.002;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                // Check bounds using this.canvas
+                if (this.alpha < 0 || this.x < -20 || this.x > this.canvas.width + 20 || this.y < -20 || this.y > this.canvas.height + 20) {
+                    this.alpha = 1;
+                    this.x = Math.random() * this.canvas.width;
+                    this.y = Math.random() * this.canvas.height;
+                    this.speedX = (Math.random() * 2 - 1);
+                    this.speedY = (Math.random() * 2 - 1);
+                }
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawParticlesWithConnections(canvasObj) {
+            const { canvas, ctx, particles } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (particles.length === 0) {
+                for (let i = 0; i < 150; i++) {
+                    particles.push(new Particle(canvas));
+                }
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(ctx);
+
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${particles[i].alpha * particles[j].alpha * (1 - (distance / 120)) * 1.0})`; // Changed to white
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+            canvasObj.animationId = requestAnimationFrame(() => drawParticlesWithConnections(canvasObj));
+        }
+
+        // Radial Bursts (New)
+        class RadialBurst {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 200 + 100;
+                this.speed = Math.random() * 5 + 3;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.numLines = Math.floor(Math.random() * 20) + 15;
+                this.color = `rgba(255, 255, 255, 1)`; // Changed to white
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+
+                for (let i = 0; i < this.numLines; i++) {
+                    const angle = (Math.PI * 2 / this.numLines) * i;
+                    const startX = this.x + Math.cos(angle) * this.radius * 0.1;
+                    const startY = this.y + Math.sin(angle) * this.radius * 0.1;
+                    const endX = this.x + Math.cos(angle) * this.radius;
+                    const endY = this.y + Math.sin(angle) * this.radius;
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawRadialBursts(canvasObj) {
+            const { canvas, ctx, bursts } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const burstSpawnRate = 0.12;
+            const maxBursts = 20;
+
+            if (Math.random() < burstSpawnRate && bursts.length < maxBursts) {
+                bursts.push(new RadialBurst(canvas));
+            }
+
+            for (let i = bursts.length - 1; i >= 0; i--) {
+                const burst = bursts[i];
+                if (burst.update()) {
+                    burst.draw(ctx);
+                } else {
+                    bursts.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRadialBursts(canvasObj));
+        }
+
+        // Hyperspace Warp (New)
+        function drawHyperspaceWarp(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            /* Keep dark background for canvas animation */
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            canvasObj.time += 0.06;
+
+            const gridSpacing = 25;
+            const lineCountX = Math.ceil(canvas.width / gridSpacing);
+            const lineCountY = Math.ceil(canvas.height / gridSpacing);
+
+            /* For B&W theme, use grey tones instead of vibrant color shifts for grid lines */
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 + (Math.sin(canvasObj.time * 0.8) + 1) / 2 * 0.3})`; // Changed to white
+            ctx.lineWidth = 1.5;
+
+            // Draw horizontal lines
+            for (let i = 0; i <= lineCountY; i++) {
+                const y = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(0, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.lineTo(canvas.width, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.stroke();
+            }
+
+            // Draw vertical lines
+            for (let i = 0; i <= lineCountX; i++) {
+                const x = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, 0);
+                ctx.lineTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, canvas.height);
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawHyperspaceWarp(canvasObj));
+        }
+
+
+        // Function to start the animation for a specific canvas (hero grid)
+        function startAnimation(key) {
+            const canvasObj = canvases[key];
+            if (!canvasObj.ctx) return;
+
+            // Cancel any existing animation frame to prevent duplicates
+            if (canvasObj.animationId) {
+                cancelAnimationFrame(canvasObj.animationId);
+            }
+
+            // Call the appropriate draw function for the canvas
+            switch (key) {
+                case 'rhythmic':
+                    drawRhythmicPulse(canvasObj);
+                    break;
+                case 'concentric':
+                    drawConcentricWaves(canvasObj);
+                    break;
+                case 'shooting':
+                    drawShootingPulses(canvasObj);
+                    break;
+                case 'particles':
+                    if (canvasObj.particles.length === 0) { // Initialize particles only once
+                        for (let i = 0; i < 150; i++) { // Initial count increased to match draw logic
+                            canvasObj.particles.push(new Particle(canvasObj.canvas));
+                        }
+                    }
+                    drawParticlesWithConnections(canvasObj);
+                    break;
+                case 'radialBursts':
+                    drawRadialBursts(canvasObj);
+                    break;
+                case 'hyperspace':
+                    drawHyperspaceWarp(canvasObj);
+                    break;
+                // Node Pulse animations
+                case 'samfoxNodePulse':
+                    drawSamfoxNodePulse(canvasObj);
+                    break;
+                case 'seedwaveNodePulse':
+                    drawSeedwaveNodePulse(canvasObj);
+                    break;
+                case 'faaZoneNodePulse':
+                    drawFaaZoneNodePulse(canvasObj);
+                    break;
+            }
+        }
+
+        // --- New Node.js Pulse Animations for Samfox, Seedwave, FAA.ZONE ---
+
+        // Shared data for the combined Node Pulse Graph
+        const nodePulseGraphSharedData = {
+            totalWidth: 0,
+            height: 0,
+            points: [],
+            numPoints: 150,
+            time: 0,
+            amplitude: 0.3,
+            frequency: 0.02,
+            speed: 0.05,
+            electricityPoints: [],
+            maxElectricityPoints: 200,
+            electricitySpawnRate: 0.8,
+            electricityDecayRate: 0.03,
+            electricityLength: 10,
+            knittingDepth: 0.2, // Percentage of canvas height for loop depth
+            knittingFrequency: 0.1, // How often loops occur
+            knittingPhaseOffset: 0 // To make loops appear at different points
+        };
+
+        // Function to update shared graph data
+        function updateNodePulseGraphData() {
+            nodePulseGraphSharedData.time += nodePulseGraphSharedData.speed;
+            if (nodePulseGraphSharedData.points.length === 0) {
+                for (let i = 0; i < nodePulseGraphSharedData.numPoints; i++) {
+                    nodePulseGraphSharedData.points.push(Math.random() * nodePulseGraphSharedData.height);
+                }
+            } else {
+                for (let i = 0; i < nodePulseGraphSharedData.numPoints; i++) {
+                    const waveHeight = Math.sin(i * nodePulseGraphSharedData.frequency + nodePulseGraphSharedData.time) * nodePulseGraphSharedData.amplitude * nodePulseGraphSharedData.height;
+                    nodePulseGraphSharedData.points[i] = nodePulseGraphSharedData.height / 2 + waveHeight;
+                }
+            }
+
+            if (Math.random() < nodePulseGraphSharedData.electricitySpawnRate && nodePulseGraphSharedData.electricityPoints.length < nodePulseGraphSharedData.maxElectricityPoints) {
+                const randomPointIndex = Math.floor(Math.random() * nodePulseGraphSharedData.numPoints);
+                nodePulseGraphSharedData.electricityPoints.push({
+                    index: randomPointIndex,
+                    alpha: 1,
+                    length: Math.random() * nodePulseGraphSharedData.electricityLength + 5,
+                    offsetY: (Math.random() - 0.5) * 5
+                });
+            }
+
+            for (let i = nodePulseGraphSharedData.electricityPoints.length - 1; i >= 0; i--) {
+                const ep = nodePulseGraphSharedData.electricityPoints[i];
+                ep.alpha -= nodePulseGraphSharedData.electricityDecayRate;
+                if (ep.alpha <= 0) {
+                    nodePulseGraphSharedData.electricityPoints.splice(i, 1);
+                }
+            }
+        }
+        setInterval(updateNodePulseGraphData, 50);
+
+        // Helper to draw a segment of the noodle pulse graph with knitting effect
+        function drawNoodlePulseSegment(canvasObj, startIndex, endIndex, offsetCanvasX) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            const drawExtend = 30; // Extend drawing into the "walls"
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Updated fillStyle to a darker, less transparent black
+            ctx.fillStyle = '#000000'; /* Pitch black */
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Set global dimensions if not already set (first canvas will do this)
+            if (canvases.samfoxNodePulse.canvas && canvases.seedwaveNodePulse.canvas && canvases.faaZoneNodePulse.canvas) {
+                if (nodePulseGraphSharedData.totalWidth === 0 || nodePulseGraphSharedData.height === 0) {
+                    // Recalculate total width including gaps
+                    const actualBlockWidth = canvases.samfoxNodePulse.canvas.offsetWidth;
+                    const gapWidth = 16; /* 1rem = 16px */
+                    nodePulseGraphSharedData.totalWidth = (actualBlockWidth * 3) + (2 * gapWidth);
+                    nodePulseGraphSharedData.height = canvases.samfoxNodePulse.canvas.offsetHeight;
+                }
+            } else {
+                return;
+            }
+
+            const segmentWidth = nodePulseGraphSharedData.totalWidth / (nodePulseGraphSharedData.numPoints - 1);
+
+            ctx.beginPath();
+            ctx.strokeStyle = 'white'; // White noodle pulse line
+            ctx.lineWidth = 2; // Noodle thickness
+            ctx.shadowBlur = 8; // Subtle glow
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.7)'; // White glow
+
+            // Draw line segment with "knitting" effect (looping in and out)
+            const loopDepth = canvas.height * nodePulseGraphSharedData.knittingDepth; // How much the line "dips" or "rises"
+            const loopFrequency = nodePulseGraphSharedData.knittingFrequency; // How often the loops occur
+
+            for (let i = startIndex; i <= endIndex; i++) {
+                const xGlobal = i * segmentWidth;
+                let xLocal = xGlobal - offsetCanvasX;
+
+                const yBase = nodePulseGraphSharedData.points[i];
+                const knittingYOffset = Math.sin((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) * loopDepth;
+                const y = yBase + knittingYOffset;
+
+                const phase = ((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) % (Math.PI * 2);
+                let alphaMod = Math.sin(phase);
+                alphaMod = Math.max(0, alphaMod);
+
+                ctx.globalAlpha = alphaMod * 0.8 + 0.2;
+
+                xLocal = Math.max(xLocal, -drawExtend);
+                xLocal = Math.min(xLocal, canvas.width + drawExtend);
+
+                if (i === startIndex || (ctx.canvas.lastPoint && Math.abs(xLocal - ctx.canvas.lastPoint.x) > segmentWidth * 1.5)) {
+                     ctx.moveTo(xLocal, y);
+                } else {
+                    ctx.lineTo(xLocal, y);
+                }
+                ctx.canvas.lastPoint = {x: xLocal, y: y};
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.globalAlpha = 1; // Reset alpha after drawing line
+
+            // Draw electricity effects
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; // Changed to white
+            ctx.lineWidth = 1;
+            nodePulseGraphSharedData.electricityPoints.forEach(ep => {
+                if (ep.index >= startIndex && ep.index <= endIndex) {
+                    const xGlobal = ep.index * segmentWidth;
+                    let xLocal = xGlobal - offsetCanvasX;
+                    const yBase = nodePulseGraphSharedData.points[ep.index];
+                    const knittingYOffset = Math.sin((xLocal / canvas.width) * Math.PI * 4 + nodePulseGraphSharedData.time * 10) * loopDepth;
+                    const y = yBase + knittingYOffset;
+
+                    if (xLocal >= -drawExtend && xLocal <= canvas.width + drawExtend) {
+                        ctx.save();
+                        ctx.globalAlpha = ep.alpha;
+                        ctx.beginPath();
+                        ctx.moveTo(xLocal, y);
+                        ctx.lineTo(xLocal + (Math.random() - 0.5) * ep.length, y + (Math.random() - 0.5) * ep.length + ep.offsetY);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            });
+
+            canvasObj.animationId = requestAnimationFrame(() => {
+                switch(canvasObj.canvas.id) {
+                    case 'canvas-samfox-node-pulse':
+                        drawSamfoxNodePulse(canvasObj);
+                        break;
+                    case 'canvas-seedwave-node-pulse':
+                        drawSeedwaveNodePulse(canvasObj);
+                        break;
+                    case 'canvas-faa-zone-node-pulse':
+                        drawFaaZoneNodePulse(canvasObj);
+                        break;
+                }
+            });
+        }
+
+        // Specific draw functions for each Node Pulse canvas
+        function drawSamfoxNodePulse(canvasObj) {
+            const segmentStart = 0;
+            const segmentEnd = Math.floor(nodePulseGraphSharedData.numPoints / 3) + 2;
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, 0);
+        }
+
+        function drawSeedwaveNodePulse(canvasObj) {
+            const segmentStart = Math.floor(nodePulseGraphSharedData.numPoints / 3) - 2;
+            const segmentEnd = Math.floor(nodePulseGraphSharedData.numPoints * 2 / 3) + 2;
+            const offsetCanvasX = (canvases.samfoxNodePulse.canvas ? canvases.samfoxNodePulse.canvas.offsetWidth : 0) + 16; /* Samfox width + gap */
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, offsetCanvasX);
+        }
+
+        function drawFaaZoneNodePulse(canvasObj) {
+            const segmentStart = Math.floor(nodePulseGraphSharedData.numPoints * 2 / 3) - 2;
+            const segmentEnd = nodePulseGraphSharedData.numPoints - 1;
+            const offsetCanvasX = (canvases.samfoxNodePulse.canvas ? canvases.samfoxNodePulse.canvas.offsetWidth : 0) + (canvases.seedwaveNodePulse.canvas ? canvases.seedwaveNodePulse.canvas.offsetWidth : 0) + (2 * 16); /* Samfox width + Seedwave width + two gaps */
+            drawNoodlePulseSegment(canvasObj, segmentStart, segmentEnd, offsetCanvasX);
+        }
+
+        // Placeholder for `renderChartsForView` as its full implementation is not provided
+        function renderChartsForView(viewId) {
+            console.log(`Placeholder: Rendering charts for view: ${viewId}. (Chart.js integration for thematic changes)`);
+            // In a real application, this function would update Chart.js instances
+            // or other data visualizations based on the selected theme.
+            // For now, it just logs a message.
+        }
+
+        // Placeholder for `showMainContentView`
+        function showMainContentView(viewId) {
+            console.log(`Placeholder: Showing main content view: ${viewId}`);
+            // In a real application, this would handle showing/hiding different content sections.
+            // For now, it just logs a message.
+            // It also ensures the logo link correctly activates the main page view
+            const mainContent = document.getElementById('innovate-connect-thrive');
+            if (mainContent) {
+                // If this page has a content section with this ID, you can show it.
+                // Currently, the "initial-canvas" doesn't have distinct main content views
+                // by ID, so this is primarily a placeholder to prevent errors.
+                // For this version, we will assume 'homepage.html' is the "main" content.
+                // The current HTML structure is a single page, so no real content switching happens.
+            }
+        }
+
+
+        // --- On Load Initializations (Combined and Integrated) ---
+        window.addEventListener('DOMContentLoaded', () => {
+
+            // --- Announcement Bar Close Button ---
+            const announcementBar = document.getElementById('announcement-bar');
+            const mainHeader = document.getElementById('main-header');
+
+            if (announcementBar && mainHeader) {
+                document.querySelector('#announcement-bar .close-btn').addEventListener('click', () => {
+                    announcementBar.classList.add('hidden');
+                    // Adjust header top position after hiding announcement bar
+                    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                    // Store preference in localStorage to keep it hidden on subsequent visits
+                    localStorage.setItem('hideAnnouncementBar', 'true');
+                });
+
+                const updateHeaderTop = () => {
+                    if (!announcementBar.classList.contains('hidden')) {
+                        const announcementHeight = announcementBar.offsetHeight;
+                        document.documentElement.style.setProperty('--announcement-bar-height', `${announcementHeight}px`);
+                    } else {
+                        document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                    }
+                    document.documentElement.style.setProperty('--header-height', `${mainHeader.offsetHeight}px`);
+                };
+
+                // Check localStorage for announcement bar preference
+                if (localStorage.getItem('hideAnnouncementBar') === 'true') {
+                    announcementBar.classList.add('hidden');
+                    document.documentElement.style.setProperty('--announcement-bar-height', '0px');
+                } else {
+                    announcementBar.classList.remove('hidden'); // Ensure visible if not hidden
+                    updateHeaderTop(); // Set initial height
+                }
+                
+                // Update on resize
+                window.addEventListener('resize', updateHeaderTop);
+                // Also update after fonts/images might load and affect layout
+                window.addEventListener('load', updateHeaderTop);
+            }
+
+            // --- Theme Switching Logic ---
+            const themeDayBtn = document.getElementById('theme-day-btn');
+            const themeNightBtn = document.getElementById('theme-night-btn');
+            const themeHyperBtn = document.getElementById('theme-hyper-btn');
+
+            function setTheme(theme) {
+                document.body.classList.remove('dark-mode', 'hyper-mode');
+                themeDayBtn?.classList.remove('active');
+                themeNightBtn?.classList.remove('active');
+                themeHyperBtn?.classList.remove('active');
+
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeNightBtn?.classList.add('active');
+                } else if (theme === 'hyper') {
+                    document.body.classList.add('hyper-mode');
+                    themeHyperBtn?.classList.add('active');
+                } else {
+                    themeDayBtn?.classList.add('active');
+                }
+                localStorage.setItem('fruitfulTheme', theme);
+                // Re-render charts to ensure they pick up new theme colors
+                const activeViewId = document.querySelector('.content-section.active')?.id ||
+                                     document.querySelector('#admin-portal-main-content-area .admin-view-panel.active')?.id;
+                if (activeViewId) {
+                    renderChartsForView(activeViewId);
+                }
+            }
+
+            if (themeDayBtn) { // Check if theme buttons exist
+                themeDayBtn.addEventListener('click', () => setTheme('day'));
+                themeNightBtn.addEventListener('click', () => setTheme('dark'));
+                themeHyperBtn.addEventListener('click', () => setTheme('hyper'));
+
+                // Load saved theme on startup
+                const savedTheme = localStorage.getItem('fruitfulTheme') || 'day';
+                setTheme(savedTheme);
+            }
+
+            // --- Language Switcher Logic ---
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            const languageMap = {
+                'en': 'English',
+                'es': 'Spanish',
+                'fr': 'French',
+                'de': 'German',
+                'zh': 'Chinese'
+                // Add more languages as needed
+            };
+
+            if (languageSwitcher) {
+                languageSwitcher.addEventListener('change', (e) => {
+                    const selectedLang = e.target.value;
+                    document.documentElement.lang = selectedLang; // Update HTML lang attribute
+                    console.log(`Language changed to: ${languageMap[selectedLang] || selectedLang}`);
+                    // In a real app, you would load and display translated content here.
+                });
+                // Set initial value based on HTML's lang attribute or default to English
+                languageSwitcher.value = document.documentElement.lang || 'en';
+            }
+
+            // --- On Load Initializations for Canvases ---
+            initCanvases(); // This will initialize and start all canvas animations
+
+            // Smooth scrolling for navigation links (if any were present)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Initialize the default view (Innovate, Connect, Thrive) - Placeholder
+            showMainContentView('innovate-connect-thrive');
+
+            // Set initial active state for the default view's link - Placeholder
+            const defaultNavLink = document.querySelector(`[data-view-id="innovate-connect-thrive"]`);
+            if (defaultNavLink) {
+                // Ensure the logo link is also correctly activating the main page view
+                document.querySelector('.logo-link').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showMainContentView('innovate-connect-thrive');
+                });
+            }
+
+            // --- Load terminal iframe function ---
+            window.loadTerminal = function(iframeSrc) {
+                const vaultFrame = document.getElementById('vault-frame');
+                if (vaultFrame) {
+                    vaultFrame.src = iframeSrc;
+                    // Optional: add a class to the button that was clicked to highlight it
+                    document.querySelectorAll('.terminal-btn').forEach(btn => btn.classList.remove('ring'));
+                    // Note: event is not passed to loadTerminal when called directly
+                    // This part `event.target.classList.add('ring');` might need adjustment
+                    // if `loadTerminal` is not always called from an event listener.
+                    // For now, it's kept as is to match your provided code.
+                }
+            };
+
+            // Initialize with default terminal iframe
+            // This event listener will fire after DOMContentLoaded, potentially leading to double calls
+            // I'm changing it to be called directly within DOMContentLoaded for consistency.
+            loadTerminal('vault-master.html'); // Load default terminal on page load
+
+            // --- Planet Pulse Text Logic ---
+            const planetTextElement = document.getElementById('planet-text');
+            const planetPhrases = [
+                { text: "fruitful.planet.change", lang: "en" },
+                { text: "cambio.planeta.fructífero", lang: "es" },
+                { text: "changement.planète.fertile", lang: "fr" },
+                { text: "fruchtbarer.planet.wandel", lang: "de" },
+                { text: "富有成效的星球.变化", lang: "zh" }
+            ];
+            let currentPhraseIndex = 0;
+
+            function updatePlanetText() {
+                if (planetTextElement) {
+                    planetTextElement.classList.remove('pulse-animation'); // Remove to re-trigger animation
+                    void planetTextElement.offsetWidth; // Trigger reflow
+                    
+                    currentPhraseIndex = (currentPhraseIndex + 1) % planetPhrases.length;
+                    const nextPhrase = planetPhrases[currentPhraseIndex];
+                    
+                    planetTextElement.textContent = nextPhrase.text;
+                    planetTextElement.lang = nextPhrase.lang; // Update language attribute for accessibility/context
+                    
+                    planetTextElement.classList.add('pulse-animation'); // Add back to restart animation
+                }
+            }
+            setInterval(updatePlanetText, 3000); // Change every 3 seconds
+
+            // --- Gemini API Text Generation Logic ---
+            const generateTextBtn = document.getElementById('generateTextBtn');
+            const promptInput = document.getElementById('promptInput');
+            const generatedTextOutput = document.getElementById('generatedTextOutput');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            if (generateTextBtn && promptInput && generatedTextOutput && loadingIndicator) {
+                generateTextBtn.addEventListener('click', async () => {
+                    const prompt = promptInput.value.trim();
+                    if (!prompt) {
+                        generatedTextOutput.textContent = "Please enter a prompt to generate text.";
+                        generatedTextOutput.style.color = "var(--tertiary-color)";
+                        return;
+                    }
+
+                    generatedTextOutput.textContent = ''; // Clear previous output
+                    generatedTextOutput.style.color = "var(--text-color)"; // Reset color
+                    loadingIndicator.classList.remove('hidden'); // Show loading indicator
+                    generateTextBtn.disabled = true; // Disable button during generation
+
+                    try {
+                        let chatHistory = [];
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will automatically provide this during runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        console.log("Attempting to call Gemini API with prompt:", prompt);
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        console.log("Raw API Response Object:", response);
+                        const result = await response.json();
+                        console.log("Parsed API Result JSON:", result);
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            console.log("Extracted Generated Text:", text); // Log the actual text content
+                            generatedTextOutput.textContent = text; // This should now correctly display newlines due to whitespace-pre-wrap
+                        } else {
+                            generatedTextOutput.textContent = "Error: Could not generate text. Unexpected API response structure or no candidates found.";
+                            generatedTextOutput.style.color = "var(--tertiary-color)";
+                            console.error("Gemini API response was unexpected or missing content:", result);
+                            // Also check if there are error details in the response
+                            if (result.error && result.error.message) {
+                                generatedTextOutput.textContent += ` Reason: ${result.error.message}`;
+                            }
+                        }
+
+                    } catch (error) {
+                        generatedTextOutput.textContent = `Error: Failed to connect to language model. Check console for network issues or API key.`;
+                        generatedTextOutput.style.color = "var(--tertiary-color)";
+                        console.error("Error calling Gemini API:", error);
+                    } finally {
+                        loadingIndicator.classList.add('hidden'); // Hide loading indicator
+                        generateTextBtn.disabled = false; // Re-enable button
+                    }
+                });
+            } else {
+                console.warn("Text generation elements (button, input, output, or loading indicator) not found in the DOM. Ensure IDs are correct.");
+            }
+        });
+    </script>
+</body>
+</html>
+
