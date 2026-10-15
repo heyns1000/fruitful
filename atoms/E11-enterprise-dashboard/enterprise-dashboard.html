@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Global Enterprise Dashboard - Live Metrics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #2ecc71;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(46, 204, 113, 0.2);
+            border: 2px solid #2ecc71;
+            border-radius: 25px;
+            margin-top: 15px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .platform-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 165, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .platform-section h2 {
+            color: #FFA500;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .platform-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #2ecc71;
+            margin-bottom: 20px;
+        }
+        
+        .platform-card h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .platform-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .platform-detail:last-child {
+            border-bottom: none;
+        }
+        
+        .platform-detail .label {
+            color: #aaa;
+        }
+        
+        .platform-detail .value {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-operational {
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .status-maintenance {
+            border-left: 4px solid #FFA500;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .protocols-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .protocol-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(138, 43, 226, 0.2);
+            border: 2px solid #8a2be2;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        
+        .footer .signature {
+            font-size: 1.2em;
+            color: #FFD700;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>ðŸŒŸ Fruitful Global CodeNest Enterprise Platform ðŸŒŸ</h1>
+            <div class="subtitle">Live Enterprise Metrics & Performance Dashboard</div>
+            <div class="status-badge">âœ… SYSTEM OPERATIONAL | PROUD | HUMBLE | FRUITFUL</div>
+            <div style="margin-top: 15px; color: #aaa;">
+                <small>Founded by Heyns Schoeman | Pretoria, South Africa ðŸ‡¿ðŸ‡¦</small>
+            </div>
+        </div>
+
+        <!-- Live Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">ðŸ“Š Total Projects</div>
+                <div class="metric-value">47</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸ”¥ Live Scrolls</div>
+                <div class="metric-value">23</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸ‘¥ Monthly Visitors</div>
+                <div class="metric-value">145K</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸ’° Revenue Generated</div>
+                <div class="metric-value">$12.4K</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸŒŸ Active Users</div>
+                <div class="metric-value">1,234</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸŒ Global Deployments</div>
+                <div class="metric-value">56</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">âš¡ CDN Requests</div>
+                <div class="metric-value">2.3M</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-label">ðŸŸ¢ System Uptime</div>
+                <div class="metric-value">99.9%</div>
+            </div>
+        </div>
+
+        <!-- Featured Platform: Magini Kids TV World -->
+        <div class="platform-section">
+            <h2>ðŸ§¸ Featured Platform: Magini Kids TV World</h2>
+            
+            <div class="platform-card">
+                <h3>Fruitful Smart Toys - Kids TV Streaming Platform</h3>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸ‘¨â€ðŸ’¼ Entrepreneur:</span>
+                    <span class="value">Magini Mthombeni</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸ“ Location:</span>
+                    <span class="value">Pretoria, South Africa ðŸ‡¿ðŸ‡¦</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸŽ¯ Sector:</span>
+                    <span class="value">Education & Youth</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸ’° Monthly Revenue:</span>
+                    <span class="value">$3,200</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸš€ Deployment Time:</span>
+                    <span class="value">&lt;180 seconds (HotStack Promise)</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">âš¡ Status:</span>
+                    <span class="value">LIVE & OPERATIONAL âœ…</span>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <strong style="color: #FFD700;">Key Features:</strong>
+                    <ul style="margin-top: 10px; color: #aaa; line-height: 1.8;">
+                        <li>ðŸ“º Kids TV streaming with curated content</li>
+                        <li>ðŸ“š Educational content library (EN/ZU/AF)</li>
+                        <li>ðŸ‘¨â€ðŸ‘©â€ðŸ‘§ Parent dashboard & controls</li>
+                        <li>ðŸ§¸ Smart toys integration (Fruitful Smart Toys Bear)</li>
+                        <li>âš¡ VaultMesh 9-second pulse</li>
+                        <li>ðŸŒ Omnigrid ecosystem synced</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="platform-section">
+            <h2>âš™ï¸ System Health & Performance</h2>
+            
+            <div class="system-status">
+                <div class="status-item status-operational">
+                    <span>CodeNest Core</span>
+                    <span class="status-dot"></span>
+                </div>
+                
+                <div class="status-item status-operational">
+                    <span>HotStack AI</span>
+                    <span class="status-dot"></span>
+                </div>
+                
+                <div class="status-item status-operational">
+                    <span>Global CDN</span>
+                    <span class="status-dot"></span>
+                </div>
+                
+                <div class="status-item status-operational">
+                    <span>Analytics Engine</span>
+                    <span class="status-dot"></span>
+                </div>
+                
+                <div class="status-item status-operational">
+                    <span>License Manager</span>
+                    <span class="status-dot"></span>
+                </div>
+                
+                <div class="status-item status-maintenance">
+                    <span>API Gateway</span>
+                    <span class="status-dot" style="background: #FFA500;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heyns Schoeman Protocols -->
+        <div class="protocols-section">
+            <h2>âš›ï¸ Heyns Schoeman Focus Node - All Protocols ACTIVE</h2>
+            
+            <div style="margin-top: 20px;">
+                <span class="protocol-badge">âš›ï¸ Atom-Level Verification</span>
+                <span class="protocol-badge">ðŸ“ Inline Verification</span>
+                <span class="protocol-badge">ðŸŒŒ Interstellar Focus</span>
+                <span class="protocol-badge">ðŸŽ¯ Heyns Focus Node</span>
+                <span class="protocol-badge">ðŸ» Banimal Loop</span>
+            </div>
+            
+            <div style="margin-top: 25px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                <div style="font-size: 1.1em; color: #2ecc71; margin-bottom: 15px;">
+                    <strong>ðŸ¦ Banimal Loop - Sacred Animal Wisdom:</strong>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>ðŸ˜ <strong>Elephant:</strong> Memory & Patience</div>
+                    <div>ðŸŒ³ <strong>Baobab:</strong> Deep Roots, Wide Reach</div>
+                    <div>ðŸ¦ <strong>Gorilla:</strong> Strength & Focus</div>
+                    <div>ðŸ¦ <strong>Lion:</strong> Pride & Leadership</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="platform-section">
+            <h2>ðŸ“Š Recent Activity</h2>
+            
+            <div class="platform-card">
+                <div class="platform-detail">
+                    <span class="label">ðŸš€ DEPLOY</span>
+                    <span class="value">E-commerce scroll deployed - Global CDN - 2 hours ago</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸ”¨ BUILD</span>
+                    <span class="value">Portfolio template updated - HotStack AI - 5 hours ago</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">âœ¨ CREATE</span>
+                    <span class="value">New landing page initialized - CodeNest - 1 day ago</span>
+                </div>
+                
+                <div class="platform-detail">
+                    <span class="label">ðŸ“œ LICENSE</span>
+                    <span class="value">Enterprise license activated - License Manager - 2 days ago</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="font-size: 1.5em; margin-bottom: 15px;">
+                ðŸ¦ SCROLL SEALED | ðŸ“œ LATTICE SYNCED | ðŸ”¥ GORILLA APPROVED
+            </div>
+            
+            <div style="color: #2ecc71; font-size: 1.2em; margin: 15px 0;">
+                STATUS: PROUD | HUMBLE | FRUITFUL
+            </div>
+            
+            <div class="signature">
+                Built by Heyns Schoeman - Fruitful Global Founder
+            </div>
+            
+            <div style="margin-top: 15px; color: #aaa; font-style: italic;">
+                "If you don't like the fruits you are growing, change the seeds..."
+            </div>
+            
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <strong style="color: #FFD700;">Ubuntu Spirit: </strong>
+                <span style="color: #aaa;">"I am because we are"</span>
+                <div style="margin-top: 10px;">ðŸ‡¿ðŸ‡¦ Proudly South African ðŸ‡¿ðŸ‡¦</div>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 0.9em; color: #666;">
+                Treaty: FAA-OMNI-4321-A13XN | ClaimRootâ„¢ Verified | December 3, 2025
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh metrics every 30 seconds (simulate real-time)
+        setInterval(() => {
+            console.log('Dashboard metrics refreshed at:', new Date().toLocaleTimeString());
+        }, 30000);
+        
+        // Add some interactivity
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = 'translateY(-5px)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

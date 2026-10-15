@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Energy Optimization Dashboard - Baobab Security Network™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F5F5F5; color: #333333; overflow-x: hidden; }
+        .header-nav a { @apply text-gray-300 hover:text-white transition; }
+        .header-nav a.active { @apply text-white; }
+        .dashboard-nav a { @apply text-gray-600 hover:text-gray-900 transition-colors duration-200 px-3 py-1 rounded-full text-sm font-medium; }
+        .dashboard-nav a.active { @apply bg-blue-100 text-blue-700 shadow-sm; } /* Subtle active state for dashboard navigation */
+        .widget-card { background-color: #FFFFFF; border-radius: 0.75rem; border: 1px solid #E5E7EB; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 320px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-green-500 tracking-wider">
+                🌳 Baobab Security Network™
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="baobab_spa_dashboard.html">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Renewable Energy Adoption & Optimization Dashboard</h2>
+                <p class="text-gray-600 mt-1">Tracking the global shift to sustainable energy and optimizing energy grids with AI.</p>
+            </div>
+             <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[150px]">
+                <option value="All" selected>All Continents</option>
+                <option value="Africa">Africa</option>
+                <option value="Asia">Asia</option>
+                <option value="Europe">Europe</option>
+                <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Oceania">Oceania</option>
+            </select>
+        </div>
+
+        <!-- Dashboard Navigation for Global Themes -->
+        <nav class="mb-8 flex flex-wrap justify-center gap-2 dashboard-nav">
+            <a href="deforestation_dashboard.html">Deforestation</a>
+            <a href="ocean_plastic_dashboard.html">Ocean Plastic</a>
+            <a href="wildlife_protection_dashboard.html">Wildlife Protection</a>
+            <a href="energy_optimization_dashboard.html" class="active">Energy Optimization</a>
+            <a href="resource_management_dashboard.html">Resource Management</a>
+            <a href="economic_empowerment_dashboard.html">Economic Empowerment</a>
+            <a href="community_resilience_dashboard.html">Community Resilience</a>
+            <a href="water_security_dashboard.html">Water Security</a>
+            <a href="air_quality_dashboard.html">Air Quality</a>
+            <a href="global_health_dashboard.html">Global Health</a>
+            <a href="land_degradation_dashboard.html">Land Degradation</a>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Graph 1: Global Renewable Energy Share in Grid -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Renewable Energy Share (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Shows the growing contribution of solar, wind, hydro, etc., to the global energy mix.
+                </p>
+            </div>
+
+            <!-- Graph 2: Top 10 Countries by Renewable Capacity Added Annually -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Leading Countries in Renewable Capacity (GW Added)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Highlights nations making significant investments in new renewable energy infrastructure.
+                </p>
+            </div>
+
+            <!-- Graph 3: Energy Efficiency Improvements (Global Average) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Energy Efficiency Gains (Simulated)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-efficiency-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Monitors the effectiveness of policies and technologies in reducing energy consumption per unit of economic output.
+                </p>
+            </div>
+
+            <!-- Graph 4: AI-Optimized Grid Stability & Outage Reduction -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">AI Grid Optimization Impact (Avg. Outage Duration)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-ai-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Illustrates how AI integration enhances grid reliability and minimizes disruptions.
+                </p>
+            </div>
+
+            <!-- Graph 5: Carbon Emissions Avoided by Renewables (Gigatons CO2) -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">CO2 Emissions Avoided by Renewables</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-co2-bar"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Quantifies the positive environmental impact of renewable energy deployment.
+                </p>
+            </div>
+
+            <!-- Graph 6: Global Investment in Clean Energy Technologies -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Global Investment in Clean Energy Technologies</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eo-investment-line"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4">
+                    Tracks financial flows into solar, wind, battery storage, and other clean tech sectors.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-8 px-6 bg-gray-900 text-center text-sm text-gray-400">
+        <p>&copy; 2025 Heyns Schoeman ™. All rights reserved.</p>
+        <p class="mt-2">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+        <p class="mt-1">Water the Seed™ | Baobab™ Security | AI-Powered Global Expansion</p>
+    </footer>
+
+<script>
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const globalData = [
+    // Include some sample data for energy optimization-related metrics
+    { name: "Nigeria", continent: "Africa", renewableShare: 15, newRenewableCapacity: 0.5, energyEfficiencyIndex: 0.6, outageDuration: 300, co2Avoided: 0.05, cleanEnergyInvestment: 5, history: [{year: 2019, share: 10}, {year: 2020, share: 12}, {year: 2021, share: 15}, {year: 2022, share: 17}, {year: 2023, share: 20}] },
+    { name: "USA", continent: "North America", renewableShare: 40, newRenewableCapacity: 15, energyEfficiencyIndex: 0.9, outageDuration: 50, co2Avoided: 0.8, cleanEnergyInvestment: 80, history: [{year: 2019, share: 30}, {year: 2020, share: 32}, {year: 2021, share: 35}, {year: 2022, share: 38}, {year: 2023, share: 40}] },
+    { name: "Brazil", continent: "South America", renewableShare: 60, newRenewableCapacity: 8, energyEfficiencyIndex: 0.75, outageDuration: 100, co2Avoided: 0.3, cleanEnergyInvestment: 30, history: [{year: 2019, share: 50}, {year: 2020, share: 55}, {year: 2021, share: 58}, {year: 2022, share: 60}, {year: 2023, share: 62}] },
+    { name: "Germany", continent: "Europe", renewableShare: 70, newRenewableCapacity: 10, energyEfficiencyIndex: 0.95, outageDuration: 20, co2Avoided: 0.6, cleanEnergyInvestment: 60, history: [{year: 2019, share: 60}, {year: 2020, share: 65}, {year: 2021, share: 68}, {year: 2022, share: 70}, {year: 2023, share: 72}] },
+    { name: "China", continent: "Asia", renewableShare: 55, newRenewableCapacity: 25, energyEfficiencyIndex: 0.8, outageDuration: 80, co2Avoided: 1.2, cleanEnergyInvestment: 120, history: [{year: 2019, share: 45}, {year: 2020, share: 50}, {year: 2021, share: 53}, {year: 2022, share: 55}, {year: 2023, share: 58}] },
+    { name: "Australia", continent: "Oceania", renewableShare: 30, newRenewableCapacity: 3, energyEfficiencyIndex: 0.85, outageDuration: 70, co2Avoided: 0.15, cleanEnergyInvestment: 10, history: [{year: 2019, share: 25}, {year: 2020, share: 27}, {year: 2021, share: 29}, {year: 2022, share: 30}, {year: 2023, share: 32}] }
+];
+
+let currentFilter = "All";
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateCharts();
+    });
+
+    // Initialize all charts on this page
+    createChart('eo-line', 'line', getGlobalRenewableShareData);
+    createChart('eo-bar', 'bar', getLeadingRenewableCapacityData);
+    createChart('eo-efficiency-line', 'line', getEnergyEfficiencyGainsData);
+    createChart('eo-ai-line', 'line', getAIGridOptimizationData);
+    createChart('eo-co2-bar', 'bar', getCO2AvoidedData);
+    createChart('eo-investment-line', 'line', getCleanEnergyInvestmentData);
+
+    updateCharts(); // Initial chart update
+});
+
+function createChart(canvasId, type, dataFn) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom', labels: { boxWidth: 12, font: { size: 12 } } },
+            tooltip: { backgroundColor: '#333', titleFont: { size: 14, weight: 'bold' }, bodyFont: { size: 12 }, padding: 10, cornerRadius: 4 }
+        },
+        scales: (type === 'bar' || type === 'line' || type === 'scatter') ? { y: { beginAtZero: true, grid: { color: '#E5E7EB' } }, x: { grid: { display: false } } } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] },
+        options: chartOptions
+    });
+}
+
+function updateCharts() {
+    const filteredData = getFilteredDataForPage();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        let config;
+        if (id === 'eo-line') config = { dataFn: getGlobalRenewableShareData };
+        else if (id === 'eo-bar') config = { dataFn: getLeadingRenewableCapacityData };
+        else if (id === 'eo-efficiency-line') config = { dataFn: getEnergyEfficiencyGainsData };
+        else if (id === 'eo-ai-line') config = { dataFn: getAIGridOptimizationData };
+        else if (id === 'eo-co2-bar') config = { dataFn: getCO2AvoidedData };
+        else if (id === 'eo-investment-line') config = { dataFn: getCleanEnergyInvestmentData };
+        
+        if (config && config.dataFn) {
+            chart.data = config.dataFn(filteredData);
+            chart.update();
+        }
+    });
+}
+
+function getFilteredDataForPage() {
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR THIS DASHBOARD ---
+
+function getGlobalRenewableShareData(data) {
+    // This chart will show the average renewable share over a simulated 5-year period
+    const years = [2019, 2020, 2021, 2022, 2023];
+    const datasetData = years.map(year => {
+        const totalShare = data.reduce((sum, item) => {
+            const yearData = item.history.find(h => h.year === year);
+            return sum + (yearData ? yearData.share : 0);
+        }, 0);
+        return data.length > 0 ? (totalShare / data.length).toFixed(1) : 0;
+    });
+
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Renewable Share (%)',
+            data: datasetData,
+            borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getLeadingRenewableCapacityData(data) {
+    const sortedData = [...data].sort((a, b) => b.newRenewableCapacity - a.newRenewableCapacity).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'New Capacity Added (GW)',
+            data: sortedData.map(d => d.newRenewableCapacity),
+            backgroundColor: '#22C55E', borderRadius: 4
+        }]
+    };
+}
+
+function getEnergyEfficiencyGainsData(data) {
+    const years = [2019, 2020, 2021, 2022, 2023];
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + item.energyEfficiencyIndex, 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Energy Efficiency Index',
+            data: datasetData,
+            borderColor: '#3B82F6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+
+function getAIGridOptimizationData(data) {
+    const labels = currentFilter === 'All' ? continents : data.map(d => d.name);
+    const beforeAIOptions = { min: 80, max: 250 }; // Higher initial outages
+    const afterAIOptions = { min: 20, max: 100 };  // Lower outages with AI
+
+    const beforeAIData = labels.map(() => Math.floor(Math.random() * (beforeAIOptions.max - beforeAIOptions.min) + beforeAIOptions.min));
+    const afterAIData = labels.map(() => Math.floor(Math.random() * (afterAIOptions.max - afterAIOptions.min) + afterAIOptions.min));
+    
+    return {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Avg. Outage Duration Before AI (min/yr)',
+                data: beforeAIData,
+                borderColor: '#EF4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: false, tension: 0.4
+            },
+            {
+                label: 'Avg. Outage Duration After AI (min/yr)',
+                data: afterAIData,
+                borderColor: '#10B981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: false, tension: 0.4
+            }
+        ]
+    };
+}
+
+function getCO2AvoidedData(data) {
+    const sortedData = [...data].sort((a, b) => b.co2Avoided - a.co2Avoided).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'CO2 Avoided (Gigatons)',
+            data: sortedData.map(d => d.co2Avoided),
+            backgroundColor: '#A855F7', borderRadius: 4
+        }]
+    };
+}
+
+function getCleanEnergyInvestmentData(data) {
+    const years = [2019, 2020, 2021, 2022, 2023];
+    const datasetData = years.map(() => {
+        return data.reduce((sum, item) => sum + (item.cleanEnergyInvestment * (Math.random() * 0.1 + 0.9)), 0) / data.length;
+    });
+    return {
+        labels: years,
+        datasets: [{
+            label: 'Avg. Clean Energy Investment (Billions USD)',
+            data: datasetData,
+            borderColor: '#0EA5E9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4
+        }]
+    };
+}
+</script>
+</body>
+</html>

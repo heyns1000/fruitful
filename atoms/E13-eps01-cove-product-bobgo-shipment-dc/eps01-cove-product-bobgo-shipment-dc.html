@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<template id="__bundler_thumbnail" data-bg-color="#0e2148">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="20" width="160" height="160" rx="40" fill="#0e2148"/>
+    <rect x="60" y="60" width="80" height="80" rx="18" fill="#f5c518"/>
+    <path d="M80 100 Q95 80 110 100 T140 100" stroke="#0e2148" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <text x="100" y="165" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="14" font-weight="700" fill="#f5c518">PRODUCT + SHIP</text>
+  </svg>
+</template>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Archivo:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #eee6d6; color: #0e2148; font-family: 'Archivo', sans-serif; font-size: 14px; line-height: 1.5; }
+  h1, h2, h3 { font-family: 'Fredoka', sans-serif; font-weight: 800; margin: 0; }
+  .mono { font-family: 'DM Mono', monospace; }
+  .kicker { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #e8622c; font-weight: 600; margin: 0 0 12px 0; }
+  .section { padding: 80px 90px; border-bottom: 1px solid rgba(14, 33, 72, 0.12); }
+  .section-hero { background: #0e2148; color: #fff; padding: 120px 90px 80px; }
+  .section-footer { background: #0e2148; color: #fff; padding: 60px 90px; }
+  .h2 { font-size: 38px; font-weight: 800; color: #0e2148; margin-top: 12px; margin-bottom: 24px; }
+  .section-hero .h2 { color: #fff; }
+  .card { background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 2px 8px rgba(14, 33, 72, 0.04); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-weight: 700; color: #0e2148; margin-bottom: 8px; font-size: 13px; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #e0d9cc; border-radius: 8px; font-family: 'Archivo', sans-serif; font-size: 13px; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #f5c518; background: #fffbf5; }
+  .btn { padding: 12px 24px; border: none; border-radius: 8px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: #f5c518; color: #0e2148; }
+  .btn-primary:hover { background: #e8b415; transform: translateY(-1px); }
+  .btn-secondary { background: rgba(14, 33, 72, 0.08); color: #0e2148; border: 1px solid rgba(14, 33, 72, 0.12); }
+  .btn-secondary:hover { background: rgba(14, 33, 72, 0.12); }
+  .table-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #e8622c; background: #f9f7f4; padding: 12px 16px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; border-radius: 8px 8px 0 0; }
+  .table-row { font-size: 13px; color: rgba(14, 33, 72, 0.8); background: #fff; padding: 12px 16px; border-bottom: 1px solid rgba(14, 33, 72, 0.06); display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; cursor: pointer; }
+  .table-row:hover { background: #f9f7f4; }
+  .table-row:last-child { border-bottom: none; }
+  .sku-badge { display: inline-block; background: #0e2148; color: #f5c518; padding: 6px 12px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 700; }
+  .price-zar { font-family: 'DM Mono', monospace; font-weight: 700; color: #e8622c; }
+  .swatch { display: inline-block; width: 24px; height: 24px; border-radius: 4px; margin-right: 8px; vertical-align: middle; }
+  .footer-lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .footer-mark { width: 40px; height: 40px; flex-shrink: 0; }
+  .footer-text { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #f5c518; font-weight: 700; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: #eee6d6;">
+
+<!-- HERO -->
+<div class="section-hero">
+  <svg style="width: 90px; height: 90px; margin-bottom: 16px;" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+  <div class="mono" style="font-size: 12px; color: #f5c518; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 16px;">Block Box — EPS01 Cove</div>
+  <h1 class="h2">{{ fullProductName }}</h1>
+  <div style="font-size: 16px; opacity: 0.9; max-width: 800px; line-height: 1.6; margin-top: 12px;">Product specification data-driven from JSON, fully merged with BobGo shipment selector. Block Box CI Parts 1–7 applied throughout.</div>
+</div>
+
+<!-- PRODUCT CARD -->
+<div class="section">
+  <div class="kicker">Product Card — Live Data Binding</div>
+  <h2 class="h2">{{ productName }} ({{ profileGroup }})</h2>
+  
+  <div class="grid-2" style="margin-top: 30px;">
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 12px; font-size: 14px;">Base Specification</div>
+      <div style="font-size: 13px; line-height: 1.8; color: rgba(14, 33, 72, 0.8);">
+        <b>Full Name:</b> {{ fullProductName }}<br>
+        <b>SKU Base:</b> {{ skuBase }}<br>
+        <b>Profile:</b> {{ profileSize }}<br>
+        <b>Unit Length:</b> {{ unitLengthMeters }} m<br>
+        <b>Material:</b> EPS {{ grade }}<br>
+        <b>Color:</b> White (paintable)<br>
+        <b>Brand:</b> {{ brand }}<br>
+        <b>Currency:</b> {{ currency }}
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 12px; font-size: 14px;">Carton Data</div>
+      <div style="font-size: 13px; line-height: 1.8; color: rgba(14, 33, 72, 0.8);">
+        <b>Dimensions:</b> {{ cartonLength }} × {{ cartonWidth }} × {{ cartonHeight }} cm<br>
+        <b>Weight:</b> {{ cartonWeight }} kg<br>
+        <b>Pieces per Carton:</b> {{ piecesPerCarton }}<br>
+        <b>Base Block Price:</b> <span class="price-zar">{{ baseBlockPrice }} {{ currency }}</span><br>
+        <b>Unit Price (Tier B):</b> <span class="price-zar">{{ tierBPrice }} {{ currency }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKU VARIANTS TABLE — Data-Driven -->
+<div class="section">
+  <div class="kicker">SKU Variants — 23 Unit Measures</div>
+  <h2 class="h2">Selectable Units of Measure</h2>
+  
+  <div style="margin-top: 30px;">
+    <div class="table-header">
+      <div>SKU / Description</div>
+      <div>Qty</div>
+      <div>Price ex VAT</div>
+    </div>
+    
+    <sc-for list="{{ skuList }}" as="sku" hint-placeholder-count="6">
+      <div class="table-row" onClick="{{ selectSku(sku.sku) }}" style="cursor: pointer; transition: all 0.15s;">
+        <div><span class="sku-badge">{{ sku.sku }}</span> {{ sku.description }}</div>
+        <div style="font-size: 12px; color: rgba(14, 33, 72, 0.6);">{{ sku.qtyDisplay }}</div>
+        <div class="price-zar">{{ sku.priceZar }}</div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<!-- CI GUIDE APPLICATION: PART 4 (DIGITAL ECOSYSTEM) -->
+<div class="section">
+  <div class="kicker">Part 4 — Digital Ecosystem Examples</div>
+  <h2 class="h2">Web Header, Icon, & App Variants</h2>
+  
+  <div class="grid-3" style="margin-top: 30px;">
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 12px; font-size: 13px;">Web Header Lockup</div>
+      <div style="background: #0e2148; padding: 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <svg style="width: 32px; height: 32px;" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+        <div style="color: #fff; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px;">Block Box</div>
+      </div>
+      <div style="font-size: 12px; color: rgba(14, 33, 72, 0.65); line-height: 1.6;">Horizontal lockup for navigation bars, headers, footers. Navy background only. Minimum 32px digital scale.</div>
+    </div>
+    
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 12px; font-size: 13px;">Icon & Favicon (≤64px)</div>
+      <div style="background: #eee6d6; padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+        <svg style="width: 48px; height: 48px;" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <div style="font-size: 12px; color: rgba(14, 33, 72, 0.65); line-height: 1.6;">Compact mark for app icons, favicons, stamps. No clearspace required — container provides margin. Yellow block on navy, yellow stroke always.</div>
+    </div>
+    
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 12px; font-size: 13px;">One-Color Fallback (Part 7)</div>
+      <div style="background: #fff; border: 1px solid #e0d9cc; padding: 16px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+        <svg style="width: 48px; height: 48px;" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="none" stroke="#0e2148" stroke-width="6"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <div style="font-size: 12px; color: rgba(14, 33, 72, 0.65); line-height: 1.6;">Single-ink reproduction: Navy outline only. For foil, emboss, or thermal processes where full color is not viable. Contrast 4.5:1 minimum.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CI GUIDE APPLICATION: PART 5 (CO-BRANDING & LICENSING SEPARATOR) -->
+<div class="section">
+  <div class="kicker">Part 5 — Co-Branding & Licensing Separator Rule</div>
+  <h2 class="h2">Block Box + Partner Lockup Examples</h2>
+  
+  <div class="card" style="margin-top: 30px;">
+    <div style="font-weight: 700; color: #0e2148; margin-bottom: 16px; font-size: 13px;">Approved Co-Brand Layout</div>
+    <div style="display: flex; align-items: center; gap: 16px; background: #f9f7f4; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+      <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+        <svg style="width: 40px; height: 40px;" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+        <div style="font-family: 'Fredoka', sans-serif; font-weight: 700; color: #0e2148;">Block Box</div>
+      </div>
+      <div style="width: 2px; height: 40px; background: rgba(14, 33, 72, 0.2);"></div>
+      <div style="flex: 1; padding-left: 16px; font-size: 13px; color: rgba(14, 33, 72, 0.6);"><b>+</b> Partner Brand or Retailer Name</div>
+    </div>
+    <div style="font-size: 12px; color: rgba(14, 33, 72, 0.65); line-height: 1.6;"><b>Rule:</b> Vertical separator line (minimum 2px, 40% opacity Navy) divides Block Box mark/wordmark from co-brand partner. Equal visual weight. No overlap or touching. Minimum 16px gap on both sides of separator.</div>
+  </div>
+</div>
+
+<!-- BOB GO SHIPMENT SELECTOR — Interactive Form -->
+<div class="section">
+  <div class="kicker">Bob Go Logistics — Shipment Selector</div>
+  <h2 class="h2">New Shipment Configuration</h2>
+  
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 16px; font-size: 14px;">Parcel Configuration</div>
+      
+      <div class="form-group">
+        <label>Select SKU / Package Type</label>
+        <select onChange="{{ updateSelectedSku }}">
+          <option value="">— Choose a unit of measure —</option>
+          <sc-for list="{{ skuList }}" as="sku" hint-placeholder-count="5">
+            <option value="{{ sku.sku }}">{{ sku.description }}</option>
+          </sc-for>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Package Dimensions (cm)</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+          <div><input type="number" placeholder="Length" value="{{ selectedDims.length }}" onChange="{{ setDim('length', $event) }}" /></div>
+          <div><input type="number" placeholder="Width" value="{{ selectedDims.width }}" onChange="{{ setDim('width', $event) }}" /></div>
+          <div><input type="number" placeholder="Height" value="{{ selectedDims.height }}" onChange="{{ setDim('height', $event) }}" /></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" placeholder="0.00" value="{{ selectedDims.weight }}" onChange="{{ setDim('weight', $event) }}" />
+      </div>
+      
+      <div class="form-group">
+        <label>Reference Number (optional)</label>
+        <input type="text" placeholder="e.g. PO-2026-001" value="{{ customRef }}" onChange="{{ setCustomRef }}" />
+      </div>
+      
+      <button class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;">+ Add Another Parcel</button>
+    </div>
+    
+    <div class="card">
+      <div style="font-weight: 700; color: #0e2148; margin-bottom: 16px; font-size: 14px;">Shipment Details & Routing</div>
+      
+      <div class="form-group">
+        <label>Collection Date</label>
+        <input type="date" value="{{ collectionDate }}" onChange="{{ setCollectionDate }}" />
+      </div>
+      
+      <div class="form-group">
+        <label>Declared Value (ZAR, optional)</label>
+        <input type="number" placeholder="0.00" value="{{ declaredValue }}" onChange="{{ setDeclaredValue }}" />
+      </div>
+      
+      <div class="form-group">
+        <label>Shipment Tags</label>
+        <select>
+          <option>Standard</option>
+          <option>Fragile</option>
+          <option>Hazmat</option>
+          <option>Priority</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Notification Email (optional)</label>
+        <input type="email" placeholder="orders@client.co.za" value="{{ notifyEmail }}" onChange="{{ setNotifyEmail }}" />
+      </div>
+      
+      <div style="background: #f9f7f4; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+        <div style="font-weight: 700; color: #0e2148; font-size: 12px; margin-bottom: 6px;">Origin (Pre-filled)</div>
+        <div style="font-size: 12px; color: rgba(14, 33, 72, 0.7); line-height: 1.5;">Rita Schoeman<br>480 Cuckoo Crescent<br>Willow Acres Estate<br>Pretoria, 0081</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 24px; display: flex; gap: 12px;">
+    <button class="btn btn-primary">Get Shipping Rates →</button>
+    <button class="btn btn-secondary">Save Draft</button>
+    <button class="btn btn-secondary">Cancel</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="section-footer">
+  <div class="footer-lockup">
+    <svg class="footer-mark" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+    <div class="footer-text">Block Box</div>
+  </div>
+  <div style="font-size: 13px; opacity: 0.85; margin-bottom: 8px;">EPS01 Cove Product Card + BobGo Shipment Selector</div>
+  <div style="font-size: 12px; opacity: 0.7; margin-bottom: 8px;">Global Brand Standards Compliant — Parts 1–7</div>
+  <div style="font-size: 11px; opacity: 0.6;">Data-driven from JSON · Interactive shipment form · CI compliance locked</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    data: null,
+    selectedSku: null,
+    selectedDims: { length: 151, width: 40, height: 30, weight: 0.04 },
+    customRef: '',
+    collectionDate: '',
+    declaredValue: '',
+    notifyEmail: ''
+  };
+
+  componentDidMount() {
+    const json = {
+      "bobGoShipmentConfig_EPS01": {
+        "meta": {
+          "epsCode": "EPS01",
+          "name": "Cove",
+          "fullProductName": "Cove EPS ceiling cornice",
+          "profileGroup": "G85",
+          "profileSize": "85 × 55 × 55 mm",
+          "skuBase": "FCX-EPS01-COVE",
+          "brand": "CornexConnect",
+          "unitLengthMeters": 1.5,
+          "grade": "20DV",
+          "currency": "ZAR",
+          "baseBlockPriceExVat": 511.38
+        },
+        "product_card": {
+          "base": {
+            "carton_dimensions_cm": { "length": 151, "width": 40, "height": 30 },
+            "carton_weight_kg": 1.35
+          },
+          "pricing_matrix": {
+            "A_unit_calc": { "unit_price_ex_vat": 3.04 },
+            "B_unit_working": { "unit_price_ex_vat": 3.41 }
+          }
+        },
+        "units": [
+          { "sku": "FCX-EPS01-COVE-U", "description": "Cove single 1.5 m", "lengths": 1, "price": 3.41 },
+          { "sku": "FCX-EPS01-COVE-P6", "description": "Cove pack of 6 × 1.5 m", "lengths": 6, "price": 20.46 },
+          { "sku": "FCX-EPS01-COVE-C120", "description": "Cove carton 120 lengths", "lengths": 120, "price": 409.2 },
+          { "sku": "FCX-EPS01-COVE-PL720", "description": "Cove pallet 720 lengths", "lengths": 720, "price": 2455.2 },
+          { "sku": "FCX-EPS01-COVE-BLK168", "description": "Cove BlockBox 168 lengths", "lengths": 168, "price": 511.38 },
+          { "sku": "FCX-EPS01-COVE-PLBLK", "description": "Cove pallet BlockBox 1008 lengths", "lengths": 1008, "price": 3068.28 },
+          { "sku": "EPS01-A-L1.5", "description": "Single loose unit, Tier A", "lengths": 1, "price": 3.04 },
+          { "sku": "EPS01-B-L1.5", "description": "Single unit in carton, Tier B", "lengths": 1, "price": 3.41 },
+          { "sku": "EPS01-P6-U", "description": "Pack 6 loose", "lengths": 6, "price": 20.46 },
+          { "sku": "EPS01-C120-U", "description": "Carton 120", "lengths": 120, "price": 409.2 },
+          { "sku": "EPS01-C120-P6", "description": "Carton: 20 packs of 6", "lengths": 120, "price": 409.2 },
+          { "sku": "EPS01-F-BLK168-U", "description": "BlockBox single", "lengths": 168, "price": 511.38 },
+          { "sku": "EPS01-C120-PL6", "description": "Pallet: 6 cartons (720 lengths)", "lengths": 720, "price": 2455.2 },
+          { "sku": "EPS01-P6-PL6", "description": "Pallet: 120 packs (720 lengths)", "lengths": 720, "price": 2455.2 },
+          { "sku": "EPS01-F-BLK168-PL6", "description": "Pallet BlockBox: 6 blocks", "lengths": 1008, "price": 3068.28 },
+          { "sku": "EPS01-C120-20HQ-U", "description": "20ft HQ container cartons (14400 lengths)", "cartons": 120, "price": 49104 },
+          { "sku": "EPS01-C120-40HQ-U", "description": "40ft HQ container cartons (33600 lengths)", "cartons": 280, "price": 114576 },
+          { "sku": "EPS01-P6-20HQ-U", "description": "20ft HQ container packs (14400 lengths)", "packs": 2400, "price": 49104 },
+          { "sku": "EPS01-P6-40HQ-U", "description": "40ft HQ container packs (33600 lengths)", "packs": 5600, "price": 114576 },
+          { "sku": "EPS01-F-BLK168-20HQ-U", "description": "20ft HQ BlockBox (20160 lengths)", "blocks": 120, "price": 49104 },
+          { "sku": "EPS01-F-BLK168-40HQ-U", "description": "40ft HQ BlockBox (47040 lengths)", "blocks": 280, "price": 114576 },
+          { "sku": "EPS01-F-BLK168-20HQ-PL", "description": "20ft HQ BlockBox pallet", "blocks": 120, "price": 49104 },
+          { "sku": "EPS01-F-BLK168-40HQ-PL", "description": "40ft HQ BlockBox pallet", "blocks": 280, "price": 114576 }
+        ]
+      }
+    };
+    this.setState({ data: json });
+  }
+
+  selectSku = (skuCode) => {
+    this.setState({ selectedSku: skuCode });
+  };
+
+  updateSelectedSku = (e) => {
+    this.setState({ selectedSku: e.target.value });
+  };
+
+  setDim = (key, e) => {
+    const val = parseFloat(e.target.value) || 0;
+    this.setState(s => ({ selectedDims: { ...s.selectedDims, [key]: val } }));
+  };
+
+  setCustomRef = (e) => this.setState({ customRef: e.target.value });
+  setCollectionDate = (e) => this.setState({ collectionDate: e.target.value });
+  setDeclaredValue = (e) => this.setState({ declaredValue: e.target.value });
+  setNotifyEmail = (e) => this.setState({ notifyEmail: e.target.value });
+
+  renderVals() {
+    const d = this.state.data?.bobGoShipmentConfig_EPS01;
+    if (!d) return { 
+      fullProductName: '—', productName: '—', profileGroup: '—', profileSize: '—', skuBase: '—', brand: '—', grade: '—', currency: '—', unitLengthMeters: '—',
+      skuList: [], cartonLength: '—', cartonWidth: '—', cartonHeight: '—', cartonWeight: '—', piecesPerCarton: '—', baseBlockPrice: '—', tierBPrice: '—' 
+    };
+
+    const skuList = d.units.map(u => {
+      const qty = u.lengths || u.cartons || u.blocks || u.packs || null;
+      const unitType = u.lengths ? 'lengths' : u.cartons ? 'cartons' : u.blocks ? 'blocks' : u.packs ? 'packs' : '';
+      return {
+        sku: u.sku,
+        description: u.description,
+        lengths: u.lengths || null,
+        cartons: u.cartons || null,
+        blocks: u.blocks || null,
+        packs: u.packs || null,
+        qtyDisplay: qty ? `${qty} ${unitType}` : '—',
+        priceZar: `${u.price.toFixed(2)}`
+      };
+    });
+
+    return {
+      fullProductName: d.meta.fullProductName,
+      productName: d.meta.name,
+      profileGroup: d.meta.profileGroup,
+      profileSize: d.meta.profileSize,
+      skuBase: d.meta.skuBase,
+      brand: d.meta.brand,
+      grade: d.meta.grade,
+      currency: d.meta.currency,
+      unitLengthMeters: d.meta.unitLengthMeters,
+      skuList,
+      cartonLength: d.product_card.base.carton_dimensions_cm.length,
+      cartonWidth: d.product_card.base.carton_dimensions_cm.width,
+      cartonHeight: d.product_card.base.carton_dimensions_cm.height,
+      cartonWeight: d.product_card.base.carton_weight_kg,
+      piecesPerCarton: 120,
+      baseBlockPrice: `${d.meta.baseBlockPriceExVat.toFixed(2)}`,
+      tierBPrice: `${d.product_card.pricing_matrix.B_unit_working.unit_price_ex_vat.toFixed(2)}`,
+      selectedDims: this.state.selectedDims,
+      customRef: this.state.customRef,
+      collectionDate: this.state.collectionDate,
+      declaredValue: this.state.declaredValue,
+      notifyEmail: this.state.notifyEmail,
+      selectSku: this.selectSku,
+      updateSelectedSku: this.updateSelectedSku,
+      setDim: this.setDim,
+      setCustomRef: this.setCustomRef,
+      setCollectionDate: this.setCollectionDate,
+      setDeclaredValue: this.setDeclaredValue,
+      setNotifyEmail: this.setNotifyEmail
+    };
+  }
+}
+</script>
+</body>
+</html>

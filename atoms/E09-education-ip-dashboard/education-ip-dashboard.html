@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">FAA™ Education & IP Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Fruitful Global Color Palette - Base (Light Mode) */
+        :root {
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --accent-gold: #B8860B; /* Corporate gold accent */
+            --status-error: #ef4444; /* Red for security notes */
+
+            /* General Body Colors (Light Mode) */
+            --body-bg: #f5f5f7; /* Very light gray, almost white */
+            --body-text: #1d1d1f; /* Near black for primary text */
+
+            /* Global Header/Footer Colors (Light Mode) */
+            --global-header-bg: rgba(255, 255, 255, 0.9);
+            --global-header-border: #e8e8ed;
+            --global-header-text: #1d1d1f;
+            --global-header-link-hover: #0071e3;
+            --global-header-button-bg: #0071e3;
+            --global-header-button-text: white;
+            --global-header-toggle-bg: #e5e7eb;
+            --global-header-toggle-text: #1f2937;
+            --global-header-toggle-focus: #3b82f6;
+
+            --global-footer-bg: #f5f5f7;
+            --global-footer-text: #6e6e73;
+            --global-footer-border: #e8e8ed;
+            --global-footer-link-hover: #1d1d1f; /* Darker on hover in light mode */
+
+            /* Dashboard Specific Colors (Light Mode) */
+            --dashboard-main-bg: #f0f2f5; /* Light gray background for the overall dashboard wrapper */
+            --dashboard-sidebar-bg: #1f2937; /* Dark gray for sidebar */
+            --dashboard-sidebar-text: #f5f5f7; /* Light text for sidebar */
+            --dashboard-sidebar-hover-bg: #374151; /* Slightly lighter gray for sidebar hover */
+            --dashboard-mindlift-highlight-bg: #2563eb; /* Blue-600 for MindLift highlight */
+
+            --dashboard-section-blue-bg: #eff6ff; /* blue-50 */
+            --dashboard-section-blue-text: #1e40af; /* blue-800 */
+
+            --dashboard-section-gray-bg: #f9fafb; /* gray-50 */
+            --dashboard-section-gray-text: #1f2937; /* gray-800 */
+
+            --dashboard-section-green-bg: #ecfdf5; /* green-50 */
+            --dashboard-section-green-text: #065f46; /* green-800 */
+
+            --dashboard-section-purple-bg: #f5f3ff; /* purple-50 */
+            --dashboard-section-purple-text: #5b21b6; /* purple-800 */
+
+            --dashboard-section-yellow-bg: #fffdf0; /* yellow-50 */
+            --dashboard-section-yellow-text: #92400e; /* yellow-800 */
+
+            --dashboard-section-indigo-bg: #eef2ff; /* indigo-50 */
+            --dashboard-section-indigo-text: #3730a3; /* indigo-800 */
+
+            /* MindLift FCU Page Specific Colors (Light Mode) */
+            --mindlift-color: #7B68EE; /* MediumPurple for MindLift theme */
+            --mindlift-accent-color: #9370DB; /* Brighter purple */
+            --fcu-color: #4CAF50; /* Green for currency */
+            --fcu-accent-color: #66BB6A; /* Lighter green */
+            --muted-text-light: #6e6e73; /* Common muted text for light mode */
+            --fcu-disclaimer-color: #cc0000; /* Red for warning */
+
+            --fcu-card-bg-light: #ffffff;
+            --fcu-border-light: #e8e8ed;
+            --fcu-input-bg-light: #f5f5f7;
+            --fcu-input-border-light: #e8e8ed;
+            --fcu-input-text-light: #1d1d1f;
+        }
+
+        /* Dark Mode Styles - Overriding variables */
+        body.dark-mode {
+            --body-bg: #1a1a1a;
+            --body-text: #f5f5f7;
+
+            /* Global Header/Footer Colors (Dark Mode) */
+            --global-header-bg: rgba(26, 26, 26, 0.9);
+            --global-header-border: #333;
+            --global-header-text: #f5f5f7;
+            --global-header-link-hover: #66b2ff;
+            --global-header-button-bg: #66b2ff;
+            --global-header-button-text: #1d1d1f;
+            --global-header-toggle-bg: #3a3a3a;
+            --global-header-toggle-text: #f5f5f7;
+            --global-header-toggle-focus: rgba(102, 178, 255, 0.5);
+
+            --global-footer-bg: #1a1a1a;
+            --global-footer-text: #888;
+            --global-footer-border: #333;
+            --global-footer-link-hover: #f5f5f7; /* Lighter on hover in dark mode */
+
+            /* Dashboard Specific Colors (Dark Mode) */
+            --dashboard-main-bg: #1a1a1a; /* Darker background for the overall dashboard wrapper */
+            --dashboard-sidebar-bg: #111827; /* Even darker for sidebar */
+            --dashboard-sidebar-text: #f5f5f7; /* Light text for sidebar */
+            --dashboard-sidebar-hover-bg: #1f2937; /* Slightly lighter gray for sidebar hover */
+            --dashboard-mindlift-highlight-bg: #1d4ed8; /* Darker blue for MindLift highlight */
+
+            --dashboard-section-blue-bg: #1e3a8a; /* Darker blue for sections */
+            --dashboard-section-blue-text: #bfdbfe; /* Lighter text */
+
+            --dashboard-section-gray-bg: #1f2937; /* Darker gray for sections */
+            --dashboard-section-gray-text: #e5e7eb; /* Lighter text */
+
+            --dashboard-section-green-bg: #064e3b; /* Darker green for sections */
+            --dashboard-section-green-text: #a7f3d0; /* Lighter text */
+
+            --dashboard-section-purple-bg: #4c1d95; /* Darker purple for sections */
+            --dashboard-section-purple-text: #d8b4fe; /* Lighter text */
+
+            --dashboard-section-yellow-bg: #78350f; /* Darker yellow for sections */
+            --dashboard-section-yellow-text: #fde68a; /* Lighter text */
+
+            --dashboard-section-indigo-bg: #312e81; /* Darker indigo for sections */
+            --dashboard-section-indigo-text: #c7d2fe; /* Lighter text */
+
+            /* MindLift FCU Page Specific Colors (Dark Mode) */
+            --muted-text-dark: #a0a0a5; /* Common muted text for dark mode */
+
+            --fcu-card-bg-dark: #2a2a2e;
+            --fcu-border-dark: #3a3a3e;
+            --fcu-input-bg-dark: #1a1a1c;
+            --fcu-input-border-dark: #3a3a3e;
+            --fcu-input-text-dark: #f5f5f7;
+        }
+
+        /* Apply body variables */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            background-color: var(--body-bg);
+            color: var(--body-text);
+        }
+
+        /* Global Application Header Styling */
+        #global-app-header {
+            background-color: var(--global-header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--global-header-border);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            sm:flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem; /* py-4 px-6 */
+            md:padding: 1rem 3rem; /* md:px-12 */
+        }
+        #global-app-header .header-content-wrapper { /* Inner container for header content */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px; /* Aligns with main content container */
+            margin: 0 auto;
+        }
+        #global-app-header h1 {
+            color: var(--global-header-text);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            sm:margin-bottom: 0;
+        }
+        #global-app-header nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            sm:justify-content: flex-end;
+            align-items: center;
+            gap: 0.5rem;
+            sm:gap: 1rem;
+        }
+        #global-app-header nav a {
+            color: var(--global-header-text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        #global-app-header nav a:hover {
+            color: var(--global-header-link-hover);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        #global-app-header nav a.cta-button { /* Sign Up button */
+            background-color: var(--global-header-button-bg);
+            color: var(--global-header-button-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--global-header-button-bg);
+        }
+        #global-app-header nav a.cta-button:hover {
+            background-color: var(--global-header-link-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        #global-app-header .nav-actions-toggles { /* Container for language/theme toggles */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* space-x-2 */
+            margin-left: 1rem; /* ml-4 */
+        }
+        #global-app-header select, #global-app-header button {
+            padding: 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            background-color: var(--global-header-toggle-bg);
+            color: var(--global-header-toggle-text);
+            transition: all 0.2s ease-in-out;
+        }
+        #global-app-header select:focus, #global-app-header button:focus {
+            box-shadow: 0 0 0 2px var(--global-header-toggle-focus);
+        }
+        #global-app-header .hamburger-menu {
+            display: none; /* Hidden by default for desktop */
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--global-header-text);
+            transition: color 0.3s ease;
+        }
+        .dark-mode #global-app-header .hamburger-menu {
+            color: var(--global-header-text);
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem; /* Add padding to main content area */
+            background-color: var(--dashboard-main-bg); /* Default background for main content area */
+        }
+
+        /* Common wrapper for switchable page content */
+        .page-content-wrapper {
+            width: 100%;
+            max-width: 1200px; /* Aligns with global header/footer container */
+            margin: 0 auto;
+        }
+
+        /* Dashboard specific container */
+        #dashboard-view .dashboard-container {
+            background-color: var(--fcu-card-bg-light); /* Uses card-bg-light for white card */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px var(--container-shadow);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            lg:flex-direction: row;
+            overflow: hidden;
+            margin-bottom: 2rem; /* Space between dashboard and other potential content */
+        }
+        .dark-mode #dashboard-view .dashboard-container {
+            background-color: var(--fcu-card-bg-dark);
+        }
+
+        /* Sidebar styles */
+        #dashboard-view .dashboard-sidebar {
+            background-color: var(--dashboard-sidebar-bg);
+            color: var(--dashboard-sidebar-text);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-radius: 0.75rem;
+            lg:border-radius: 0.75rem 0 0 0.75rem;
+            overflow-y: auto;
+            max-height: 80vh;
+            lg:max-height: none;
+            width: 100%;
+            lg:width: 1/4;
+        }
+        #dashboard-view .dashboard-sidebar ul li {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+        }
+        #dashboard-view .dashboard-sidebar ul li:hover {
+            background-color: var(--dashboard-sidebar-hover-bg);
+        }
+        #dashboard-view .dashboard-sidebar ul li.highlight {
+            font-weight: 600;
+            background-color: var(--dashboard-mindlift-highlight-bg);
+        }
+
+        /* Main content area of the dashboard */
+        #dashboard-view .dashboard-content-area {
+            width: 100%;
+            lg:width: 3/4;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            overflow-y: auto;
+            max-height: 80vh;
+            lg:max-height: none;
+        }
+
+        /* Dashboard section cards */
+        #dashboard-view .dashboard-section-card {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Specific dashboard section backgrounds and text colors */
+        #dashboard-view .dashboard-section-blue {
+            background-color: var(--dashboard-section-blue-bg);
+            color: var(--dashboard-section-blue-text);
+        }
+        #dashboard-view .dashboard-section-yellow {
+            background-color: var(--dashboard-section-yellow-bg);
+            color: var(--dashboard-section-yellow-text);
+        }
+        #dashboard-view .dashboard-section-indigo {
+            background-color: var(--dashboard-section-indigo-bg);
+            color: var(--dashboard-section-indigo-text);
+        }
+        #dashboard-view .dashboard-section-gray {
+            background-color: var(--dashboard-section-gray-bg);
+            color: var(--dashboard-section-gray-text);
+        }
+        #dashboard-view .dashboard-section-green {
+            background-color: var(--dashboard-section-green-bg);
+            color: var(--dashboard-section-green-text);
+        }
+        #dashboard-view .dashboard-section-purple {
+            background-color: var(--dashboard-section-purple-bg);
+            color: var(--dashboard-section-purple-text);
+        }
+        #dashboard-view .dashboard-section-green .bg-white { /* Specific pricing card background */
+            background-color: var(--fcu-card-bg-light);
+        }
+        .dark-mode #dashboard-view .dashboard-section-green .bg-white {
+            background-color: var(--fcu-card-bg-dark);
+        }
+
+
+        /* MindLift FCU Page Specific Styles (scoped to #mindlift-fcu-view) */
+        #mindlift-fcu-view .mindlift-fcu-header-internal {
+            background-color: var(--fcu-card-bg-light);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--fcu-border-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal {
+            background-color: var(--fcu-card-bg-dark);
+            border-bottom-color: var(--fcu-border-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--body-text);
+            transition: color 0.3s ease;
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .logo {
+            color: var(--body-text);
+        }
+        #mindlift-fcu-view .mindlift-fcu-header-internal .logo-faa {
+            color: var(--primary-color);
+        }
+        #mindlift-fcu-view .mindlift-fcu-header-internal .logo-buildnest {
+            color: var(--body-text);
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .logo-buildnest {
+            color: var(--body-text);
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #mindlift-fcu-view .mindlift-fcu-header-internal .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        #mindlift-fcu-view .mindlift-fcu-header-internal .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--body-text);
+            transition: color 0.3s ease;
+        }
+        .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .hamburger-menu {
+            color: var(--body-text);
+        }
+
+        #mindlift-fcu-view .fcu-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--fcu-color) 0%, var(--fcu-accent-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+            max-width: 1160px;
+        }
+        #mindlift-fcu-view .fcu-hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.05em;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        #mindlift-fcu-view .fcu-hero p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        #mindlift-fcu-view .fcu-hero .cta-button {
+            background-color: white;
+            color: var(--fcu-color);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #mindlift-fcu-view .fcu-hero .cta-button:hover {
+            background-color: #f0f0f0;
+            color: var(--fcu-accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        #mindlift-fcu-view .section-padding {
+            padding: 80px 20px;
+            background-color: var(--fcu-card-bg-light);
+            border-bottom: 1px solid var(--fcu-border-light);
+            border-top: 1px solid var(--fcu-border-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode #mindlift-fcu-view .section-padding {
+            background-color: var(--fcu-card-bg-dark);
+            border-bottom-color: var(--fcu-border-dark);
+            border-top-color: var(--fcu-border-dark);
+        }
+        #mindlift-fcu-view .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        #mindlift-fcu-view .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--body-text);
+            transition: color 0.3s ease;
+        }
+        .dark-mode #mindlift-fcu-view .section-title {
+            color: var(--body-text);
+        }
+
+        #mindlift-fcu-view .content-section {
+            padding: 60px 20px;
+            text-align: left;
+        }
+        #mindlift-fcu-view .content-section h2, #mindlift-fcu-view .content-section h3 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #mindlift-fcu-view .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            color: var(--muted-text-light);
+        }
+        .dark-mode #mindlift-fcu-view .content-section p {
+            color: var(--muted-text-dark);
+        }
+        #mindlift-fcu-view .content-section ul {
+            list-style: disc;
+            padding-left: 25px;
+            margin-bottom: 20px;
+            color: var(--muted-text-light);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .dark-mode #mindlift-fcu-view .content-section ul {
+            color: var(--muted-text-dark);
+        }
+        #mindlift-fcu-view .content-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        #mindlift-fcu-view .finance-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        #mindlift-fcu-view .finance-card {
+            background-color: var(--fcu-card-bg-light);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--fcu-border-light);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dark-mode #mindlift-fcu-view .finance-card {
+            background-color: var(--fcu-card-bg-dark);
+            border-color: var(--fcu-border-dark);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        #mindlift-fcu-view .finance-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--body-text);
+        }
+        .dark-mode #mindlift-fcu-view .finance-card h3 {
+            color: var(--body-text);
+        }
+        #mindlift-fcu-view .finance-card .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #mindlift-fcu-view .finance-card label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--body-text);
+        }
+        .dark-mode #mindlift-fcu-view .finance-card label {
+            color: var(--body-text);
+        }
+        #mindlift-fcu-view .finance-card input[type="number"],
+        #mindlift-fcu-view .finance-card select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--fcu-input-border-light);
+            border-radius: 8px;
+            background-color: var(--fcu-input-bg-light);
+            color: var(--fcu-input-text-light);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark-mode #mindlift-fcu-view .finance-card input,
+        .dark-mode #mindlift-fcu-view .finance-card select {
+            background-color: var(--fcu-input-bg-dark);
+            border-color: var(--fcu-input-border-dark);
+            color: var(--fcu-input-text-dark);
+        }
+        #mindlift-fcu-view .finance-card input:focus,
+        #mindlift-fcu-view .finance-card select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+        }
+        #mindlift-fcu-view .finance-card .result-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            color: var(--fcu-color);
+            min-height: 24px;
+        }
+        #mindlift-fcu-view .finance-card .action-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #mindlift-fcu-view .finance-card .action-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        #mindlift-fcu-view .disclaimer-section {
+            background-color: var(--fcu-card-bg-light);
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--fcu-disclaimer-color);
+            border-top: 1px solid var(--fcu-border-light);
+            margin-top: 40px;
+        }
+        .dark-mode #mindlift-fcu-view .disclaimer-section {
+            background-color: var(--fcu-card-bg-dark);
+            border-top-color: var(--fcu-border-dark);
+        }
+        #mindlift-fcu-view .disclaimer-section p strong {
+            font-weight: 700;
+        }
+
+
+        /* Global Application Footer Styling */
+        #global-app-footer {
+            background-color: var(--global-footer-bg);
+            color: var(--global-footer-text);
+            padding: 2rem 1.5rem; /* py-8 px-6 */
+            md:padding: 2rem 3rem; /* md:px-12 */
+            font-size: 0.85rem;
+            border-top: 1px solid var(--global-footer-border);
+            text-align: center;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+        #global-app-footer .footer-links-wrapper { /* Inner container for footer links */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        #global-app-footer .footer-links-wrapper a {
+            color: var(--global-footer-text);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+        }
+        #global-app-footer .footer-links-wrapper a:hover {
+            color: var(--global-footer-link-hover);
+        }
+
+        /* Custom scrollbar for the sidebar */
+        .sidebar-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .sidebar-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #global-app-header {
+                padding: 1rem;
+            }
+            #global-app-header h1 {
+                font-size: 1.2rem;
+            }
+            #global-app-header nav {
+                margin-top: 1rem;
+                flex-direction: column;
+                position: absolute;
+                top: 60px; /* Adjusted to be below header on mobile */
+                left: 0;
+                width: 100%;
+                background-color: var(--global-header-bg);
+                border-bottom: 1px solid var(--global-header-border);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+                display: none; /* Hidden by default on mobile */
+            }
+            .dark-mode #global-app-header nav {
+                background-color: var(--fcu-card-bg-dark); /* Use dark card bg for mobile nav */
+                border-bottom-color: var(--fcu-border-dark);
+            }
+            #global-app-header nav.active {
+                display: flex;
+            }
+            #global-app-header nav .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            #global-app-header nav .nav-list li {
+                width: 100%;
+            }
+            #global-app-header nav .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            #global-app-header nav .nav-actions-toggles {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+            #global-app-header select, #global-app-header button {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+            #global-app-header .hamburger-menu {
+                display: block;
+            }
+
+            main {
+                padding: 1rem;
+            }
+            .page-content-wrapper {
+                padding: 0;
+                margin: 0;
+            }
+            #dashboard-view .dashboard-container {
+                flex-direction: column;
+            }
+            #dashboard-view .dashboard-sidebar {
+                border-radius: 0.75rem 0.75rem 0 0;
+                max-height: 50vh;
+            }
+            #dashboard-view .dashboard-content-area {
+                padding: 1rem;
+            }
+            #dashboard-view .dashboard-section-card {
+                padding: 1rem;
+            }
+
+            /* MindLift FCU Page Responsive */
+            #mindlift-fcu-view .mindlift-fcu-header-internal {
+                padding: 15px 10px;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .main-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: var(--fcu-card-bg-light);
+                border-bottom: 1px solid var(--fcu-border-light);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+            }
+            .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .main-nav {
+                background-color: var(--fcu-card-bg-dark);
+                border-bottom-color: var(--fcu-border-dark);
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .main-nav.active {
+                display: flex;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list li {
+                width: 100%;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .nav-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid var(--fcu-border-light);
+            }
+            .dark-mode #mindlift-fcu-view .mindlift-fcu-header-internal .nav-actions {
+                border-top-color: var(--fcu-border-dark);
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .nav-actions .cta-button {
+                width: calc(100% - 40px);
+                margin: 0 20px;
+                text-align: center;
+            }
+            #mindlift-fcu-view .mindlift-fcu-header-internal .hamburger-menu {
+                display: block;
+            }
+
+            #mindlift-fcu-view .fcu-hero h1 {
+                font-size: 3rem;
+            }
+            #mindlift-fcu-view .fcu-hero p {
+                font-size: 1.2rem;
+            }
+            #mindlift-fcu-view .section-title {
+                font-size: 1.8rem;
+            }
+            #mindlift-fcu-view .finance-card-grid {
+                grid-template-columns: 1fr;
+            }
+            #mindlift-fcu-view .mindlift-fcu-footer-internal .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            #mindlift-fcu-view .mindlift-fcu-footer-internal .footer-links {
+                justify-content: center;
+            }
+            #mindlift-fcu-view .mindlift-fcu-footer-internal .footer-column {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Global Application Header -->
+    <header id="global-app-header">
+        <div class="header-content-wrapper">
+            <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="fruitfulBrand">Fruitful™</h1>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="#" onclick="showView('dashboard-view'); updateLanguage(localStorage.getItem('language') || 'en'); return false;">Dashboard</a></li>
+                    <li><a href="#" onclick="showView('mindlift-fcu-view'); updateLanguage(localStorage.getItem('language') || 'en'); return false;">MindLift FCU</a></li>
+                    <li><a href="https://faa.zone/#features" data-i18n="navFeatures">Features</a></li>
+                    <li><a href="https://faa.zone/#shareprice" data-i18n="navSignal">Signal</a></li>
+                    <li><a href="https://faa.zone/#vault-access" data-i18n="navVault">Vault</a></li>
+                    <li><a href="https://faa.zone/#treaty" data-i18n="navTreaty">Treaty</a></li>
+                    <li><a href="https://faa.zone/#vaultmesh-section" data-i18n="navVaultMesh">VaultMesh</a></li>
+                    <li><a href="https://fruitfulcratedance.com/" data-i18n="navCrateDance">Fruitful Crate Dance</a></li>
+                    <li><a href="https://faa.zone/careers/hiring-homepage.html" data-i18n="navCareers">Careers</a></li>
+                </ul>
+                <div class="nav-actions-toggles">
+                    <a href="https://faa.zone/legal/securesign.html" class="cta-button" data-i18n="navSecureSign">SecureSign</a>
+                    <a href="https://faa.zone/signup.html" class="cta-button" data-i18n="navSignUp">Sign Up</a>
+                    <select id="language-toggle" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="ar">العربية</option>
+                        <option value="zh">中文</option>
+                    </select>
+                    <button id="theme-toggle" aria-label="Toggle light/dark theme">
+                        ☀️
+                    </button>
+                </div>
+            </nav>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="page-content-wrapper active-view">
+            <div class="dashboard-container">
+                <!-- Left Sidebar / Navigation -->
+                <div class="dashboard-sidebar sidebar-scroll">
+                    <div class="mb-6">
+                        <h1 class="text-xl sm:text-2xl font-bold flex items-center">
+                            <span role="img" aria-label="books" class="mr-2 text-2xl">📚</span> FAA™ Education & IP Dashboard
+                        </h1>
+                    </div>
+                    <ul id="sidebar-brands-list" class="space-y-2 text-sm sm:text-base">
+                        <!-- Brands will be dynamically loaded here by JavaScript -->
+                    </ul>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="dashboard-content-area">
+                    <!-- Section for Selected Brand Details -->
+                    <section id="selected-brand-details" class="dashboard-section-card dashboard-section-purple" style="display: none;">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="magnifying glass" class="mr-2 text-2xl">🔍</span> Selected Brand Details: <span id="selected-brand-name" class="ml-2"></span>
+                        </h2>
+                        <div id="selected-brand-subnodes" class="space-y-2">
+                            <!-- Subnodes for selected brand will be loaded here -->
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            For more information, visit the <a id="selected-brand-link" href="#" class="text-blue-600 hover:underline dark:text-blue-400">brand's dedicated page</a>.
+                        </p>
+                    </section>
+
+                    <!-- MindLift Core Protocol Overview -->
+                    <section class="dashboard-section-card dashboard-section-blue">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="rocket" class="mr-2 text-2xl">🚀</span> MindLift™ Core Protocol Overview
+                        </h2>
+                        <p class="leading-relaxed">
+                            MindLift™ is the premier <span class="font-semibold">FAA.ZONE</span> platform, revolutionizing <span role="img" aria-label="books" class="mx-1">📚</span> Education & IP operations. Leveraging the global PulseGrid, it offers robust data synchronization and superior efficiency.
+                        </p>
+                    </section>
+
+                    <!-- List of All Brands -->
+                    <section class="dashboard-section-card dashboard-section-yellow">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="lightbulb" class="mr-2 text-2xl">💡</span> All Brands
+                        </h2>
+                        <div id="all-brands-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2">
+                            <!-- Brands will be dynamically loaded here by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Subnode Overview -->
+                    <section class="dashboard-section-card dashboard-section-indigo">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="puzzle piece" class="mr-2 text-2xl">🧩</span> Subnode Overview
+                        </h2>
+                        <div id="subnode-overview-list" class="space-y-4">
+                            <!-- Subnodes will be dynamically loaded here by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Key Features -->
+                    <section class="dashboard-section-card dashboard-section-gray">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="controls" class="mr-2 text-2xl">🎛️</span> Key Features
+                        </h2>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Direct integration with FAA <span role="img" aria-label="receipt" class="mx-1">🧾</span> Professional Services Mesh.</li>
+                            <li>Advanced data sync with BoostTrack.</li>
+                            <li>Real-time compliance validation via VaultLink™ (education-ip specific).</li>
+                            <li>Scalable architecture for x35 node expansion.</li>
+                            <li>Predictive analytics module for MindLift performance.</li>
+                            <li>API access for seamless interoperability.</li>
+                            <li>Cross-sector data interoperability.</li>
+                            <li>Blockchain-secured data provenance.</li>
+                            <li>Secure multi-party computation support.</li>
+                        </ul>
+                    </section>
+
+                    <!-- Pricing Structure -->
+                    <section class="dashboard-section-card dashboard-section-green">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="credit card" class="mr-2 text-2xl">💳</span> Pricing Structure
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Starter Node Card -->
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-green-200 dark:bg-gray-700 dark:border-green-700">
+                                <h3 class="text-lg font-semibold text-green-700 mb-2 dark:text-green-300">Starter Node</h3>
+                                <p class="text-3xl font-bold text-green-900 mb-4 dark:text-green-100">FCU 81/mo</p>
+                                <p class="text-gray-600 mb-4 dark:text-gray-300">Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.</p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1 dark:text-gray-300">
+                                    <li>Essential features</li>
+                                    <li>Basic data sync</li>
+                                    <li>Community support</li>
+                                </ul>
+                            </div>
+                            <!-- Pro Grid Card -->
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-green-300 dark:bg-gray-700 dark:border-green-700">
+                                <h3 class="text-lg font-semibold text-green-700 mb-2 dark:text-green-300">Pro Grid</h3>
+                                <p class="text-3xl font-bold text-green-900 mb-4 dark:text-green-100">FCU 324/mo</p>
+                                <p class="text-gray-600 mb-4 dark:text-gray-300">Designed for growing firms needing advanced capabilities. Includes 7 core features and enhanced performance.</p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1 dark:text-gray-300">
+                                    <li>Advanced features</li>
+                                    <li>High-volume data processing</li>
+                                    <li>Priority support</li>
+                                    <li>Expanded analytics</li>
+                                </ul>
+                            </div>
+                            <!-- Enterprise Omni-Sync Card -->
+                            <div class="bg-white p-6 rounded-lg shadow-md border border-green-400 dark:bg-gray-700 dark:border-green-700">
+                                <h3 class="text-lg font-semibold text-green-700 mb-2 dark:text-green-300">Enterprise Omni-Sync</h3>
+                                <p class="text-3xl font-bold text-green-900 mb-4 dark:text-green-100">Custom pricing</p>
+                                <p class="text-gray-600 mb-4 dark:text-gray-300">For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.</p>
+                                <ul class="list-disc list-inside text-gray-700 space-y-1 dark:text-gray-300">
+                                    <li>Full VaultMesh access</li>
+                                    <li>Dedicated account management</li>
+                                    <li>Custom integrations</li>
+                                    <li>24/7 Premium Support</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- FAA Metadata & Compliance -->
+                    <section class="dashboard-section-card dashboard-section-purple">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="link" class="mr-2 text-2xl">🔗</span> FAA Metadata & Compliance
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div><span class="font-semibold">Product ID:</span> MIN-EDU-7795</div>
+                            <div><span class="font-semibold">VaultID:</span> VAULT-0HJ4</div>
+                            <div><span class="font-semibold">Signal Echo Layer:</span> Layer Beta v2.4</div>
+                            <div><span class="font-semibold">Deployment Zone:</span> Zone C 2</div>
+                            <div><span class="font-semibold">Security Rating:</span> FAA-SEC A</div>
+                            <div><span class="font-semibold">Active Nodes:</span> 2,072</div>
+                            <div><span class="font-semibold">Last Audit:</span> 2025-06-25</div>
+                            <div><span class="font-semibold">Compliance Status:</span> Active & Certified</div>
+                        </div>
+                    </section>
+
+                    <!-- Real-Time Metrics Overview -->
+                    <section class="dashboard-section-card dashboard-section-blue">
+                        <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center">
+                            <span role="img" aria-label="chart" class="mr-2 text-2xl">📊</span> Real-Time Metrics Overview:
+                        </h2>
+                        <div class="space-y-2">
+                            <p><span class="font-semibold">Current Pulse Activity:</span> 72,226 pulses/sec</p>
+                            <p><span class="font-semibold">Data Volume Processed (24h):</span> 83.85 TB</p>
+                            <p><span class="font-semibold">Latency Average:</span> 18 ms</p>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="font-semibold mb-2">VaultTrace™ Ledger Entries:</h3>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>#3496 - MINDL Pulse Tx - Confirmed</li>
+                                <li>#2872 - EDUCA Data Sync - Completed</li>
+                                <li>#8179 - Node Actuation Confirm - Active</li>
+                                <li>#5586 - VaultTrace Audit - Review</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- MindLift FCU & Exchange Protocol View -->
+        <div id="mindlift-fcu-view" class="page-content-wrapper" style="display: none;">
+            <header class="mindlift-fcu-header-internal">
+                <div class="container header-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+                    </a>
+                    <nav class="main-nav">
+                        <ul class="nav-list">
+                            <li><a href="#overview">Overview</a></li>
+                            <li><a href="#fcu-explained">FCU Explained</a></li>
+                            <li><a href="#payment-portal">Payment Portal</a></li>
+                            <li><a href="#currency-exchange">Currency Exchange</a></li>
+                        </ul>
+                        <div class="nav-actions">
+                            <a href="contact-sales.html?subject=MindLift Sales Inquiry" class="cta-button nav-cta">Contact Sales</a>
+                        </div>
+                    </nav>
+                    <button class="hamburger-menu" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </header>
+
+            <section id="overview" class="fcu-hero">
+                <div class="container">
+                    <h1>MindLift™ FCU & Exchange Protocol</h1>
+                    <p>Facilitating seamless transactions and transparent value exchange within the FAA.zone ecosystem using Fruitful Currency Units (FCU).</p>
+                    <a href="#payment-portal" class="cta-button">Access Payment Portal &rarr;</a>
+                </div>
+            </section>
+
+            <section id="fcu-explained" class="content-section section-padding">
+                <div class="container">
+                    <h2 class="section-title">Understanding Fruitful Currency Units (FCU)</h2>
+                    <p>FCU, or Fruitful Currency Unit, is the standardized unit of value exchange within the FAA.zone ecosystem. It is designed to simplify transactions across our diverse sectors, from Education & IP to Motion, Media & Sonic, by providing a consistent and transparent measure of value for services, data, and resources.</p>
+                    <p>FCU aims to streamline the financial interactions, making pricing clear and predictable for all users and partners.</p>
+                    <ul>
+                        <li><strong>Standardized Value:</strong> One universal unit for all FAA.zone services.</li>
+                        <li><strong>Transparent Transactions:</strong> All FCU transactions are recorded on the VaultTrace™ Ledger for auditability.</li>
+                        <li><strong>Ecosystem Integration:</strong> Directly linked to service consumption and resource allocation within the PulseGrid™.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="payment-portal" class="content-section section-padding" style="background-color: var(--fcu-input-bg-light);">
+                <div class="container">
+                    <h2 class="section-title">Payment Portal</h2>
+                    <p>Easily acquire FCU for your MindLift™ subscriptions or other FAA.zone services. Select your desired service and quantity to proceed.</p>
+                    <div class="finance-card-grid">
+                        <div class="finance-card">
+                            <h3>Acquire FCU</h3>
+                            <div class="form-group">
+                                <label for="fcu-amount">Amount of FCU</label>
+                                <input type="number" id="fcu-amount" value="75" min="1" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="fcu-service">For MindLift™ Plan</label>
+                                <select id="fcu-service">
+                                    <option value="starter">MindLift Starter Node (FCU 75/mo)</option>
+                                    <option value="pro">MindLift Pro Grid (FCU 205/mo)</option>
+                                    <option value="custom">Enterprise Omni-Sync (Custom)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="payment-method">Payment Method</label>
+                                <select id="payment-method">
+                                    <option value="usd_card">USD (Credit Card)</option>
+                                    <option value="usd_bank">USD (Bank Transfer)</option>
+                                    <option value="btc">Bitcoin (BTC)</option>
+                                    <option value="eth">Ethereum (ETH)</option>
+                                    <option value="other_crypto">Other Crypto</option>
+                                </select>
+                            </div>
+                            <p class="result-text" id="payment-info-display"></p>
+                            <button class="action-button" onclick="simulatePayment()">Pay Now</button>
+                        </div>
+
+                        <div class="finance-card">
+                            <h3>Payment & PayNet Links</h3>
+                            <p style="font-size: 1rem; color: var(--muted-text-light); margin-bottom: 20px;">Utilize our secure PayNet links for direct, verified transactions within the FAA.zone network.</p>
+                            <p style="font-size: 0.9rem; color: var(--muted-text-light);">
+                                <strong>PayNet Direct Link:</strong> <a href="#" style="color: var(--primary-color); text-decoration: none;">Secure.FAA.zone/PayNet/FCU-Tx</a><br>
+                                <strong>Partner API Integration:</strong> <a href="developer-api.html" style="color: var(--primary-color); text-decoration: none;">View PayNet API Docs</a>
+                            </p>
+                            <h4 style="margin-top: 20px; font-size: 1.2rem; color: var(--body-text);">Accepted Payment Methods:</h4>
+                            <ul>
+                                <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fas fa-credit-card" style="margin-right: 8px;"></i> Major Credit/Debit Cards</li>
+                                <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fab fa-bitcoin" style="margin-right: 8px;"></i> Bitcoin (BTC)</li>
+                                <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fab fa-ethereum" style="margin-right: 8px;"></i> Ethereum (ETH)</li>
+                                <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fas fa-money-bill-wave" style="margin-right: 8px;"></i> Bank Transfers (Fiat)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="currency-exchange" class="content-section section-padding">
+                <div class="container">
+                    <h2 class="section-title">Currency Exchange & Conversion</h2>
+                    <p>Convert between various fiat currencies, cryptocurrencies, and FCU using our transparent exchange protocol.</p>
+                    <div class="finance-card-grid">
+                        <div class="finance-card">
+                            <h3>Convert Currencies</h3>
+                            <div class="form-group">
+                                <label for="from-currency">From</label>
+                                <select id="from-currency">
+                                    <option value="usd">USD</option>
+                                    <option value="zar">ZAR</option>
+                                    <option value="eur">EUR</option>
+                                    <option value="btc">Bitcoin (BTC)</option>
+                                    <option value="eth">Ethereum (ETH)</option>
+                                    <option value="fcu">FCU</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="to-currency">To</label>
+                                <select id="to-currency">
+                                    <option value="fcu">FCU</option>
+                                    <option value="usd">USD</option>
+                                    <option value="zar">ZAR</option>
+                                    <option value="eur">EUR</option>
+                                    <option value="btc">Bitcoin (BTC)</option>
+                                    <option value="eth">Ethereum (ETH)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exchange-amount">Amount</label>
+                                <input type="number" id="exchange-amount" value="1" min="0.01" step="0.01">
+                            </div>
+                            <p class="result-text" id="exchange-quote-display"></p>
+                            <button class="action-button" onclick="simulateExchangeQuote()">Get Quote</button>
+                            <button class="action-button" onclick="simulateExchange()">Exchange Now</button>
+                        </div>
+
+                        <div class="finance-card">
+                            <h3>Exchange Protocol Details</h3>
+                            <p style="font-size: 1rem; color: var(--muted-text-light); margin-bottom: 20px;">Our exchange protocol ensures fair and transparent conversion rates. Rates are dynamic and based on real-time market data (simulated).</p>
+                            <p style="font-size: 0.9rem; color: var(--muted-text-light);">
+                                <strong>Current FCU Rate (Simulated):</strong> 1 FCU ≈ 1.25 USD (Subject to change)<br>
+                                <strong>Transaction Fees:</strong> 0.5% per conversion (simulated)<br>
+                                <strong>Processing Time:</strong> Instant (simulated)<br>
+                            </p>
+                            <h4 style="margin-top: 20px; font-size: 1.2rem; color: var(--body-text);">Supported Currencies:</h4>
+                            <ul>
+                                <li style="font-size: 0.95rem;">Fiat: USD, ZAR, EUR, GBP</li>
+                                <li style="font-size: 0.95rem;">Crypto: Bitcoin (BTC), Ethereum (ETH), Litecoin (LTC)</li>
+                                <li style="font-size: 0.95rem;">Internal: Fruitful Currency Units (FCU)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="disclaimer-section">
+                <div class="container">
+                    <p><strong>Disclaimer:</strong> This page is a static HTML demonstration. It does NOT process any real financial transactions, exchange real currency, or interact with live payment gateways or cryptocurrency networks. All displayed prices, rates, and transaction statuses are simulated for illustrative purposes only. Do NOT enter any real personal or financial information. For actual FAA.zone services and transactions, please refer to our official and secure platforms.</p>
+                </div>
+            </section>
+
+            <footer class="mindlift-fcu-footer-internal">
+                <div class="container footer-content">
+                    <div class="footer-brand">
+                        <a href="index.html" class="logo">
+                            <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+                        </a>
+                        <p class="copyright">&copy; 2025 FAA.zone. All systems, symbols, and brand echoes protected by the Omni Present Copyright™.</p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>BuildNest™</h4>
+                            <ul>
+                                <li><a href="https://faa.zone/#features">Features</a></li>
+                                <li><a href="https://faa.zone/#architecture">Use Cases</a></li>
+                                <li><a href="https://faa.zone/#connectivity">Pricing</a></li>
+                                <li><a href="https://faa.zone/plotvault.html">Modules</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>FAA.zone</h4>
+                            <ul>
+                                <li><a href="https://faa.zone/about-faa.html">About FAA Systems™</a></li>
+                                <li><a href="https://faa.zone/index.html">Omni Grid™</a></li>
+                                <li><a href="https://faa.zone/baobab-archive.html">Baobab Archive™</a></li>
+                                <li><a href="https://faa.zone/compliance.html">Compliance</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Connect</h4>
+                            <ul>
+                                <li><a href="https://faa.zone/contact-support.html">Contact Support</a></li>
+                                <li><a href="https://faa.zone/partner-program.html">Partner Program</a></li>
+                                <li><a href="https://faa.zone/developer-api.html">Developer API</a></li>
+                                <li><a href="https://faa.zone/legal-privacy.html">Legal & Privacy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+    <!-- Global Application Footer -->
+    <footer id="global-app-footer">
+        <div class="footer-links-wrapper">
+            <a href="https://education-ip.seedwave.faa.zone/privacy.html" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://education-ip.seedwave.faa.zone/terms.html" data-i18n="footerTerms">Terms</a>
+            <a href="https://education-ip.seedwave.faa.zone/contact.html" data-i18n="footerContact">Contact</a>
+            <a href="https://education-ip.seedwave.faa.zone/copyright.html" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://education-ip.seedwave.faa.zone/developers.html" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://education-ip.seedwave.faa.zone/vaultmesh.html" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://education-ip.seedwave.faa.zone/fruitful.html" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://education-ip.seedwave.faa.zone/faa.zone.html" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://education-ip.seedwave.faa.zone/about.html" data-i18n="footerAboutLink">About</a>
+            <a href="https://education-ip.seedwave.faa.zone/accessibility.html" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Language data for i18n
+        window.languageData = {
+            en: {
+                pageTitle: 'FAA™ Education & IP Dashboard', // Default for dashboard view
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.',
+            },
+            es: {
+                pageTitle: 'Panel de Educación y PI de la FAA™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyrightLink: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.',
+            },
+            fr: {
+                pageTitle: 'Tableau de Bord Éducation et PI de la FAA™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À Propos',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.',
+            },
+            ar: {
+                pageTitle: 'لوحة تحكم التعليم والملكية الفكرية في FAA™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'الميزات',
+                navSignal: 'الإشارة',
+                navVault: 'الخزنة',
+                navTreaty: 'المعاهدة',
+                navVaultMesh: 'شبكة الكهف',
+                navAbout: 'حول',
+                navCrateDance: 'رقصة الصندوق المثمر',
+                navCareers: 'الوظائف',
+                navSecureSign: 'توقيع آمن',
+                navSignUp: 'التسجيل',
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyrightLink: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMeshLink: 'شبكة الكهف',
+                footerFruitfulLink: 'مثمر',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyright: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.',
+            },
+            zh: {
+                pageTitle: 'FAA™ 教育与知识产权仪表板',
+                fruitfulBrand: '丰硕™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyrightLink: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMeshLink: '金库网格',
+                footerFruitfulLink: '丰硕',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。',
+            }
+        };
+
+        // Define the data arrays (from previous version)
+        const educationIpBrands = ['EduNest™', 'FormFlex™', 'ScrollBooks™', 'MindLift™', 'GridClass™', 'YouthSignal™', 'TalentNest™', 'PeerPath™', 'ScrollGrade™', 'LearnMesh™','EduChain™', 'SkillCast™', 'YouthForge™', 'QuizNet™', 'ScrollLabs™', 'LearnFlag™', 'ScholarMesh™', 'VaultEdu™', 'YouthSphere™', 'EduGlow™','LearnBloom™', 'MentorLoop™', 'YouthID™', 'ScrollQuiz™', 'PupilChain™', 'IdeaGrid™', 'VaultLearn™', 'SkillNest™', 'ClassFlow™', 'CertifyCast™','PathMentor™', 'IdeaNest™', 'SchoolVault™', 'LearnSignal™', 'GridBadge™', 'ScrollCraft™', 'MindBoard™', 'ClassEcho™', 'VaultPupil™', 'YouthSignal™','TeachStack™', 'StudyCast™', 'RoleGrid™', 'LearnFrame™', 'PulseAcademy™', 'GradeSync™', 'TeachCircle™', 'CampusNet™', 'StudyBoard™', 'ScrollPath™','LearnQuest™', 'EduNestPro™', 'LoopStudy™', 'GradeForge™', 'IdeaLink™', 'TeachTrack™', 'VaultClass™', 'BadgeMesh™', 'EduCast™', 'YouthGrid™','LearnProof™', 'PathCoach™', 'TalentID™', 'OmniPupil™', 'SchoolChain™', 'GradeVault™'];
+        // Updated EduNest subnodes based on the provided structure
+        const educationIpSubNodes = [['CurriculumForge', 'LicenseTrack'],['SkillWrap', 'GradeSync', 'CourseMap', 'IDTrack', 'PupilMesh'],['ChapterFlow', 'StoryTag', 'QuizLink', 'YieldRead', 'TextClaim'],['BoostTrack', 'LearnSignal', 'LevelUp', 'FocusPath', 'VaultPace'],['ClassNode', 'TeachSync', 'VaultBoard', 'EduAlert', 'NodeAttend'],['SignalDrop', 'SkillPing', 'PeerMesh', 'RoleAssign', 'TrackEcho'],['TalentVault', 'ClaimCoach', 'RoleTree', 'PayoutPath', 'CertifyNode'],['PeerMap', 'ConnectNode', 'SkillVote', 'PathSync', 'LearnOrbit'],['GradeID', 'TestVault', 'YieldCredit', 'ExamSync', 'ResultNode'],['MeshID', 'ModuleLink', 'ClassSync', 'ProgressTag', 'LoopNode'],['CourseLink', 'CreditVault', 'CertDrop', 'LearnKey', 'ScrollLedger'],['CastNode', 'MentorPing', 'PeerEcho', 'PayoutRank', 'TalentDrop'],['ForgePath', 'BuildMesh', 'IdeaClaim', 'LearnFoundry', 'PeerLoop'],['QuizTrigger', 'TestField', 'GradeWave', 'RecallGrid', 'PassSync'],['LabNode', 'ProjectClaim', 'IdeaTrace', 'SkillXP', 'ModuleYield'],['FlagRaise', 'SchoolLink', 'RegionTrack', 'PupilEcho', 'ClaimNode'],['MeshTrack', 'GradeRelay', 'ScrollDegree', 'LearnVault', 'StudyPulse'],['IDVault', 'CertChain', 'TranscriptGrid', 'SecureLearn', 'DegreeDrop'],['CircleCast', 'ClassLink', 'ScrollTribe', 'GroupEcho', 'PeerRing'],['SignalLight', 'LearnPulse', 'BrainSync', 'FlashGrade', 'EnlightNode'],['BloomNode', 'GrowthTrack', 'SkillSeed', 'EduSprout', 'PeerSoil'],['LoopConnect', 'WisdomPath', 'MentorVault', 'ScrollPing', 'TeachBond'],['IDSync', 'LearnerNode', 'ProofTag', 'IdentityScroll', 'JoinClass'],['QuizNode', 'AnswerTag', 'TimerMesh', 'ScoreClaim', 'ReviewPulse'],['PupilBlock', 'TaskNode', 'LedgerPath', 'EduEcho', 'LearnLock'],['IdeaDrop', 'GridThink', 'SparkVault', 'PeerPush', 'ThoughtClaim'],['SecureScroll', 'GradeLock', 'ChainTest', 'RecordMesh', 'PayoutGrade'],['NestGrow', 'RoleTree', 'PeerRoot', 'MentorNode', 'CertPulse'],['FlowSync', 'ClassRoute', 'PeerGroup', 'ScrollRing', 'LessonCast'],['CastAward', 'NodeBadge', 'VaultProof', 'ScrollCredit', 'ChainEarn'],['MentorMap', 'GrowthLink', 'TrailNode', 'ScrollCoach', 'PeerTrace'],['NestPath', 'SparkClaim', 'ScrollTree', 'PupilEcho', 'ThoughtPulse'],['VaultGate', 'IDBoard', 'RosterDrop', 'GridEnroll', 'SecureClass'],['SignalNode', 'BrainPing', 'LessonTrack', 'EduCast', 'PathAlert'],['BadgeSync', 'PathAward', 'TagNode', 'CreditDrop', 'CertLock'],['CraftScroll', 'YieldPath', 'PeerSkill', 'VaultMaker', 'ProjectPulse'],['BoardTag', 'ClassSignal', 'IdeaPost', 'TaskDrop', 'VoteMark'],['EchoNode', 'SyncMesh', 'StudentCast', 'AlertPing', 'ScrollPlay'],['PupilID', 'SecureClaim', 'GradeVault', 'TrackNode', 'CertTrigger'],['PeerAlert', 'LoopClaim', 'ScrollWave', 'VoiceDrop', 'IDMesh'],['StackLink', 'LessonPulse', 'GradeBeam', 'TrackNode', 'PeerPath'],['StudyStream', 'PeerJoin', 'QuizSignal', 'ReviewGrid', 'ClassLink'],['RoleMap', 'ClaimSync', 'PeerTree', 'IdentityPath', 'TagTrack'],['FrameNode', 'LessonTrace', 'PupilMesh', 'CastDrop', 'ScoreProof'],['AcademyPing', 'PeerLight', 'FocusPath', 'VaultLearn', 'BadgeSync'],['GradeLink', 'ResultEcho', 'TestMesh', 'PassTrack', 'VaultSheet'],['CircleCast', 'MentorPulse', 'ScrollBeam', 'IdeaClaim', 'PeerRing'],['CampusID', 'GroupPath', 'ScrollZone', 'PeerAlert', 'ConnectMesh'],['StudyNode', 'NoteTrace', 'ProjectGrid', 'SyncClaim', 'ViewRank'],['PathLink', 'VaultCredit', 'PeerYield', 'LessonGrid', 'ClassSync'],['QuestNode', 'MapTrack', 'StudyGoal', 'ProgressPath', 'PeerSignal'],['NestID', 'PathPulse', 'MentorNode', 'VaultGrade', 'PupilClaim'],['StudyLoop', 'GridSync', 'QuizWave', 'PeerCast', 'ReviewTrack'],['ForgeNode', 'GradeRing', 'ResultPush', 'CertPath', 'LearnLine'],['SparkLine', 'LoopLink', 'IdeaDrop', 'MentorPing', 'ClassTrace'],['ClassFlow', 'InstructorNode', 'FeedbackGrid', 'PeerScore', 'PathEcho'],['SecureNode', 'RosterClaim', 'EnrollTrack', 'PeerMap', 'ClassKey'],['BadgeID', 'VaultLink', 'ScrollProof', 'AwardBeam', 'PayoutPing'],['CoursePing', 'ClassSignal', 'LectureDrop', 'QuizRelay', 'PeerPush'],['MeshLearn', 'PeerTrace', 'StudyJoin', 'PupilMark', 'LessonSync'],['ProofID', 'CourseClaim', 'ScrollCert', 'VaultDrop', 'GradeLoop'],['CoachNode', 'RolePath', 'ScrollEcho', 'StudyChain', 'CertPush'],['TalentClaim', 'VaultPass', 'SkillMap', 'IDScroll', 'LearnLock'],['OmniLearn', 'ScrollLoop', 'ViewNode', 'ClassCast', 'IDTrack'],['LedgerLearn', 'BlockEnroll', 'VaultBoard', 'PeerPath', 'ClassFlow'],['VaultClaim', 'CreditPing', 'ScoreSheet', 'SecureDrop', 'LedgerTrack']];
+
+        // Helper function to create slugs from names
+        function getSlug(name) {
+            return name.toLowerCase().replace(/™/g, '').replace(/\s/g, '');
+        }
+
+        // --- API Keys and Firebase/Gemini Config ---
+        // These variables are expected to be provided by the execution environment.
+        // Fallback to empty strings or placeholders for local development.
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "DEMO_FIREBASE_KEY", authDomain: "demo.firebaseapp.com", projectId: "demo-project" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'education-ip-default-app';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : '';
+        const geminiApiKey = typeof __gemini_api_key !== 'undefined' ? __gemini_api_key : ''; // Ensure this is present for Gemini API calls
+
+        // --- Global Functions (made accessible to inline event handlers) ---
+
+        // Function to update text content based on selected language
+        function updateLanguage(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (window.languageData[lang] && window.languageData[lang][key]) {
+                    el.innerHTML = window.languageData[lang][key];
+                }
+            });
+            // Update page title based on current view
+            const currentView = document.querySelector('.page-content-wrapper[style*="display: block"]');
+            if (currentView) {
+                showView(currentView.id); // Re-call showView to update title
+            } else {
+                // Default title if no view is active (shouldn't happen on load)
+                document.title = window.languageData[lang]?.pageTitle || 'Fruitful Global';
+            }
+        }
+
+        // Function to manage view switching
+        function showView(viewId) {
+            document.querySelectorAll('.page-content-wrapper').forEach(view => {
+                view.style.display = 'none';
+            });
+            document.getElementById(viewId).style.display = 'block';
+
+            // Update page title based on view
+            if (viewId === 'dashboard-view') {
+                document.title = window.languageData[localStorage.getItem('language') || 'en']?.pageTitle || 'FAA™ Education & IP Dashboard';
+            } else if (viewId === 'mindlift-fcu-view') {
+                document.title = 'MindLift™ FCU & Exchange Protocol – FAA.zone';
+            }
+            // Close hamburger menu if open
+            const globalMainNav = document.querySelector('#global-app-header nav');
+            if (globalMainNav && globalMainNav.classList.contains('active')) {
+                globalMainNav.classList.remove('active');
+            }
+            // Also close internal FCU page's mobile nav if open
+            const fcuInternalNav = document.querySelector('#mindlift-fcu-view .main-nav');
+            if (fcuInternalNav && fcuInternalNav.classList.contains('active')) {
+                fcuInternalNav.classList.remove('active');
+            }
+        }
+
+        // Function to display brand details in the new section (made global)
+        function displayBrandDetails(brandIndex, selectedSubnodeName = null) {
+            const selectedBrandDetailsSection = document.getElementById('selected-brand-details');
+            const selectedBrandNameSpan = document.getElementById('selected-brand-name');
+            const selectedBrandSubnodesDiv = document.getElementById('selected-brand-subnodes');
+            const selectedBrandLink = document.getElementById('selected-brand-link');
+            const sidebarListItems = document.querySelectorAll('#sidebar-brands-list li');
+
+            // Hide the section if no valid brandIndex
+            if (brandIndex === undefined || brandIndex < 0 || brandIndex >= educationIpBrands.length) {
+                selectedBrandDetailsSection.style.display = 'none';
+                return;
+            }
+
+            const brandName = educationIpBrands[brandIndex];
+            const subnodes = educationIpSubNodes[brandIndex];
+            const brandSlug = getSlug(brandName);
+            const brandPageUrl = `https://education-ip.seedwave.faa.zone/sectors/${brandSlug}/index.html`;
+
+            selectedBrandNameSpan.textContent = brandName;
+            selectedBrandSubnodesDiv.innerHTML = ''; // Clear previous subnodes
+
+            if (subnodes && subnodes.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300';
+                subnodes.forEach(subnode => {
+                    const li = document.createElement('li');
+                    const subnodeSlug = getSlug(subnode);
+                    const parentBrandSlug = getSlug(brandName);
+                    const subnodeUrl = `https://education-ip.seedwave.faa.zone/sectors/${parentBrandSlug}/${subnodeSlug}/index.html`;
+                    li.innerHTML = `<a href="${subnodeUrl}" class="text-blue-600 hover:underline dark:text-blue-400">${subnode}</a>`;
+                    ul.appendChild(li);
+                });
+                selectedBrandSubnodesDiv.appendChild(ul);
+
+                // Highlight the selected subnode if provided
+                if (selectedSubnodeName) {
+                    const subnodeLinks = selectedBrandSubnodesDiv.querySelectorAll('a');
+                    subnodeLinks.forEach(link => {
+                        if (link.textContent === selectedSubnodeName) {
+                            link.classList.add('font-bold', 'text-blue-800', 'dark:text-blue-200'); // Add highlight
+                        } else {
+                            link.classList.remove('font-bold', 'text-blue-800', 'dark:text-blue-200'); // Remove highlight
+                        }
+                    });
+                }
+
+            } else {
+                selectedBrandSubnodesDiv.innerHTML = '<p class="text-gray-600 dark:text-gray-400">No specific subnodes listed for this brand.</p>';
+            }
+
+            selectedBrandLink.href = brandPageUrl;
+            selectedBrandDetailsSection.style.display = 'block'; // Show the section
+
+            // Update highlight in sidebar
+            sidebarListItems.forEach((item, index) => {
+                if (index === brandIndex) {
+                    item.classList.add('highlight');
+                } else {
+                    item.classList.remove('highlight');
+                }
+            });
+        }
+
+        // Functions for MindLift FCU simulated financial logic (made global)
+        window.simulatePayment = function() {
+            const fcuAmount = document.getElementById('fcu-amount').value;
+            const fcuService = document.getElementById('fcu-service').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+            const paymentInfoDisplay = document.getElementById('payment-info-display');
+
+            if (fcuAmount <= 0) {
+                paymentInfoDisplay.textContent = 'Please enter a valid FCU amount.';
+                paymentInfoDisplay.style.color = 'red';
+                return;
+            }
+
+            paymentInfoDisplay.textContent = `Processing payment of FCU ${fcuAmount} for ${fcuService} via ${paymentMethod}...`;
+            paymentInfoDisplay.style.color = 'orange';
+
+            setTimeout(() => {
+                paymentInfoDisplay.textContent = `Payment successful! FCU ${fcuAmount} acquired for ${fcuService}.`;
+                paymentInfoDisplay.style.color = 'var(--fcu-color)';
+                console.log(`Simulated payment: FCU ${fcuAmount} for ${fcuService} using ${paymentMethod}`);
+            }, 2000);
+        };
+
+        const exchangeRates = {
+            'usd_to_fcu': 0.8,
+            'fcu_to_usd': 1.25,
+            'zar_to_fcu': 0.065,
+            'fcu_to_zar': 15.38,
+            'eur_to_fcu': 0.9,
+            'fcu_to_eur': 1.11,
+            'btc_to_fcu': 50000,
+            'fcu_to_btc': 0.00002,
+            'eth_to_fcu': 1500,
+            'fcu_to_eth': 0.00066,
+            'usd_to_zar': 18.5,
+            'zar_to_usd': 0.054,
+            'usd_to_eur': 0.92,
+            'eur_to_usd': 1.08,
+            'btc_to_usd': 60000,
+            'usd_to_btc': 0.000016,
+            'eth_to_usd': 3000,
+            'usd_to_eth': 0.00033
+        };
+
+        window.simulateExchangeQuote = function() {
+            const fromCurrency = document.getElementById('from-currency').value;
+            const toCurrency = document.getElementById('to-currency').value;
+            const amount = parseFloat(document.getElementById('exchange-amount').value);
+            const exchangeQuoteDisplay = document.getElementById('exchange-quote-display');
+
+            if (isNaN(amount) || amount <= 0) {
+                exchangeQuoteDisplay.textContent = 'Please enter a valid amount.';
+                exchangeQuoteDisplay.style.color = 'red';
+                return;
+            }
+
+            let result = 'N/A';
+            exchangeQuoteDisplay.style.color = 'var(--muted-text-light)';
+
+            const directRateKey = `${fromCurrency}_to_${toCurrency}`;
+            if (exchangeRates[directRateKey]) {
+                result = (amount * exchangeRates[directRateKey]).toFixed(2);
+                exchangeQuoteDisplay.textContent = `${amount} ${fromCurrency.toUpperCase()} = ${result} ${toCurrency.toUpperCase()}`;
+                return;
+            }
+
+            if (fromCurrency !== 'fcu' && toCurrency !== 'fcu') {
+                const toFcuRateKey = `${fromCurrency}_to_fcu`;
+                const fromFcuRateKey = `fcu_to_${toCurrency}`;
+                if (exchangeRates[toFcuRateKey] && exchangeRates[fromFcuRateKey]) {
+                    const amountInFcu = amount * exchangeRates[toFcuRateKey];
+                    result = (amountInFcu * exchangeRates[fromFcuRateKey]).toFixed(2);
+                    exchangeQuoteDisplay.textContent = `${amount} ${fromCurrency.toUpperCase()} = ${result} ${toCurrency.toUpperCase()} (via FCU)`;
+                    return;
+                }
+            }
+
+            exchangeQuoteDisplay.textContent = 'Conversion not supported.';
+            exchangeQuoteDisplay.style.color = 'red';
+        };
+
+        window.simulateExchange = function() {
+            const fromCurrency = document.getElementById('from-currency').value;
+            const toCurrency = document.getElementById('to-currency').value;
+            const amount = parseFloat(document.getElementById('exchange-amount').value);
+            const exchangeQuoteDisplay = document.getElementById('exchange-quote-display');
+
+            if (isNaN(amount) || amount <= 0) {
+                exchangeQuoteDisplay.textContent = 'Please enter a valid amount.';
+                exchangeQuoteDisplay.style.color = 'red';
+                return;
+            }
+
+            exchangeQuoteDisplay.textContent = `Initiating exchange of ${amount} ${fromCurrency.toUpperCase()} to ${toCurrency.toUpperCase()}...`;
+            exchangeQuoteDisplay.style.color = 'orange';
+
+            setTimeout(() => {
+                let convertedAmount = 'N/A';
+                const directRateKey = `${fromCurrency}_to_${toCurrency}`;
+                if (exchangeRates[directRateKey]) {
+                    convertedAmount = (amount * exchangeRates[directRateKey]).toFixed(2);
+                } else if (fromCurrency !== 'fcu' && toCurrency !== 'fcu') {
+                    const toFcuRateKey = `${fromCurrency}_to_fcu`;
+                    const fromFcuRateKey = `fcu_to_${toCurrency}`;
+                    if (exchangeRates[toFcuRateKey] && exchangeRates[fromFcuRateKey]) {
+                        const amountInFcu = amount * exchangeRates[toFcuRateKey];
+                        convertedAmount = (amountInFcu * exchangeRates[fromFcuRateKey]).toFixed(2);
+                    }
+                }
+
+                if (convertedAmount !== 'N/A') {
+                    exchangeQuoteDisplay.textContent = `Exchange successful! ${amount} ${fromCurrency.toUpperCase()} converted to ${convertedAmount} ${toCurrency.toUpperCase()}.`;
+                    exchangeQuoteDisplay.style.color = 'var(--fcu-color)';
+                    console.log(`Simulated exchange: ${amount} ${fromCurrency.toUpperCase()} to ${convertedAmount} ${toCurrency.toUpperCase()}`);
+                } else {
+                    exchangeQuoteDisplay.textContent = 'Exchange failed or not supported.';
+                    exchangeQuoteDisplay.style.color = 'red';
+                }
+
+            }, 2500);
+        };
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+            const globalMainNav = document.querySelector('#global-app-header nav');
+            const globalHamburgerMenu = document.querySelector('#global-app-header .hamburger-menu');
+
+            // Load saved theme
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode) {
+                body.classList.add(savedMode);
+            } else {
+                body.classList.add('light-mode');
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    body.classList.add('light-mode');
+                    localStorage.setItem('themeMode', 'light-mode');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    body.classList.remove('light-mode');
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('themeMode', 'dark-mode');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+
+            // Language toggle event listener
+            languageToggle.addEventListener('change', (event) => {
+                const newLang = event.target.value;
+                updateLanguage(newLang);
+                localStorage.setItem('language', newLang);
+            });
+
+            // Global Hamburger menu toggle
+            if (globalHamburgerMenu) {
+                globalHamburgerMenu.addEventListener('click', () => {
+                    if (globalMainNav) {
+                        globalMainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Close global hamburger menu when a global nav link is clicked
+            document.querySelectorAll('#global-app-header nav a').forEach(link => {
+                link.addEventListener('click', function () {
+                    if (globalMainNav && globalMainNav.classList.contains('active')) {
+                        globalMainNav.classList.remove('active');
+                    }
+                });
+            });
+
+            // Dashboard specific dynamic content loading
+            const sidebarList = document.getElementById('sidebar-brands-list');
+            const allBrandsGrid = document.getElementById('all-brands-grid');
+            const subnodeOverviewList = document.getElementById('subnode-overview-list');
+
+            // Populate Sidebar Brand List and All Brands Grid
+            educationIpBrands.forEach((brand, index) => {
+                const brandSlug = getSlug(brand);
+                const brandUrl = `https://education-ip.seedwave.faa.zone/sectors/${brandSlug}/index.html`;
+
+                // Sidebar
+                const sidebarItem = document.createElement('li');
+                sidebarItem.className = 'p-2 rounded-md cursor-pointer';
+                sidebarItem.innerHTML = `<a href="#" class="block w-full h-full">${brand}</a>`; // Use # for in-page click
+                sidebarItem.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    displayBrandDetails(index);
+                });
+                sidebarList.appendChild(sidebarItem);
+
+                // All Brands Grid
+                const brandDiv = document.createElement('div');
+                brandDiv.innerHTML = `<a href="#" class="block w-full h-full">${brand}</a>`; // Use # for in-page click
+                brandDiv.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    displayBrandDetails(index);
+                });
+                allBrandsGrid.appendChild(brandDiv);
+            });
+
+            // Populate Subnode Overview
+            educationIpBrands.forEach((brand, index) => {
+                const subnodesForBrand = educationIpSubNodes[index];
+                if (subnodesForBrand && subnodesForBrand.length > 0) {
+                    const brandSubnodeDiv = document.createElement('div');
+                    brandSubnodeDiv.className = 'border-b border-indigo-200 pb-2 last:border-b-0 dark:border-indigo-700';
+                    const brandNameSpan = document.createElement('span');
+                    brandNameSpan.className = 'font-semibold text-indigo-700 dark:text-indigo-300';
+                    brandNameSpan.textContent = brand + ': ';
+                    brandSubnodeDiv.appendChild(brandNameSpan);
+
+                    const subnodeLinks = subnodesForBrand.map(subnode => {
+                        const subnodeSlug = getSlug(subnode);
+                        const parentBrandSlug = getSlug(brand);
+                        const subnodeUrl = `https://education-ip.seedwave.faa.zone/sectors/${parentBrandSlug}/${subnodeSlug}/index.html`;
+                        const subnodeAnchor = document.createElement('a');
+                        subnodeAnchor.href = "#"; // Use # for in-page click
+                        subnodeAnchor.className = "text-blue-600 hover:underline dark:text-blue-400";
+                        subnodeAnchor.textContent = subnode;
+                        subnodeAnchor.addEventListener('click', (e) => {
+                            e.preventDefault(); // Prevent default link behavior
+                            displayBrandDetails(index, subnode); // Pass brand index and subnode name
+                        });
+                        return subnodeAnchor.outerHTML; // Return HTML string of the anchor
+                    }).join(', ');
+
+                    const subnodesText = document.createElement('span');
+                    subnodesText.innerHTML = subnodeLinks;
+                    brandSubnodeDiv.appendChild(subnodesText);
+                    subnodeOverviewList.appendChild(brandSubnodeDiv);
+                }
+            });
+
+            // Initial display for MindLift™ details on dashboard load
+            const mindLiftIndex = educationIpBrands.findIndex(brand => brand === 'MindLift™');
+            if (mindLiftIndex !== -1) {
+                displayBrandDetails(mindLiftIndex);
+            }
+
+
+            // --- MindLift FCU Page specific JavaScript ---
+            const fcuHamburgerMenu = document.querySelector('#mindlift-fcu-view .hamburger-menu');
+            const fcuMainNav = document.querySelector('#mindlift-fcu-view .main-nav');
+
+            if (fcuHamburgerMenu) {
+                fcuHamburgerMenu.addEventListener('click', () => {
+                    if (fcuMainNav) {
+                        fcuMainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('#mindlift-fcu-view .main-nav a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    if (fcuMainNav && fcuMainNav.classList.contains('active')) {
+                        fcuMainNav.classList.remove('active');
+                    }
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

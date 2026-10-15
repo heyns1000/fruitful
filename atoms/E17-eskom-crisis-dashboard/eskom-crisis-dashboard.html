@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Eskom Crisis Dashboard - Baobab Security Network™</title>
+
+    <!-- Placeholder Comments as per requirements -->
+    <!-- Chosen Palette: Warm Earth (Tones of Beige, Brown, Green, and Blue) -->
+    <!-- Application Structure Plan: A standalone HTML page dedicated to the Eskom Crisis in South Africa. It features a responsive layout with specific charts displaying simulated real-world metrics related to load shedding, generation capacity, and customer complaints. The page is integrated into the larger Baobab Security Network ecosystem via consistent header navigation. This standalone structure allows for deep-dive analysis of a specific regional crisis, distinct from the global dashboards, providing a focused user experience. -->
+    <!-- Visualization & Content Choices: Data on the Eskom crisis is presented using Chart.js canvas-based visualizations. GOAL: Track Change -> VIZ: Line chart for Load Shedding Stages and Energy Availability Factor (EAF) trends over time. GOAL: Analyze Proportions -> VIZ: Bar chart for Generation Capacity breakdown (Installed vs. Available vs. Demand) and a Doughnut chart for customer complaint categories. INTERACTION: The charts are dynamically updated with simulated data to represent real-time changes. Library: Chart.js on Canvas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F5; /* Warm Neutral: Light Beige */
+        }
+        /* Style for header navigation links */
+        .header-nav a {
+            transition: all 0.2s ease-in-out;
+            color: #D1D5DB; /* Gray-300 */
+        }
+        .header-nav a:hover, .header-nav a.active {
+            color: #FFFFFF;
+        }
+        /* Card styling for dashboard widgets */
+        .widget-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* Chart container styling as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px; /* Base height for mobile */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px; /* Taller height on larger screens */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <header class="py-4 px-8 bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-black text-gray-800">
+                🌳 Baobab Net
+            </a>
+            <nav class="flex-grow flex justify-center md:justify-end space-x-4 md:space-x-6 text-sm font-medium header-nav">
+                <a href="dashboard_deforestation.html" class="text-gray-300 hover:text-white">Global Dashboards 📊</a>
+                <a href="eskom_crisis_dashboard.html" class="text-white active">Eskom Crisis 🔌</a>
+                <a href="index.html">Home 🏡</a>
+            </nav>
+            <button onclick="window.location.href='index.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full transition shadow-lg mt-2 md:mt-0">
+                Back to Home 🏡
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Eskom Crisis (South Africa)</h2>
+                <p class="text-gray-600 mt-1">Real-time metrics and insights into South Africa's power challenges.</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-lg border border-gray-200 mb-6">
+            <h3 class="text-2xl font-bold text-gray-800">Understanding the Eskom Crisis</h3>
+            <p class="mt-4 text-gray-600 leading-relaxed">
+                Eskom, South Africa's primary electricity provider, faces persistent challenges including aging infrastructure, capacity shortages, and financial difficulties. This leads to **load shedding** (scheduled power outages) which significantly impacts the economy and daily life. This dashboard provides a conceptual overview of key metrics, helping to understand the scale and dynamics of the crisis.
+            </p>
+            <p class="mt-4 text-gray-600 leading-relaxed">
+                Here, you can explore simulated data on load shedding stages, the balance between generation capacity and demand, and the underlying issues affecting energy availability. Our aim is to illustrate how a data-driven approach can provide clarity and support strategic interventions.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Load Shedding Stage Chart -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Load Shedding Stage (Last 7 Days)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eskom-ls-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Generation Capacity vs. Demand Chart -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Generation Capacity vs. Demand (GW)</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eskom-capacity-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Energy Availability Factor (EAF) Trend Chart -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Energy Availability Factor (EAF) Trend</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eskom-eaf-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Customer Complaints Breakdown Chart -->
+            <div class="widget-card p-4 md:p-6 flex flex-col">
+                <h3 class="font-semibold text-gray-800 mb-4">Customer Complaints Breakdown</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="eskom-complaints-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<script>
+// --- DATA SIMULATION ---
+const eskomData = {
+    loadSheddingHistory: [ // Last 7 days, 0-8 stages
+        { day: 'Day -6', stage: Math.floor(Math.random() * 7) },
+        { day: 'Day -5', stage: Math.floor(Math.random() * 7) },
+        { day: 'Day -4', stage: Math.floor(Math.random() * 7) },
+        { day: 'Day -3', stage: Math.floor(Math.random() * 7) },
+        { day: 'Day -2', stage: Math.floor(Math.random() * 7) },
+        { day: 'Day -1', stage: Math.floor(Math.random() * 7) },
+        { day: 'Today', stage: Math.floor(Math.random() * 7) }
+    ],
+    generationCapacity: [ // GW
+        { type: 'Installed', value: 48 },
+        { type: 'Available (EAF)', value: Math.floor(Math.random() * (35 - 25) + 25) },
+        { type: 'Demand (Peak)', value: Math.floor(Math.random() * (30 - 20) + 20) },
+        { type: 'Unplanned Outages', value: Math.floor(Math.random() * (15 - 5) + 5) },
+        { type: 'Planned Maintenance', value: Math.floor(Math.random() * (7 - 2) + 2) }
+    ],
+    eafTrend: [ // Energy Availability Factor over 6 months
+        { month: 'Jan', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) },
+        { month: 'Feb', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) },
+        { month: 'Mar', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) },
+        { month: 'Apr', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) },
+        { month: 'May', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) },
+        { month: 'Jun', eaf: (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2) } 
+    ],
+    complaintCategories: {
+        'Outage Duration': Math.floor(Math.random() * 300),
+        'Billing Errors': Math.floor(Math.random() * 150),
+        'Service Quality': Math.floor(Math.random() * 200),
+        'Connection Issues': Math.floor(Math.random() * 100)
+    },
+    currentStage: Math.floor(Math.random() * 7) // Current simulated load shedding stage
+};
+
+// --- CHART & APP LOGIC ---
+const chartInstances = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize all charts on this page with their data immediately
+    createChart('eskom-ls-chart', 'line', getEskomLoadSheddingData, eskomData);
+    createChart('eskom-capacity-chart', 'bar', getEskomCapacityData, eskomData);
+    createChart('eskom-eaf-chart', 'line', getEskomEAFData, eskomData);
+    createChart('eskom-complaints-chart', 'doughnut', getEskomComplaintsData, eskomData);
+});
+
+function createChart(canvasId, type, dataFn, data) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return; 
+    
+    const chartData = dataFn(data); 
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    font: { size: 12 }
+                }
+            },
+            tooltip: {
+                backgroundColor: '#333',
+                titleFont: { size: 14, weight: 'bold' },
+                bodyFont: { size: 12 },
+                padding: 10,
+                cornerRadius: 4
+            }
+        },
+        scales: (type === 'bar' || type === 'line') ? {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#E5E7EB' },
+                ticks: { font: { size: 10 } }
+            },
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 10 } }
+            }
+        } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: chartData, 
+        options: chartOptions
+    });
+}
+
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR CHARTS (ESKOM) ---
+
+function getEskomLoadSheddingData(data) {
+    return {
+        labels: data.loadSheddingHistory.map(d => d.day),
+        datasets: [{
+            label: 'Load Shedding Stage',
+            data: data.loadSheddingHistory.map(d => d.stage),
+            borderColor: '#EF4444', 
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+}
+
+function getEskomCapacityData(data) {
+    return {
+        labels: data.generationCapacity.map(d => d.type),
+        datasets: [{
+            label: 'Capacity (GW)',
+            data: data.generationCapacity.map(d => d.value),
+            backgroundColor: ['#10B981', '#3B82F6', '#FBBF24', '#EF4444', '#F97316'], 
+            borderRadius: 4
+        }]
+    };
+}
+
+function getEskomEAFData(data) {
+    return {
+        labels: data.eafTrend.map(d => d.month),
+        datasets: [{
+            label: 'Energy Availability Factor (%)',
+            data: data.eafTrend.map(d => (d.eaf * 100).toFixed(1)),
+            borderColor: '#3B82F6', 
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+}
+
+function getEskomComplaintsData(data) {
+    return {
+        labels: Object.keys(data.complaintCategories),
+        datasets: [{
+            label: 'Number of Complaints',
+            data: Object.values(data.complaintCategories),
+            backgroundColor: ['#EC4899', '#8B5CF6', '#14B8A6', '#FBBF24'], 
+        }]
+    };
+}
+
+</script>
+</body>
+</html>

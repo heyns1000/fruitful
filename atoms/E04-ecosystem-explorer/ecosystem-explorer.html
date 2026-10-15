@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem Explorer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a202c; /* Dark background similar to the image */
+            font-family: 'Inter', sans-serif;
+            color: #e2e8f0; /* Light text for contrast */
+            padding: 2rem;
+        }
+
+        .container-style {
+            background-color: #2d3748; /* Darker grey for the container */
+            border-radius: 0.75rem; /* Rounded corners */
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid columns */
+            gap: 1.5rem; /* Space between grid items */
+        }
+
+        .grid-item {
+            background-color: #2d3748; /* Same as container for consistency */
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden; /* For the pseudo-element hover effect */
+            border: 1px solid #4a5568; /* Subtle border */
+        }
+
+        .grid-item:hover {
+            background-color: #4a5568; /* Lighter grey on hover */
+            transform: translateY(-5px); /* Lift effect */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(6, 214, 160, 0.2), rgba(17, 138, 178, 0.2)); /* Gradient overlay */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .grid-item:hover::before {
+            opacity: 1;
+        }
+
+        .grid-item h3 {
+            font-size: 1.5rem; /* Larger font for brand names */
+            font-weight: 700; /* Bold */
+            color: #a7f3d0; /* Light green for brand names */
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grid-item p {
+            font-size: 1rem;
+            color: #cbd5e0; /* Lighter grey for sub-text */
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grid-item .license-price {
+            font-size: 1.125rem; /* Slightly larger for price */
+            font-weight: 600; /* Semi-bold */
+            color: #6ee7b7; /* Green for price */
+            margin-top: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grid-item .subnodes {
+            list-style: none; /* Remove default list style */
+            padding: 0;
+            margin-top: 1rem;
+            border-top: 1px solid #4a5568; /* Separator line */
+            padding-top: 1rem;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+            max-height: 0; /* Hidden by default */
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            opacity: 0;
+        }
+
+        .grid-item:hover .subnodes {
+            max-height: 200px; /* Adjust as needed to show all subnodes */
+            opacity: 1;
+        }
+
+        .grid-item .subnodes li {
+            font-size: 0.875rem;
+            color: #a0aec0; /* Even lighter grey for subnodes */
+            margin-bottom: 0.25rem;
+            padding-left: 0.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .grid-item .subnodes li::before {
+            content: '•'; /* Custom bullet point */
+            color: #6ee7b7; /* Green bullet */
+            margin-right: 0.5rem;
+            font-size: 1.2em; /* Larger bullet */
+            line-height: 1;
+        }
+
+        .brand-icon {
+            font-size: 3rem; /* Large icon size */
+            margin-bottom: 1rem;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            color: #90cdf4; /* Light blue for section titles */
+            font-size: 2.25rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            color: #a0aec0;
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer specific styles to match the dark theme */
+        .global-footer {
+            background-color: #1a1a1a; /* Dark background for footer */
+            color: #a0aec0; /* Light grey text */
+            border-top: 1px solid #333; /* Darker border */
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem; /* Add some space above the footer */
+        }
+
+        .global-footer a {
+            color: #90cdf4; /* Light blue for links */
+            transition: color 0.3s ease;
+        }
+
+        .global-footer a:hover {
+            color: #63b3ed; /* Lighter blue on hover */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-100 tracking-tight">
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section class="mb-8 mt-12">
+            <h2 class="section-title text-center">Ecosystem Explorer</h2>
+            <p class="section-description text-center">Dive into specific sectors and monitor their brand performance and node health.</p>
+
+            <div class="container-style">
+                <label for="sectorFilter" class="block text-lg font-medium text-gray-300 mb-4">Select Sector:</label>
+                <select id="sectorFilter" class="mt-1 block w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-base shadow-sm">
+                    </select>
+
+                <div id="sectorInfo" class="mt-8">
+                    </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="global-footer">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Helper to generate a random price for masterLicensePrice
+        const getRandomLicensePrice = () => Math.floor(Math.random() * (50000 - 5000 + 1)) + 5000;
+
+        const sectorList = {
+            "agriculture": "🌱 Agriculture & Biotech",
+            "fsf": "🥦 Food, Soil & Farming",
+            "banking": "🏦 Banking & Finance",
+            "creative": "🖋️ Creative Tech",
+            "logistics": "📦 Logistics & Packaging",
+            "education-ip": "📚 Education & IP",
+            "fashion": "✂ Fashion & Identity",
+            "gaming": "🎮 Gaming & Simulation",
+            "health": "🧠 Health & Hygiene",
+            "housing": "🏗️ Housing & Infrastructure",
+            "justice": "⚖ Justice & Ethics",
+            "knowledge": "📖 Knowledge & Archives",
+            "micromesh": "☰ Micro-Mesh Logistics",
+            "media": "🎬 Motion, Media & Sonic",
+            "nutrition": "✿ Nutrition & Food Chain",
+            "ai-logic": "🧠 AI, Logic & Grid",
+            "packaging": "📦 Packaging & Materials",
+            "quantum": "✴️ Quantum Protocols",
+            "ritual": "☯ Ritual & Culture",
+            "saas": "🔑 SaaS & Licensing",
+            "trade": "🧺 Trade Systems",
+            "utilities": "🔋 Utilities & Energy",
+            "voice": "🎙️ Voice & Audio",
+            "webless": "📡 Webless Tech & Nodes",
+            "nft": "🔁 NFT & Ownership",
+            "education-youth": "🎓 Education & Youth",
+            "zerowaste": "♻️ Zero Waste",
+            "professional": "🧾 Professional Services",
+            "payroll-mining": "🪙 Payroll Mining & Accounting",
+            "mining": "⛏️ Mining & Resources",
+            "wildlife": "🦁 Wildlife & Habitat",
+            "admin-panel": "⚙️ Admin Panel"
+        };
+
+        // All Brand and Subnode data (truncated for brevity, but full data would be here)
+        const bankingBrandsData = [
+            { name: 'FinGrid', subNodes: ['Ledger Mesh', 'Arbitrage Core', 'Token Router', 'Tax Engine', 'Vault Lock', 'Compliance Matrix', 'Logistics Fin', 'Currency Glyph', 'Forecast Engine', 'Signal Tracker'] },
+            { name: 'TradeAmp', subNodes: ['Zeno Mesh', 'Crux Bridge', 'Hive Monitor', 'Wire Reconciler', 'Bit Locker', 'Credit Splice', 'Score Vector', 'Zentry Core', 'Drift Trace', 'Alpha Ledger'] },
+            { name: 'LoopPay', subNodes: ['Lumen Pulse', 'Delta Secure', 'Fractal Trace', 'Torus Signal', 'Mint Bridge', 'Tally Stream', 'Bank Depth', 'Kite Path', 'Bond Engine', 'Echo Stack'] },
+            { name: 'TaxNova', subNodes: ['Ark Model', 'Node Gate', 'Veritas Sync', 'Cage Mapper', 'Core Trace', 'Sky Sweep', 'Mint Grid', 'Orbit Channel', 'Hash Clear', 'Micro Chain'] },
+            { name: 'VaultMaster', subNodes: ['Anchor Lock', 'Fleet Sync', 'Zoom Channel', 'Beacon Path', 'Crate Vault', 'Numen Index', 'Spark Flow', 'Meta Signal', 'Aether Drift', 'Custody Map'] },
+            { name: 'Gridwise', subNodes: ['Neutron Signal', 'Cash Stream', 'Jet Grid', 'Pulse Map', 'Sync Grid', 'Tangent Vector', 'Nova Route', 'Glide Core', 'Trace Engine', 'Root Node'] },
+            { name: 'CrateDance', subNodes: ['Bank Shift', 'Pillar Core', 'Axon Thread', 'Monet Route', 'Layer Core', 'Verge Node', 'Stack Tally', 'Crown Core', 'Prism Gate', 'Halo Grid'] },
+            { name: 'CashGlyph', subNodes: ['Clearance Vector', 'Forge Sync', 'Bank Mesh', 'Nano Token', 'Lattice Path', 'Noble Curve', 'Chain Vector', 'Mint Grid', 'Bridge Path', 'Chrono Index'] },
+            { name: 'Foresync', subNodes: ['Unity Sync', 'Trust Matrix', 'Vault Score', 'Lucid Gate', 'Mint Route', 'Flight Signal', 'Teller Index', 'Custody Trace', 'Flare Pay', 'Dark Stream'] },
+            { name: 'OmniRank', subNodes: ['Origin Pulse', 'Shard Bank', 'Pay Score', 'Altimeter Path', 'Clearing Core', 'Frame Lock', 'Zenith Route', 'Score Helix', 'Meta Stack', 'Crux Trace'] },
+            { name: 'ZenoBank', subNodes: ['Pulse Engine', 'Balance Tally', 'Gold Trace', 'Stack Mesh', 'Quantum Sync', 'Script Pulse', 'Vault Stack', 'Trust Model', 'Hyper Lock', 'Tone Gate'] },
+            { name: 'CruxSpend', subNodes: ['Grid Index', 'Line Mesh', 'Alpha Signal', 'Logic Gate', 'Yield Route', 'Ratio Core', 'Ledger Path', 'Prime Helix', 'Amp Signal', 'Lattice Node'] },
+            { name: 'PulseHive', subNodes: ['Credit Curve', 'Vault Pulse', 'Data Mesh', 'Ring Gate', 'Glyph Stack', 'Bank Channel', 'Zen Gate', 'Loop Vault', 'Axial Index', 'Loop Stack'] },
+            { name: 'WireVault', subNodes: ['Pulse Vector', 'Bank Curve', 'Helix Gate', 'Teller Pulse', 'Tally Signal', 'Mint Vault'] },
+            { name: 'BitTrust', subNodes: [] }, { name: 'MeshCredit', subNodes: [] }, { name: 'NovaScore', subNodes: [] }, { name: 'ZentryPay', subNodes: [] }, { name: 'FlowDrift', subNodes: [] }, { name: 'AlphaClearing', subNodes: [] }, { name: 'LumenBank', subNodes: [] }, { name: 'DeltaCustody', subNodes: [] }, { name: 'FractalFund', subNodes: [] }, { name: 'TorusFinance', subNodes: [] }, { name: 'VectorMint', subNodes: [] }, { name: 'RapidTally', subNodes: [] }, { name: 'FathomBank', subNodes: [] }, { name: 'KiteYield', subNodes: [] }, { name: 'BondRhythm', subNodes: [] }, { name: 'EchoTrust', subNodes: [] }, { name: 'QuantArk', subNodes: [] }, { name: 'NodeCapital', subNodes: [] }, { name: 'VeritasPay', subNodes: [] }, { name: 'TrustCage', subNodes: [] }, { name: 'CoreLedge', subNodes: [] }, { name: 'SkyFin', subNodes: [] }, { name: 'MintFuse', subNodes: [] }, { name: 'OrbitBank', subNodes: [] }, { name: 'HashVault', subNodes: [] }, { name: 'MicroDelta', subNodes: [] }, { name: 'AnchorPrime', subNodes: [] }, { name: 'FleetGrid', subNodes: [] }, { name: 'ZoomLedge', subNodes: [] }, { name: 'BeaconBank', subNodes: [] }, { name: 'CrateTeller', subNodes: [] }, { name: 'NumenYield', subNodes: [] }, { name: 'SparkScore', subNodes: [] }, { name: 'MetaBank', subNodes: [] }, { name: 'AetherTrust', subNodes: [] }, { name: 'TrueCustody', subNodes: [] }, { name: 'NeutronMint', subNodes: [] }, { name: 'SiloCash', subNodes: [] }, { name: 'JetReconcile', subNodes: [] }, { name: 'PulseClearing', subNodes: [] }, { name: 'SyncTeller', subNodes: [] }, { name: 'TangentBank', subNodes: [] }, { name: 'NovaLedger', subNodes: [] }, { name: 'GlideBank', subNodes: [] }, { name: 'TraceFin', subNodes: [] }, { name: 'RootBank', subNodes: [] }, { name: 'BankSingularity', subNodes: [] }, { name: 'PillarTrust', subNodes: [] }, { name: 'AxonFin', subNodes: [] }, { name: 'MonetGrid', subNodes: [] }, { name: 'LayerBank', subNodes: [] }, { name: 'VergePay', subNodes: [] }, { name: 'StackCash', subNodes: [] }, { name: 'CrownBank', subNodes: [] }, { name: 'PrismScore', subNodes: [] }, { name: 'HaloMint', subNodes: [] }, { name: 'CentraClear', subNodes: [] }, { name: 'TrustForge', subNodes: [] }, { name: 'OmniBank', subNodes: [] }, { name: 'NanoPay', subNodes: [] }, { name: 'LatticeScore', subNodes: [] }, { name: 'NobleCredit', subNodes: [] }, { name: 'ChainBank', subNodes: [] }, { name: 'PulseMint', subNodes: [] }, { name: 'BridgeLedger', subNodes: [] }, { name: 'ChronoBank', subNodes: [] }, { name: 'UnityFin', subNodes: [] }, { name: 'GridTrust', subNodes: [] }, { name: 'SparkVault', subNodes: [] }, { name: 'LucidBank', subNodes: [] }, { name: 'RiverMint', subNodes: [] }, { name: 'FlightClearing', subNodes: [] }, { name: 'NetTeller', subNodes: [] }, { name: 'PeakCustody', subNodes: [] }, { name: 'FlarePay', subNodes: [] }, { name: 'DarkBank', subNodes: [] }, { name: 'OriginTrust', subNodes: [] }, { name: 'ShardLedger', subNodes: [] }, { name: 'IndexPay', subNodes: [] }, { name: 'AltimeterFin', subNodes: [] }, { name: 'EchoClearing', subNodes: [] }, { name: 'FrameCustody', subNodes: [] }, { name: 'ZenithGrid', subNodes: [] }, { name: 'AtomScore', subNodes: [] }, { name: 'CoreMeta', subNodes: [] }, { name: 'CruxFin', subNodes: [] }, { name: 'PulseMatrix', subNodes: [] }, { name: 'BalanceGrid', subNodes: [] }, { name: 'GoldMint', subNodes: [] }, { name: 'ClearStack', subNodes: [] }, { name: 'QuantumBank', subNodes: [] }, { name: 'ScriptScore', subNodes: [] }, { name: 'SyncVault', subNodes: [] }, { name: 'FolioTrust', subNodes: [] }, { name: 'HyperFin', subNodes: [] }, { name: 'ToneLedger', subNodes: [] }, { name: 'IndexGrid', subNodes: [] }, { name: 'LineBank', subNodes: [] }, { name: 'CoreAlpha', subNodes: [] }, { name: 'LogicPay', subNodes: [] }, { name: 'NodeYield', subNodes: [] }, { name: 'RatioMint', subNodes: [] }, { name: 'LockLedger', subNodes: [] }, { name: 'PrimeGrid', subNodes: [] }, { name: 'TrustAmp', subNodes: [] }, { name: 'FundLattice', subNodes: [] }, { name: 'CreditHelix', subNodes: [] }, { name: 'AuraVault', subNodes: [] }, { name: 'DataBank', subNodes: [] }, { name: 'RingMint', subNodes: [] }, { name: 'GlyphTrust', subNodes: [] }, { name: 'NebulaBank', subNodes: [] }, { name: 'ZenScore', subNodes: [] }, { name: 'LoopTrust', subNodes: [] }, { name: 'AxialFin', subNodes: [] }, { name: 'OmniLoop', subNodes: [] }, { name: 'AlphaPulse', subNodes: [] }, { name: 'NexusBank', subNodes: [] }, { name: 'VaultHelix', subNodes: [] }, { name: 'ScriptTeller', subNodes: [] }, { name: 'TallyCore', subNodes: [] }, { name: 'FuseMint', subNodes: [] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const agriBrandsData = [
+            { name: 'CropLink', subNodes: ['CropLink ID™', 'CropLink Vault™', 'CropLink Field™', 'CropLink Yield™'] },
+            { name: 'SoilPulse', subNodes: ['SoilPulse Trace™', 'SoilPulse Data™', 'SoilPulse Alert™'] },
+            { name: 'RootYield', subNodes: ['RootYield Base™', 'RootYield Chain™', 'RootYield X™'] },
+            { name: 'AquaFarm', subNodes: ['AquaFarm Sync™', 'AquaFarm Logi™', 'AquaFarm Vault™'] },
+            { name: 'AgriMesh', subNodes: ['AgriMesh Route™', 'AgriMesh Pulse™', 'AgriMesh View™'] },
+            { name: 'GrowNode', subNodes: ['GrowNode Basic™', 'GrowNode Trade™', 'GrowNode Vault™'] },
+            { name: 'GrainCast', subNodes: ['GrainCast Forecast™', 'GrainCast Scroll™'] },
+            { name: 'SoilBank', subNodes: ['SoilBank Ledger™', 'SoilBank Pay™'] },
+            { name: 'CropID', subNodes: ['CropID Scanner™', 'CropID Trust™'] },
+            { name: 'AgriVault', subNodes: ['AgriVault Lock™', 'AgriVault Chain™', 'AgriVault Seed™'] },
+            { name: 'PulseHarvest', subNodes: ['PulseHarvest Sync™', 'PulseHarvest Drop™', 'PulseHarvest Vault™'] },
+            { name: 'MarketSoil', subNodes: ['MarketSoil Rate™', 'MarketSoil Feed™', 'MarketSoil UI™'] },
+            { name: 'DroneFarm', subNodes: ['DroneFarm View™', 'DroneFarm Grid™', 'DroneFarm Trace™'] },
+            { name: 'RuralOps', subNodes: ['RuralOps Node™', 'RuralOps Pulse™', 'RuralOps Chain™'] },
+            { name: 'SeedGrid', subNodes: ['SeedGrid Vault™', 'SeedGrid Scan™', 'SeedGrid Growth™'] },
+            { name: 'FarmChain', subNodes: ['FarmChain Link™', 'FarmChain Claim™', 'FarmChain Credit™'] },
+            { name: 'AgriScore', subNodes: ['AgriScore Index™', 'AgriScore Node™'] },
+            { name: 'SoilNet', subNodes: ['SoilNet Base™', 'SoilNet UI™'] },
+            { name: 'CropDoc', subNodes: ['CropDoc Scan™', 'CropDoc Aid™'] },
+            { name: 'TerraVault', subNodes: ['TerraVault Ledger™', 'TerraVault View™', 'TerraVault Chain™'] },
+            { name: 'AgriID', subNodes: ['AgriID Chain™', 'AgriID Badge™', 'AgriID Verify™'] },
+            { name: 'SproutFlow', subNodes: ['SproutFlow Loop™', 'SproutFlow Track™'] },
+            { name: 'GrainSafe', subNodes: ['GrainSafe Lock™', 'GrainSafe Audit™'] },
+            { name: 'FieldSync', subNodes: ['FieldSync Signal™', 'FieldSync Grid™'] },
+            { name: 'AgriDepot', subNodes: ['AgriDepot Map™', 'AgriDepot Sync™', 'AgriDepot Drop™'] },
+            { name: 'DroneCrop', subNodes: ['DroneCrop Watch™', 'DroneCrop Sync™'] },
+            { name: 'CropTrace', subNodes: ['CropTrace Root™', 'CropTrace Link™'] },
+            { name: 'PulseSoil', subNodes: ['PulseSoil Core™', 'PulseSoil Signal™'] },
+            { name: 'SeedRoot', subNodes: ['SeedRoot Tag™', 'SeedRoot Layer™'] },
+            { name: 'RuralFlow', subNodes: ['RuralFlow Map™', 'RuralFlow Loop™', 'RuralFlow Chain™'] },
+            { name: 'MarketGrow', subNodes: ['MarketGrow Pulse™', 'MarketGrow Cast™', 'MarketGrow Deals™'] },
+            { name: 'AgriRank', subNodes: ['AgriRank Score™', 'AgriRank Matrix™'] },
+            { name: 'SoilLogic', subNodes: ['SoilLogic Grid™', 'SoilLogic Forecast™'] },
+            { name: 'AgriSync', subNodes: ['AgriSync UI™', 'AgriSync Chain™'] },
+            { name: 'NutrientGrid', subNodes: ['NutrientGrid Base™', 'NutrientGrid Flux™'] },
+            { name: 'FieldCast', subNodes: ['FieldCast Audio™', 'FieldCast Relay™'] },
+            { name: 'CropSource', subNodes: ['CropSource Ledger™', 'CropSource ID™'] },
+            { name: 'YieldStack', subNodes: ['YieldStack UI™', 'YieldStack Payout™', 'YieldStack Index™'] },
+            { name: 'FarmPulse', subNodes: ['FarmPulse Loop™', 'FarmPulse Mesh™'] },
+            { name: 'SoilTech', subNodes: ['SoilTech DNA™', 'SoilTech Live™'] },
+            { name: 'GreenTrace', subNodes: ['GreenTrace Chain™', 'GreenTrace Pulse™'] },
+            { name: 'CropVault', subNodes: ['CropVault Lock™', 'CropVault Ledger™', 'CropVault Cert™'] },
+            { name: 'AgriCast', subNodes: ['AgriCast Signal™', 'AgriCast Feed™'] },
+            { name: 'TerraPulse', subNodes: ['TerraPulse Soil™', 'TerraPulse Vault™'] },
+            { name: 'SoilTrace', subNodes: ['SoilTrace ID™', 'SoilTrace Certify™'] },
+            { name: 'PulseAg', subNodes: ['PulseAg Loop™', 'PulseAg Node™'] },
+            { name: 'GrowVault', subNodes: ['GrowVault Root™', 'GrowVault Share™'] },
+            { name: 'FieldNet', subNodes: ['FieldNet Mesh™', 'FieldNet Ping™'] },
+            { name: 'DroneSoil', subNodes: ['DroneSoil View™', 'DroneSoil Trace™'] },
+            { name: 'SoilGrid', subNodes: ['SoilGrid X™', 'SoilGrid Key™', 'SoilGrid Base™'] },
+            { name: 'HarvestLoop', subNodes: ['HarvestLoop Yield™', 'HarvestLoop Stack™'] },
+            { name: 'RuralMesh', subNodes: ['RuralMesh Net™', 'RuralMesh Pulse™'] },
+            { name: 'FarmFlag', subNodes: ['FarmFlag Cert™', 'FarmFlag Signal™'] },
+            { name: 'AgriFlow', subNodes: ['AgriFlow Path™', 'AgriFlow Ledger™'] },
+            { name: 'SoilVault', subNodes: ['SoilVault Lock™', 'SoilVault View™'] },
+            { name: 'FieldProof', subNodes: ['FieldProof Claim™', 'FieldProof Relay™'] },
+            { name: 'DroneTrace', subNodes: ['DroneTrace Tag™', 'DroneTrace Vault™'] },
+            { name: 'MarketRoots', subNodes: ['MarketRoots X™', 'MarketRoots Grid™'] },
+            { name: 'NutrientPath', subNodes: ['NutrientPath Map™', 'NutrientPath Scan™'] },
+            { name: 'CropPulse', subNodes: ['CropPulse Signal™', 'CropPulse Ledger™'] },
+            { name: 'AgriPulse', subNodes: ['AgriPulse Loop™', 'AgriPulse Ledger™'] },
+            { name: 'EcoSeed', subNodes: ['EcoSeed Vault™', 'EcoSeed Sync™'] },
+            { name: 'AgriMetrics', subNodes: ['AgriMetrics Signal™', 'AgriMetrics Vault™'] },
+            { name: 'DroneGrid', subNodes: ['DroneGrid Node™', 'DroneGrid View™'] },
+            { name: 'GreenNode', subNodes: ['GreenNode Base™', 'GreenNode Relay™'] },
+            { name: 'RootVault', subNodes: ['RootVault Claim™', 'RootVault Transfer™'] },
+            { name: 'FieldToken', subNodes: ['FieldToken ID™', 'FieldToken Pay™'] },
+            { name: 'AgriPlan', subNodes: ['AgriPlan Builder™', 'AgriPlan Node™'] },
+            { name: 'SoilYield', subNodes: ['SoilYield Track™', 'SoilYield Pulse™'] },
+            { name: 'SeedVault', subNodes: ['SeedVault ID™', 'SeedVault Ledger™'] },
+            { name: 'MarketLink', subNodes: ['MarketLink Chain™', 'MarketLink Signal™'] },
+            { name: 'CropFlow', subNodes: ['CropFlow Sync™', 'CropFlow Vault™'] },
+            { name: 'RuralCast', subNodes: ['RuralCast Net™', 'RuralCast Pulse™'] },
+            { name: 'AgriSyncPro', subNodes: ['AgriSyncPro UI™', 'AgriSyncPro Lock™'] },
+            { name: 'SoilLine', subNodes: ['SoilLine Scan™', 'SoilLine Pulse™'] },
+            { name: 'EcoAgri', subNodes: ['EcoAgri Cert™', 'EcoAgri Grid™'] },
+            { name: 'HarvestNode', subNodes: ['HarvestNode Chain™', 'HarvestNode Log™'] },
+            { name: 'TerraSoil', subNodes: ['TerraSoil View™', 'TerraSoil DNA™'] },
+            { name: 'CropMesh', subNodes: ['CropMesh Grid™', 'CropMesh Flow™'] },
+            { name: 'AgriSignal', subNodes: ['AgriSignal Node™', 'AgriSignal Loop™'] },
+            { name: 'RuralVault', subNodes: ['RuralVault Lock™', 'RuralVault Cert™'] },
+            { name: 'PulseGrow', subNodes: ['PulseGrow Timer™', 'PulseGrow Sync™'] },
+            { name: 'MarketSoilX', subNodes: ['MarketSoilX Index™', 'MarketSoilX Ledger™'] },
+            { name: 'AgriOmni', subNodes: ['AgriOmni Node™', 'AgriOmni Relay™'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const creativeBrandsData = [
+            { name: 'MediaGrid', subNodes: ['SceneLink™', 'FXLayer™', 'ClipVault™'] },
+            { name: 'StudioPath', subNodes: ['StudioSync™', 'StagePulse™', 'RenderMesh™'] },
+            { name: 'SoundReel', subNodes: ['AudioTrace™', 'VoiceVault™', 'WaveLoop™'] },
+            { name: 'EditFrame', subNodes: ['CutChain™', 'TimelineScroll™', 'FXSnap™'] },
+            { name: 'MotionKit', subNodes: ['VectorNode™', 'AnimCast™', 'ScrollFX™'] },
+            { name: 'GhostTrace', subNodes: ['TraceBlock™', 'ScreenShield™', 'CloneLock™'] },
+            { name: 'TalentMap', subNodes: ['LedgerID™', 'Royaltix™', 'PayoutTag™'] },
+            { name: 'SignalVerse', subNodes: ['FreqCast™', 'GridWave™', 'AudioMesh™'] },
+            { name: 'ScrollPlay', subNodes: ['PlayNode™', 'FrameTrigger™', 'RenderSync™'] },
+            { name: 'FXStream', subNodes: ['FXRender™', 'ScrollVision™', 'LoopFrame™'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const logisticsBrandsData = [
+            { name: 'CrateLogic', subNodes: ['BoxNode™', 'CrateMap™', 'PackSync™', 'CrateSync™'] },
+            { name: 'PackChain', subNodes: ['VendorPack™', 'LabelTrace™', 'ShipGrid™', 'ScrollWrap™'] },
+            { name: 'SortFleet', subNodes: ['SortPulse™', 'BinLogic™', 'FleetTrack™', 'ScrollSort™'] },
+            { name: 'RouteMesh', subNodes: ['NodeMap™', 'GeoSignal™', 'DropLink™', 'RouteFlow™'] },
+            { name: 'LogiStack', subNodes: ['ScrollStack™', 'YieldSync™', 'PayoutRoute™', 'StackNode™'] },
+            { name: 'DeliveryX', subNodes: ['LastMile™', 'ScanDrop™', 'AgentTrack™', 'QuickChain™'] },
+            { name: 'CargoVault', subNodes: ['VaultLink™', 'WeightTag™', 'CargoScan™', 'CargoClaim™'] },
+            { name: 'PalletPath', subNodes: ['PathFinder™', 'RackTrace™', 'GridStore™', 'LoadMark™'] },
+            { name: 'LabelFlow', subNodes: ['PrintNode™', 'ScrollCode™', 'InkRoute™', 'LabelSync™'] },
+            { name: 'DropLoop', subNodes: ['LoopID™', 'VendorDrop™', 'TimeGate™', 'LoopConfirm™'] },
+            { name: 'ScrollRoute', subNodes: ['ChainStep™', 'ScanRoute™', 'RouteTrace™', 'FinalMile™'] },
+            { name: 'ShipLedger', subNodes: ['ManifestScroll™', 'LogiProof™', 'ShipCert™', 'DockNode™'] },
+            { name: 'FreightCore', subNodes: ['FreightID™', 'CrateStamp™', 'CargoPulse™', 'StackSync™'] },
+            { name: 'PackSphere', subNodes: ['SphereNode™', 'PackLoop™', 'SupplyCircle™', 'HubRelay™'] },
+            { name: 'GridDrop', subNodes: ['DropTrace™', 'DropID™', 'GridYield™', 'NodeFlow™'] },
+            { name: 'AutoTrack', subNodes: ['GPSClaim™', 'RouteLog™', 'TrackPulse™', 'AutoLink™'] },
+            { name: 'ChainWrap', subNodes: ['WrapNode™', 'TieGlyph™', 'SealMark™', 'ScanProof™'] },
+            { name: 'BinLogicX', subNodes: ['LogicChip™', 'BinSync™', 'ScrollSnap™', 'BinWave™'] },
+            { name: 'PouchNode', subNodes: ['PouchTag™', 'ScrollStick™', 'PackPush™', 'MicroWrap™'] },
+            { name: 'ColdFleet', subNodes: ['ChillRoute™', 'IceLedger™', 'ColdDrop™', 'VaultIce™'] },
+            { name: 'TrackStack', subNodes: ['SignalTag', 'ScrollFleet', 'DockSync', 'TrackMap'] },
+            { name: 'NodeRoute', subNodes: ['HopLink', 'NodeShift', 'MeshGrid', 'RouteCert'] },
+            { name: 'PackOS', subNodes: ['ScrollOS', 'RouteWrap', 'ForkNode', 'PalletLogic'] },
+            { name: 'ZipCrate', subNodes: ['AutoFold', 'SpeedTag', 'CrateDrop', 'ZipSeal'] },
+            { name: 'TagLogic', subNodes: ['ScrollTag', 'GeoTrack', 'TagFrame', 'AutoCert'] },
+            { name: 'ScrollTruck', subNodes: ['ScrollDriver', 'YieldScan', 'CargoBoard', 'DockLink'] },
+            { name: 'FlowVault', subNodes: ['VaultID', 'ScrollStream', 'BoxYield', 'FlowMap'] },
+            { name: 'SortStack', subNodes: ['BinRank', 'BinPulse', 'FastCrate', 'LogicDrop'] },
+            { name: 'DockGrid', subNodes: ['DockFrame', 'PermitTrack', 'ScrollAccess', 'GateID'] },
+            { name: 'RollFleet', subNodes: ['WheelNode', 'PalletSync', 'LoadProof', 'ScrollAxle'] },
+            { name: 'VendSort', subNodes: ['VendorSort', 'BoxPush', 'AutoTray', 'YieldLoop'] },
+            { name: 'GridCrate', subNodes: ['CrateNode', 'GridWrap', 'VaultStack', 'ScrollRoute'] },
+            { name: 'LogiLift', subNodes: ['LiftID', 'FreightPulse', 'ForkSync', 'LogiTag'] },
+            { name: 'CrateX', subNodes: ['CrateTrack', 'SmartLock', 'LabelLink', 'ScrollMap'] },
+            { name: 'QuickLabel', subNodes: ['ScanCode', 'SmartPrint', 'RouteLabel', 'LabelCast'] },
+            { name: 'DropLedger', subNodes: ['LedgerPath', 'DropFlow', 'VaultDrop', 'QuickClaim'] },
+            { name: 'FleetTrace', subNodes: ['TruckPulse', 'ScrollRide', 'AutoPath', 'CrateEcho'] },
+            { name: 'BoxSync', subNodes: ['ScrollSync', 'BoxFrame', 'ClaimID', 'TagSnap'] },
+            { name: 'ChainGate', subNodes: ['GateLog', 'DockPush', 'YieldGate', 'EntryPulse'] },
+            { name: 'ColdRoute', subNodes: ['FreezePoint', 'ScanChill', 'ColdMesh', 'ChillPath'] },
+            { name: 'PalletCore', subNodes: ['CoreLift', 'PalletID', 'PackForce', 'VaultRack'] },
+            { name: 'FreightLine', subNodes: ['LineTrack', 'StackChain', 'DockGrid', 'RouteNode'] },
+            { name: 'PackSignal', subNodes: ['SignalDrop', 'YieldBeacon', 'PackNode', 'PathSync'] },
+            { name: 'ChainVault', subNodes: ['ClaimLink', 'ScrollCert', 'LockDrop', 'AssetTag'] },
+            { name: 'CrateThread', subNodes: ['CrateLink', 'ThreadMark', 'GridLoop', 'FastTag'] },
+            { name: 'ForkYield', subNodes: ['ForkView', 'YieldNode', 'RouteTrek', 'PalletWave'] },
+            { name: 'DockLogic', subNodes: ['DockTag', 'GridScan', 'ZonePath', 'DockAccess'] },
+            { name: 'LoadCast', subNodes: ['LoadSync', 'CrateWatch', 'NodePing', 'AutoConfirm'] },
+            { name: 'TrayTrack', subNodes: ['TrayID', 'PulseLift', 'VendorCrate', 'SyncScan'] },
+            { name: 'ScrollDrop', subNodes: ['AutoYield', 'ScrollLift', 'DropFlag', 'TagNode'] },
+            { name: 'LoopXpress', subNodes: ['LoopSync', 'VendorPush', 'ScrollLoop', 'DropNext'] },
+            { name: 'PackSyncPro', subNodes: ['ProTrack', 'QuickCrate', 'YieldStamp', 'CoreLoop'] },
+            { name: 'VendorWrap', subNodes: ['WrapID', 'VendorPath', 'SecureDrop', 'LabelGate'] },
+            { name: 'CrateLedger', subNodes: ['CrateLock', 'LedgerPath', 'PackTrace', 'AutoCert'] },
+            { name: 'BoxNodeX', subNodes: ['NodeFlow', 'ClaimLock', 'ScanYield', 'FrameTag'] },
+            { name: 'AutoRoute', subNodes: ['AutoJump', 'PathCalc', 'GridRelay', 'VendorMap'] },
+            { name: 'VaultBin', subNodes: ['BinTag', 'SecureBin', 'VaultSignal', 'TraceStore'] },
+            { name: 'LabelTrack', subNodes: ['TrackMark', 'LabelPath', 'QRDrop', 'LabelFlow'] },
+            { name: 'PathLock', subNodes: ['SecurePath', 'ScrollFence', 'LockGate', 'PathProof'] },
+            { name: 'DispatchLoop', subNodes: ['LoopID', 'DispatchSync', 'TagRelease', 'VendorTrack'] },
+            { name: 'ChainPulse', subNodes: ['PulseLink', 'FlowTrack', 'CrateAlert', 'LockSync'] },
+            { name: 'FastTag', subNodes: ['TagFire', 'IDScan', 'QRClaim', 'RouteAlert'] },
+            { name: 'VendorFleet', subNodes: ['FleetMap', 'ScanRoute', 'YieldClaim', 'ChainAccess'] },
+            { name: 'ParcelSync', subNodes: ['SyncBox', 'DropScan', 'AutoLabel', 'ParcelID'] },
+            { name: 'SmartCrate', subNodes: ['SmartClaim', 'CrateGrid', 'LockTrack', 'RFIDNode'] },
+            { name: 'AutoLabel', subNodes: ['LabelSnap', 'PrintFlow', 'AutoScan', 'ConfirmPrint'] },
+            { name: 'FreightGrid', subNodes: ['GridPath', 'LoadBoard', 'VaultTag', 'ShipClaim'] },
+            { name: 'DockFlow', subNodes: ['DockSignal', 'AccessNode', 'LabelCheck', 'LoadLink'] },
+            { name: 'CrateBox', subNodes: ['BoxSync', 'SmartTag', 'FrameDrop', 'PalletLink'] },
+            { name: 'ColdTrack', subNodes: ['ChillLoop', 'IceNode', 'VaultChill', 'ScrollCold'] },
+            { name: 'SecureMesh', subNodes: ['MeshID', 'PathSecure', 'GateTrace', 'NodeFence'] },
+            { name: 'LoopDispatch', subNodes: ['VendorLoop', 'DropTick', 'AutoYield', 'QRConfirm'] },
+            { name: 'AutoLift', subNodes: ['LiftSync', 'TrayPush', 'ForkLoop', 'WeightGate'] },
+            { name: 'ClaimBoard', subNodes: ['BoardCert', 'VendorPush', 'ScrollAttach', 'ProofLine'] },
+            { name: 'ParcelChain', subNodes: ['ChainTrack', 'QuickDrop', 'VendorClaim', 'FastLock'] },
+            { name: 'LabelMesh', subNodes: ['MeshLink', 'TagGrid', 'LabelView', 'ClaimLink'] },
+            { name: 'BoxSignal', subNodes: ['BoxAlert', 'SignalPulse', 'FrameCheck', 'DropYield'] },
+            { name: 'LoadFrame', subNodes: ['LoadDetect', 'CrateSignal', 'DropCheck', 'ScanLine'] },
+            { name: 'VaultRoute', subNodes: ['RouteClaim', 'SignalSync', 'LockMap', 'PathMark'] },
+            { name: 'DockYield', subNodes: ['DockCrate', 'YieldNode', 'SignalTrack', 'ClaimPulse'] },
+            { name: 'CrateSecure', subNodes: ['SecureTag', 'LockCrate', 'VaultProof', 'ChainLock'] },
+            { name: 'LabelFlowX', subNodes: ['FlowTag', 'LabelSync', 'ScanRoute', 'PrintID'] },
+            { name: 'DockMaster', subNodes: ['MasterDock', 'DockTrack', 'LoadSync', 'AccessNode'] },
+            { name: 'PackNet', subNodes: ['NetCrate', 'PackSync', 'NodeLink', 'ChainFlow'] },
+            { name: 'RouteGuard', subNodes: ['GuardRoute', 'PathSecure', 'SignalLock', 'TrackID'] },
+            { name: 'BinLogicPro', subNodes: ['ProBin', 'LogicSync', 'BinTrack', 'NodeProof'] },
+            { name: 'ColdChainX', subNodes: ['ChillTrack', 'ColdSync', 'FreezeNode', 'IceFlow'] },
+            { name: 'AutoPack', subNodes: ['PackAuto', 'SyncLabel', 'AutoCrate', 'FlowNode'] },
+            { name: 'ShipTrack', subNodes: ['TrackShip', 'ShipSync', 'RouteNode', 'DockFlow'] },
+            { name: 'LoadManager', subNodes: ['ManageLoad', 'LoadTrack', 'SyncCrate', 'NodeLink'] },
+            { name: 'CrateManager', subNodes: ['ManageCrate', 'CrateSync', 'VaultTrack', 'LockNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const fsfBrandsData = [
+            { name: 'AgriCore', subNodes: ['SoilSync', 'CropTrack', 'FarmLink', 'HarvestNet'] },
+            { name: 'SoilHealth', subNodes: ['BioBoost', 'NutrientFlow', 'EarthGuard', 'RootMax'] },
+            { name: 'FarmFresh', subNodes: ['OrganicGrow', 'PureHarvest', 'GreenCycle', 'EcoFarm'] },
+            { name: 'CropCircle', subNodes: ['YieldMap', 'PlantPulse', 'GrowthScan', 'FieldSense'] },
+            { name: 'HarvestHub', subNodes: ['GrainGate', 'ProducePath', 'MarketLink', 'FarmFlow'] },
+            { name: 'TerraNova', subNodes: ['LandRevive', 'SoilBalance', 'EcoTill', 'AgroRenew'] },
+            { name: 'GreenSprout', subNodes: ['SeedStart', 'PlantBoost', 'GrowTrack', 'EcoRoot'] },
+            { name: 'AgroLife', subNodes: ['FarmVital', 'CropCare', 'SoilSense', 'HarvestEase'] },
+            { name: 'BioFarm', subNodes: ['EcoGrow', 'NaturalYield', 'SoilPure', 'PlantHealth'] },
+            { name: 'EcoHarvest', subNodes: ['GreenField', 'CropCycle', 'SoilNurture', 'FarmSustain'] },
+            { name: 'SeedLink', subNodes: ['GerminatePro', 'PlantConnect', 'GrowNet', 'RootLink'] },
+            { name: 'SoilSmart', subNodes: ['NutrientTrack', 'EarthMonitor', 'SoilScan', 'FertilEase'] },
+            { name: 'FarmWise', subNodes: ['AgriPlan', 'CropManage', 'FieldGuide', 'HarvestLogic'] },
+            { name: 'CropGuard', subNodes: ['PestShield', 'DiseaseControl', 'PlantProtect', 'YieldSecure'] },
+            { name: 'HarvestEase', subNodes: ['GrainFlow', 'ProduceEase', 'MarketAccess', 'FarmSimplify'] },
+            { name: 'TerraGrow', subNodes: ['LandEnrich', 'SoilEnhance', 'EcoFert', 'AgroBoost'] },
+            { name: 'GreenField', subNodes: ['SeedSelect', 'PlantOptimize', 'GrowManage', 'EcoCultivate'] },
+            { name: 'AgroTech', subNodes: ['FarmInnovate', 'CropTech', 'SoilAdvance', 'HarvestTech'] },
+            { name: 'BioYield', subNodes: ['EcoProduce', 'NaturalHarvest', 'SoilRich', 'PlantGain'] },
+            { name: 'EcoFarm', subNodes: ['GreenCultivate', 'CropSustain', 'SoilCare', 'FarmEco'] },
+            { name: 'AgriPulse', subNodes: ['SoilMonitor', 'CropSensor', 'FieldData', 'HarvestAlert'] },
+            { name: 'BioCrop', subNodes: ['OrganicSeed', 'PlantHealth', 'GrowthTrack', 'EcoYield'] },
+            { name: 'FarmLink', subNodes: ['AgriConnect', 'FieldNet', 'CropShare', 'HarvestSync'] },
+            { name: 'SoilGuard', subNodes: ['NutrientShield', 'ErosionControl', 'pHBalance', 'RootProtect'] },
+            { name: 'GreenHarvest', subNodes: ['EcoCrop', 'SustainableYield', 'BioFertilizer', 'FarmSustain'] },
+            { name: 'TerraFarm', subNodes: ['LandOptimize', 'SoilEnhance', 'CropBoost', 'AgroManage'] },
+            { name: 'SeedSmart', subNodes: ['GerminationTrack', 'PlantMap', 'GrowthPredict', 'YieldForecast'] },
+            { name: 'CropCare', subNodes: ['PestMonitor', 'DiseaseAlert', 'PlantHealthCheck', 'YieldSecure'] },
+            { name: 'HarvestPro', subNodes: ['GrainQuality', 'ProduceSorting', 'MarketAccess', 'FarmLogistics'] },
+            { name: 'SoilSense', subNodes: ['MoistureDetect', 'NutrientMap', 'SoilProfile', 'FertilityIndex'] },
+            { name: 'FarmVision', subNodes: ['SatelliteImagery', 'CropAnalysis', 'FieldMapping', 'YieldEstimation'] },
+            { name: 'AgroTech', subNodes: ['PrecisionFarming', 'SmartIrrigation', 'DroneSurvey', 'DataAnalytics'] },
+            { name: 'BioSoil', subNodes: ['MicrobeEnhance', 'OrganicMatter', 'SoilRegen', 'EcoBalance'] },
+            { name: 'CropTrack', subNodes: ['PlantGrowthMonitor', 'FieldProgress', 'HarvestTimeline', 'YieldReport'] },
+            { name: 'HarvestLink', subNodes: ['SupplyChainConnect', 'ProduceTrace', 'MarketIntegration', 'FarmNetwork'] },
+            { name: 'SoilLab', subNodes: ['pHTesting', 'NutrientAnalysis', 'SoilSampling', 'FertilityReport'] },
+            { name: 'FarmManage', subNodes: ['TaskScheduler', 'ResourceAllocation', 'LaborTracking', 'EquipmentMonitor'] },
+            { name: 'AgriData', subNodes: ['CropRecords', 'FieldHistory', 'YieldAnalytics', 'FarmReports'] },
+            { name: 'BioGrow', subNodes: ['OrganicInputs', 'PlantNutrition', 'GrowthEnhancer', 'EcoSolutions'] },
+            { name: 'EcoFarm', subNodes: ['SustainablePractices', 'RenewableEnergy', 'WasteManagement', 'Biodiversity'] },
+            { name: 'CropMesh', subNodes: ['FieldNet', 'SoilGrid', 'YieldLink', 'NodeTrace'] },
+            { name: 'SeedRoot', subNodes: ['GermCode', 'SeedID', 'RootLink', 'GrowthStart'] },
+            { name: 'SoilVault', subNodes: ['VaultSoil', 'SampleSecure', 'LabLink', 'ResultSync'] },
+            { name: 'PlantCast', subNodes: ['GrowthSignal', 'WeatherFeed', 'PlantAlert', 'FieldNotify'] },
+            { name: 'YieldNode', subNodes: ['NodePath', 'HarvestTrace', 'ScrollYield', 'CropGrid'] },
+            { name: 'FarmBeacon', subNodes: ['ZonePing', 'CropAlert', 'SignalYield', 'TraceLight'] },
+            { name: 'BioSprout', subNodes: ['EcoSeed', 'VitalTrace', 'GreenMap', 'GrowStream'] },
+            { name: 'SoilTrace', subNodes: ['SampleLink', 'DataStream', 'FertilMap', 'FieldTest'] },
+            { name: 'HarvestCore', subNodes: ['HarvestPing', 'VendorClaim', 'YieldPoint', 'CrateDrop'] },
+            { name: 'PlantLink', subNodes: ['PlantID', 'CrossNode', 'ZoneSync', 'QRRoot'] },
+            { name: 'TerraLoop', subNodes: ['AgriCycle', 'SoilWave', 'CropSync', 'EcoChain'] },
+            { name: 'SoilPulse', subNodes: ['PulseCheck', 'GrowthWave', 'DepthTrace', 'FieldFlow'] },
+            { name: 'GreenPatch', subNodes: ['ZoneGrid', 'OrganicNode', 'FarmSquare', 'PlantDrop'] },
+            { name: 'FarmSync', subNodes: ['SyncPoint', 'CropMerge', 'LandSplit', 'VendorMesh'] },
+            { name: 'RootMesh', subNodes: ['NodeSeed', 'GridSprout', 'PathFert', 'MicroPulse'] },
+            { name: 'BioCluster', subNodes: ['CropGroup', 'FieldChain', 'VendorLoop', 'YieldRing'] },
+            { name: 'SproutIndex', subNodes: ['ZoneScan', 'PlantGrid', 'GrowthMeter', 'SeedSync'] },
+            { name: 'MoistureMap', subNodes: ['AquaNode', 'RootHumidity', 'DepthScan', 'FieldAqua'] },
+            { name: 'EcoZone', subNodes: ['GreenClaim', 'NaturalPath', 'FarmMesh', 'ZoneCert'] },
+            { name: 'CropRelay', subNodes: ['YieldSync', 'VendorCast', 'CrateSend', 'RouteField'] },
+            { name: 'FarmCloud', subNodes: ['ScrollFarm', 'VendorPanel', 'YieldDash', 'FieldUpload'] },
+            { name: 'SoilFrame', subNodes: ['FrameID', 'EarthLine', 'GridSoil', 'TestPath'] },
+            { name: 'HarvestPing', subNodes: ['PingGrid', 'DropYield', 'ClaimNode', 'AlertField'] },
+            { name: 'CropCode', subNodes: ['BarcodeRoot', 'GrowthTag', 'ScrollField', 'LabelGrow'] },
+            { name: 'AgroNode', subNodes: ['LandID', 'CropNode', 'FieldLink', 'SoilRoute'] },
+            { name: 'SeedNest', subNodes: ['NestCode', 'SproutDrop', 'GrowthLog', 'FarmBase'] },
+            { name: 'TraceFarm', subNodes: ['FarmScan', 'VendorLink', 'HarvestLedger', 'ScrollProof'] },
+            { name: 'SproutChain', subNodes: ['ChainGrow', 'YieldLink', 'NodeDrop', 'EcoSprout'] },
+            { name: 'SoilStack', subNodes: ['StackClaim', 'DepthScan', 'FertilRow', 'SoilVault'] },
+            { name: 'AgriPanel', subNodes: ['PanelSync', 'ScrollDash', 'CropView', 'VendorControl'] },
+            { name: 'RootClaim', subNodes: ['ClaimTrace', 'RootID', 'VendorStamp', 'FieldLock'] },
+            { name: 'MoistureNode', subNodes: ['HydrateLink', 'DepthSync', 'MoistPulse', 'NodeRain'] },
+            { name: 'CrateFarm', subNodes: ['CrateLedger', 'DropPanel', 'MarketNode', 'VendorCrate'] },
+            { name: 'PlantPing', subNodes: ['AlertRoot', 'ScanGrow', 'PlantTrace', 'PingField'] },
+            { name: 'AgroLoop', subNodes: ['LoopClaim', 'SoilCycle', 'FarmMesh', 'GrowthPath'] },
+            { name: 'CropGrid', subNodes: ['GridYield', 'MapTrack', 'HarvestView', 'CropLink'] },
+            { name: 'VendorSprout', subNodes: ['VendorID', 'FarmStart', 'ClaimMap', 'SproutVault'] },
+            { name: 'BioPing', subNodes: ['MicroScan', 'HealthAlert', 'GrowthWatch', 'RootPath'] },
+            { name: 'EcoFarmGrid', subNodes: ['EcoPlot', 'FarmJoin', 'GreenPanel', 'ZoneMesh'] },
+            { name: 'TerraCode', subNodes: ['SoilDNA', 'SeedLog', 'CropCodeX', 'ScanTag'] },
+            { name: 'HarvestVault', subNodes: ['VaultDrop', 'CrateClaim', 'PayoutLock', 'FieldSecure'] },
+            { name: 'CropBinder', subNodes: ['BinderLoop', 'VendorTrace', 'ScrollTag', 'FarmCode'] },
+            { name: 'SoilCertify', subNodes: ['TestLog', 'ResultPath', 'QRProof', 'SoilPass'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const educationIpBrandsData = [
+            { name: 'EduNest', subNodes: ['LearnNode', 'ScrollSeed', 'CampusID', 'MentorLink', 'PathClaim'] },
+            { name: 'FormFlex', subNodes: ['SkillWrap', 'GradeSync', 'CourseMap', 'IDTrack', 'PupilMesh'] },
+            { name: 'ScrollBooks', subNodes: ['ChapterFlow', 'StoryTag', 'QuizLink', 'YieldRead', 'TextClaim'] },
+            { name: 'MindLift', subNodes: ['BoostTrack', 'LearnSignal', 'LevelUp', 'FocusPath', 'VaultPace'] },
+            { name: 'GridClass', subNodes: ['ClassNode', 'TeachSync', 'VaultBoard', 'EduAlert', 'NodeAttend'] },
+            { name: 'YouthSignal', subNodes: ['SignalDrop', 'SkillPing', 'PeerMesh', 'RoleAssign', 'TrackEcho'] },
+            { name: 'TalentNest', subNodes: ['TalentVault', 'ClaimCoach', 'RoleTree', 'PayoutPath', 'CertifyNode'] },
+            { name: 'PeerPath', subNodes: ['PeerMap', 'ConnectNode', 'SkillVote', 'PathSync', 'LearnOrbit'] },
+            { name: 'ScrollGrade', subNodes: ['GradeID', 'TestVault', 'YieldCredit', 'ExamSync', 'ResultNode'] },
+            { name: 'LearnMesh', subNodes: ['MeshID', 'ModuleLink', 'ClassSync', 'ProgressTag', 'LoopNode'] },
+            { name: 'EduChain', subNodes: ['CourseLink', 'CreditVault', 'CertDrop', 'LearnKey', 'ScrollLedger'] },
+            { name: 'SkillCast', subNodes: ['CastNode', 'MentorPing', 'PeerEcho', 'PayoutRank', 'TalentDrop'] },
+            { name: 'YouthForge', subNodes: ['ForgePath', 'BuildMesh', 'IdeaClaim', 'LearnFoundry', 'PeerLoop'] },
+            { name: 'QuizNet', subNodes: ['QuizTrigger', 'TestField', 'GradeWave', 'RecallGrid', 'PassSync'] },
+            { name: 'ScrollLabs', subNodes: ['LabNode', 'ProjectClaim', 'IdeaTrace', 'SkillXP', 'ModuleYield'] },
+            { name: 'LearnFlag', subNodes: ['FlagRaise', 'SchoolLink', 'RegionTrack', 'PupilEcho', 'ClaimNode'] },
+            { name: 'ScholarMesh', subNodes: ['MeshTrack', 'GradeRelay', 'ScrollDegree', 'LearnVault', 'StudyPulse'] },
+            { name: 'VaultEdu', subNodes: ['IDVault', 'CertChain', 'TranscriptGrid', 'SecureLearn', 'DegreeDrop'] },
+            { name: 'YouthSphere', subNodes: ['CircleCast', 'ClassLink', 'ScrollTribe', 'GroupEcho', 'PeerRing'] },
+            { name: 'EduGlow', subNodes: ['SignalLight', 'LearnPulse', 'BrainSync', 'FlashGrade', 'EnlightNode'] },
+            { name: 'LearnBloom', subNodes: ['BloomNode', 'GrowthTrack', 'SkillSeed', 'EduSprout', 'PeerSoil'] },
+            { name: 'MentorLoop', subNodes: ['LoopConnect', 'WisdomPath', 'MentorVault', 'ScrollPing', 'TeachBond'] },
+            { name: 'YouthID', subNodes: ['IDSync', 'LearnerNode', 'ProofTag', 'IdentityScroll', 'JoinClass'] },
+            { name: 'ScrollQuiz', subNodes: ['QuizNode', 'AnswerTag', 'TimerMesh', 'ScoreClaim', 'ReviewPulse'] },
+            { name: 'PupilChain', subNodes: ['PupilBlock', 'TaskNode', 'LedgerPath', 'EduEcho', 'LearnLock'] },
+            { name: 'IdeaGrid', subNodes: ['IdeaDrop', 'GridThink', 'SparkVault', 'PeerPush', 'ThoughtClaim'] },
+            { name: 'VaultLearn', subNodes: ['SecureScroll', 'GradeLock', 'ChainTest', 'RecordMesh', 'PayoutGrade'] },
+            { name: 'SkillNest', subNodes: ['NestGrow', 'RoleTree', 'PeerRoot', 'MentorNode', 'CertPulse'] },
+            { name: 'ClassFlow', subNodes: ['FlowSync', 'ClassRoute', 'PeerGroup', 'ScrollRing', 'LessonCast'] },
+            { name: 'CertifyCast', subNodes: ['CastAward', 'NodeBadge', 'VaultProof', 'ScrollCredit', 'ChainEarn'] },
+            { name: 'PathMentor', subNodes: ['MentorMap', 'GrowthLink', 'TrailNode', 'ScrollCoach', 'PeerTrace'] },
+            { name: 'IdeaNest', subNodes: ['NestPath', 'SparkClaim', 'ScrollTree', 'PupilEcho', 'ThoughtPulse'] },
+            { name: 'SchoolVault', subNodes: ['VaultGate', 'IDBoard', 'RosterDrop', 'GridEnroll', 'SecureClass'] },
+            { name: 'LearnSignal', subNodes: ['SignalNode', 'BrainPing', 'LessonTrack', 'EduCast', 'PathAlert'] },
+            { name: 'GridBadge', subNodes: ['BadgeSync', 'PathAward', 'TagNode', 'CreditDrop', 'CertLock'] },
+            { name: 'ScrollCraft', subNodes: ['CraftScroll', 'YieldPath', 'PeerSkill', 'VaultMaker', 'ProjectPulse'] },
+            { name: 'MindBoard', subNodes: ['BoardTag', 'ClassSignal', 'IdeaPost', 'TaskDrop', 'VoteMark'] },
+            { name: 'ClassEcho', subNodes: ['EchoNode', 'SyncMesh', 'StudentCast', 'AlertPing', 'ScrollPlay'] },
+            { name: 'VaultPupil', subNodes: ['PupilID', 'SecureClaim', 'GradeVault', 'TrackNode', 'CertTrigger'] },
+            { name: 'YouthSignal', subNodes: ['PeerAlert', 'LoopClaim', 'ScrollWave', 'VoiceDrop', 'IDMesh'] },
+            { name: 'TeachStack', subNodes: ['StackLink', 'LessonPulse', 'GradeBeam', 'TrackNode', 'PeerPath'] },
+            { name: 'StudyCast', subNodes: ['StudyStream', 'PeerJoin', 'QuizSignal', 'ReviewGrid', 'ClassLink'] },
+            { name: 'RoleGrid', subNodes: ['RoleMap', 'ClaimSync', 'PeerTree', 'IdentityPath', 'TagTrack'] },
+            { name: 'LearnFrame', subNodes: ['FrameNode', 'LessonTrace', 'PupilMesh', 'CastDrop', 'ScoreProof'] },
+            { name: 'PulseAcademy', subNodes: ['AcademyPing', 'PeerLight', 'FocusPath', 'VaultLearn', 'BadgeSync'] },
+            { name: 'GradeSync', subNodes: ['GradeLink', 'ResultEcho', 'TestMesh', 'PassTrack', 'VaultSheet'] },
+            { name: 'TeachCircle', subNodes: ['CircleCast', 'MentorPulse', 'ScrollBeam', 'IdeaClaim', 'PeerRing'] },
+            { name: 'CampusNet', subNodes: ['CampusID', 'GroupPath', 'ScrollZone', 'PeerAlert', 'ConnectMesh'] },
+            { name: 'StudyBoard', subNodes: ['StudyNode', 'NoteTrace', 'ProjectGrid', 'SyncClaim', 'ViewRank'] },
+            { name: 'ScrollPath', subNodes: ['PathLink', 'VaultCredit', 'PeerYield', 'LessonGrid', 'ClassSync'] },
+            { name: 'LearnQuest', subNodes: ['QuestNode', 'MapTrack', 'StudyGoal', 'ProgressPath', 'PeerSignal'] },
+            { name: 'EduNestPro', subNodes: ['NestID', 'PathPulse', 'MentorNode', 'VaultGrade', 'PupilClaim'] },
+            { name: 'LoopStudy', subNodes: ['StudyLoop', 'GridSync', 'QuizWave', 'PeerCast', 'ReviewTrack'] },
+            { name: 'GradeForge', subNodes: ['ForgeNode', 'GradeRing', 'ResultPush', 'CertPath', 'LearnLine'] },
+            { name: 'IdeaLink', subNodes: ['SparkLine', 'LoopLink', 'IdeaDrop', 'MentorPing', 'ClassTrace'] },
+            { name: 'TeachTrack', subNodes: ['ClassFlow', 'InstructorNode', 'FeedbackGrid', 'PeerScore', 'PathEcho'] },
+            { name: 'VaultClass', subNodes: ['SecureNode', 'RosterClaim', 'EnrollTrack', 'PeerMap', 'ClassKey'] },
+            { name: 'BadgeMesh', subNodes: ['BadgeID', 'VaultLink', 'ScrollProof', 'AwardBeam', 'PayoutPing'] },
+            { name: 'EduCast', subNodes: ['CoursePing', 'ClassSignal', 'LectureDrop', 'QuizRelay', 'PeerPush'] },
+            { name: 'YouthGrid', subNodes: ['MeshLearn', 'PeerTrace', 'StudyJoin', 'PupilMark', 'LessonSync'] },
+            { name: 'LearnProof', subNodes: ['ProofID', 'CourseClaim', 'ScrollCert', 'VaultDrop', 'GradeLoop'] },
+            { name: 'PathCoach', subNodes: ['CoachNode', 'RolePath', 'ScrollEcho', 'StudyChain', 'CertPush'] },
+            { name: 'TalentID', subNodes: ['TalentClaim', 'VaultPass', 'SkillMap', 'IDScroll', 'LearnLock'] },
+            { name: 'OmniPupil', subNodes: ['OmniLearn', 'ScrollLoop', 'ViewNode', 'ClassCast', 'IDTrack'] },
+            { name: 'SchoolChain', subNodes: ['LedgerLearn', 'BlockEnroll', 'VaultBoard', 'PeerPath', 'ClassFlow'] },
+            { name: 'GradeVault', subNodes: ['VaultClaim', 'CreditPing', 'ScoreSheet', 'SecureDrop', 'LedgerTrack'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const educationYouthBrandsData = educationIpBrandsData; // Reusing data
+        // educationYouthSubNodesData is no longer needed as subnodes are within brands
+
+        const weblessBrandsData = [
+            { name: 'OmniQR', subNodes: ['QRNode', 'YieldPing', 'ClaimGrid', 'ScanFlow', 'RouteToken'] },
+            { name: 'MeshSync', subNodes: ['NodeJoin', 'MeshPulse', 'ConnectGrid', 'DropRoute', 'SignalFlow'] },
+            { name: 'VaultBeacon', subNodes: ['FlashNode', 'SecurePing', 'LightPath', 'VaultCast', 'NodePing'] },
+            { name: 'TapClaim', subNodes: ['NFCTrigger', 'ScrollTap', 'NodePush', 'PayoutTouch', 'QRClaim'] },
+            { name: 'ScrollKey', subNodes: ['KeyNode', 'UnlockTrack', 'AccessVault', 'PeerPass', 'SecureDrop'] },
+            { name: 'AirLoop', subNodes: ['LoopCast', 'AirPing', 'PassiveTrack', 'QRWave', 'SignalBoard'] },
+            { name: 'DotGrid', subNodes: ['DotNode', 'MeshPrint', 'InkLink', 'FormSync', 'TagPulse'] },
+            { name: 'VaultTouch', subNodes: ['TouchID', 'QRAccess', 'ScrollPulse', 'FieldTrigger', 'NodeProof'] },
+            { name: 'PouchCast', subNodes: ['DeviceDrop', 'LoopTouch', 'PulseSend', 'AirLabel', 'AssetBeam'] },
+            { name: 'YieldTrace', subNodes: ['QRDrop', 'PathYield', 'SignalToken', 'ScanLock', 'LoopClaim'] },
+            { name: 'TapSync', subNodes: ['ScrollNode', 'QRConnect', 'TouchBeam', 'PeerSync', 'PathTrigger'] },
+            { name: 'TouchProof', subNodes: ['ProofLink', 'TagScan', 'YieldPath', 'ScrollTouch', 'DataNode'] },
+            { name: 'MeshKey', subNodes: ['MeshCode', 'AccessRoute', 'NodeTrace', 'LockDrop', 'AirJoin'] },
+            { name: 'QRPad', subNodes: ['GridTouch', 'SignalDrop', 'TagFrame', 'VaultClick', 'QRPush'] },
+            { name: 'DotPulse', subNodes: ['PulseWave', 'FrameDrop', 'DotYield', 'ScrollEcho', 'ProofPad'] },
+            { name: 'FlashNode', subNodes: ['NodePing', 'LightPath', 'QRSync', 'PassiveDrop', 'AirGrid'] },
+            { name: 'ScrollFuse', subNodes: ['FuseNode', 'TouchLoop', 'NFCTrace', 'QRJoin', 'DeviceCast'] },
+            { name: 'PassiveYield', subNodes: ['PassiveNode', 'QRTrace', 'ScrollMark', 'AirSync', 'RouteKey'] },
+            { name: 'QRClaimMesh', subNodes: ['ClaimGrid', 'MeshLock', 'TouchYield', 'TagTrace', 'NodeTap'] },
+            { name: 'VaultTouchPro', subNodes: ['SecureTap', 'NodeCast', 'ProofScroll', 'QRBeam', 'LinkMesh'] },
+            { name: 'AirDropVault', subNodes: ['AirTag', 'YieldNode', 'VaultSend', 'QRTrigger', 'TapClaim'] },
+            { name: 'MeshTrigger', subNodes: ['TriggerNode', 'PassiveSync', 'TouchCast', 'LinkClaim', 'ScrollDrop'] },
+            { name: 'ZeroLink', subNodes: ['QRNodeZero', 'OfflineConnect', 'ScrollTrack', 'VaultLoop', 'MeshYield'] },
+            { name: 'PaperID', subNodes: ['QRPrint', 'ScrollForm', 'NodeMark', 'ScanVault', 'OfflineYield'] },
+            { name: 'SignalFrame', subNodes: ['LightID', 'SignalTrace', 'NodeGrid', 'ScrollFlash', 'MeshPath'] },
+            { name: 'TapMesh', subNodes: ['TouchGrid', 'PassiveYield', 'ScrollTouch', 'NFCMap', 'VaultDrop'] },
+            { name: 'TagBeacon', subNodes: ['TagNode', 'FlashPath', 'YieldLink', 'TouchMark', 'NodePush'] },
+            { name: 'ScrollTouch', subNodes: ['SecureTouch', 'PeerDrop', 'NFCVault', 'QRSignal', 'CastTrace'] },
+            { name: 'ClaimPatch', subNodes: ['ScrollPatch', 'TagClaim', 'QRLink', 'ProofMark', 'PassiveTrace'] },
+            { name: 'LightGrid', subNodes: ['FlashNode', 'TouchEcho', 'SignalCast', 'LightDrop', 'MeshJoin'] },
+            { name: 'VaultPrint', subNodes: ['QRLayout', 'SecureForm', 'TouchScan', 'VaultCopy', 'MeshIndex'] },
+            { name: 'OmniTag', subNodes: ['TagPath', 'TouchNode', 'ClaimGrid', 'DotJoin', 'VaultID'] },
+            { name: 'ScanToken', subNodes: ['TokenNode', 'ScanPath', 'YieldDot', 'QRMesh', 'ProofCast'] },
+            { name: 'PassiveKey', subNodes: ['KeyNode', 'NFCYield', 'QRSync', 'DropToken', 'TraceLoop'] },
+            { name: 'VaultCast', subNodes: ['CastSignal', 'LinkNode', 'ScrollSync', 'ProofDrop', 'BeamClaim'] },
+            { name: 'ScrollNodeX', subNodes: ['NodePulse', 'TrackEcho', 'TouchID', 'QRLog', 'PassiveMap'] },
+            { name: 'FrameSync', subNodes: ['FrameID', 'SyncNode', 'VaultPath', 'QRTrigger', 'CastMark'] },
+            { name: 'QRPath', subNodes: ['GridTrace', 'DropClaim', 'QRIndex', 'ProofNode', 'VaultSync'] },
+            { name: 'DotLogic', subNodes: ['DotMap', 'ScrollPulse', 'YieldClaim', 'MeshCode', 'NFCGrid'] },
+            { name: 'BeaconMesh', subNodes: ['BeaconTrack', 'NodeLight', 'FlashYield', 'SecureDrop', 'TagCast'] },
+            { name: 'NFCVault', subNodes: ['TagSync', 'VaultNode', 'QRPath', 'TouchTrace'] },
+            { name: 'LightPulse', subNodes: ['GridClaim', 'PathDrop', 'ScrollSignal', 'NFCVault'] },
+            { name: 'ScrollRelay', subNodes: ['FrameYield', 'MeshCast', 'NodeJoin', 'VaultDrop'] },
+            { name: 'OfflineYield', subNodes: ['NodeID', 'QRPanel', 'VaultView', 'SceneSync'] },
+            { name: 'DotClaim', subNodes: ['MapNode', 'QRDrop', 'VaultPing', 'TrackLine'] },
+            { name: 'ZeroMesh', subNodes: ['CertifyScene', 'VaultWave', 'QRNode', 'ClipTrack'] },
+            { name: 'CastLink', subNodes: ['ViewGrid', 'VaultEcho', 'QRAudio', 'TagPath'] },
+            { name: 'FrameYield', subNodes: ['BoardClip', 'QRMap', 'VaultTag', 'MediaFlow'] },
+            { name: 'MeshProof', subNodes: ['ClipProof', 'VaultScene', 'QRDrop', 'FrameTrace'] },
+            { name: 'PaperVault', subNodes: ['SceneID', 'QRLink', 'VaultClaim', 'ClipEcho'] },
+            { name: 'SyncPulse', subNodes: ['NodeBeat', 'VaultTrack', 'QRSound', 'EchoDrop'] },
+            { name: 'PassiveCast', subNodes: ['DropTrack', 'QRMix', 'VaultOutput', 'NodeSync'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const healthBrandsData = [
+            { name: 'MedVault', subNodes: ['ScanID', 'PatientDrop', 'RecordLink', 'VaultCare'] },
+            { name: 'CleanCast', subNodes: ['SanitizeGrid', 'QRLabel', 'TouchLock', 'DropZone'] },
+            { name: 'ScrollHealth', subNodes: ['ScrollID', 'TreatmentTrack', 'CareClaim', 'HealthEcho'] },
+            { name: 'Hygienix', subNodes: ['WashCycle', 'QRNode', 'DisinfectLink', 'VaultTag'] },
+            { name: 'CareNode', subNodes: ['PatientSync', 'PayoutCare', 'NodeClaim', 'AlertScan'] },
+            { name: 'VaultSan', subNodes: ['CleanTrace', 'HygieneCert', 'QRGrid', 'SecureDrop'] },
+            { name: 'TrackMeds', subNodes: ['DoseTrack', 'QRScript', 'VaultDrug', 'AlertLink'] },
+            { name: 'SteriMesh', subNodes: ['MeshDrop', 'CleanEcho', 'QRTrack', 'SteriNode'] },
+            { name: 'MedLoop', subNodes: ['HealthPath', 'PatientCast', 'QRClaim', 'VaultID'] },
+            { name: 'PulseClean', subNodes: ['PulseSync', 'ScanLink', 'SanitaryTag', 'VaultLock'] },
+            { name: 'HealthDrop', subNodes: ['DropPoint', 'TrackDose', 'QRTrace', 'MedNode'] },
+            { name: 'SanitiPath', subNodes: ['PathNode', 'CleanSync', 'HygieneRoute', 'QRClaim'] },
+            { name: 'VaultMeds', subNodes: ['MedID', 'TrackPill', 'DropChart', 'AlertLoop'] },
+            { name: 'BioPulse', subNodes: ['QRNode', 'ScanVitals', 'VaultRecord', 'HealthPing'] },
+            { name: 'NurseFlow', subNodes: ['ShiftTrack', 'AlertGrid', 'VaultChart', 'PeerLink'] },
+            { name: 'AirHealth', subNodes: ['VentFlow', 'PurifyNode', 'AirTrack', 'CleanEcho'] },
+            { name: 'ScanCare', subNodes: ['CareID', 'QRChart', 'PatientGrid', 'RecordVault'] },
+            { name: 'PathogenTrace', subNodes: ['PathNode', 'TraceMap', 'AlertDrop', 'VaultScan'] },
+            { name: 'CareYield', subNodes: ['PayoutClaim', 'CareNode', 'VaultPay', 'ScrollCert'] },
+            { name: 'SoapGrid', subNodes: ['WashSync', 'DispenserLink', 'QRNode', 'VaultDrop'] },
+            { name: 'MedTrace', subNodes: ['TraceNode', 'QRMap', 'PatientPing', 'RecordFlow'] },
+            { name: 'SteriLoop', subNodes: ['LoopClean', 'VaultNode', 'DisinfectClaim', 'ScanPulse'] },
+            { name: 'BioScan', subNodes: ['BioNode', 'TestTrace', 'VaultLink', 'QRResult'] },
+            { name: 'CareLink', subNodes: ['PatientNode', 'ClaimGrid', 'ScrollAlert', 'VaultCare'] },
+            { name: 'VaultWell', subNodes: ['WellnessID', 'QRPath', 'DropNode', 'HealthYield'] },
+            { name: 'DoseSync', subNodes: ['QRTrack', 'PillGrid', 'TimerClaim', 'VaultDose'] },
+            { name: 'SanityTrack', subNodes: ['HygieneNode', 'ScanTouch', 'VaultDrop', 'QRLoop'] },
+            { name: 'CleanPulse', subNodes: ['CleanLink', 'QRSignal', 'VaultMesh', 'PathDrop'] },
+            { name: 'NurseGrid', subNodes: ['NurseID', 'RosterFlow', 'AlertRoute', 'CareTag'] },
+            { name: 'ScanHealth', subNodes: ['ScanLoop', 'QRVitals', 'VaultDrop', 'RecordTag'] },
+            { name: 'PureFlow', subNodes: ['WaterPath', 'CleanYield', 'VaultPipe', 'QRDrop'] },
+            { name: 'MedCert', subNodes: ['CertID', 'RecordNode', 'QRVerify', 'ScrollCare'] },
+            { name: 'SteriPack', subNodes: ['QRWrap', 'VaultClean', 'ScanShield', 'DropKit'] },
+            { name: 'AlertCare', subNodes: ['SignalAlert', 'PatientLoop', 'QRNotify', 'VaultTrack'] },
+            { name: 'VaultNurse', subNodes: ['NurseClaim', 'QRPanel', 'NodeTag', 'ShiftProof'] },
+            { name: 'TrackVitals', subNodes: ['VitalID', 'ScanPulse', 'VaultTrack', 'QRClaim'] },
+            { name: 'HygieneCast', subNodes: ['QRPush', 'CleanNode', 'VaultDrop', 'SprayTrace'] },
+            { name: 'PatientSync', subNodes: ['ScrollTrack', 'VaultChart', 'QRPath', 'IDNode'] },
+            { name: 'MedFuse', subNodes: ['VaultJoin', 'QRClaim', 'ScrollDose', 'PatientLink'] },
+            { name: 'CleanChain', subNodes: ['QRLoop', 'VaultMark', 'HygieneFlow', 'ScanProof'] },
+            { name: 'SoapNode', subNodes: ['FoamClaim', 'VaultDispenser', 'QRWash', 'CleanTag'] },
+            { name: 'ScanDose', subNodes: ['DoseTrace', 'QRScript', 'VaultTrigger', 'LabelNode'] },
+            { name: 'CareCast', subNodes: ['SignalDrop', 'QRAlert', 'NurseRoute', 'VaultLink'] },
+            { name: 'HealthPing', subNodes: ['PingNode', 'QRVital', 'VaultTrack', 'AlertBeam'] },
+            { name: 'PatientPath', subNodes: ['QRRoute', 'MedID', 'VaultDrop', 'CareSync'] },
+            { name: 'PureVault', subNodes: ['VaultFlow', 'QRDispenser', 'HygieneLog', 'ScanEcho'] },
+            { name: 'MedDrop', subNodes: ['DropForm', 'ClaimScript', 'QRLoop', 'VaultNode'] },
+            { name: 'SanitiLoop', subNodes: ['LoopClean', 'SprayNode', 'VaultClaim', 'HygieneGrid'] },
+            { name: 'AlertDose', subNodes: ['QRSignal', 'VaultNotify', 'ScheduleClaim', 'DosePing'] },
+            { name: 'CleanLine', subNodes: ['LinePath', 'QRCheck', 'VaultFlow', 'ScanProof'] },
+            { name: 'VaultVitals', subNodes: ['PulseID', 'ScanNode', 'QRTrack', 'VitalsClaim'] },
+            { name: 'MaskTrack', subNodes: ['QRWear', 'CleanFit', 'VaultSync', 'HygienePing'] },
+            { name: 'CarePrint', subNodes: ['PrintLabel', 'QRScan', 'DropVault', 'CleanNode'] },
+            { name: 'SteriBoard', subNodes: ['BoardRoute', 'HygieneLink', 'VaultMap', 'QRPath'] },
+            { name: 'NurseYield', subNodes: ['PayoutNode', 'VaultCert', 'NurseFlow', 'QRSignal'] },
+            { name: 'BioTrack', subNodes: ['BioScan', 'QRProof', 'VaultClaim', 'PatientEcho'] },
+            { name: 'VaultWellness', subNodes: ['ScrollCare', 'QRDrop', 'MedMesh', 'RecordSync'] },
+            { name: 'TouchClean', subNodes: ['QRScan', 'VaultTouch', 'HygieneLock', 'SignalNode'] },
+            { name: 'MedEcho', subNodes: ['EchoID', 'VaultPanel', 'QRPing', 'RecordPath'] },
+            { name: 'PatientCert', subNodes: ['ScrollCert', 'QRAccess', 'VaultLedger', 'ClaimLink'] },
+            { name: 'MedLogix', subNodes: ['TrackVault', 'QRPanel', 'PatientTag', 'SyncChart'] },
+            { name: 'ScanSan', subNodes: ['HygieneScan', 'QRRead', 'VaultIndex', 'CleanFlow'] },
+            { name: 'NurseCast', subNodes: ['CastPath', 'QRBoard', 'CarePulse', 'VaultShift'] },
+            { name: 'TouchScan', subNodes: ['ScanNode', 'TouchRead', 'VaultMark', 'QRTag'] },
+            { name: 'DoseVault', subNodes: ['VaultClaim', 'QRDose', 'TimerPath', 'MedLabel'] },
+            { name: 'PathClean', subNodes: ['ScrollRoute', 'QRScan', 'VaultTrack', 'PathEcho'] },
+            { name: 'SanitiID', subNodes: ['QRBadge', 'VaultName', 'ClaimID', 'CleanCheck'] },
+            { name: 'RecordGrid', subNodes: ['RecordLoop', 'VaultEntry', 'QRNode', 'ScanBook'] },
+            { name: 'PureCare', subNodes: ['QRFlow', 'SanitizePath', 'CareTouch', 'VaultSync'] },
+            { name: 'MedClaim', subNodes: ['VaultSheet', 'QRProof', 'ScrollClaim', 'SignalTrack'] },
+            { name: 'QRVitals', subNodes: ['VitalsTag', 'QRTrack', 'VaultPulse', 'HealthNode'] },
+            { name: 'HygieneNode', subNodes: ['CleanLabel', 'ScanEcho', 'VaultDrop', 'TagID'] },
+            { name: 'SoapDrop', subNodes: ['SoapPing', 'QRTrigger', 'DispenserLog', 'VaultTrack'] },
+            { name: 'NurseVault', subNodes: ['VaultRoster', 'NurseTrack', 'ShiftID', 'QRLog'] },
+            { name: 'BioClaim', subNodes: ['BioTrack', 'VaultCert', 'QRForm', 'DNAPath'] },
+            { name: 'ScanWell', subNodes: ['QRClaim', 'ScrollDrop', 'VaultCare', 'CheckPulse'] },
+            { name: 'SprayTrack', subNodes: ['SprayNode', 'VaultStream', 'QRPath', 'HygieneFlow'] },
+            { name: 'CarePath', subNodes: ['QRTag', 'NurseRoute', 'VaultChart', 'ShiftEcho'] },
+            { name: 'VaultScript', subNodes: ['ScriptID', 'QRConfirm', 'MedDrop', 'ClaimProof'] },
+            { name: 'PatientLink', subNodes: ['QRBoard', 'VaultJoin', 'CarePass', 'RecordTrack'] },
+            { name: 'SteriCheck', subNodes: ['CheckPulse', 'VaultClean', 'QRNode', 'HygieneCert'] },
+            { name: 'HealthCast', subNodes: ['CastAlert', 'QRSignal', 'NodeDrop', 'VaultClaim'] },
+            { name: 'DoseLink', subNodes: ['QRLabel', 'VaultID', 'TrackMed', 'ScrollProof'] },
+            { name: 'TouchProof', subNodes: ['VaultLink', 'CleanTrace', 'ScanNode', 'QRDrop'] },
+            { name: 'RecordVault', subNodes: ['FilePath', 'QRPatient', 'VaultScan', 'ArchiveNode'] },
+            { name: 'MedPortal', subNodes: ['QRGate', 'VaultOpen', 'PatientCert', 'NodePass'] },
+            { name: 'AlertVault', subNodes: ['SignalPing', 'VaultEcho', 'ScanNotify', 'QRPath'] },
+            { name: 'ClaimDose', subNodes: ['DoseNode', 'VaultRoute', 'LabelScan', 'QRClaim'] },
+            { name: 'CleanForm', subNodes: ['QRPanel', 'VaultPath', 'PrintTag', 'DisinfectProof'] },
+            { name: 'ScanProof', subNodes: ['VaultDrop', 'QRNode', 'CertID', 'PulseRecord'] },
+            { name: 'NurseSignal', subNodes: ['SignalNode', 'QRChart', 'VaultEcho', 'RosterClaim'] },
+            { name: 'MedPathway', subNodes: ['QRLog', 'PatientPath', 'ScrollLink', 'VaultMark'] },
+            { name: 'WellnessTrack', subNodes: ['TrackChart', 'VaultPulse', 'QRNode', 'LoopScan'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const housingBrandsData = [
+            { name: 'BuildNest', subNodes: ['PlotVault', 'GridPermit', 'ScrollClaim', 'LandNode'] },
+            { name: 'InfraGrid', subNodes: ['QRPipe', 'SignalTrace', 'VaultZone', 'NodeLayout'] },
+            { name: 'CivicPath', subNodes: ['PermitID', 'RoutePlan', 'VaultForm', 'ZoningMesh'] },
+            { name: 'VaultFrame', subNodes: ['FrameDrop', 'BuildQR', 'ClaimSync', 'SiteNode'] },
+            { name: 'ArchiLoop', subNodes: ['DesignTrace', 'VaultDraw', 'BlueprintNode', 'CivicCast'] },
+            { name: 'ScrollPlot', subNodes: ['QRClaim', 'VaultMap', 'LandTrack', 'NodePing'] },
+            { name: 'UrbanTrace', subNodes: ['StreetPlan', 'VaultRoad', 'SignalGrid', 'SurveyNode'] },
+            { name: 'BuildChain', subNodes: ['QRBuild', 'SiteVault', 'ContractorLink', 'NodePermit'] },
+            { name: 'PlotMesh', subNodes: ['MeshTag', 'VaultCoord', 'ZoningNode', 'ClaimForm'] },
+            { name: 'LandClaim', subNodes: ['ParcelGrid', 'PlotPath', 'VaultTag', 'ClaimNode'] },
+            { name: 'CementDrop', subNodes: ['QRPour', 'NodeTrack', 'VaultMix', 'BatchSignal'] },
+            { name: 'CivicVault', subNodes: ['RegisterPath', 'ZoningClaim', 'QRDrop', 'CivicNode'] },
+            { name: 'StructFlow', subNodes: ['FrameSignal', 'VaultBeam', 'NodeGrid', 'BuildSync'] },
+            { name: 'QRBuild', subNodes: ['BuildNode', 'ScrollTrace', 'VaultCheck', 'PermitQR'] },
+            { name: 'RoadMapX', subNodes: ['QRRoute', 'VaultPath', 'PavingNode', 'InfraClaim'] },
+            { name: 'SiteTrace', subNodes: ['QRZone', 'ClaimNode', 'VaultFlag', 'SurveyGrid'] },
+            { name: 'CivicPlan', subNodes: ['GridNode', 'CouncilDrop', 'QRZoning', 'VaultSheet'] },
+            { name: 'VaultRoof', subNodes: ['RooftopPing', 'BuildEcho', 'QRPanel', 'TileDrop'] },
+            { name: 'PlotCast', subNodes: ['PlotSignal', 'VaultDrop', 'LandNode', 'QRClaim'] },
+            { name: 'TileYield', subNodes: ['TileGrid', 'VaultTrack', 'QRPlace', 'PatternNode'] },
+            { name: 'ScanPermit', subNodes: ['QRPermit', 'VaultForm', 'ZoneProof', 'ClaimSync'] },
+            { name: 'BuildTrack', subNodes: ['ProgressScan', 'QRPlan', 'VaultStage', 'NodeEcho'] },
+            { name: 'CementVault', subNodes: ['MixNode', 'VaultDrop', 'PourClaim', 'TagBatch'] },
+            { name: 'GridScan', subNodes: ['QRSurvey', 'VaultMap', 'GeoTrack', 'NodeClaim'] },
+            { name: 'SiteVault', subNodes: ['QRCode', 'SiteTrack', 'VaultBuild', 'PermitSync'] },
+            { name: 'PermitGrid', subNodes: ['PermitNode', 'QRClaim', 'ZoningPing', 'VaultLink'] },
+            { name: 'CivicPrint', subNodes: ['BlueprintDrop', 'VaultForm', 'DesignTrack', 'QRScan'] },
+            { name: 'RoofMesh', subNodes: ['TileClaim', 'VaultPitch', 'QRShingle', 'LayoutNode'] },
+            { name: 'ScrollYard', subNodes: ['YardMap', 'VaultPlace', 'GridNode', 'QRFence'] },
+            { name: 'PlotLink', subNodes: ['QRMap', 'VaultConnect', 'GridPath', 'ClaimRoute'] },
+            { name: 'GeoClaim', subNodes: ['VaultPlot', 'QRCoords', 'LandMesh', 'ScanMark'] },
+            { name: 'PermitCast', subNodes: ['ClaimEcho', 'VaultPermit', 'QRBoard', 'RouteNode'] },
+            { name: 'BuildYield', subNodes: ['PayoutNode', 'StageClaim', 'VaultCycle', 'QRProgress'] },
+            { name: 'CivicEcho', subNodes: ['CivicNode', 'QRDrop', 'PlanLink', 'VaultLedger'] },
+            { name: 'ArchiVault', subNodes: ['VaultDraft', 'ScanFloor', 'QRRender', 'NodeTrace'] },
+            { name: 'ScrollPlan', subNodes: ['GridLine', 'QRClaim', 'VaultSheet', 'PermitTrace'] },
+            { name: 'ZoningBoard', subNodes: ['MapNode', 'QRCheck', 'VaultProof', 'ZoneRoute'] },
+            { name: 'SiteSnap', subNodes: ['NodePing', 'QRMap', 'VaultBuild', 'LandTag'] },
+            { name: 'BuildBeam', subNodes: ['QRSpan', 'VaultFrame', 'ReinforceTrack', 'NodeSet'] },
+            { name: 'InfraLoop', subNodes: ['InfraSignal', 'VaultRing', 'QRFlow', 'SiteNode'] },
+            { name: 'CivicSync', subNodes: ['SyncNode', 'QRForm', 'CouncilClaim', 'VaultPath'] },
+            { name: 'HousingVault', subNodes: ['TitleDrop', 'QRZone', 'VaultProof', 'ClaimKey'] },
+            { name: 'LandNodeX', subNodes: ['GeoRoute', 'VaultClaim', 'QRTrack', 'ScanField'] },
+            { name: 'ClaimBoard', subNodes: ['QRDesk', 'PermitFlow', 'VaultConfirm', 'GridEcho'] },
+            { name: 'UrbanMap', subNodes: ['MapTrace', 'VaultPlan', 'SurveyQR', 'BuildPath'] },
+            { name: 'BuildNet', subNodes: ['NetNode', 'QRPermit', 'VaultJoin', 'PathStage'] },
+            { name: 'CivicGrid', subNodes: ['GridPass', 'ZoningPing', 'VaultLink', 'CouncilTrace'] },
+            { name: 'FormPanel', subNodes: ['QRForm', 'PermitMark', 'VaultEntry', 'ScanLine'] },
+            { name: 'YieldPermit', subNodes: ['ClaimPing', 'VaultProof', 'QRYield', 'GridSync'] },
+            { name: 'StructMark', subNodes: ['QRBeam', 'FrameLink', 'VaultPath', 'NodeGrid'] },
+            { name: 'PlanCast', subNodes: ['CastNode', 'QRDrop', 'VaultSync', 'BlueLine'] },
+            { name: 'HousingID', subNodes: ['HouseTag', 'VaultLabel', 'QRTrack', 'ClaimFlow'] },
+            { name: 'CementCast', subNodes: ['MixForm', 'QRNode', 'VaultDrop', 'YieldClaim'] },
+            { name: 'TileProof', subNodes: ['TileMap', 'QRGrid', 'VaultShingle', 'NodePin'] },
+            { name: 'GridYield', subNodes: ['YieldNode', 'QRTrack', 'VaultSync', 'PermitPath'] },
+            { name: 'ArchPlan', subNodes: ['ArchiFlow', 'VaultClaim', 'QRNode', 'BlueprintTrack'] },
+            { name: 'PlotSync', subNodes: ['LandMesh', 'QRPing', 'VaultMap', 'TagEcho'] },
+            { name: 'CivicDrop', subNodes: ['ClaimVault', 'QRBoard', 'SyncTag', 'NodeSubmit'] },
+            { name: 'ZonePath', subNodes: ['ZoneNode', 'QRRoute', 'VaultLock', 'GridTag'] },
+            { name: 'ClaimGrid', subNodes: ['GridLock', 'VaultCheck', 'QRNode', 'SiteClaim'] },
+            { name: 'TileVault', subNodes: ['QRSet', 'VaultGrid', 'PatternScan', 'ShingleClaim'] },
+            { name: 'StructID', subNodes: ['IDTag', 'VaultNode', 'QRProof', 'BuildTrack'] },
+            { name: 'CivicYield', subNodes: ['YieldCert', 'VaultPayout', 'GridTag', 'QRSplit'] },
+            { name: 'BuildCert', subNodes: ['CertifyNode', 'QRPermit', 'VaultSync', 'ScanProof'] },
+            { name: 'PlanNode', subNodes: ['NodeMap', 'VaultBoard', 'QRTrace', 'ZoneClaim'] },
+            { name: 'ScrollBuild', subNodes: ['ScrollForm', 'QRDrop', 'VaultLine', 'PanelNode'] },
+            { name: 'ZoneVault', subNodes: ['VaultProof', 'QRZone', 'ClaimRoute', 'MapTrace'] },
+            { name: 'GridPermit', subNodes: ['PermitTrack', 'QRClaim', 'VaultDesk', 'PlanID'] },
+            { name: 'TileCast', subNodes: ['TileEcho', 'QRLayer', 'VaultDrop', 'PatternID'] },
+            { name: 'YieldCivic', subNodes: ['CouncilID', 'QRClaim', 'VaultShare', 'SyncNode'] },
+            { name: 'HousingLoop', subNodes: ['LoopPath', 'VaultPing', 'ClaimSync', 'QRPermit'] },
+            { name: 'BuildMark', subNodes: ['QRTag', 'MarkNode', 'VaultCert', 'ZoneDrop'] },
+            { name: 'FrameGrid', subNodes: ['FrameDrop', 'VaultNode', 'QRBeam', 'SetClaim'] },
+            { name: 'CivicTag', subNodes: ['TagClaim', 'VaultEcho', 'QRCouncil', 'FormNode'] },
+            { name: 'UrbanYield', subNodes: ['CityPlan', 'QRBuild', 'VaultMetric', 'ScanNode'] },
+            { name: 'ArchiID', subNodes: ['IDDrop', 'QRSketch', 'VaultLog', 'PlanTrace'] },
+            { name: 'PermitPath', subNodes: ['PermitFlow', 'QRForm', 'VaultLine', 'ZoneCert'] },
+            { name: 'StructCast', subNodes: ['CastGrid', 'QRForm', 'VaultSteel', 'EchoNode'] },
+            { name: 'TileFlow', subNodes: ['FlowPattern', 'QRDrop', 'VaultTile', 'MeshClaim'] },
+            { name: 'ClaimNode', subNodes: ['QRClaim', 'VaultZone', 'LockPath', 'MapTrack'] },
+            { name: 'BuildEcho', subNodes: ['EchoNode', 'QRPermit', 'VaultWave', 'SyncLine'] },
+            { name: 'CivicMesh', subNodes: ['MeshTrace', 'QRDrop', 'VaultMap', 'TagNode'] },
+            { name: 'ZoningNode', subNodes: ['QRZone', 'VaultTrace', 'RegionMap', 'ScanEcho'] },
+            { name: 'ScrollRoof', subNodes: ['RoofTag', 'VaultPanel', 'QRClaim', 'TileLine'] },
+            { name: 'LandCast', subNodes: ['CastNode', 'QRDrop', 'VaultAnchor', 'ClaimPing'] },
+            { name: 'GeoPermit', subNodes: ['GeoScan', 'QRField', 'VaultPermit', 'TagNode'] },
+            { name: 'YieldBuild', subNodes: ['QRTrack', 'VaultFlow', 'BuildCredit', 'PayoutLink'] },
+            { name: 'UrbanPanel', subNodes: ['PanelForm', 'QRDrop', 'VaultPing', 'GridNode'] },
+            { name: 'PlanTrace', subNodes: ['TraceClaim', 'VaultNode', 'QRCycle', 'ScrollMap'] },
+            { name: 'CivicProof', subNodes: ['CertGrid', 'VaultZoning', 'QRBoard', 'CouncilLink'] },
+            { name: 'FrameYield', subNodes: ['QRFrame', 'VaultEcho', 'PayoutNode', 'StructLoop'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const mediaBrandsData = [
+            { name: 'FrameCast', subNodes: ['VaultScene', 'MediaNode', 'QRStream', 'ClipTag'] },
+            { name: 'SonicGrid', subNodes: ['AudioNode', 'WavePulse', 'QRMix', 'VaultTrack'] },
+            { name: 'EditMesh', subNodes: ['ClipClaim', 'VaultCut', 'QREdit', 'LayerLink'] },
+            { name: 'PulseMedia', subNodes: ['StreamSignal', 'QRDrop', 'VaultFrame', 'EchoTag'] },
+            { name: 'VaultVision', subNodes: ['VaultClip', 'QRLabel', 'MotionIndex', 'SceneMap'] },
+            { name: 'ScrollSound', subNodes: ['SoundNode', 'QRTrack', 'VaultEcho', 'MixProof'] },
+            { name: 'RenderCast', subNodes: ['RenderGrid', 'VaultOutput', 'QREncode', 'ClipPush'] },
+            { name: 'VoiceLoop', subNodes: ['VoicePing', 'TrackID', 'QRLine', 'VaultAudio'] },
+            { name: 'AudioDrop', subNodes: ['DropWave', 'VaultClaim', 'QRNode', 'SoundPrint'] },
+            { name: 'MediaMesh', subNodes: ['ClipMesh', 'VaultFrame', 'QRPlay', 'RenderTag'] },
+            { name: 'VisualClaim', subNodes: ['FrameNode', 'VaultTag', 'QRAngle', 'EditCast'] },
+            { name: 'SoundCert', subNodes: ['CertifyMix', 'VaultTrack', 'QRWave', 'AudioLine'] },
+            { name: 'SyncLoop', subNodes: ['LoopNode', 'VaultPing', 'QRFlow', 'EchoTrack'] },
+            { name: 'MotionID', subNodes: ['MotionTag', 'QRPath', 'VaultScene', 'ClipSync'] },
+            { name: 'MediaRelay', subNodes: ['ClipRoute', 'VaultMesh', 'QRSignal', 'TrackDrop'] },
+            { name: 'BeatCast', subNodes: ['BeatNode', 'VaultDrop', 'QRMix', 'SoundRoute'] },
+            { name: 'RenderVault', subNodes: ['VaultProject', 'QREncode', 'MediaCert', 'TrackMap'] },
+            { name: 'VoiceProof', subNodes: ['AudioProof', 'VaultChain', 'QRWave', 'ClaimPing'] },
+            { name: 'ScenePulse', subNodes: ['PulseTrack', 'VaultEcho', 'QRScene', 'FramePush'] },
+            { name: 'SoundNest', subNodes: ['NestID', 'VaultClaim', 'QRGrid', 'MixEcho'] },
+            { name: 'MediaGrid', subNodes: ['GridSync', 'VaultLabel', 'QRLine', 'TrackFrame'] },
+            { name: 'Audiomark', subNodes: ['SoundCert', 'QRClip', 'VaultWave', 'EchoProof'] },
+            { name: 'EditClaim', subNodes: ['CutNode', 'VaultEcho', 'QREdit', 'ClipFlow'] },
+            { name: 'SonicVault', subNodes: ['VaultTone', 'QRPath', 'WaveNode', 'SoundChain'] },
+            { name: 'MotionMap', subNodes: ['ClipPath', 'VaultPing', 'QRScene', 'AudioLink'] },
+            { name: 'TrackLine', subNodes: ['LineTrack', 'VaultAudio', 'QRSync', 'SoundCast'] },
+            { name: 'SceneLink', subNodes: ['QRConnect', 'VaultScript', 'ClipRoute', 'FrameID'] },
+            { name: 'LoopMix', subNodes: ['MixVault', 'QRDrop', 'SoundLine', 'AudioJoin'] },
+            { name: 'AudioFlag', subNodes: ['VaultTag', 'QRBeat', 'TrackProof', 'ClaimNote'] },
+            { name: 'EchoNode', subNodes: ['VaultEcho', 'QRWave', 'SoundLink', 'PingTrack'] },
+            { name: 'VisualVault', subNodes: ['VaultProof', 'QRView', 'FrameTrace', 'ClipClaim'] },
+            { name: 'AudioMesh', subNodes: ['MeshNode', 'QRSignal', 'VaultSync', 'WaveEcho'] },
+            { name: 'RenderDrop', subNodes: ['DropStream', 'VaultFrame', 'QRPush', 'MediaLine'] },
+            { name: 'SoundCast', subNodes: ['CastWave', 'QRMix', 'VaultBeam', 'TrackEcho'] },
+            { name: 'ClipTrace', subNodes: ['TraceClip', 'VaultScan', 'QRNode', 'ScenePath'] },
+            { name: 'AudioClaim', subNodes: ['ClaimDrop', 'QRProof', 'VaultRoute', 'SoundTrack'] },
+            { name: 'PulseVault', subNodes: ['VaultPing', 'QRTrack', 'SoundGrid', 'EchoTag'] },
+            { name: 'MotionCert', subNodes: ['CertNode', 'VaultLock', 'QRDrop', 'ClipTrack'] },
+            { name: 'SoundPath', subNodes: ['PathTrack', 'VaultAudio', 'QRRoute', 'MixMap'] },
+            { name: 'StreamNode', subNodes: ['NodeDrop', 'VaultStream', 'QRScene', 'AudioLine'] },
+            { name: 'MediaID', subNodes: ['IDTrack', 'VaultView', 'QRNode', 'ClipEcho'] },
+            { name: 'SonicProof', subNodes: ['ProofPath', 'VaultPing', 'QRMix', 'EchoTrack'] },
+            { name: 'AudioTag', subNodes: ['TagNode', 'VaultClaim', 'QRDrop', 'TrackEcho'] },
+            { name: 'SceneGrid', subNodes: ['GridNode', 'VaultScene', 'QRTrack', 'RenderProof'] },
+            { name: 'EchoVault', subNodes: ['VaultEcho', 'SoundClaim', 'QRTrace', 'AudioBeam'] },
+            { name: 'ClipNode', subNodes: ['ClipLink', 'VaultDrop', 'QRScene', 'TagLine'] },
+            { name: 'BeatProof', subNodes: ['BeatID', 'VaultSound', 'QRTrack', 'MixFlow'] },
+            { name: 'SoundBoard', subNodes: ['BoardLine', 'VaultGrid', 'QRBeat', 'ClipTrack'] },
+            { name: 'MediaPulse', subNodes: ['PulseGrid', 'QRFlash', 'VaultSync', 'AudioNode'] },
+            { name: 'RenderSync', subNodes: ['SyncLine', 'QRDrop', 'VaultEcho', 'SceneNode'] },
+            { name: 'SceneLock', subNodes: ['LockNode', 'QRFrame', 'VaultScene', 'ProofTag'] },
+            { name: 'SonicLine', subNodes: ['LineTag', 'QRDrop', 'VaultMix', 'TrackClaim'] },
+            { name: 'AudioSpan', subNodes: ['SpanLine', 'VaultEcho', 'QRTrack', 'LoopPath'] },
+            { name: 'TrackProof', subNodes: ['VaultClaim', 'QRWave', 'SoundPing', 'EchoTrack'] },
+            { name: 'MotionDrop', subNodes: ['DropClip', 'VaultPush', 'QRScene', 'TrackGrid'] },
+            { name: 'VaultMix', subNodes: ['MixDrop', 'QRLine', 'VaultBeam', 'TrackTag'] },
+            { name: 'AudioIndex', subNodes: ['IndexVault', 'QRPing', 'TrackScene', 'EchoLine'] },
+            { name: 'VisualCast', subNodes: ['CastGrid', 'VaultNode', 'QRProof', 'ClipPush'] },
+            { name: 'MediaTrace', subNodes: ['TraceNode', 'QRDrop', 'VaultMap', 'RenderRoute'] },
+            { name: 'PulseTrack', subNodes: ['PulseID', 'QREcho', 'VaultClaim', 'TrackMap'] },
+            { name: 'EchoClaim', subNodes: ['VaultTrace', 'QRScene', 'EchoDrop', 'ClipNode'] },
+            { name: 'FrameNode', subNodes: ['NodeID', 'QRPanel', 'VaultView', 'SceneSync'] },
+            { name: 'AudioMap', subNodes: ['MapNode', 'QRDrop', 'VaultPing', 'TrackLine'] },
+            { name: 'StreamCert', subNodes: ['CertifyScene', 'VaultWave', 'QRNode', 'ClipTrack'] },
+            { name: 'SonicView', subNodes: ['ViewGrid', 'VaultEcho', 'QRAudio', 'TagPath'] },
+            { name: 'RenderBoard', subNodes: ['BoardClip', 'QRMap', 'VaultTag', 'MediaFlow'] },
+            { name: 'ClipVault', subNodes: ['ClipProof', 'VaultScene', 'QRDrop', 'FrameTrace'] },
+            { name: 'TrackScene', subNodes: ['SceneID', 'QRLink', 'VaultClaim', 'ClipEcho'] },
+            { name: 'PulseNode', subNodes: ['NodeBeat', 'VaultTrack', 'QRSound', 'EchoDrop'] },
+            { name: 'AudioDropX', subNodes: ['DropTrack', 'QRMix', 'VaultOutput', 'NodeSync'] },
+            { name: 'SceneIndex', subNodes: ['IndexTag', 'QRClaim', 'VaultFile', 'ClipGrid'] },
+            { name: 'BeatGrid', subNodes: ['GridWave', 'QRDrop', 'VaultEcho', 'SoundNode'] },
+            { name: 'VaultRender', subNodes: ['RenderTag', 'VaultProject', 'QRPush', 'SyncLine'] },
+            { name: 'SoundLoop', subNodes: ['LoopEcho', 'VaultTrack', 'QRClaim', 'ClipNode'] },
+            { name: 'MediaLine', subNodes: ['LineRoute', 'QRDrop', 'VaultIndex', 'TrackCast'] },
+            { name: 'VoiceCast', subNodes: ['VoiceID', 'VaultScene', 'QRClip', 'AudioEcho'] },
+            { name: 'SonicIndex', subNodes: ['IndexNode', 'QRSound', 'VaultDrop', 'PingTrack'] },
+            { name: 'MotionPanel', subNodes: ['PanelSync', 'QRTrack', 'VaultFrame', 'ClipClaim'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const ailogicBrandsData = [
+            { name: 'OmniKey', subNodes: ['TraceBeam', 'VaultEcho', 'QRPath', 'MeshID'] },
+            { name: 'SignalPulse', subNodes: ['BeamNode', 'VaultTrack', 'QRLogic', 'SignalDrop'] },
+            { name: 'MeshIndex', subNodes: ['YieldTrack', 'VaultMap', 'QRClaim', 'OmniPath'] },
+            { name: 'ClaimNodeX', subNodes: ['BoardNode', 'VaultCert', 'QRFrame', 'MeshCast'] },
+            { name: 'LogicEcho', subNodes: ['SyncGrid', 'VaultEcho', 'QRNode', 'TokenLink'] },
+            { name: 'OmniRender', subNodes: ['AIPath', 'VaultClaim', 'QRLogic', 'SyncTag'] },
+            { name: 'SyncLine', subNodes: ['CastGrid', 'VaultTrack', 'QRPing', 'SignalEcho'] },
+            { name: 'TokenBoard', subNodes: ['PingNode', 'VaultBeam', 'QRProof', 'MeshDrop'] },
+            { name: 'SignalClaim', subNodes: ['MeshTrace', 'VaultDrop', 'QRNode', 'LogicPush'] },
+            { name: 'GridCast', subNodes: ['GridPath', 'VaultFrame', 'QRSignal', 'TokenPing'] },
+            { name: 'MeshSync', subNodes: ['ProofTag', 'VaultEcho', 'QRNode', 'SyncTrack'] },
+            { name: 'VaultGrid', subNodes: ['LinkNode', 'VaultRoute', 'QRLogic', 'PulseBeam'] },
+            { name: 'TraceLoop', subNodes: ['CertSignal', 'VaultTag', 'QRDrop', 'LogicNode'] },
+            { name: 'LogicMap', subNodes: ['MarkID', 'VaultSync', 'QRClaim', 'OmniGrid'] },
+            { name: 'PulseKey', subNodes: ['DropCast', 'VaultMesh', 'QRRoute', 'SignalClaim'] },
+            { name: 'CertDrop', subNodes: ['FormLogic', 'VaultEcho', 'QRSync', 'MeshMap'] },
+            { name: 'OmniTrack', subNodes: ['MarkNode', 'VaultGrid', 'QRPing', 'SignalFlow'] },
+            { name: 'TokenProof', subNodes: ['PingRoute', 'VaultTrack', 'QRNode', 'TokenDrop'] },
+            { name: 'AIGrid', subNodes: ['LogicSync', 'VaultPath', 'QRFrame', 'MeshClaim'] },
+            { name: 'SyncProof', subNodes: ['SyncPath', 'VaultMark', 'QRSignal', 'TraceNode'] },
+            { name: 'OmniScan', subNodes: ['YieldMesh', 'VaultDrop', 'QRNode', 'PulseLogic'] },
+            { name: 'SignalLine', subNodes: ['PingCast', 'VaultProof', 'QRLine', 'OmniLogic'] },
+            { name: 'MeshCore', subNodes: ['DropLogic', 'VaultFrame', 'QRTrack', 'SignalGrid'] },
+            { name: 'VaultDrop', subNodes: ['LineTrace', 'VaultClaim', 'QRMap', 'GridProof'] },
+            { name: 'OmniLink', subNodes: ['TracePath', 'VaultEcho', 'QRSignal', 'AIGrid'] },
+            { name: 'TokenYield', subNodes: ['NodeClaim', 'VaultRoute', 'QRBeam', 'PulseForm'] },
+            { name: 'ClaimSync', subNodes: ['GridID', 'VaultPath', 'QRLogic', 'SignalTag'] },
+            { name: 'CertLogic', subNodes: ['TrackEcho', 'VaultCert', 'QRDrop', 'OmniCast'] },
+            { name: 'OmniPathX', subNodes: ['IDFrame', 'VaultPing', 'QRLogic', 'MeshDrop'] },
+            { name: 'PulseClaim', subNodes: ['CertProof', 'VaultTrace', 'QRLink', 'AIPath'] },
+            { name: 'GridTrace', subNodes: ['SignalNode', 'VaultRoute', 'QRPing', 'GridLogic'] },
+            { name: 'AIBeam', subNodes: ['CastMap', 'VaultDrop', 'QRFrame', 'MeshNode'] },
+            { name: 'SignalYield', subNodes: ['TraceRoute', 'VaultPing', 'QRGrid', 'OmniTag'] },
+            { name: 'LogicBoard', subNodes: ['NestClaim', 'VaultEcho', 'QRTrack', 'MeshProof'] },
+            { name: 'OmniSync', subNodes: ['BeamToken', 'VaultSync', 'QRPath', 'LogicFlow'] },
+            { name: 'VaultAI', subNodes: ['GridCast', 'VaultDrop', 'QRSignal', 'SyncForm'] },
+            { name: 'TraceCast', subNodes: ['CastFrame', 'VaultLogic', 'QRDrop', 'TokenGrid'] },
+            { name: 'LogicPing', subNodes: ['AILogic', 'VaultClaim', 'QRTrack', 'SyncNode'] },
+            { name: 'SignalMesh', subNodes: ['BoardLine', 'VaultPath', 'QRClaim', 'LogicBeam'] },
+            { name: 'OmniGrid', subNodes: ['MeshRoute', 'VaultGrid', 'QRSignal', 'TokenDrop'] },
+            { name: 'OmniProof', subNodes: ['LinkTag', 'VaultCast', 'QRFrame', 'SignalFlow'] },
+            { name: 'GridLink', subNodes: ['EchoPath', 'VaultProof', 'QRDrop', 'LogicNode'] },
+            { name: 'CertAI', subNodes: ['LoopNode', 'VaultEcho', 'QRSync', 'GridCast'] },
+            { name: 'TokenMark', subNodes: ['TrackPing', 'VaultMap', 'QRNode', 'MeshLine'] },
+            { name: 'OmniDropX', subNodes: ['IDNode', 'VaultGrid', 'QRFlow', 'PulseClaim'] },
+            { name: 'PulseForm', subNodes: ['CertForm', 'VaultSync', 'QRBeam', 'GridClaim'] },
+            { name: 'MeshMark', subNodes: ['MeshVault', 'QRSignal', 'DropClaim', 'LogicPulse'] },
+            { name: 'LogicPingX', subNodes: ['LogicTrace', 'VaultPing', 'QRNode', 'GridCast'] },
+            { name: 'OmniLogicX', subNodes: ['PathDrop', 'VaultTrack', 'QRRoute', 'OmniMap'] },
+            { name: 'CertSync', subNodes: ['CastNode', 'VaultDrop', 'QRTrack', 'MeshSignal'] },
+            { name: 'GridYield', subNodes: ['BoardPing', 'VaultDrop', 'QRTrack', 'SignalCast'] },
+            { name: 'VaultPing', subNodes: ['FormLine', 'VaultSync', 'QRNode', 'LogicPath'] },
+            { name: 'ClaimDrop', subNodes: ['TrackProof', 'VaultEcho', 'QRClaim', 'PulseSync'] },
+            { name: 'OmniLine', subNodes: ['CastFlow', 'VaultMark', 'QRGrid', 'OmniLink'] },
+            { name: 'LogicTrace', subNodes: ['MarkTrace', 'VaultForm', 'QRLogic', 'MeshSync'] },
+            { name: 'TokenNode', subNodes: ['LoopPath', 'VaultRoute', 'QRNode', 'SignalCert'] },
+            { name: 'MeshGrid', subNodes: ['LogicLine', 'VaultPing', 'QRTrack', 'GridForm'] },
+            { name: 'AITrack', subNodes: ['FlowPath', 'VaultClaim', 'QRNode', 'OmniRoute'] },
+            { name: 'SignalID', subNodes: ['GridClaim', 'VaultMark', 'QRLogic', 'SyncEcho'] },
+            { name: 'OmniCertX', subNodes: ['BoardLink', 'VaultEcho', 'QRDrop', 'TokenMesh'] },
+            { name: 'VaultSignal', subNodes: ['YieldSync', 'VaultLogic', 'QRTrack', 'MeshDrop'] },
+            { name: 'LogicCastX', subNodes: ['NodeMap', 'VaultPath', 'QRProof', 'SignalFrame'] },
+            { name: 'TokenTraceX', subNodes: ['FieldNode', 'VaultGrid', 'QRTag', 'LogicFlow'] },
+            { name: 'LogicNest', subNodes: ['NodeClaim', 'VaultMark', 'QRLink', 'PulseMap'] },
+            { name: 'CertBeam', subNodes: ['SyncForm', 'VaultCast', 'QRTrack', 'MeshBeam'] },
+            { name: 'OmniGridX', subNodes: ['LogicRoute', 'VaultDrop', 'QRBeam', 'SignalID'] },
+            { name: 'MeshCast', subNodes: ['GridMap', 'VaultProof', 'QRToken', 'MeshNode'] },
+            { name: 'TraceAI', subNodes: ['MapEcho', 'VaultPing', 'QRDrop', 'CertLine'] },
+            { name: 'PulseBoard', subNodes: ['NodeTrack', 'VaultGrid', 'QRRoute', 'OmniYield'] },
+            { name: 'SyncMesh', subNodes: ['TraceNode', 'VaultEcho', 'QRLink', 'LogicDrop'] },
+            { name: 'VaultLink', subNodes: ['CertMap', 'VaultTrack', 'QRPath', 'PulseProof'] },
+            { name: 'OmniEcho', subNodes: ['IndexGrid', 'VaultLink', 'QRClaim', 'MeshRoute'] },
+            { name: 'LogicLoop', subNodes: ['LogicID', 'VaultForm', 'QRBeam', 'OmniTrack'] },
+            { name: 'SignalTrack', subNodes: ['MeshPing', 'VaultFlow', 'QRDrop', 'SignalMark'] },
+            { name: 'MeshID', subNodes: ['ChainID', 'VaultProof', 'QRTag', 'LogicRoot'] },
+            { name: 'LogicCert', subNodes: ['AIForm', 'VaultRoute', 'QRClaim', 'MeshLogic'] },
+            { name: 'OmniMesh', subNodes: ['DropPing', 'VaultMark', 'QRTrack', 'OmniForm'] },
+            { name: 'SyncLogic', subNodes: ['RootNode', 'VaultClaim', 'QRMesh', 'PulseTrack'] },
+            { name: 'VaultPath', subNodes: ['NodeLink', 'VaultDrop', 'QRSignal', 'GridMark'] },
+            { name: 'TokenCast', subNodes: ['RootGrid', 'VaultEcho', 'QRClaim', 'SignalMesh'] },
+            { name: 'GridBoard', subNodes: ['CertDrop', 'VaultRoute', 'QRToken', 'PulseCast'] },
+            { name: 'AIForm', subNodes: ['PatternGrid', 'VaultPing', 'QRMap', 'AIClaim'] },
+            { name: 'OmniTrackX', subNodes: ['IndexEcho', 'VaultForm', 'QRLogic', 'MeshPath'] },
+            { name: 'SignalCast', subNodes: ['ProofNode', 'VaultTrack', 'QRFlow', 'OmniID'] },
+            { name: 'LogicMark', subNodes: ['CoreRoute', 'VaultPing', 'QRLogic', 'GridDrop'] },
+            { name: 'CertLoop', subNodes: ['ClaimMesh', 'VaultGrid', 'QRTrack', 'OmniEcho'] },
+            { name: 'PulseLogic', subNodes: ['FrameNode', 'VaultRoute', 'QRProof', 'MeshFlow'] },
+            { name: 'MeshFlow', subNodes: ['TagClaim', 'VaultEcho', 'QRDrop', 'SignalNode'] },
+            { name: 'OmniCertGrid', subNodes: ['EchoLine', 'VaultPath', 'QRSync', 'LogicNode'] },
+            { name: 'VaultBoard', subNodes: ['ProofClaim', 'VaultBeam', 'QRNode', 'OmniMark'] },
+            { name: 'AIYieldGrid', subNodes: ['PanelLogic', 'VaultGrid', 'QRDrop', 'TokenEcho'] },
+            { name: 'ClaimNodeGrid', subNodes: ['FrameClaim', 'VaultTrack', 'QRFlow', 'GridPing'] },
+            { name: 'OmniLogicField', subNodes: ['RouteNode', 'VaultCast', 'QRTrack', 'OmniTag'] },
+            { name: 'GridNode', subNodes: ['EchoClaim', 'VaultSync', 'QRLogic', 'SignalDrop'] },
+            { name: 'OmniSyncCore', subNodes: ['PanelPath', 'VaultProof', 'QRNode', 'MeshClaim'] },
+            { name: 'BeamLogic', subNodes: ['BeaconGrid', 'VaultTrack', 'QRSignal', 'PulseRoute'] },
+            { name: 'LogicGridX', subNodes: ['SyncDrop', 'VaultForm', 'QRNode', 'GridTrace'] },
+            { name: 'OmniMap', subNodes: ['WaveNode', 'VaultMap', 'QRTrack', 'LogicLine'] },
+            { name: 'CertNode', subNodes: ['PingNode', 'VaultDrop', 'QRTag', 'MeshGrid'] },
+            { name: 'SignalTrace', subNodes: ['FieldLink', 'VaultFrame', 'QRClaim', 'SignalBeam'] },
+            { name: 'MeshCert', subNodes: ['SealPath', 'VaultCert', 'QRDrop', 'TokenNode'] },
+            { name: 'VaultIndex', subNodes: ['PulseCast', 'VaultEcho', 'QRTrack', 'LogicClaim'] },
+            { name: 'QRLogic', subNodes: ['GridLogic', 'VaultDrop', 'QRSync', 'PulseNode'] },
+            { name: 'CastMesh', subNodes: ['CastLine', 'VaultRoute', 'QRNode', 'MeshLogic'] },
+            { name: 'OmniProofChain', subNodes: ['ClaimPing', 'VaultMap', 'QRDrop', 'SignalLogic'] },
+            { name: 'SyncAI', subNodes: ['ClaimGrid', 'VaultTrace', 'QRPath', 'LogicPing'] },
+            { name: 'LogicDrop', subNodes: ['SignalNode', 'VaultEcho', 'QRTrack', 'MeshProof'] },
+            { name: 'GridRoot', subNodes: ['SyncDrop', 'VaultBeam', 'QRClaim', 'LogicRoute'] },
+            { name: 'OmniNode', subNodes: ['BeamNode', 'VaultClaim', 'QRTrack', 'GridTag'] },
+            { name: 'TokenRoot', subNodes: ['CertFlow', 'VaultEcho', 'QRMap', 'LogicMark'] },
+            { name: 'LogicCertX', subNodes: ['AITrack', 'VaultGrid', 'QRClaim', 'TokenNode'] },
+            { name: 'OmniPattern', subNodes: ['RootPath', 'VaultCast', 'QRSignal', 'MeshTrace'] },
+            { name: 'BeamIndex', subNodes: ['ClaimFrame', 'VaultEcho', 'QRNode', 'LogicLine'] },
+            { name: 'MeshProof', subNodes: ['BeamFlow', 'VaultMark', 'QRSignal', 'MeshDrop'] },
+            { name: 'SignalCore', subNodes: ['BeamNode', 'VaultForm', 'QRTrack', 'LogicPanel'] },
+            { name: 'SyncClaim', subNodes: ['MapClaim', 'VaultTrack', 'QRPing', 'SignalDrop'] },
+            { name: 'AIFrame', subNodes: ['RootGrid', 'VaultPath', 'QRDrop', 'MeshClaim'] },
+            { name: 'CertTag', subNodes: ['MeshCast', 'VaultLink', 'QRNode', 'LogicSync'] },
+            { name: 'PulseEcho', subNodes: ['ProofChain', 'VaultForm', 'QRLogic', 'SyncTrace'] },
+            { name: 'GridProof', subNodes: ['CertID', 'VaultTag', 'QRClaim', 'OmniFrame'] },
+            { name: 'SignalPanel', subNodes: ['ProofNode', 'VaultCert', 'QRDrop', 'TokenPath'] },
+            { name: 'SyncFrame', subNodes: ['LoopClaim', 'VaultPing', 'QRLogic', 'GridBeam'] },
+            { name: 'MeshRoute', subNodes: ['SyncToken', 'VaultTrack', 'QRClaim', 'LogicForm'] },
+            { name: 'OmniEchoX', subNodes: ['TraceCast', 'VaultNode', 'QRFlow', 'BeamEcho'] },
+            { name: 'LogicPanel', subNodes: ['ScanPath', 'VaultGrid', 'QRTrace', 'TokenMark'] },
+            { name: 'OmniBeacon', subNodes: ['MeshDrop', 'VaultSignal', 'QRLogic', 'PulseClaim'] },
+            { name: 'ClaimSyncX', subNodes: ['FrameID', 'VaultEcho', 'QRTrack', 'SignalSync'] },
+            { name: 'OmniWave', subNodes: ['PulseSync', 'VaultRoute', 'QRDrop', 'MeshLogic'] },
+            { name: 'CertPing', subNodes: ['IndexProof', 'VaultMap', 'QRBeam', 'TokenRoute'] },
+            { name: 'VaultField', subNodes: ['LogicGrid', 'VaultClaim', 'QRFlow', 'SyncMark'] },
+            { name: 'LogicSeal', subNodes: ['SealNode', 'VaultFrame', 'QRLogic', 'PulseBeam'] },
+            { name: 'OmniPulse', subNodes: ['FieldClaim', 'VaultDrop', 'QRNode', 'TokenTrace'] },
+            { name: 'NodeGrid', subNodes: ['MapLine', 'VaultEcho', 'QRSignal', 'SyncTrack'] },
+            { name: 'SignalCastX', subNodes: ['AIGridID', 'VaultTrace', 'QRClaim', 'MeshEcho'] },
+            { name: 'MeshClaimX', subNodes: ['FormClaim', 'VaultNode', 'QRDrop', 'LogicMap'] },
+            { name: 'OmniClaim', subNodes: ['ProofDrop', 'VaultPing', 'QRPath', 'SignalNode'] },
+            { name: 'TokenSignal', subNodes: ['EchoLine', 'VaultGrid', 'QRTrack', 'MeshLogic'] },
+            { name: 'SyncSignal', subNodes: ['LogicRoute', 'VaultClaim', 'QRMesh', 'NodeIndex'] },
+            { name: 'OmniBeam', subNodes: ['RootBeam', 'VaultSignal', 'QRTag', 'PulseGrid'] },
+            { name: 'CertSignal', subNodes: ['TagNode', 'VaultDrop', 'QRSignal', 'LogicTrace'] },
+            { name: 'VaultAITrack', subNodes: ['FlowTrack', 'VaultMap', 'QRClaim', 'MeshNode'] },
+            { name: 'PulseRoot', subNodes: ['TraceLoop', 'VaultProof', 'QRDrop', 'SyncFrame'] },
+            { name: 'OmniClaimX', subNodes: ['EchoClaim', 'VaultBeam', 'QRNode', 'LogicBoard'] },
+            { name: 'BeamClaim', subNodes: ['AIClaimPath', 'VaultDrop', 'QRFrame', 'SignalTrace'] },
+            { name: 'GridBeam', subNodes: ['MapSync', 'VaultGrid', 'QRTrack', 'TokenLogic'] },
+            { name: 'AIMapX', subNodes: ['FormDrop', 'VaultCast', 'QRRoute', 'MeshFrame'] },
+            { name: 'OmniRoot', subNodes: ['BeamLine', 'VaultLogic', 'QRTrack', 'AIFlow'] },
+            { name: 'SignalMeshX', subNodes: ['MeshCore', 'VaultEcho', 'QRToken', 'LogicPing'] },
+            { name: 'OmniProofX', subNodes: ['TrackCert', 'VaultPath', 'QRLogic', 'MeshEcho'] },
+            { name: 'TokenCert', subNodes: ['PingRoute', 'VaultDrop', 'QRNode', 'GridTrack'] },
+            { name: 'VaultAIProof', subNodes: ['NodePath', 'VaultSync', 'QRTrace', 'TokenMark'] },
+            { name: 'OmniLoopX', subNodes: ['ClaimProof', 'VaultEcho', 'QRDrop', 'LogicField'] },
+            { name: 'CertSyncBeam', subNodes: ['DropMesh', 'VaultMap', 'QRNode', 'PulseSync'] },
+            { name: 'LogicTraceX', subNodes: ['ScanTrack', 'VaultPing', 'QRClaim', 'BeamNode'] },
+            { name: 'TokenScanX', subNodes: ['MeshVault', 'VaultEcho', 'QRMap', 'SignalGrid'] },
+            { name: 'MeshSignalX', subNodes: ['ZoneClaim', 'VaultProof', 'QRTrace', 'GridEcho'] },
+            { name: 'PulseFrame', subNodes: ['TraceLogic', 'VaultPath', 'QRBeam', 'OmniID'] },
+            { name: 'SyncPulseX', subNodes: ['MapClaim', 'VaultSync', 'QRSignal', 'LogicMesh'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const professionalBrandsData = [
+            { name: 'LedgerNest™', subNodes: ['LedgerCore', 'VaultTrack', 'QRInvoice', 'AuditSync', 'StatementFlow', 'TaxGrid'] },
+            { name: 'OmniBooks™', subNodes: ['BooksPath', 'VaultEcho', 'QRPay', 'BudgetMesh', 'EntryLoop', 'PayrollCast'] },
+            { name: 'QCalcX™', subNodes: ['QuantZone', 'CostTrack', 'VaultEcho', 'GridEstimate', 'QRClaim', 'SiteYield'] },
+            { name: 'SiteProof™', subNodes: ['ProofMesh', 'ProjectVault', 'QRSync', 'SpecClaim', 'SurveyNode', 'BuildFlow'] },
+            { name: 'LawTrace™', subNodes: ['LawGrid', 'VaultLegal', 'QRCase', 'ClauseMap', 'SignalJudge', 'TrackClaim'] },
+            { name: 'ContractCast™', subNodes: ['CastPath', 'VaultContract', 'QRSign', 'FormDrop', 'LegalSync', 'NodeClause'] },
+            { name: 'Enginuity™', subNodes: ['EnginuityCore', 'VaultStruct', 'QREngine', 'ModelClaim', 'SpecLoop', 'PlanNode'] },
+            { name: 'StructVault™', subNodes: ['VaultFrame', 'StructMap', 'QRDesign', 'BuildPath', 'EstimateLine', 'NodeSpec'] },
+            { name: 'RegiSync™', subNodes: ['RegCore', 'VaultRule', 'QRCompliance', 'GovTrack', 'DocNode', 'ProofSync'] },
+            { name: 'ScrollAudit™', subNodes: ['AuditTrail', 'VaultAudit', 'QRTrace', 'NodeForm', 'ControlClaim', 'VerifyRoute'] },
+            { name: 'ClaimDocX™', subNodes: ['DocClaim', 'VaultDocs', 'QRForm', 'FormCert', 'LegalDrop', 'TraceNode'] },
+            { name: 'PlanDrop™', subNodes: ['DropSheet', 'VaultPlan', 'QRDesign', 'BudgetLine', 'MeshForm', 'CastApproval'] },
+            { name: 'SurveyGrid™', subNodes: ['GridScan', 'VaultSurvey', 'QRField', 'TrackDrop', 'PingZone', 'NodeMeasure'] },
+            { name: 'VaultJudge™', subNodes: ['JudgeTag', 'VaultCourt', 'QRSign', 'RulingPath', 'CaseLoop', 'LegalCast'] },
+            { name: 'LoopInspect™', subNodes: ['InspectMesh', 'VaultLoop', 'QRInspect', 'NodeClaim', 'SignalProof', 'FieldTag'] },
+            { name: 'BuildNode™', subNodes: ['NodeBuild', 'VaultPermit', 'QRStage', 'DropPanel', 'SiteCast', 'LabelForm'] },
+            { name: 'ComplyTrack™', subNodes: ['TrackComply', 'VaultReg', 'QRCertify', 'PathEcho', 'DocLock', 'ClausePanel'] },
+            { name: 'LegalSync™', subNodes: ['LegalForm', 'VaultBrief', 'QRFile', 'TrackJudge', 'LoopEcho', 'ScanClause'] },
+            { name: 'BudgetCast™', subNodes: ['CastBudget', 'VaultBook', 'QRCost', 'PlanNode', 'DropMesh', 'ClaimNode'] },
+            { name: 'VaultPlans™', subNodes: ['PlansFrame', 'VaultDraw', 'QRLoop', 'PathEcho', 'StageCast', 'LabelProof'] },
+            { name: 'FormCert™', subNodes: ['CertForm', 'VaultPaper', 'QRStep', 'MeshAudit', 'DropClause', 'PingClaim'] },
+            { name: 'ProofLayer™', subNodes: ['LayerProof', 'VaultTrace', 'QRGrid', 'ClauseEcho', 'FormYield', 'NodeTag'] },
+            { name: 'ZoneMap™', subNodes: ['MapZone', 'VaultGPS', 'QRPlot', 'ScanClaim', 'FormTrace', 'AuditMark'] },
+            { name: 'TrackSeal™', subNodes: ['SealLine', 'VaultPad', 'QRRoute', 'ClaimFlow', 'MeshLabel', 'LegalGrid'] },
+            { name: 'DocLoop™', subNodes: ['LoopForm', 'VaultDoc', 'QRClaim', 'DropBoard', 'ClauseFlow', 'TraceLink'] },
+            { name: 'AuditCrate™', subNodes: ['CrateAudit', 'VaultSort', 'QRPanel', 'ScanCast', 'TraceBoard', 'FormNote'] },
+            { name: 'VerifyLine™', subNodes: ['LineVerify', 'VaultMark', 'QRSignal', 'NodeDrop', 'ClauseCheck', 'FormSeal'] },
+            { name: 'PlanMesh™', subNodes: ['PlanCast', 'VaultSheet', 'QRFrame', 'EchoGrid', 'SiteTag', 'NodeLoop'] },
+            { name: 'FrameBook™', subNodes: ['BookFrame', 'VaultPages', 'QRRef', 'BudgetDrop', 'FormNode', 'AssetGrid'] },
+            { name: 'LogicPermit™', subNodes: ['PermitLine', 'VaultLogic', 'QRPermit', 'DropSignal', 'NodeProof', 'TagGrid'] },
+            { name: 'OmniBrief™', subNodes: ['BriefCast', 'VaultJudge', 'QRPath', 'EchoPanel', 'DocGrid', 'PlanTrack'] },
+            { name: 'ClauseCraft™', subNodes: ['CraftClause', 'VaultSign', 'QRProof', 'EchoFile', 'LoopAudit', 'NodeYield'] },
+            { name: 'FormLogic™', subNodes: ['LogicFile', 'VaultEcho', 'QRForm', 'CheckPath', 'TraceLock', 'AuditStage'] },
+            { name: 'CheckNode™', subNodes: ['CheckFlow', 'VaultList', 'QRCheck', 'NodeMark', 'DropPermit', 'GridLine'] },
+            { name: 'AssetTrace™', subNodes: ['TraceAsset', 'VaultHold', 'QRAsset', 'FileLine', 'PermitEcho', 'ClauseMap'] },
+            { name: 'LawPathX™', subNodes: ['LawWay', 'VaultJudge', 'QRLaw', 'TraceCast', 'PathCourt', 'CaseEcho'] },
+            { name: 'LedgerFlow™', subNodes: ['LedgerPath', 'VaultBooks', 'QRLedger', 'DropSync', 'ProofBoard', 'FormPulse'] },
+            { name: 'BudgetSync™', subNodes: ['SyncBudget', 'VaultSpend', 'QRBalance', 'PathCheck', 'LoopForm', 'AuditMesh'] },
+            { name: 'CrateJudge™', subNodes: ['JudgeCrate', 'VaultCase', 'QRReview', 'DropNode', 'ClauseRoute', 'SignalFile'] },
+            { name: 'SpecAudit™', subNodes: ['AuditSpec', 'VaultGrid', 'QRSpec', 'NodeRoute', 'CaseMesh', 'LoopPanel'] },
+            { name: 'LoopCheck™', subNodes: ['CheckLoop', 'VaultProof', 'QRTest', 'EchoCast', 'ClaimPanel', 'DocTrace'] },
+            { name: 'OmniTender™', subNodes: ['TenderPath', 'VaultBid', 'QRAward', 'MeshClause', 'PanelCheck', 'TrackPlan'] },
+            { name: 'SignalCompliance™', subNodes: ['CompliancePulse', 'VaultCheck', 'QRGov', 'RouteLaw', 'MeshJudge', 'NodeCast'] },
+            { name: 'BuildCast™', subNodes: ['BuildFlow', 'VaultDraft', 'QRBuild', 'PlanStage', 'EchoTrack', 'PermitNode'] },
+            { name: 'NodeClause™', subNodes: ['ClausePanel', 'VaultSection', 'QRDrop', 'SignalMesh', 'LawCast', 'PlanForm'] },
+            { name: 'PermitDrop™', subNodes: ['DropPermit', 'VaultCourt', 'QRMark', 'CastEcho', 'ProofLine', 'GridCase'] },
+            { name: 'AuditMatrix™', subNodes: ['MatrixAudit', 'VaultData', 'QRMatrix', 'StageFlow', 'CheckLabel', 'FormGrid'] },
+            { name: 'StructPlan™', subNodes: ['PlanLine', 'VaultMap', 'QRStruct', 'EchoAudit', 'PermitFlow', 'ScanProof'] },
+            { name: 'ClaimBoard™', subNodes: ['BoardClaim', 'VaultRoll', 'QRClaim', 'LineNote', 'TagMesh', 'DropAudit'] },
+            { name: 'FormDrop™', subNodes: ['DropForm', 'VaultEntry', 'QRPath', 'ClauseNote', 'AuditMap', 'PingPlan'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const saasLicensingBrandsData = [
+            { name: 'SaaSChain™', subNodes: ['SuitePath', 'VaultLicense', 'TokenPanel', 'ClaimKey'] },
+            { name: 'LicenseGrid™', subNodes: ['GridDrop', 'LicenseEcho', 'VaultTrack', 'KeyTag'] },
+            { name: 'TokenSaaS™', subNodes: ['SaaSPanel', 'ClaimSync', 'VaultBeam', 'OmniGrid'] },
+            { name: 'VaultKey™', subNodes: ['KeyProof', 'TokenClaim', 'ScrollVault', 'LicenseSeal'] },
+            { name: 'OmniLicense™', subNodes: ['LicenseDrop', 'VaultMap', 'TokenNest', 'ClaimEcho'] },
+            { name: 'ScrollSync™', subNodes: ['SyncTrack', 'LicensePath', 'VaultKeyX', 'SuiteEcho'] },
+            { name: 'PulseSaaS™', subNodes: ['PulseSync', 'VaultPanelX', 'TokenGrid', 'ClaimBoard'] },
+            { name: 'ClaimSuite™', subNodes: ['SuiteLoop', 'LicenseNest', 'VaultClaim', 'KeyEcho'] },
+            { name: 'YieldKey™', subNodes: ['YieldSuite', 'LicensePanel', 'VaultDrop', 'ScrollTrack'] },
+            { name: 'SaaSBoard™', subNodes: ['BoardEcho', 'VaultBeamX', 'LicenseSync', 'ClaimPanel'] },
+            { name: 'KeyLoop™', subNodes: ['LoopClaim', 'VaultPathX', 'TokenVault', 'KeyMint'] },
+            { name: 'VaultPanel™', subNodes: ['PanelDrop', 'VaultGridX', 'LicenseCast', 'SaaSSync'] },
+            { name: 'LicenseMap™', subNodes: ['MapTrack', 'TokenPath', 'VaultEchoX', 'ClaimGrid'] },
+            { name: 'TokenSync™', subNodes: ['SyncToken', 'VaultClaimX', 'ScrollBeam', 'LicenseTrace'] },
+            { name: 'OmniClaim™', subNodes: ['OmniPath', 'VaultSuite', 'PanelGridX', 'TokenTrack'] },
+            { name: 'SuiteTrack™', subNodes: ['TrackVault', 'ClaimNest', 'KeyPanel', 'LicenseDropX'] },
+            { name: 'LicenseBeam™', subNodes: ['BeamSync', 'TokenDrop', 'VaultClaimNest', 'ScrollLicense'] },
+            { name: 'VaultSync™', subNodes: ['SyncEcho', 'VaultPanelNest', 'LicenseBoard', 'TokenEcho'] },
+            { name: 'ClaimEcho™', subNodes: ['ClaimPanelX', 'SuiteGrid', 'VaultBeamSync', 'LicenseMint'] },
+            { name: 'PanelGrid™', subNodes: ['GridNest', 'TokenLoop', 'VaultLicenseX', 'ClaimSuiteX'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const nftOwnershipBrandsData = [
+            { name: 'ClaimGrid™', subNodes: ['TokenPath', 'VaultTrace', 'ClaimEcho', 'ScrollDrop'] },
+            { name: 'TokenSync™', subNodes: ['SyncToken', 'ProofPanel', 'NFTTag', 'VaultClaim'] },
+            { name: 'VaultMint™', subNodes: ['MintYield', 'ChainEcho', 'DropGrid', 'TokenSeal'] },
+            { name: 'NFTLoop™', subNodes: ['LoopProof', 'VaultSync', 'AssetTag', 'NFTTrack'] },
+            { name: 'ScrollProof™', subNodes: ['ScrollMint', 'ClaimLoop', 'VaultAsset', 'DropChain'] },
+            { name: 'IPTrace™', subNodes: ['TraceMint', 'VaultBoard', 'NFTDrop', 'IPClaim'] },
+            { name: 'MintEcho™', subNodes: ['EchoScroll', 'ClaimNest', 'TokenLock', 'SealDrop'] },
+            { name: 'VaultSeal™', subNodes: ['VaultProof', 'NFTSync', 'ChainYield', 'DropEcho'] },
+            { name: 'ChainLock™', subNodes: ['LockTrace', 'VaultMap', 'ProofToken', 'ClaimTrack'] },
+            { name: 'PulseDrop™', subNodes: ['PulseGrid', 'NFTVault', 'AssetSync', 'MintProof'] },
+            { name: 'AssetNest™', subNodes: ['NestChain', 'VaultLoop', 'DropMint', 'ScrollPath'] },
+            { name: 'MintTrack™', subNodes: ['TrackProof', 'ClaimToken', 'VaultBoardX', 'NFTSeal'] },
+            { name: 'TokenClaim™', subNodes: ['TokenVault', 'IPBoard', 'YieldDrop', 'ClaimMint'] },
+            { name: 'ProofMap™', subNodes: ['MapMint', 'ProofChain', 'VaultNestX', 'ScrollEcho'] },
+            { name: 'ScrollVault™', subNodes: ['VaultTag', 'NFTBoardX', 'MintPanel', 'AssetPath'] },
+            { name: 'ClaimPanel™', subNodes: ['PanelYield', 'TokenNest', 'VaultMintX', 'ClaimEchoX'] },
+            { name: 'YieldChain™', subNodes: ['ChainClaim', 'NFTYield', 'DropBoard', 'ScrollClaim'] },
+            { name: 'LedgerDrop™', subNodes: ['LedgerNest', 'VaultPanel', 'ProofMapX', 'TokenEcho'] },
+            { name: 'NFTBoard™', subNodes: ['NFTPanel', 'VaultClaimX', 'ChainMint', 'DropTag'] },
+            { name: 'ScrollNest™', subNodes: ['ScrollTrace', 'TokenMap', 'VaultDrop', 'AssetClaim'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const quantumBrandsData = [
+            { name: 'QuantumMesh™', subNodes: ['QSync', 'VaultWave', 'QubitCast', 'ClaimGrid'] },
+            { name: 'PulseQ™', subNodes: ['PulseEntangle', 'FieldDrop', 'VaultPhase', 'QuantumTag'] },
+            { name: 'EntanglePath™', subNodes: ['LogicEnt', 'VaultEchoQ', 'QubitClaim', 'TraceLoop'] },
+            { name: 'QubitNest™', subNodes: ['NestPhase', 'GridQubit', 'VaultSpin', 'ClaimZero'] },
+            { name: 'LogicSpin™', subNodes: ['SpinDrop', 'PhasePath', 'VaultCast', 'QGrid'] },
+            { name: 'VaultQuantum™', subNodes: ['QTrace', 'VaultNestQ', 'LogicSignal', 'PulseClaimQ'] },
+            { name: 'WaveSignal™', subNodes: ['SignalWave', 'EntangleLink', 'VaultGridQ', 'QubitBeam'] },
+            { name: 'PhaseClaim™', subNodes: ['PhaseClaimX', 'VaultLogicQ', 'TraceQPath', 'SyncZero'] },
+            { name: 'GridState™', subNodes: ['StateMesh', 'QubitEchoX', 'ClaimField', 'VaultSignalQ'] },
+            { name: 'QuantumDrop™', subNodes: ['QuantumDropX', 'FieldVault', 'NestWave', 'ClaimSpin'] },
+            { name: 'SyncQ™', subNodes: ['QSyncLoop', 'VaultTrace', 'ZeroGrid', 'BeamQ'] },
+            { name: 'PulseField™', subNodes: ['PulseFieldX', 'ClaimPath', 'VaultEntQ', 'QubitScan'] },
+            { name: 'QLogic™', subNodes: ['LogicWave', 'VaultZero', 'EntProof', 'QDrop'] },
+            { name: 'EntangleProof™', subNodes: ['SuperposCast', 'QTraceX', 'VaultSyncQ', 'ClaimPhase'] },
+            { name: 'SuperposVault™', subNodes: ['VaultGridX', 'PhaseSync', 'QNode', 'EntTag'] },
+            { name: 'ClaimLoopQ™', subNodes: ['QClaimLoop', 'VaultPathQ', 'QuantumBeam', 'SpinGrid'] },
+            { name: 'QuantumTrace™', subNodes: ['QuantumTrack', 'VaultClaimX', 'EntangleMap', 'SignalZero'] },
+            { name: 'QubitEcho™', subNodes: ['EchoPhase', 'QField', 'VaultCastQ', 'LogicZero'] },
+            { name: 'ZeroNode™', subNodes: ['ZeroCast', 'VaultEchoZ', 'TraceEnt', 'QBeam'] },
+            { name: 'PhaseGrid™', subNodes: ['PhasePanel', 'VaultQDrop', 'EntSync', 'LogicClaimQ'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const ritualCultureBrandsData = [
+            { name: 'RiteNest™', subNodes: ['TotemTrack', 'VaultSpirit', 'GlyphTag', 'ScrollLoop'] },
+            { name: 'PulseSpirit™', subNodes: ['ClanPath', 'EchoTotem', 'PulseMyth', 'ScrollClaim'] },
+            { name: 'ClanScroll™', subNodes: ['CultureCast', 'VaultClaim', 'RiteMark', 'TradEcho'] },
+            { name: 'CultureGrid™', subNodes: ['LoopTotem', 'ClaimClan', 'VaultGlyph', 'SymbolTrack'] },
+            { name: 'MythLoop™', subNodes: ['MythDrop', 'EchoPath', 'ScrollProof', 'RitualGrid'] },
+            { name: 'AuraDrop™', subNodes: ['AuraTrack', 'VaultCast', 'TotemPanel', 'GlyphEcho'] },
+            { name: 'CeremPath™', subNodes: ['CeremSync', 'ClaimRite', 'ScrollVault', 'TotemBeam'] },
+            { name: 'EchoGlyph™', subNodes: ['GlyphSync', 'SpiritClaim', 'VaultMyth', 'EchoClan'] },
+            { name: 'TradVault™', subNodes: ['TradPanel', 'LoopClaim', 'MythTrack', 'VaultCulture'] },
+            { name: 'LineageClaim™', subNodes: ['LineagePath', 'VaultTag', 'EchoGlyph', 'ScrollCast'] },
+            { name: 'SymbolMap™', subNodes: ['SymbolClaim', 'VaultScroll', 'TotemMap', 'ClanNest'] },
+            { name: 'AncestorSync™', subNodes: ['AncestorTag', 'VaultLoop', 'ClaimTotem', 'SpiritRoot'] },
+            { name: 'SoulPanel™', subNodes: ['SoulClaim', 'EchoMyth', 'GlyphPanel', 'VaultRite'] },
+            { name: 'ClanRoot™', subNodes: ['ClanVault', 'MythProof', 'TotemDrop', 'ScrollSpirit'] },
+            { name: 'EchoRitual™', subNodes: ['EchoRitualX', 'ClaimPanel', 'VaultTotem', 'CultureSync'] },
+            { name: 'TotemCast™', subNodes: ['TotemEcho', 'LoopGlyph', 'VaultClaimX', 'SymbolProof'] },
+            { name: 'RiteClaim™', subNodes: ['ClaimCulture', 'VaultTrad', 'SpiritSync', 'EchoCast'] },
+            { name: 'GlyphVault™', subNodes: ['GlyphVaultX', 'ScrollTag', 'CultureDrop', 'TotemRoot'] },
+            { name: 'CultureNest™', subNodes: ['NestSpirit', 'PulseClaim', 'VaultEchoX', 'MythPath'] },
+            { name: 'SpiritBeam™', subNodes: ['BeamLoop', 'VaultSymbol', 'ScrollRite', 'ClanBeam'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const foodChainBrandsData = [
+            { name: 'AgriNest™', subNodes: ['CropTag', 'SoilPath', 'YieldSync', 'VaultHarvest'] },
+            { name: 'FreshSync™', subNodes: ['NestGrain', 'PulseField', 'FarmTrack', 'ClaimRoot'] },
+            { name: 'CropLoop™', subNodes: ['CycleGrain', 'VaultCrop', 'YieldClaim', 'FieldDrop'] },
+            { name: 'SoilGrid™', subNodes: ['SoilBeam', 'FarmYield', 'VaultNest', 'TagField'] },
+            { name: 'FarmDrop™', subNodes: ['DropCrop', 'HarvestTrack', 'ClaimEcho', 'PulseSoil'] },
+            { name: 'GrainVault™', subNodes: ['GrainTrack', 'YieldNest', 'VaultMap', 'SoilNode'] },
+            { name: 'HarvestClaim™', subNodes: ['ClaimCrop', 'PulseHarvest', 'RootVault', 'NestLoop'] },
+            { name: 'PulseCrop™', subNodes: ['PulseSoilX', 'VaultGrain', 'FieldClaim', 'TrackEcho'] },
+            { name: 'YieldField™', subNodes: ['SoilDrop', 'PlantClaim', 'YieldProof', 'VaultRoot'] },
+            { name: 'RootMap™', subNodes: ['FarmGrid', 'VaultPath', 'CropPanel', 'EchoHarvest'] },
+            { name: 'FoodProof™', subNodes: ['FoodYield', 'TrackSeed', 'SoilNodeX', 'PulseNest'] },
+            { name: 'AquaNest™', subNodes: ['AquaTrack', 'GrainClaim', 'VaultSync', 'HarvestEcho'] },
+            { name: 'SeedCycle™', subNodes: ['SeedRoot', 'ClaimPanel', 'DropVault', 'CropSync'] },
+            { name: 'PlantTrack™', subNodes: ['TrackCrop', 'VaultField', 'EchoGrain', 'YieldPath'] },
+            { name: 'CropVault™', subNodes: ['VaultFarm', 'PulseNestX', 'ClaimGrain', 'SoilEchoX'] },
+            { name: 'SoilEcho™', subNodes: ['FieldCycle', 'HarvestPanel', 'VaultProof', 'GrainLoop'] },
+            { name: 'NutritionClaim™', subNodes: ['NutritionDrop', 'ClaimVault', 'SeedTrack', 'EchoField'] },
+            { name: 'LoopFarm™', subNodes: ['FarmSync', 'LoopNest', 'VaultRootX', 'SoilPanel'] },
+            { name: 'PulseGrain™', subNodes: ['GrainYield', 'ClaimDropX', 'EchoNest', 'VaultFieldX'] },
+            { name: 'FieldNest™', subNodes: ['NestHarvest', 'PulseCropX', 'TrackSoil', 'VaultClaim'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const zeroWasteBrandsData = [
+            { name: 'EcoNest™', subNodes: ['GreenSync', 'VaultTrack', 'LoopPath', 'CompostTag'] },
+            { name: 'GreenLoop™', subNodes: ['TrashGrid', 'CycleDrop', 'VaultEcho', 'ClaimPath'] },
+            { name: 'CycleSync™', subNodes: ['RecycleCast', 'GreenEcho', 'SortTrack', 'YieldBin'] },
+            { name: 'ZeroCrate™', subNodes: ['DropWaste', 'EcoNode', 'ClaimClean', 'LoopTrace'] },
+            { name: 'WasteGrid™', subNodes: ['GridWaste', 'VaultNest', 'SortEcho', 'BinClaim'] },
+            { name: 'BioDrop™', subNodes: ['BioTrack', 'VaultBin', 'PulseSort', 'TrashTag'] },
+            { name: 'SustainClaim™', subNodes: ['EcoProof', 'ClaimBin', 'CycleTag', 'LoopEcho'] },
+            { name: 'LoopSort™', subNodes: ['SortMap', 'VaultClaim', 'CleanDrop', 'GreenVault'] },
+            { name: 'PulseGreen™', subNodes: ['GreenFlow', 'BinCast', 'EcoClaim', 'RecycleNest'] },
+            { name: 'YieldTrash™', subNodes: ['PulseTrash', 'VaultClean', 'ClaimDrop', 'CycleTrack'] },
+            { name: 'RecycleMap™', subNodes: ['TrashYield', 'LoopDrop', 'RecycleTrack', 'EcoGrid'] },
+            { name: 'CleanTrack™', subNodes: ['VaultPath', 'BinEcho', 'CleanMap', 'SortClaim'] },
+            { name: 'EcoVault™', subNodes: ['NestTrash', 'ClaimTrack', 'LoopNode', 'RecycleEcho'] },
+            { name: 'ClaimClean™', subNodes: ['GreenMark', 'VaultProof', 'TrashLoop', 'CompostSync'] },
+            { name: 'CompostGrid™', subNodes: ['EchoClaim', 'PulseCycle', 'SortBin', 'YieldTrack'] },
+            { name: 'GreenBeam™', subNodes: ['TrackClean', 'VaultEchoX', 'ClaimSync', 'BinDrop'] },
+            { name: 'LoopNest™', subNodes: ['CompostPath', 'RecyclePanel', 'VaultTrackX', 'LoopGrid'] },
+            { name: 'TrashEcho™', subNodes: ['EchoBin', 'ClaimCrate', 'SortPulse', 'NestVault'] },
+            { name: 'SortClaim™', subNodes: ['GreenClaim', 'VaultMap', 'DropCompost', 'CycleEcho'] },
+            { name: 'VaultCycle™', subNodes: ['WasteNode', 'SyncNest', 'TrashBeam', 'VaultCycleX'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const miningBrandsData = [
+            { name: 'MineNest™', subNodes: ['NestTrack', 'VaultShaft', 'QRMine', 'ClaimGrid'] },
+            { name: 'DrillCoreX™', subNodes: ['CoreDrop', 'PulsePath', 'OreTrace', 'DrillYield'] },
+            { name: 'OreSync™', subNodes: ['SyncRock', 'VaultEcho', 'QRDrill', 'ClaimTag'] },
+            { name: 'VaultRock™', subNodes: ['RockBeam', 'MineLoop', 'SignalTrace', 'QRClaim'] },
+            { name: 'ClaimMine™', subNodes: ['ClaimOre', 'VaultPath', 'OrePing', 'MineSignal'] },
+            { name: 'TrackShaft™', subNodes: ['ShaftMesh', 'DropMine', 'TrackSeam', 'QRTrack'] },
+            { name: 'PulseMine™', subNodes: ['PulseCrate', 'MineEcho', 'YieldDrill', 'GridTag'] },
+            { name: 'CoreBeam™', subNodes: ['BeamPath', 'ClaimRock', 'VaultLoop', 'SeamDrop'] },
+            { name: 'DigEcho™', subNodes: ['EchoMine', 'RockPing', 'VaultTrace', 'ClaimBeam'] },
+            { name: 'RockPath™', subNodes: ['PathDrop', 'GridMine', 'QRNode', 'YieldOre'] },
+            { name: 'YieldDrill™', subNodes: ['DrillGrid', 'ClaimYield', 'SyncTunnel', 'OreEcho'] },
+            { name: 'MineProof™', subNodes: ['ProofMine', 'SeamCast', 'VaultGrid', 'DropCrate'] },
+            { name: 'OreLine™', subNodes: ['OreLineX', 'VaultDrill', 'MineForm', 'TagTrace'] },
+            { name: 'DrillLink™', subNodes: ['LinkMine', 'PulseEcho', 'GridSeam', 'YieldCast'] },
+            { name: 'VaultTunnel™', subNodes: ['TunnelSync', 'ClaimLoop', 'QRDrillX', 'OreBeam'] },
+            { name: 'GeoGrid™', subNodes: ['GridGeo', 'VaultMap', 'RockForm', 'ClaimTunnel'] },
+            { name: 'SeamSync™', subNodes: ['SeamSyncX', 'OreDrop', 'QRMineX', 'DrillMark'] },
+            { name: 'ClaimOre™', subNodes: ['ClaimOreX', 'TrackGrid', 'VaultDrop', 'PingEcho'] },
+            { name: 'PulseBlast™', subNodes: ['BlastMine', 'PulsePing', 'QRPath', 'SeamMark'] },
+            { name: 'OreEcho™', subNodes: ['EchoRock', 'YieldTrack', 'VaultBeam', 'ClaimSync'] },
+            { name: 'DeepCrate™', subNodes: ['CrateDrop', 'SyncClaim', 'DrillForm', 'TunnelMap'] },
+            { name: 'RockLogic™', subNodes: ['RockLogicX', 'VaultOre', 'YieldLoop', 'PingDrill'] },
+            { name: 'CoreDrill™', subNodes: ['CoreMine', 'OreTag', 'VaultPing', 'GridTrack'] },
+            { name: 'MineCast™', subNodes: ['MineCastX', 'ClaimNest', 'QRTrace', 'YieldEcho'] },
+            { name: 'DrillMark™', subNodes: ['DrillMarkX', 'OreSignal', 'VaultCrate', 'PingTag'] },
+            { name: 'SignalOre™', subNodes: ['OreSignalX', 'GridEcho', 'ClaimDrop', 'TrackTunnel'] },
+            { name: 'YieldTrack™', subNodes: ['TrackYield', 'MineFrame', 'SignalGrid', 'EchoDrill'] },
+            { name: 'VaultSeam™', subNodes: ['VaultSeamX', 'QRClaimX', 'GridOre', 'TunnelEcho'] },
+            { name: 'ShaftDrop™', subNodes: ['DropShaft', 'ClaimTunnelX', 'YieldDrillX', 'VaultGrid'] },
+            { name: 'GeoNode™', subNodes: ['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const fashionBrandsData = [
+            { name: 'FashionNest™', subNodes: ['EchoNest', 'TrackSeal', 'GridPath', 'PulseTag', 'LoopForm', 'WearGrid'] },
+            { name: 'StyleForm™', subNodes: ['RunwayMesh', 'FashionPanel', 'TagSync', 'EchoForm', 'BeamLook', 'PulseTrack'] },
+            { name: 'ChicClaim™', subNodes: ['ClaimStyle', 'PulseBeam', 'TrackPanel', 'EchoClaim', 'SyncTag', 'LookNode'] },
+            { name: 'RunwayPulse™', subNodes: ['GridForm', 'LoopMesh', 'DropEcho', 'TrackWear', 'ClaimPanel', 'PulsePath'] },
+            { name: 'TrendCast™', subNodes: ['PulseRoot', 'EchoTrack', 'WearCast', 'BeamTrace', 'CrateDrop', 'ClaimMark'] },
+            { name: 'BrandX™', subNodes: ['LoopPanel', 'FashionDrop', 'TrackGrid', 'PulseCast', 'EchoWear', 'GridMark'] },
+            { name: 'LuxLink™', subNodes: ['LookSync', 'PanelTag', 'PulseLoop', 'TrackCrate', 'EchoSeal', 'GridNest'] },
+            { name: 'VogueSync™', subNodes: ['ClaimMesh', 'DropPath', 'PulseTag', 'EchoCast', 'TrackPoint', 'StyleFit'] },
+            { name: 'ModeFrame™', subNodes: ['EchoStyle', 'PanelClaim', 'PulseGrid', 'TrackNest', 'ClaimNode', 'SyncEcho'] },
+            { name: 'GlamRoot™', subNodes: ['TrackPulse', 'BeamCast', 'LookTag', 'EchoTrace', 'CratePanel', 'GridTrack'] },
+            { name: 'FitTrack™', subNodes: ['PulseBeam', 'StyleForm', 'LoopEcho', 'TrackClaim', 'SyncCast', 'CratePoint'] },
+            { name: 'StyleMesh™', subNodes: ['CrateSync', 'PulsePath', 'BeamLoop', 'StyleCrate', 'ClaimPanel', 'TrackFit'] },
+            { name: 'VibeCast™', subNodes: ['DropTrace', 'WearPanel', 'EchoNode', 'StylePulse', 'ClaimBeam', 'GridCast'] },
+            { name: 'DressSync™', subNodes: ['PanelCast', 'EchoPanel', 'ClaimDrop', 'TrackNest', 'PulseSync', 'StyleGrid'] },
+            { name: 'FitGrid™', subNodes: ['TagPath', 'WearEcho', 'PanelGrid', 'CrateStyle', 'SyncTrack', 'PulsePanel'] },
+            { name: 'TrendPath™', subNodes: ['FitDrop', 'EchoPoint', 'LoopStyle', 'CrateClaim', 'TrackRoot', 'PulseEcho'] },
+            { name: 'StyleNode™', subNodes: ['EchoTrack', 'SyncNode', 'PulseNest', 'WearTrace', 'GridEcho', 'BeamCrate'] },
+            { name: 'CatwalkCore™', subNodes: ['StylePanel', 'ClaimNest', 'LoopPath', 'DropPulse', 'SyncBeam', 'TrackPanel'] },
+            { name: 'EchoWear™', subNodes: ['PulseStyle', 'EchoGrid', 'BeamTrack', 'CrateSync', 'ClaimEcho', 'LookPath'] },
+            { name: 'LuxuryClaim™', subNodes: ['FormCrate', 'TrackSync', 'EchoDrop', 'PulseClaim', 'StyleMark', 'GridTrace'] },
+            { name: 'SculptWear™', subNodes: ['ClaimLoop', 'WearPanel', 'EchoStyle', 'DropSync', 'PulseGrid', 'BeamRoot'] },
+            { name: 'FitClaim™', subNodes: ['StyleEcho', 'LoopBeam', 'CratePanel', 'TrackCrate', 'GridNode', 'PulseNest'] },
+            { name: 'RunwayLoop™', subNodes: ['PulseTrack', 'WearTag', 'PanelRoot', 'ClaimCast', 'StyleLoop', 'DropPath'] },
+            { name: 'VogueMesh™', subNodes: ['TraceBeam', 'LookClaim', 'EchoGrid', 'PanelTrack', 'PulseDrop', 'TrackSync'] },
+            { name: 'DressTrack™', subNodes: ['EchoPulse', 'GridBeam', 'DropPanel', 'ClaimMark', 'CrateSync', 'PulseTrace'] },
+            { name: 'ClassSync™', subNodes: ['LoopEcho', 'TrackNest', 'ClaimPath', 'WearPanel', 'PulseLook', 'StyleDrop'] },
+            { name: 'FitMark™', subNodes: ['TagTrace', 'EchoForm', 'DropLook', 'PanelClaim', 'BeamNest', 'GridLoop'] },
+            { name: 'ModeWave™', subNodes: ['FitTrace', 'SyncNode', 'PulsePanel', 'ClaimEcho', 'TrackMark', 'LoopForm'] },
+            { name: 'VogueDrop™', subNodes: ['NodeClaim', 'StylePulse', 'PanelSync', 'DropTrack', 'CrateLoop', 'PulseEcho'] },
+            { name: 'RunwayPoint™', subNodes: ['PanelClaim', 'CrateBeam', 'TrackSync', 'EchoPanel', 'LoopGrid', 'PulseNest'] },
+            { name: 'PulseWear™', subNodes: ['LookBeam', 'PulseForm', 'DropTag', 'TrackEcho', 'ClaimNest', 'StyleSync'] },
+            { name: 'GlamSync™', subNodes: ['GridDrop', 'TagLoop', 'PanelTrack', 'EchoClaim', 'PulseMark', 'BeamNode'] },
+            { name: 'TrendCore™', subNodes: ['SyncLoop', 'PulseEcho', 'WearClaim', 'DropTrack', 'CratePanel', 'TrackRoot'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const gamingBrandsData = [
+            { name: 'GameFlow', subNodes: ['RenderEngine', 'PhysicsCore', 'LogicNode', 'AssetStream'] },
+            { name: 'SimulateX', subNodes: ['VRNode', 'ARLayer', 'WorldGen', 'EchoSim'] },
+            { name: 'PixelGrid', subNodes: ['TextureSync', 'ShaderFlow', 'LightMap', 'RenderPulse'] },
+            { name: 'QuestVault', subNodes: ['QuestLog', 'ItemClaim', 'RewardNode', 'VaultProof'] },
+            { name: 'MetaPlay', subNodes: ['AvatarSync', 'IdentityLink', 'SocialMesh', 'MetaEcho'] },
+            { name: 'LevelForge', subNodes: ['LevelBuilder', 'TerrainGen', 'AssetForge', 'MapNode'] },
+            { name: 'EsportPulse', subNodes: ['MatchSync', 'PlayerTrack', 'LiveStream', 'SpectateNode'] },
+            { name: 'VirtualClaim', subNodes: ['DigitalAssetID', 'NFTProof', 'OwnershipTrace', 'ClaimToken'] },
+            { name: 'AuraGame', subNodes: ['EmotionSync', 'VibeTracker', 'MoodEngine', 'AuraNode'] },
+            { name: 'LogicQuest', subNodes: ['PuzzleSolver', 'AIPath', 'DecisionTree', 'LogicNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const justiceBrandsData = [
+            { name: 'LawTrace', subNodes: ['CaseFlow', 'EvidenceSync', 'VerdictNode', 'AuditTrail'] },
+            { name: 'EthicGrid', subNodes: ['MoralCompass', 'ComplianceMatrix', 'IntegrityScan', 'RuleEngine'] },
+            { name: 'VerdictVault', subNodes: ['JudgmentStore', 'PrecedentLink', 'RulingProof', 'VaultSeal'] },
+            { name: 'ClaimShield', subNodes: ['DisputeResolve', 'ArbitrationFlow', 'MediationNode', 'ClaimProtect'] },
+            { name: 'ReguSync', subNodes: ['RegulatoryTracker', 'PolicyUpdate', 'ComplianceAlert', 'SyncNode'] },
+            { name: 'JusticeLink', subNodes: ['CourtConnect', 'LegalDocShare', 'HearingSync', 'JusticeNode'] },
+            { name: 'AuditFlow', subNodes: ['AuditTrailGen', 'ComplianceCheck', 'ReportFlow', 'AuditNode'] },
+            { name: 'TreatyMesh', subNodes: ['TreatySync', 'ProtocolLink', 'AccordNode', 'MeshClaim'] },
+            { name: 'SecureSign', subNodes: ['AtomVerify', 'DocProtect', 'SignFlow', 'SecureNode'] },
+            { name: 'EthosGuard', subNodes: ['EthicalAI', 'BiasDetect', 'FairnessMetrics', 'GuardNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const knowledgeBrandsData = [
+            { name: 'MindVault', subNodes: ['KnowledgeGraph', 'DataIndex', 'ConceptMap', 'VaultStore'] },
+            { name: 'LexiSync', subNodes: ['LexiconBuilder', 'TermSync', 'GlossaryFlow', 'SyncNode'] },
+            { name: 'ArchiveGrid', subNodes: ['DocumentIndexer', 'RecordTrace', 'DigitalArchive', 'GridNode'] },
+            { name: 'ScrollSense', subNodes: ['SemanticSearch', 'ContextEngine', 'InsightGen', 'SenseNode'] },
+            { name: 'EduLink', subNodes: ['LearningPath', 'CurriculumSync', 'LessonFlow', 'EduNode'] },
+            { name: 'InfoPulse', subNodes: ['DataStream', 'FactCheck', 'NewsFeed', 'PulseNode'] },
+            { name: 'WisdomChain', subNodes: ['KnowledgeBlock', 'TruthVerify', 'ConsensusNode', 'ChainLink'] },
+            { name: 'CogniFlow', subNodes: ['CognitiveMap', 'IdeaGen', 'ThoughtProcess', 'FlowNode'] },
+            { name: 'LoreNest', subNodes: ['MythologyIndex', 'FolkloreArchive', 'NarrativeTrace', 'NestNode'] },
+            { name: 'DataLore', subNodes: ['DataStorytelling', 'NarrativeViz', 'InsightNarrator', 'LoreNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const micromeshBrandsData = [
+            { name: 'MicroLogi', subNodes: ['MiniCrate', 'NanoTrack', 'PicoRoute', 'FlexiDrop'] },
+            { name: 'NodeFlow', subNodes: ['EdgeRelay', 'SensorSync', 'BeaconNet', 'FlowNode'] },
+            { name: 'PocketMesh', subNodes: ['WearableSync', 'MobileLink', 'ProximityGrid', 'MeshNode'] },
+            { name: 'TinyTrack', subNodes: ['AssetTag', 'MicroGPS', 'LocationPulse', 'TrackNode'] },
+            { name: 'ZipDrop', subNodes: ['ExpressDelivery', 'DroneDispatch', 'QuickRoute', 'DropNode'] },
+            { name: 'GridLink', subNodes: ['IoTConnect', 'SmartHub', 'DeviceSync', 'LinkNode'] },
+            { name: 'PouchFleet', subNodes: ['SmallParcelRoute', 'LastMileOptimize', 'BagTrack', 'FleetNode'] },
+            { name: 'VaultMini', subNodes: ['SecureMicroStorage', 'DataTiny', 'VaultNano', 'MiniNode'] },
+            { name: 'FlexiRoute', subNodes: ['DynamicPathing', 'AdaptiveLogistics', 'OnDemandRoute', 'RouteNode'] },
+            { name: 'PulsePico', subNodes: ['MicroSensorData', 'RealtimePulse', 'TinySignal', 'PicoNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const packagingBrandsData = [
+            { name: 'PackSmart', subNodes: ['MaterialTrace', 'EcoDesign', 'SmartLabel', 'WasteReduce'] },
+            { name: 'SealSafe', subNodes: ['TamperProof', 'SecureSeal', 'IntegrityCheck', 'SafeNode'] },
+            { name: 'FlexiPack', subNodes: ['AdaptivePackaging', 'CustomFit', 'ModularDesign', 'FlexiNode'] },
+            { name: 'EcoWrap', subNodes: ['SustainableMaterial', 'RecycleTrace', 'BiodegradablePack', 'EcoNode'] },
+            { name: 'LabelGen', subNodes: ['AutoLabel', 'QRTrace', 'SmartTag', 'GenNode'] },
+            { name: 'CrateFlow', subNodes: ['CrateOptimize', 'StackLogic', 'LoadBalance', 'FlowNode'] },
+            { name: 'BoxID', subNodes: ['UniqueIDTag', 'SerialTrack', 'AssetVerify', 'IDNode'] },
+            { name: 'PrintSync', subNodes: ['OnDemandPrint', 'ColorMatch', 'DesignSync', 'PrintNode'] },
+            { name: 'VaultPack', subNodes: ['SecurePackaging', 'AntiTamperVault', 'ProofSeal', 'VaultNode'] },
+            { name: 'OptiPack', subNodes: ['EfficiencyMetrics', 'CostOptimize', 'MaterialUsage', 'OptiNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const tradeBrandsData = [
+            { name: 'TradeFlow', subNodes: ['GlobalMarketLink', 'SupplyChainSync', 'DemandPulse', 'FlowNode'] },
+            { name: 'MarketGrid', subNodes: ['PriceDiscovery', 'VolumeTrace', 'LiquidityMap', 'GridNode'] },
+            { name: 'ForexLink', subNodes: ['CurrencyExchange', 'RateSync', 'ArbitrageSense', 'LinkNode'] },
+            { name: 'SupplyChainX', subNodes: ['LogisticsOptimize', 'InventoryTrack', 'RouteEfficiency', 'ChainNode'] },
+            { name: 'DemandCast', subNodes: ['ConsumerTrend', 'MarketPredict', 'SalesForecast', 'CastNode'] },
+            { name: 'GlobalTrade', subNodes: ['InternationalCompliance', 'CustomsSync', 'TariffIntel', 'TradeNode'] },
+            { name: 'AssetExchange', subNodes: ['CommodityTrade', 'AssetToken', 'ValueTransfer', 'ExchangeNode'] },
+            { name: 'VaultTrade', subNodes: ['SecureTransactions', 'EscrowService', 'DisputeResolve', 'VaultNode'] },
+            { name: 'PulseMarket', subNodes: ['RealtimeInsights', 'SentimentAnalysis', 'MarketSignal', 'PulseNode'] },
+            { name: 'FairTradeLink', subNodes: ['EthicalSourcing', 'SustainabilityTrace', 'SocialImpact', 'FairNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const utilitiesBrandsData = [
+            { name: 'PowerGrid', subNodes: ['EnergyFlow', 'LoadBalance', 'SmartMeter', 'GridNode'] },
+            { name: 'WaterSync', subNodes: ['WaterFlowMonitor', 'LeakDetect', 'ResourceOptimize', 'SyncNode'] },
+            { name: 'WasteCycle', subNodes: ['RecycleTrack', 'CompostFlow', 'WasteReduce', 'CycleNode'] },
+            { name: 'GasTrace', subNodes: ['GasFlowMonitor', 'LeakDetect', 'PressureSense', 'TraceNode'] },
+            { name: 'RenewableFlow', subNodes: ['SolarMonitor', 'WindFarmSync', 'HydroPulse', 'FlowLink'] },
+            { name: 'InfraSense', subNodes: ['AssetMonitor', 'PredictiveMaint', 'NetworkHealth', 'SenseNode'] },
+            { name: 'SmartCityGrid', subNodes: ['TrafficOptimize', 'PublicLighting', 'WasteManagement', 'CityNode'] },
+            { name: 'ResourceVault', subNodes: ['ResourceTracking', 'SupplyChainSecure', 'DemandForecast', 'VaultNode'] },
+            { name: 'UtilityPulse', subNodes: ['ConsumptionMonitor', 'BillingSync', 'OutageAlert', 'PulseNode'] },
+            { name: 'EcoEnergy', subNodes: ['CarbonFootprintTrack', 'GreenCertify', 'SustainableSource', 'EcoNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const voiceBrandsData = [
+            { name: 'VoiceFlow', subNodes: ['SpeechRecognition', 'NLPProcess', 'VoiceSynthesis', 'FlowEngine'] },
+            { name: 'AudioMesh', subNodes: ['SoundscapeGen', 'AcousticMap', 'SpatialAudio', 'MeshNode'] },
+            { name: 'EchoSpeak', subNodes: ['VoiceAssistant', 'ConversationalAI', 'DialogueFlow', 'SpeakNode'] },
+            { name: 'SonicID', subNodes: ['VoiceBiometrics', 'SpeakerVerify', 'AudioAuth', 'IDNode'] },
+            { name: 'WaveSync', subNodes: ['AudioStreamSync', 'LipSync', 'SoundWaveform', 'SyncNode'] },
+            { name: 'MelodyGen', subNodes: ['MusicCompositionAI', 'TuneCreator', 'HarmonicFlow', 'GenNode'] },
+            { name: 'PodcastPulse', subNodes: ['AudioAnalytics', 'ListenerInsights', 'ContentOptimize', 'PulseNode'] },
+            { name: 'VaultVoice', subNodes: ['SecureVoiceComms', 'EncryptedAudio', 'VoiceAuthVault', 'VaultNode'] },
+            { name: 'SoundSense', subNodes: ['EnvironmentalAudioDetect', 'AnomalySound', 'AcousticMonitor', 'SenseNode'] },
+            { name: 'VocalTrace', subNodes: ['VoicePrintAnalysis', 'SpeechPatternTrack', 'AudioForensics', 'TraceNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const nftBrandsData = [
+            { name: 'TokenForge', subNodes: ['NFTMinting', 'SmartContractGen', 'AssetCreation', 'ForgeNode'] },
+            { name: 'VaultNFT', subNodes: ['SecureNFTStorage', 'DigitalAssetVault', 'OwnershipProof', 'VaultNode'] },
+            { name: 'MarketplaceLink', subNodes: ['NFTListing', 'AuctionEngine', 'RoyaltyTrack', 'LinkNode'] },
+            { name: 'ProofChain', subNodes: ['BlockchainVerify', 'ImmutableRecord', 'AuthenticityCheck', 'ChainNode'] },
+            { name: 'RoyaltyFlow', subNodes: ['CreatorPayouts', 'SecondarySalesTrack', 'RevenueShare', 'FlowNode'] },
+            { name: 'AssetID', subNodes: ['UniqueAssetIdentifier', 'DigitalFingerprint', 'ProvenanceTrace', 'IDNode'] },
+            { name: 'MetaverseSync', subNodes: ['VirtualWorldAssetSync', 'CrossPlatformNFT', 'DigitalTwin', 'SyncNode'] },
+            { name: 'ArtVault', subNodes: ['DigitalArtStorage', 'CollectorGallery', 'ExhibitionSpace', 'VaultNode'] },
+            { name: 'GamingNFT', subNodes: ['InGameAssetToken', 'PlayToEarnIntegration', 'GameItemOwnership', 'GamingNode'] },
+            { name: 'LicenseNFT', subNodes: ['DigitalLicenseToken', 'UsageRightsNFT', 'IPOwnership', 'LicenseNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const payrollMiningBrandsData = [
+            { name: 'CryptoPayroll', subNodes: ['TokenPayouts', 'BlockchainLedger', 'SmartContractPayroll', 'CryptoNode'] },
+            { name: 'MineLedger', subNodes: ['MiningRevenueTrack', 'ExpenseLog', 'ProfitShare', 'LedgerNode'] },
+            { name: 'AuditCoin', subNodes: ['BlockchainAudit', 'FinancialTrace', 'ComplianceCoin', 'AuditNode'] },
+            { name: 'TaxToken', subNodes: ['AutomatedTaxCalc', 'CryptoTaxReport', 'TaxCompliance', 'TaxNode'] },
+            { name: 'YieldPayout', subNodes: ['StakingPayouts', 'DeFiYieldTrack', 'LiquidityMining', 'PayoutNode'] },
+            { name: 'HashAccount', subNodes: ['HashrateTracking', 'MiningFarmAccounting', 'EnergyCostCalc', 'AccountNode'] },
+            { name: 'VaultPayroll', subNodes: ['SecurePayrollData', 'EncryptedRecords', 'AccessControl', 'VaultNode'] },
+            { name: 'TokenComp', subNodes: ['TokenizedCompensation', 'EquityTokenization', 'EmployeeShare', 'CompNode'] },
+            { name: 'BlockPay', subNodes: ['BlockchainPayments', 'DecentralizedPayroll', 'InstantPayouts', 'PayNode'] },
+            { name: 'ProfitSync', subNodes: ['ProfitDistribution', 'RevenueShareSync', 'PerformancePayout', 'SyncNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+        const wildlifeBrandsData = [
+            { name: 'EcoGuard', subNodes: ['HabitatMonitor', 'PoachingDetect', 'ConservationTrack', 'GuardNode'] },
+            { name: 'BioTrack', subNodes: ['SpeciesID', 'MigrationRoute', 'PopulationCount', 'TrackNode'] },
+            { name: 'SanctuarySync', subNodes: ['ReserveManagement', 'BoundaryMonitor', 'VisitorControl', 'SyncNode'] },
+            { name: 'WildSense', subNodes: ['EnvironmentalSensor', 'ClimateMonitor', 'BiodiversityIndex', 'SenseNode'] },
+            { name: 'RescueFlow', subNodes: ['RescueCoordination', 'RehabTrack', 'ReleaseMonitor', 'FlowNode'] },
+            { name: 'HabitatLink', subNodes: ['EcosystemMapping', 'CorridorAnalysis', 'RestorationTrack', 'LinkNode'] },
+            { name: 'GeneVault', subNodes: ['GeneticSampleStore', 'DNASequence', 'Bioinformatics', 'VaultNode'] },
+            { name: 'ConverseWild', subNodes: ['AnimalCommunicationAI', 'VocalizationAnalysis', 'BehaviorPredict', 'WildNode'] },
+            { name: 'ThreatDetect', subNodes: ['ThreatPatternRecognize', 'AnomalyAlert', 'InterventionCoord', 'DetectNode'] },
+            { name: 'PreservePulse', subNodes: ['ConservationMetrics', 'ImpactAnalysis', 'FundingTrack', 'PulseNode'] }
+        ].map(brand => ({ ...brand, masterLicensePrice: getRandomLicensePrice() }));
+
+
+        const ALL_SECTOR_DATA_STATIC = {
+            "global-pulse": {
+                name: "Global Pulse",
+                description: "High-level overview of the entire FAA.Zone™ ecosystem. Real-time metrics, system health, and critical alerts.",
+                kpis: { sites: "7,000+", uptime: "98.7%", pending: "124", alerts: "5" },
+                nodes: 7000,
+                revenue: 54000000,
+                dominanceScore: 95,
+                brands: [],
+                scrollProfiles: []
+            },
+            "agriculture": {
+                name: "Agriculture & Biotech",
+                description: "Monitoring of AgroChain™ framework, covering product offerings and payment processing via PayPal integration.",
+                nodes: 1200, revenue: 5200000, dominanceScore: 75,
+                brands: agriBrandsData,
+                scrollProfiles: [
+                    { name: "PayPal Integration Manual", link: "manuals/agriculture-paypal.pdf" }
+                ]
+            },
+            "fsf": {
+                name: "Food, Soil & Farming",
+                description: "Comprehensive data on food production, soil health, and farming practices within the FAA.ZONE™ ecosystem.",
+                nodes: 1500, revenue: 6800000, dominanceScore: 78,
+                brands: fsfBrandsData,
+                scrollProfiles: []
+            },
+            "banking": {
+                name: "Banking & Finance",
+                description: "Tracking of financial transactions, compliance, and integration with Xero for accounting.",
+                nodes: 2500, revenue: 15500000, dominanceScore: 92,
+                brands: bankingBrandsData,
+                scrollProfiles: [
+                    { name: "Xero Integration Setup Minutes", link: "manuals/xero-integration.pdf" },
+                    { name: "PayPal Subscriptions Setup Manual", link: "manuals/paypal-subscriptions.pdf" }
+                ]
+            },
+            "creative": {
+                name: "🖋️ Creative Tech",
+                description: "Insights into digital media, content creation tools, and intellectual property management within the creative sector.",
+                nodes: 900, revenue: 3100000, dominanceScore: 65,
+                brands: creativeBrandsData,
+                scrollProfiles: []
+            },
+            "logistics": {
+                name: "📦 Logistics & Packaging",
+                description: "Monitoring supply chain efficiency, package tracking, and optimization of material flows.",
+                nodes: 2800, revenue: 9200000, dominanceScore: 80,
+                brands: logisticsBrandsData,
+                scrollProfiles: []
+            },
+            "education-ip": {
+                name: "📚 Education & IP",
+                description: "Tracking intellectual property, educational content distribution, and learning platform engagement.",
+                nodes: 1100, revenue: 4500000, dominanceScore: 70,
+                brands: educationIpBrandsData,
+                scrollProfiles: []
+            },
+            "fashion": {
+                name: "✂ Fashion & Identity",
+                description: "Monitoring trends in digital fashion, identity verification, and secure ownership of virtual assets.",
+                nodes: 700, revenue: 2800000, dominanceScore: 68,
+                brands: fashionBrandsData,
+                scrollProfiles: []
+            },
+            "gaming": {
+                name: "🎮 Gaming & Simulation",
+                description: "Comprehensive data on gaming and simulation platforms, including user engagement and virtual asset management.",
+                nodes: 1500, revenue: 7000000, dominanceScore: 80,
+                brands: gamingBrandsData,
+                scrollProfiles: []
+            },
+            "health": {
+                name: "🧠 Health & Hygiene",
+                description: "Tracking health metrics, hygiene protocols, and secure medical data management systems.",
+                nodes: 1300, revenue: 6100000, dominanceScore: 72,
+                brands: healthBrandsData,
+                scrollProfiles: []
+            },
+            "housing": {
+                name: "🏗️ Housing & Infrastructure",
+                description: "Monitoring urban development, smart infrastructure, and secure property management solutions.",
+                nodes: 2000, revenue: 10500000, dominanceScore: 85,
+                brands: housingBrandsData,
+                scrollProfiles: []
+            },
+            "justice": {
+                name: "⚖ Justice & Ethics",
+                description: "Data on legal compliance, ethical AI frameworks, and secure judicial processes.",
+                nodes: 600, revenue: 3400000, dominanceScore: 70,
+                brands: justiceBrandsData,
+                scrollProfiles: []
+            },
+            "knowledge": {
+                name: "📖 Knowledge & Archives",
+                description: "Management of digital archives, knowledge bases, and information dissemination systems.",
+                nodes: 800, revenue: 2900000, dominanceScore: 67,
+                brands: knowledgeBrandsData,
+                scrollProfiles: []
+            },
+            "micromesh": {
+                name: "☰ Micro-Mesh Logistics",
+                description: "Specialized logistics for micro-deliveries, drone operations, and last-mile optimization.",
+                nodes: 1000, revenue: 4100000, dominanceScore: 73,
+                brands: micromeshBrandsData,
+                scrollProfiles: []
+            },
+            "media": {
+                name: "🎬 Motion, Media & Sonic",
+                description: "Real-time metrics for Sonic Grid, VisualFlow, and AudioPulse, including global launch and dev manual for Foxed Has Mobiles™.",
+                nodes: 1800, revenue: 12000000, dominanceScore: 88,
+                brands: mediaBrandsData,
+                scrollProfiles: []
+            },
+            "nutrition": {
+                name: "✿ Nutrition & Food Chain",
+                description: "Tracking food supply chains, nutritional data, and sustainable agricultural practices.",
+                nodes: 1400, revenue: 5800000, dominanceScore: 76,
+                brands: foodChainBrandsData,
+                scrollProfiles: []
+            },
+            "ai-logic": {
+                name: "🧠 AI, Logic & Grid",
+                description: "Monitoring of AI system performance, logic deployment, and grid optimization. Includes Firebase core setup.",
+                nodes: 3000, revenue: 8300000, dominanceScore: 85,
+                brands: ailogicBrandsData,
+                scrollProfiles: [
+                    { name: "Firebase Core Setup Minutes", link: "manuals/firebase-core-setup.pdf" },
+                    { name: "Firebase Scalable Admin Panel (7000 Sites)", link: "manuals/firebase-scalable-admin.pdf" }
+                ]
+            },
+            "packaging": {
+                name: "📦 Packaging & Materials",
+                description: "Optimization of packaging solutions, material sourcing, and waste reduction strategies.",
+                nodes: 950, revenue: 3700000, dominanceScore: 69,
+                brands: packagingBrandsData,
+                scrollProfiles: []
+            },
+            "quantum": {
+                name: "✴️ Quantum Protocols",
+                description: "Development and monitoring of quantum computing protocols and secure communication networks.",
+                nodes: 400, revenue: 2100000, dominanceScore: 88,
+                brands: quantumBrandsData,
+                scrollProfiles: []
+            },
+            "ritual": {
+                name: "☯ Ritual & Culture",
+                description: "Preservation and digital representation of cultural rituals, traditions, and heritage.",
+                nodes: 300, revenue: 1500000, dominanceScore: 62,
+                brands: ritualCultureBrandsData,
+                scrollProfiles: []
+            },
+            "saas": {
+                name: "🔑 SaaS & Licensing",
+                description: "Management of software-as-a-service offerings and digital licensing frameworks.",
+                nodes: 1600, revenue: 9800000, dominanceScore: 90,
+                brands: saasLicensingBrandsData,
+                scrollProfiles: []
+            },
+            "trade": {
+                name: "🧺 Trade Systems",
+                description: "Facilitation of global trade, supply chain transparency, and secure transaction protocols.",
+                nodes: 1700, revenue: 11200000, dominanceScore: 87,
+                brands: tradeBrandsData,
+                scrollProfiles: []
+            },
+            "utilities": {
+                name: "🔋 Utilities & Energy",
+                description: "Monitoring energy consumption, smart grids, and sustainable utility management.",
+                nodes: 1900, revenue: 7600000, dominanceScore: 81,
+                brands: utilitiesBrandsData,
+                scrollProfiles: []
+            },
+            "voice": {
+                name: "🎙️ Voice & Audio",
+                description: "Development of voice AI, audio processing, and sonic branding solutions.",
+                nodes: 850, revenue: 3900000, dominanceScore: 71,
+                brands: voiceBrandsData,
+                scrollProfiles: []
+            },
+            "webless": {
+                name: "📡 Webless Tech & Nodes",
+                description: "Innovation in offline technologies, decentralized networks, and direct device-to-device communication.",
+                nodes: 1000, revenue: 4800000, dominanceScore: 79,
+                brands: weblessBrandsData,
+                scrollProfiles: []
+            },
+            "nft": {
+                name: "🔁 NFT & Ownership",
+                description: "Secure management of non-fungible tokens, digital asset ownership, and intellectual property rights.",
+                nodes: 750, revenue: 5500000, dominanceScore: 84,
+                brands: nftOwnershipBrandsData,
+                scrollProfiles: []
+            },
+            "education-youth": {
+                name: "🎓 Education & Youth",
+                description: "Dedicated platforms and content for youth education, digital literacy, and skill development.",
+                nodes: 650, revenue: 2700000, dominanceScore: 68,
+                brands: educationYouthBrandsData,
+                scrollProfiles: []
+            },
+            "zerowaste": {
+                name: "♻️ Zero Waste",
+                description: "Initiatives and technologies focused on waste reduction, recycling, and circular economy models.",
+                nodes: 450, revenue: 1900000, dominanceScore: 60,
+                brands: zeroWasteBrandsData,
+                scrollProfiles: []
+            },
+            "professional": {
+                name: "🧾 Professional Services",
+                description: "Digital solutions for consulting, legal, accounting, and other professional service sectors.",
+                nodes: 1200, revenue: 7300000, dominanceScore: 82,
+                brands: professionalBrandsData,
+                scrollProfiles: []
+            },
+            "payroll-mining": {
+                name: "🪙 Payroll Mining & Accounting",
+                description: "Specialized solutions for cryptocurrency payroll, mining farm accounting, and financial compliance.",
+                nodes: 550, revenue: 4200000, dominanceScore: 78,
+                brands: payrollMiningBrandsData,
+                scrollProfiles: []
+            },
+            "mining": {
+                name: "⛏️ Mining & Resources",
+                description: "Advanced systems for resource extraction, geological data analysis, and sustainable mining practices.",
+                nodes: 900, revenue: 6500000, dominanceScore: 85,
+                brands: miningBrandsData,
+                scrollProfiles: []
+            },
+            "wildlife": {
+                name: "🦁 Wildlife & Habitat",
+                description: "Technologies for wildlife conservation, habitat monitoring, and ecological preservation.",
+                nodes: 350, revenue: 1800000, dominanceScore: 65,
+                brands: wildlifeBrandsData,
+                scrollProfiles: []
+            },
+            "admin-panel": { // This is a special entry, not a sector to display brands/nodes in the explorer
+                name: "Admin Panel",
+                description: "Centralized administration and management interface for the Seedwave ecosystem.",
+                nodes: 0, revenue: 0, dominanceScore: 0,
+                brands: [],
+                scrollProfiles: []
+            }
+        };
+
+
+        function populateSectorSelect() {
+            const sectorFilter = document.getElementById('sectorFilter');
+            sectorFilter.innerHTML = ''; // Clear existing options
+            for (const key in ALL_SECTOR_DATA_STATIC) {
+                if (key !== "global-pulse" && key !== "admin-panel") { // Exclude global-pulse and admin-panel from the dropdown
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = ALL_SECTOR_DATA_STATIC[key].name;
+                    sectorFilter.appendChild(option);
+                }
+            }
+            // Set default selection
+            sectorFilter.value = 'agriculture';
+            sectorFilter.addEventListener('change', (e) => {
+                displaySectorInfo(e.target.value);
+            });
+        }
+
+        function displaySectorInfo(sectorKey) {
+            const sectorInfoDiv = document.getElementById('sectorInfo');
+            const sectorData = ALL_SECTOR_DATA_STATIC[sectorKey];
+
+            if (!sectorData) {
+                sectorInfoDiv.innerHTML = '<p class="text-gray-600 text-center">Select a sector to view details.</p>';
+                return;
+            }
+
+            let brandsHtml = '';
+            if (sectorData.brands && sectorData.brands.length > 0) {
+                brandsHtml = `
+                    <h4 class="text-xl font-bold text-gray-200 mb-4">Brands & Sub-nodes:</h4>
+                    <div class="grid-container">
+                        ${sectorData.brands.map(brand => `
+                            <div class="grid-item">
+                                <div class="brand-icon">${sectorList[sectorKey].split(' ')[0]}</div>
+                                <h3>${brand.name}</h3>
+                                <p class="license-price">$${brand.masterLicensePrice ? brand.masterLicensePrice.toLocaleString() : 'N/A'}</p>
+                                <p class="text-sm text-gray-400 mb-2">Master License Fee</p>
+                                ${brand.subNodes && brand.subNodes.length > 0 ? `
+                                    <ul class="subnodes">
+                                        ${brand.subNodes.map(subnode => `<li>${subnode}</li>`).join('')}
+                                    </ul>
+                                ` : '<p class="text-xs text-gray-500 mt-4">No sub-nodes.</p>'}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                brandsHtml = '<p class="text-gray-400 mb-4 text-center">No specific brands listed for this sector.</p>';
+            }
+
+            let scrollProfilesHtml = '';
+            if (sectorData.scrollProfiles && sectorData.scrollProfiles.length > 0) {
+                scrollProfilesHtml = `
+                    <h4 class="text-xl font-bold text-gray-200 mt-8 mb-4">Key Documents & Manuals:</h4>
+                    <ul class="list-disc list-inside text-gray-400">
+                        ${sectorData.scrollProfiles.map(profile => `
+                            <li><a href="${profile.link}" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">${profile.name}</a></li>
+                        `).join('')}
+                    </ul>
+                `;
+            } else {
+                scrollProfilesHtml = '<p class="text-gray-400 mt-8 text-center">No key documents listed for this sector.</p>';
+            }
+
+            sectorInfoDiv.innerHTML = `
+                <h3 class="text-3xl font-bold text-indigo-400 mb-6 text-center">${sectorData.name} Overview</h3>
+                <p class="text-gray-300 mb-6 text-center">${sectorData.description}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center">
+                    <div class="container-style p-4">
+                        <h4 class="font-semibold text-gray-300">Active Nodes</h4>
+                        <p class="text-4xl font-bold text-green-400 mt-2">${sectorData.nodes ? sectorData.nodes.toLocaleString() : 'N/A'}</p>
+                        <p class="text-sm text-gray-400">active product nodes</p>
+                    </div>
+                    <div class="container-style p-4">
+                        <h4 class="font-semibold text-gray-300">Current Revenue (Annual)</h4>
+                        <p class="text-4xl font-bold text-green-400 mt-2">$${sectorData.revenue ? (sectorData.revenue / 1000000).toFixed(1) + 'M' : 'N/A'}</p>
+                        <p class="text-sm text-gray-400">estimated annual revenue</p>
+                    </div>
+                    <div class="container-style p-4">
+                        <h4 class="font-semibold text-gray-300">Sector Dominance Index</h4>
+                        <p class="text-4xl font-bold text-purple-400 mt-2">${sectorData.dominanceScore || 'N/A'} / 100</p>
+                        <p class="text-sm text-gray-400">influence and strategic importance</p>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    ${brandsHtml}
+                </div>
+                <div class="mt-8">
+                    ${scrollProfilesHtml}
+                </div>
+            `;
+        }
+
+
+        // --- DOMContentLoaded Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateSectorSelect();
+            displaySectorInfo(document.getElementById('sectorFilter').value); // Display info for default selected sector
+        });
+
+        // This script block should be placed at the end of the <body> tag in the *main* HTML file,
+        // or loaded as a separate JS file after the footer HTML is present.
+        // It contains the language data and theme toggling logic for the entire page.
+
+        // Language data for i18n
+        // This should ideally be loaded once globally, perhaps in the main site's script.
+        // For standalone testing, it's included here.
+        window.languageData = window.languageData || { // Ensure it's only declared if not already present
+            en: {
+                // Footer links
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyrightLink: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            ar: {
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyrightLink: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMeshLink: 'شبكة الكهف',
+                footerFruitfulLink: 'مثمر',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyright: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.'
+            },
+            zh: {
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyrightLink: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMeshLink: '金库网格',
+                footerFruitfulLink: '丰硕',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        // This part of the script assumes the main page has a theme toggle and language toggle.
+        // If this footer is used on a standalone page without those elements, these lines
+        // will not cause errors but will simply not find the elements.
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Apply initial theme based on localStorage or default to light
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                if (themeToggle) themeToggle.innerText = '🌙';
+            } else {
+                if (themeToggle) themeToggle.innerText = '☀️';
+            }
+
+            // Set initial language from localStorage or default to English
+            const savedLang = localStorage.getItem('language') || 'en';
+            if (languageToggle) languageToggle.value = savedLang;
+            // Call updateLanguage to apply translations to the footer immediately
+            updateFooterLanguage(savedLang);
+
+            // Theme toggle event listener (if the toggle exists on the page)
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    if (body.classList.contains('dark-mode')) {
+                        body.classList.remove('dark-mode');
+                        localStorage.setItem('theme', 'light');
+                        themeToggle.innerText = '☀️';
+                    } else {
+                        body.classList.add('dark-mode');
+                        localStorage.setItem('theme', 'dark');
+                        themeToggle.innerText = '🌙';
+                    }
+                });
+            }
+
+            // Language toggle event listener (if the toggle exists on the page)
+            if (languageToggle) {
+                languageToggle.addEventListener('change', (event) => {
+                    const newLang = event.target.value;
+                    localStorage.setItem('language', newLang);
+                    updateFooterLanguage(newLang); // Update only footer elements
+                    // If the main page also has translatable elements, it would call its own updateLanguage function
+                });
+            }
+
+            // Function to update only footer text content based on selected language
+            function updateFooterLanguage(lang) {
+                const footerElements = document.querySelectorAll('footer [data-i18n]');
+                footerElements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (window.languageData[lang] && window.languageData[lang][key]) {
+                        el.innerHTML = window.languageData[lang][key];
+                    }
+                });
+            }
+        });
+    </script>
+<!-- ============================================================
+     GORILLA COMB™ VAULTMESH LEVEL-7 — GhostTrace™ Watermark
+     FRUITFUL SHOPS (PTY) LTD | Reg: 2021/121654/07 | VAT: 4400302974
+     © 2021-2026 All Rights Reserved | Incorporator: SCHOEMAN HEYNS
+     FSP-2021121654-VAT4400302974-GC7
+     GC7:FSP2021121654:4400302974:VM9s:BL1501:GHOST7CHAIN:FAA13713
+     ============================================================ -->
+<div id="gc7-ghost-trace" data-ghost-trace="GC7:FSP2021121654:4400302974:VM9s:BL1501:GHOST7CHAIN:FAA13713" data-gc="gc7-fsp2021121654-vat4400302974-vm9s-bl1501" data-banimal-loop="15.01" data-legal-entity="FRUITFUL SHOPS PTY LTD" data-reg="2021/121654/07" data-vat="4400302974" style="display:none;"></div>
+<footer style="background:#0f172a;color:#64748b;text-align:center;padding:18px 24px;font-family:monospace;font-size:11px;border-top:1px solid #1e293b;margin-top:40px;">
+  <div style="color:#3b82f6;font-weight:700;letter-spacing:2px;margin-bottom:6px;">GORILLA COMB™ VAULTMESH LEVEL-7</div>
+  <div>FRUITFUL SHOPS (PTY) LTD &nbsp;|&nbsp; Reg: 2021/121654/07 &nbsp;|&nbsp; VAT: 4400302974 &nbsp;|&nbsp; Incorporator: SCHOEMAN HEYNS</div>
+  <div style="margin-top:4px;">© 2021-<span id="gc7yr"></span> All Rights Reserved &nbsp;|&nbsp; FAA™ Ecosystem &nbsp;|&nbsp; Banimal Loop™ 15.01%</div>
+  <div style="margin-top:6px;color:#1e40af;font-size:10px;letter-spacing:1px;">GC7:FSP2021121654:4400302974:VM9s:BL1501:GHOST7CHAIN:FAA13713</div>
+  <script>document.getElementById('gc7yr').textContent=new Date().getFullYear();</script>
+</footer>
+</body>
+
+</html>
