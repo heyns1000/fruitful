@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Mining (Pty) Ltd — Pioneering the Future of Resources</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a professional look (Apple-inspired) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles - Apple-inspired cleanliness */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.6; /* Increased line height for better readability */
+            -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+        }
+
+        /* Header - Minimalist and clean (Copied from faa_zone_universal_page_template) */
+        header {
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly less transparent */
+            backdrop-filter: blur(15px); /* Stronger frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
+            padding-top: 1.5rem; /* More padding */
+            padding-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Slightly more visible shadow */
+            position: sticky;
+            top: 0;
+            z-index: 100; /* High z-index */
+            display: flex; /* Ensure flexbox for alignment */
+            justify-content: space-between; /* Space out logo and menu icon */
+            align-items: center;
+        }
+        header h1 {
+            color: #1d1d1f; /* Dark text for logo */
+            font-weight: 700; /* Bolder logo */
+            font-size: 1.75rem; /* More prominent logo */
+            letter-spacing: -0.03em;
+        }
+        /* Desktop Navigation Styles */
+        header nav {
+            display: flex; /* Ensure desktop nav is flex */
+            align-items: center;
+            gap: 0.75rem; /* Reduced gap slightly for more items */
+        }
+        header nav a {
+            color: #424245; /* Muted gray for nav links */
+            font-size: 1rem; /* Slightly larger nav links */
+            font-weight: 500;
+            padding: 0.7rem 1.2rem; /* Adjusted padding for more space */
+            border-radius: 10px; /* Softer rounding */
+            transition: all 0.25s ease-in-out; /* Smoother transitions */
+            position: relative;
+            white-space: nowrap; /* Prevent wrapping of nav items */
+        }
+        header nav a:hover {
+            color: #0071e3; /* Apple blue on hover */
+            background-color: rgba(0, 0, 0, 0.05); /* Slightly more visible background on hover */
+        }
+        header nav a.cta-btn-header { /* Sign Up button specific styling */
+            background-color: #0071e3; /* Apple blue */
+            color: white;
+            padding: 0.8rem 1.8rem; /* More prominent padding */
+            border-radius: 28px; /* More rounded button */
+            font-weight: 600;
+            font-size: 1.05rem; /* Slightly larger font */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15); /* More pronounced shadow */
+        }
+        header nav a.cta-btn-header:hover {
+            background-color: #0077ed; /* Slightly lighter blue on hover */
+            transform: translateY(-3px); /* Subtle lift */
+            box-shadow: 0 6px 12px rgba(0,0,0,0.25); /* Stronger shadow on hover */
+        }
+
+        /* Mobile Menu Specific Styles */
+        .hamburger-icon {
+            display: none; /* Hidden by default, shown on mobile */
+            cursor: pointer;
+            z-index: 101; /* Above header content */
+        }
+        .hamburger-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #1d1d1f; /* Dark color for icon */
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.98); /* Near opaque white */
+            backdrop-filter: blur(20px); /* Stronger blur for full overlay */
+            z-index: 99; /* Below header, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .mobile-menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0); /* Slide in */
+        }
+
+        .mobile-menu-overlay .close-icon {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .mobile-menu-overlay .close-icon svg {
+            width: 32px;
+            height: 32px;
+            color: #1d1d1f;
+        }
+
+        .mobile-menu-overlay nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Spacing between links */
+            text-align: center;
+        }
+        .mobile-menu-overlay nav a {
+            color: #1d1d1f;
+            font-size: 1.8rem; /* Large links for easy tapping */
+            font-weight: 700;
+            padding: 0.75rem 0;
+            width: fit-content;
+            margin: 0 auto; /* Center links */
+        }
+        .mobile-menu-overlay nav a.cta-btn-header {
+            margin-top: 1.5rem; /* Space above Sign Up button */
+            width: auto;
+        }
+
+        /* Hero Section - Designed for a generic page title */
+        .hero-page-section {
+            background-color: #e0f2fe; /* Light pastel blue, similar to Fruitful's hero */
+            padding: 10rem 3rem; /* More generous padding */
+            text-align: center;
+            color: #1d1d1f;
+            min-height: 50vh; /* Slightly taller hero for more breathing room */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 -15px 30px -15px rgba(0,0,0,0.1); /* Stronger inner shadow at bottom */
+        }
+        .hero-page-section h1 {
+            font-size: 4.5rem; /* Prominent page title */
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            color: #1d1d1f;
+            line-height: 1.1;
+        }
+        .hero-page-section h1 .accent-blue {
+            color: #0071e3; /* Apple blue accent */
+        }
+        .hero-page-section p {
+            font-size: 1.75rem; /* Larger subtitle */
+            font-weight: 500;
+            color: #6e6e73;
+            margin-top: 2rem; /* More space */
+            max-width: 900px; /* Wider subtitle */
+        }
+
+        /* Main Content Section Styling */
+        section {
+            padding: 10rem 4rem; /* Even more generous padding */
+            background-color: #ffffff; /* White background for sections */
+            border-bottom: 1px solid #e8e8ed; /* Subtle separator */
+            text-align: center;
+            max-width: 1400px; /* Even wider content area */
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 24px; /* More gentle rounding */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); /* More pronounced, softer shadow */
+            margin-bottom: 4rem; /* More space between sections */
+            box-sizing: border-box;
+        }
+        section:first-of-type { /* Adjust margin for first section after hero */
+            margin-top: -4rem; /* Adjusted to overlap with header */
+            position: relative;
+            z-index: 20;
+        }
+        section:last-of-type {
+            border-bottom: none;
+        }
+        section h2 {
+            color: #1d1d1f;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin-bottom: 4rem; /* More space below heading */
+            font-size: 3.5rem; /* Larger heading */
+            line-height: 1.2;
+        }
+        section p {
+            color: #424245;
+            font-size: 1.35rem; /* Larger body text */
+            line-height: 1.8; /* More comfortable line height */
+            max-width: 1000px; /* Constrain width for readability */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .content-block {
+            text-align: left; /* Default text alignment for content blocks */
+            max-width: 1000px; /* Wider content blocks */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 4rem; /* More space between content blocks */
+        }
+        .content-block h3 {
+            font-size: 2.5rem; /* Larger sub-heading */
+            font-weight: 800;
+            color: #1d1d1f;
+            margin-bottom: 2rem; /* More space */
+            border-bottom: 5px solid #0071e3; /* Thicker Apple blue accent */
+            padding-bottom: 0.75rem; /* More padding */
+        }
+        .content-block p {
+            font-size: 1.25rem; /* Slightly larger paragraph text in blocks */
+            color: #424245;
+            line-height: 1.8; /* More comfortable line height */
+            margin-bottom: 1.5rem; /* More space */
+            max-width: none; /* Override parent p max-width */
+        }
+        .content-block ul {
+            list-style-type: disc;
+            margin-left: 2rem; /* More indent */
+            font-size: 1.25rem; /* Slightly larger list items */
+            color: #424245;
+            line-height: 1.8; /* More comfortable line height */
+            margin-top: 1.5rem; /* More space */
+        }
+        .content-block ul li {
+            margin-bottom: 0.75rem; /* More space between list items */
+        }
+        .content-block strong {
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+        .content-block .accent-blue {
+            color: #0071e3;
+            font-weight: 600;
+        }
+        .content-block code {
+            background-color: #e8e8ed;
+            padding: 0.35em 0.7em; /* Larger padding for code blocks */
+            border-radius: 8px; /* Softer rounding */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            color: #1d1d1f;
+            font-size: 1.2rem; /* Larger code font */
+        }
+
+
+        /* Image Styling for content */
+        .content-image {
+            width: 100%;
+            height: auto;
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Stronger shadow */
+            margin-top: 3rem; /* More space */
+            margin-bottom: 3rem; /* More space */
+        }
+
+        /* Achievement Cards - Adapted from Fruitful for content sections */
+        .achievement-card {
+            background-color: #ffffff;
+            border-radius: 24px; /* More rounded corners */
+            padding: 3.5rem; /* More padding */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12); /* Stronger shadow */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #e8e8ed;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .achievement-card:hover {
+            transform: translateY(-10px); /* More pronounced lift */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25); /* Stronger shadow on hover */
+        }
+        .achievement-card .icon { /* Icon */
+            font-size: 4rem; /* Larger icons */
+            margin-bottom: 2.5rem; /* More space */
+            color: #0071e3; /* Apple blue for icons */
+        }
+        .achievement-card h3 {
+            font-size: 1.75rem; /* Larger feature titles */
+            font-weight: 800; /* Bolder */
+            color: #1d1d1f;
+            margin-bottom: 1.25rem; /* More space */
+            text-align: left;
+        }
+        .achievement-card p {
+            font-size: 1.15rem; /* Larger feature description text */
+            color: #6e6e73;
+            line-height: 1.7;
+            max-width: none;
+            margin-left: 0;
+            margin-right: 0;
+            text-align: left;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            background-color: #fcfcfc;
+            border: 1px solid #e8e8ed;
+            border-radius: 24px; /* More rounded corners */
+            padding: 4rem; /* Even more padding */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06); /* Stronger shadow */
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metrics-grid p {
+            font-size: 1.5rem; /* Larger text */
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #424245;
+        }
+        .metrics-grid .value {
+            font-size: 5rem; /* Even larger values */
+            font-weight: 900;
+            color: #0071e3; /* Apple blue */
+            letter-spacing: -0.05em;
+            line-height: 1;
+        }
+
+        /* Conclusion Section */
+        .conclusion-section {
+            background-color: #e0f2fe; /* Light pastel blue background for conclusion */
+            padding: 10rem 4rem; /* More padding */
+            text-align: center;
+            color: #1d1d1f;
+            border-radius: 24px; /* Rounded corners */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); /* Subtle shadow */
+            box-sizing: border-box;
+        }
+        .conclusion-section h2 {
+            font-size: 5rem; /* Larger heading */
+            font-weight: 900;
+            color: #1d1d1f;
+            margin-bottom: 3.5rem;
+            line-height: 1.1;
+        }
+        .conclusion-section p {
+            font-size: 1.5rem; /* Larger body text */
+            color: #424245;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            margin-bottom: 4rem;
+        }
+        .conclusion-section .final-statement {
+            font-size: 6rem; /* Even larger final statement */
+            font-weight: 900;
+            color: #0071e3; /* Apple blue */
+            letter-spacing: -0.05em;
+            line-height: 1.05;
+            margin-top: 5rem;
+            animation: pulse-blue 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1); /* Enhanced subtle animation */
+        }
+
+        /* Custom Pulse Animation */
+        @keyframes pulse-blue {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                text-shadow: 0 0 0px rgba(0, 113, 227, 0);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.02);
+                text-shadow: 0 0 25px rgba(0, 113, 227, 0.6); /* Stronger glow */
+            }
+        }
+
+        /* Footer - Minimalist (Copied directly from vs.01 landing page) */
+        footer {
+            background-color: #f5f5f7; /* Matching body background */
+            color: #6e6e73;
+            padding: 3rem; /* More padding */
+            font-size: 1rem; /* Slightly larger text */
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+            margin-top: auto; /* Push footer to bottom */
+        }
+        footer a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+        footer a:hover {
+            color: #1d1d1f;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) { /* Adjust for medium screens (tablets) */
+            header nav {
+                display: none; /* Hide desktop nav on smaller screens */
+            }
+            .hamburger-icon {
+                display: block; /* Show hamburger icon */
+            }
+            .hero-page-section {
+                padding: 8rem 2rem;
+            }
+            .hero-page-section h1 {
+                font-size: 3.8rem;
+            }
+            .hero-page-section p {
+                font-size: 1.5rem;
+            }
+            section {
+                padding: 6rem 2rem;
+            }
+            section h2 {
+                font-size: 3rem;
+                margin-bottom: 3rem;
+            }
+            section p {
+                font-size: 1.2rem;
+            }
+            .content-block h3 {
+                font-size: 2.2rem;
+                margin-bottom: 1.5rem;
+            }
+            .content-block p, .content-block ul li {
+                font-size: 1.1rem;
+            }
+            .achievement-card {
+                padding: 2.5rem;
+            }
+            .achievement-card .icon {
+                font-size: 3.5rem;
+            }
+            .achievement-card h3 {
+                font-size: 1.6rem;
+            }
+            .achievement-card p {
+                font-size: 1.05rem;
+            }
+            .metrics-grid {
+                padding: 2.5rem;
+            }
+            .metrics-grid p {
+                font-size: 1.3rem;
+            }
+            .metrics-grid .value {
+                font-size: 4rem;
+            }
+            .conclusion-section h2 {
+                font-size: 4rem;
+            }
+            .conclusion-section p {
+                font-size: 1.3rem;
+            }
+            .conclusion-section .final-statement {
+                font-size: 4.5rem;
+            }
+            header h1 {
+                font-size: 1.75rem;
+            }
+            header nav a {
+                font-size: 0.95rem;
+                padding: 0.6rem 1rem;
+            }
+            header nav a.px-4 {
+                padding: 0.7rem 1.4rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) { /* Adjust for small screens (mobile) */
+            .hero-page-section {
+                padding: 6rem 1rem;
+            }
+            .hero-page-section h1 {
+                font-size: 3rem;
+            }
+            .hero-page-section p {
+                font-size: 1.3rem;
+            }
+            section {
+                padding: 4.5rem 1rem;
+                border-radius: 20px;
+                margin-bottom: 3rem;
+            }
+            section:first-of-type {
+                margin-top: -4rem; /* Adjusted for mobile to overlap with header */
+            }
+            section h2 {
+                font-size: 2.5rem;
+                margin-bottom: 2.5rem;
+            }
+            section p {
+                font-size: 1.1rem;
+            }
+            .content-block h3 {
+                font-size: 1.9rem;
+                margin-bottom: 1.5rem;
+            }
+            .content-block p, .content-block ul li {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+            .achievement-card {
+                padding: 2rem;
+            }
+            .achievement-card .icon {
+                font-size: 3rem;
+                margin-bottom: 1.5rem;
+            }
+            .achievement-card h3 {
+                font-size: 1.4rem;
+            }
+            .achievement-card p {
+                font-size: 0.95rem;
+            }
+            .metrics-grid {
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+            .metrics-grid p {
+                font-size: 1.1rem;
+            }
+            .metrics-grid .value {
+                font-size: 3.5rem;
+            }
+            .conclusion-section {
+                padding: 6rem 1rem;
+            }
+            .conclusion-section h2 {
+                font-size: 3rem;
+            }
+            .conclusion-section p {
+                font-size: 1.2rem;
+            }
+            .conclusion-section .final-statement {
+                font-size: 4rem;
+            }
+            footer {
+                padding: 2rem;
+                font-size: 0.85rem;
+                margin-top: 2.5rem;
+            }
+            header nav { /* Hide nav on mobile */
+                display: none;
+            }
+            .hamburger-icon { /* Show hamburger on mobile */
+                display: block;
+            }
+            .mobile-menu-overlay nav {
+                gap: 1rem; /* Adjust gap for mobile menu links */
+            }
+            .mobile-menu-overlay nav a {
+                font-size: 1.5rem; /* Adjust font size for mobile menu links */
+            }
+            .mobile-menu-overlay nav a.cta-btn-header {
+                padding: 0.7rem 1.4rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header - Consistent with Fruitful landing page -->
+    <header class="py-4 px-6 md:px-12 flex items-center justify-between">
+        <h1 class="text-white">Fruitful™</h1>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex flex-wrap items-center space-x-2 sm:space-x-4">
+            <a href="#thabo-md" class="transition-colors duration-200">Thabo</a>
+            <a href="#core-pillars" class="transition-colors duration-200">Pillars</a>
+            <a href="#impact-value" class="transition-colors duration-200">Impact</a>
+            <a href="#our-approach" class="transition-colors duration-200">Approach</a>
+            <a href="#strategic-engagements" class="transition-colors duration-200">Engage</a>
+            <a href="#timeline" class="transition-colors duration-200">Timeline</a>
+            <a href="#tangible-impact" class="transition-colors duration-200">Metrics</a>
+            <a href="#pathways-partnership" class="transition-colors duration-200">Partnership</a>
+            <a href="#economic-impact" class="transition-colors duration-200">Economics</a>
+            <a href="#mining-brands-ecosystem" class="transition-colors duration-200">Mining Brands</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200">Careers</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold cta-btn-header">Sign Up</a>
+        </nav>
+
+        <!-- Hamburger Icon for Mobile -->
+        <div id="hamburger-icon" class="hamburger-icon md:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+        <div id="close-icon" class="close-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </div>
+        <nav class="flex flex-col items-center">
+            <a href="#thabo-md" class="transition-colors duration-200">Thabo</a>
+            <a href="#core-pillars" class="transition-colors duration-200">Pillars</a>
+            <a href="#impact-value" class="transition-colors duration-200">Impact</a>
+            <a href="#our-approach" class="transition-colors duration-200">Approach</a>
+            <a href="#strategic-engagements" class="transition-colors duration-200">Engage</a>
+            <a href="#timeline" class="transition-colors duration-200">Timeline</a>
+            <a href="#tangible-impact" class="transition-colors duration-200">Metrics</a>
+            <a href="#pathways-partnership" class="transition-colors duration-200">Partnership</a>
+            <a href="#economic-impact" class="transition-colors duration-200">Economics</a>
+            <a href="#mining-brands-ecosystem" class="transition-colors duration-200">Mining Brands</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200">Careers</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold cta-btn-header">Sign Up</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section for Fruitful Mining (Pty) Ltd -->
+    <section class="hero-page-section">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight">
+                <span class="accent-blue">💎</span> Fruitful Mining (Pty) Ltd <span class="accent-blue">🌍</span>
+            </h1>
+            <p class="text-xl md:text-2xl lg:text-3xl font-medium italic mt-4">
+                Pioneering the Future of Sustainable Resource Extraction and Value Creation
+            </p>
+        </div>
+    </section>
+
+    <!-- Section: Thabo Ntlatleng - Managing Director -->
+    <section id="thabo-md">
+        <div class="content-block flex flex-col items-center">
+            <img src="https://placehold.co/200x200/0071e3/FFFFFF?text=Thabo" alt="Thabo Ntlatleng" class="rounded-full w-48 h-48 object-cover shadow-xl mb-8 border-4 border-blue-200">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-6 leading-tight">
+                Thabo Ntlatleng: Driving Innovation as Managing Director
+            </h2>
+            <p class="text-center text-lg md:text-xl text-gray-700 max-w-3xl mb-8">
+                Under the visionary leadership of **Thabo Ntlatleng**, Fruitful Mining (Pty) Ltd is setting new benchmarks for operational excellence and strategic growth in the global mining sector. Thabo's profound expertise and commitment to pioneering solutions are at the heart of our success, guiding our path towards a more efficient and sustainable future.
+            </p>
+            <p class="text-center text-lg md:text-xl text-gray-700 max-w-3xl">
+                His leadership exemplifies the core values of innovation, integrity, and impact that define the entire Fruitful™ ecosystem. Thabo is a driving force, transforming industry challenges into opportunities for unprecedented value creation.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section: The Fruitful Mining System: Core Pillars of Excellence -->
+    <section id="core-pillars">
+        <h2 class="thesis-section-heading">
+            The Fruitful Mining System: Core Pillars of Excellence
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <!-- Achievement Card 1: Boosting Yields -->
+            <div class="achievement-card">
+                <div class="icon">📈</div>
+                <h3>Boosting Yields</h3>
+                <p>Improved throughput via real-time optimization of extraction and processing techniques, maximizing resource recovery.</p>
+            </div>
+            <!-- Achievement Card 2: Reducing Costs -->
+            <div class="achievement-card">
+                <div class="icon">💰</div>
+                <h3>Reducing Costs</h3>
+                <p>Significant cost savings achieved through automated reporting, predictive maintenance, and streamlined operational processes.</p>
+            </div>
+            <!-- Achievement Card 3: Promoting Sustainability -->
+            <div class="achievement-card">
+                <div class="icon">🌿</div>
+                <h3>Promoting Sustainability</h3>
+                <p>Advanced tools to monitor environmental metrics, optimize resource utilization, and ensure rigorous regulatory compliance.</p>
+            </div>
+            <!-- Achievement Card 4: Sustaining Mine Assets & Equipment -->
+            <div class="achievement-card">
+                <div class="icon">⚙️</div>
+                <h3>Sustaining Mine Assets & Equipment</h3>
+                <p>Comprehensive asset tracking, usage analytics, and proactive servicing for extended equipment life and minimized unplanned downtime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Impact & Value: Driving the Future of Mining Operations -->
+    <section id="impact-value">
+        <h2 class="thesis-section-heading">
+            Impact & Value: Driving the Future of Mining Operations
+        </h2>
+        <p class="content-block">
+            The Fruitful Mining System delivers tangible benefits that redefine operational efficiency and strategic impact. Our solutions empower mining groups to achieve their most ambitious goals:
+        </p>
+        <div class="grid md:grid-cols-2 gap-8 content-block">
+            <div class="bg-white rounded-xl shadow-lg p-8 transform hover:scale-105 transition-transform duration-300 hover:shadow-xl text-left">
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span>Monitor and regulate mining activities <strong class="font-semibold">responsibly and effectively</strong>.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span>Improve <strong class="font-semibold">transparency and real-time insights</strong> in operational performance.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span>Achieve ambitious <strong class="font-semibold">sustainability targets</strong> and enhance stakeholder confidence.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-8 transform hover:scale-105 transition-transform duration-300 hover:shadow-xl text-left">
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span>Support initiatives aligned with <strong class="font-semibold">ESG</strong> (Environmental, Social, Governance) global standards.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-500 text-2xl mr-3 leading-none">✓</span>
+                        <span>Enable <strong class="font-semibold">cross-departmental efficiencies</strong> across operations, safety, logistics, and maintenance.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Our Approach: Precision, Innovation, and Integrated Growth -->
+    <section id="our-approach">
+        <h2 class="thesis-section-heading">
+            Our Approach: Precision, Innovation, and Integrated Growth
+        </h2>
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-10 content-block">
+            <div class="flex items-start">
+                <div class="bg-blue-100 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.001 12.001 0 002.944 12c.045 4.556 3.821 8.332 8.373 8.761A11.999 11.999 0 0012 21c4.556 0 8.332-3.776 8.761-8.373a11.999 11.999 0 00-3.04-8.618z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Defect and Variation Reduction</h3>
+                    <p class="text-gray-700">Inspired by Lean and Six Sigma methodologies, we streamline processes to minimize inefficiencies and maximize output consistency.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-100 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Data-Driven Decision Making</h3>
+                    <p class="text-gray-700">Leveraging sensor-driven insights and AI-backed trend forecasts for precise, proactive operational decisions.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-100 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Customizable Dashboards</h3>
+                    <p class="text-gray-700">Providing intuitive, visual insights tailored for all levels of management and operational teams.</p>
+                </div>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-100 p-4 rounded-full mr-4 flex-shrink-0">
+                    <svg class="w-10 h-10 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Seamless Departmental Integration</h3>
+                    <p class="text-gray-700">Connecting and optimizing processes across drilling, crushing, logistics, safety, maintenance, and compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Strategic Engagements: Demonstrating Real-World Impact -->
+    <section id="strategic-engagements">
+        <h2 class="thesis-section-heading">
+            Strategic Engagements: Demonstrating Real-World Impact
+        </h2>
+        <p class="content-block">
+            To showcase the transformative power of the Fruitful Mining System, we strategically engage with partners on focused initiatives, ensuring clear, measurable improvements in specific operational areas.
+        </p>
+
+        <h3 class="text-3xl font-bold text-center text-blue-600 mb-8">Engagement Focus Areas</h3>
+        <div class="grid md:grid-cols-2 gap-8 content-block">
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h4 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 rounded-full px-3 py-1 mr-3">1</span> Asset & Equipment Management
+                </h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Comprehensive monitoring of uptime, predictive maintenance, and servicing schedules.</li>
+                    <li>Significant reduction in breakdowns and improvement in equipment lifespan.</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h4 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 rounded-full px-3 py-1 mr-3">2</span> Production Line Optimization
+                </h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Application of real-time analytics to boost throughput and minimize waste.</li>
+                    <li>Enhancement of ore recovery rates and reduction of material handling losses.</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h4 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 rounded-full px-3 py-1 mr-3">3</span> Environmental Stewardship & Reporting
+                </h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Precise tracking of air, water, and soil quality metrics.</li>
+                    <li>Automation of ESG reporting tools to meet global sustainability mandates.</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <h4 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 rounded-full px-3 py-1 mr-3">4</span> Safety and Incident Intelligence
+                </h4>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 ml-4">
+                    <li>Integration of advanced safety compliance tools and incident trend analysis.</li>
+                    <li>Empowering predictive safety alerts through sophisticated pattern recognition.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Strategic Engagement Timeline -->
+    <section id="timeline">
+        <h2 class="thesis-section-heading">
+            Strategic Engagement Timeline
+        </h2>
+        <p class="content-block mb-12">
+            A typical engagement unfolds in clear, structured phases, designed for rapid value realization and seamless integration.
+        </p>
+        <div class="relative pl-8 sm:pl-32 max-w-4xl mx-auto">
+            <!-- Vertical line for the timeline visual effect -->
+            <div class="border-l-4 border-blue-400 absolute h-full left-4 sm:left-1/2 transform -translate-x-1/2 top-0"></div>
+
+            <!-- Timeline Phase 1 -->
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-700 font-semibold text-lg mb-2 sm:mb-0">Phase 1</div>
+                <div class="sm:ml-32 w-full bg-white rounded-xl shadow-md p-6 relative">
+                    <!-- Circle icon for phase number -->
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">1</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Discovery & Setup</h3>
+                    <p class="text-gray-700 mb-2">Collaborative identification of key objectives, system installation, and foundational team training.</p>
+                    <span class="text-blue-600 font-medium text-lg">Duration: ~2 weeks</span>
+                </div>
+            </div>
+
+            <!-- Timeline Phase 2 -->
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-700 font-semibold text-lg mb-2 sm:mb-0">Phase 2</div>
+                <div class="sm:ml-32 w-full bg-white rounded-xl shadow-md p-6 relative">
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">2</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Live Optimization & Integration</h3>
+                    <p class="text-gray-700 mb-2">Activation of real-time monitoring, AI-driven optimization, and initial data integration with existing systems.</p>
+                    <span class="text-blue-600 font-medium text-lg">Duration: ~4–6 weeks</span>
+                </div>
+            </div>
+
+            <!-- Timeline Phase 3 -->
+            <div class="mb-12 flex flex-col sm:flex-row items-center sm:justify-start relative">
+                <div class="sm:absolute sm:left-0 sm:w-28 sm:text-right pr-4 text-blue-700 font-semibold text-lg mb-2 sm:mb-0">Phase 3</div>
+                <div class="sm:ml-32 w-full bg-white rounded-xl shadow-md p-6 relative">
+                    <div class="absolute -left-6 sm:-left-8 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-2xl">3</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Performance Review & Scaling</h3>
+                    <p class="text-gray-700 mb-2">Comprehensive analysis of outcomes, benchmarking against KPIs, and planning for broader enterprise-wide deployment.</p>
+                    <span class="text-blue-600 font-medium text-lg">Duration: ~2 weeks</span>
+                </div>
+            </div>
+
+            <!-- Total Duration -->
+            <div class="sm:ml-32 mt-12 text-center sm:text-left">
+                <p class="text-2xl font-bold text-blue-700">Total Engagement Duration: ~8–10 weeks</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Tangible Impact: Unlocking Key Metrics -->
+    <section id="tangible-impact">
+        <h2 class="thesis-section-heading">
+            Tangible Impact: Unlocking Key Metrics
+        </h2>
+        <p class="content-block mb-12">
+            The Fruitful Mining System is engineered to deliver measurable enhancements across critical operational areas, driving superior performance and return on investment.
+        </p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <!-- Outcome Card 1: Yield Increase -->
+            <div class="achievement-card text-center items-center">
+                <div class="icon">📈</div>
+                <p class="text-5xl font-extrabold text-blue-700 mb-3">10-20%</p>
+                <p class="text-lg font-semibold text-gray-800">Increase in yield/output</p>
+            </div>
+            <!-- Outcome Card 2: Downtime Reduction -->
+            <div class="achievement-card text-center items-center">
+                <div class="icon">⏱️</div>
+                <p class="text-5xl font-extrabold text-blue-700 mb-3">15-30%</p>
+                <p class="text-lg font-semibold text-gray-800">Reduction in unplanned downtime</p>
+            </div>
+            <!-- Outcome Card 3: Compliance & Sustainability -->
+            <div class="achievement-card text-center items-center">
+                <div class="icon">✅</div>
+                <p class="text-5xl font-extrabold text-blue-700 mb-3">Enhanced</p>
+                <p class="text-lg font-semibold text-gray-800">Compliance & sustainability tracking</p>
+            </div>
+            <!-- Outcome Card 4: Real-time Insights -->
+            <div class="achievement-card text-center items-center">
+                <div class="icon">📊</div>
+                <p class="text-5xl font-extrabold text-blue-700 mb-3">Real-time</p>
+                <p class="text-lg font-semibold text-gray-800">Actionable Insights for Decision-Making</p>
+            </div>
+        </div>
+        <p class="content-block mt-12">
+            These critical metrics are continuously benchmarked and presented in intuitive dashboards, providing leadership and operational teams with comprehensive visibility into performance and impact.
+        </p>
+    </section>
+
+    <!-- Section: Pathways to Partnership: Scaling for Success -->
+    <section id="pathways-partnership">
+        <h2 class="thesis-section-heading">
+            Pathways to Partnership: Scaling for Success
+        </h2>
+        <p class="content-block mb-10">
+            Following a successful initial engagement, Fruitful Mining offers flexible pathways to expand our collaboration, ensuring sustained value and growth.
+        </p>
+        <div class="grid md:grid-cols-3 gap-8 text-center max-w-6xl mx-auto">
+            <!-- Option Card 1: Enterprise-Wide Deployment -->
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🌐</div>
+                <h3>Enterprise-Wide Deployment</h3>
+                <p>Full integration and scaling of the Fruitful Mining System across all departments and operational sites.</p>
+            </div>
+            <!-- Option Card 2: Custom Solution Development -->
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🛠️</div>
+                <h3>Custom Solution Development</h3>
+                <p>Tailored development of specialized functionalities and custom integrations to meet unique operational needs.</p>
+            </div>
+            <!-- Option Card 3: Sustained Strategic Support -->
+            <div class="achievement-card flex flex-col items-center justify-center">
+                <div class="icon">🤝</div>
+                <h3>Sustained Strategic Support</h3>
+                <p>Ongoing technical support, continuous system enhancements, and strategic consultation for long-term success.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Driving Economic Impact: Demonstrating Value (Reframed Profit Margins) -->
+    <section id="economic-impact">
+        <h2 class="thesis-section-heading">
+            Driving Economic Impact: Demonstrating Value
+        </h2>
+        <p class="content-block mb-10">
+            The integration of the Fruitful Mining System is designed to significantly enhance economic performance, as demonstrated by the progressive growth in projected profit margins compared to conventional operations.
+        </p>
+
+        <div class="overflow-x-auto max-w-4xl mx-auto">
+            <table class="min-w-full bg-white rounded-xl shadow-lg border border-gray-200">
+                <thead>
+                    <tr class="bg-blue-600 text-white">
+                        <th class="px-6 py-4 text-left text-xl font-bold rounded-tl-xl">Operational Phase</th>
+                        <th class="px-6 py-4 text-center text-xl font-bold">Standard Operations</th>
+                        <th class="px-6 py-4 text-center text-xl font-bold rounded-tr-xl">With Fruitful Mining System</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Each row represents a quarter/phase with corresponding profit margins -->
+                    <tr class="border-b border-gray-100">
+                        <td class="px-6 py-4 font-semibold text-lg">Q1 (Initial Baseline)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="px-6 py-4 font-semibold text-lg">Q2 (Initial Engagement)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-blue-700 font-semibold">15%</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="px-6 py-4 font-semibold text-lg">Q3 (Optimization Phase)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-blue-700 font-semibold">17%</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="px-6 py-4 font-semibold text-lg">Q4 (Scaling Impact)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-blue-700 font-semibold">19%</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="px-6 py-4 font-semibold text-lg">Q5 (Advanced Optimization)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-blue-700 font-semibold">21%</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 font-semibold text-lg">Q6 (Sustained Excellence)</td>
+                        <td class="graph-cell-base text-gray-700">13%</td>
+                        <td class="graph-cell-base text-blue-700 font-semibold">24%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-12 content-block">
+            <h3 class="text-3xl font-bold text-blue-600 mb-6 text-center">Key Insights</h3>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h4 class="text-xl font-semibold text-gray-900 mb-3">Standard Operations:</h4>
+                    <p class="text-gray-700">Profit margins remain consistent, reflecting typical industry efficiencies and challenges.</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h4 class="text-xl font-semibold text-gray-900 mb-3">With Fruitful Mining System:</h4>
+                    <p class="text-gray-700">Demonstrates progressive improvements driven by enhanced operational control, better asset utilization, reduced downtime, and increased output.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Section: Mining Brands Ecosystem -->
+    <section id="mining-brands-ecosystem" class="bg-f5f5f7">
+        <h2 class="thesis-section-heading text-center">
+            ⛏️ Explore All Mining Brands & Subnodes 🌐
+        </h2>
+        <p class="content-block text-center mb-12">
+            Fruitful Mining is proud to collaborate with and power a vast network of innovative brands and specialized subnodes across the global mining supply chain. Discover the breadth of our ecosystem.
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 max-w-6xl mx-auto">
+            <!-- List of Mining Brands and Subnodes -->
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineNest™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">NestTrack™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultShaft™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillCoreX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">CoreDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulsePath™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreTrace™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillYield™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreSync™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SyncRock™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimTag™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultRock™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockBeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineLoop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SignalTrace™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRClaim™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultPath™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OrePing™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineSignal™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TrackShaft™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ShaftMesh™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DropMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TrackSeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRTrack™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulseMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulseCrate™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridTag™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">CoreBeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">BeamPath™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimRock™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultLoop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SeamDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DigEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">EchoMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockPing™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultTrace™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimBeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockPath™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PathDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRNode™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimYield™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SyncTunnel™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineProof™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ProofMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SeamCast™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DropCrate™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreLine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreLineX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineForm™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TagTrace™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillLink™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">LinkMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulseEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridSeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldCast™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultTunnel™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TunnelSync™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimLoop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRDrillX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreBeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GeoGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridGeo™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultMap™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockForm™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimTunnel™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SeamSync™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SeamSyncX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRMineX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillMark™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimOreX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TrackGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PingEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulseBlast™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">BlastMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PulsePing™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRPath™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SeamMark™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">EchoRock™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldTrack™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultBeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimSync™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DeepCrate™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">CrateDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SyncClaim™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillForm™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TunnelMap™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockLogic™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">RockLogicX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldLoop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PingDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">CoreDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">CoreMine™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreTag™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultPing™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridTrack™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineCast™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineCastX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimNest™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRTrace™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillMark™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DrillMarkX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreSignal™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultCrate™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">PingTag™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SignalOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">OreSignalX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TrackTunnel™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldTrack™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TrackYield™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineFrame™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SignalGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">EchoDrill™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultSeam™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultSeamX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">QRClaimX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GridOre™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">TunnelEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ShaftDrop™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DropShaft™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">ClaimTunnelX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">YieldDrillX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">VaultGrid™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GeoNode™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">GeoNodeX™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">SignalPing™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">DropEcho™</div>
+            <div class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 text-center text-gray-700 font-medium text-sm">MineLink™</div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section: Prompts the reader for next steps -->
+    <section class="text-center bg-gradient-to-r from-blue-500 to-indigo-400 text-white rounded-xl p-16 shadow-lg">
+        <h2 class="text-4xl md:text-5xl font-bold mb-8">Connect with Fruitful Mining (Pty) Ltd</h2>
+        <p class="text-xl md:text-2xl font-light mb-10 max-w-3xl mx-auto">
+            We are eager to discuss how the Fruitful Mining System can propel your operations to new heights of efficiency, profitability, and sustainability. Let's explore a future of shared success.
+        </p>
+        <button class="bg-white text-blue-700 px-10 py-5 rounded-full text-xl font-bold hover:bg-blue-100 transition-colors duration-300 shadow-md">
+            Schedule a Discovery Session
+        </button>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="text-center">
+        <p>&copy; 2025 Fruitful Mining (Pty) Ltd. All rights reserved. An FAA.ZONE Ecosystem Project.</p>
+        <p class="mt-2 text-sm">For inquiries, contact: <a href="mailto:vault@faa.zone" class="text-gray-300 hover:text-white underline">vault@faa.zone</a> | <a href="mailto:thabo@faa.zone" class="text-gray-300 hover:text-white underline">thabo@faa.zone</a> | Tel: +27674885800 / +27615432068</p>
+    </footer>
+
+</body>
+</html>

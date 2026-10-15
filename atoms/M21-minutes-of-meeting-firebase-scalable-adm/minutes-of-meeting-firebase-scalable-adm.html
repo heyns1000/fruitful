@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ Minutes of Meeting: Firebase Scalable Admin Panel (7000 Sites)</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles from the original template */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .featured-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .featured-button:hover {
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .featured-button:active {
+            transform: scale(0.98);
+        }
+
+        .featured-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transition: all 0.7s ease-out;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .featured-button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            font-weight: 500;
+            color: #475569; /* slate-600 */
+            text-decoration: none;
+            justify-content: flex-start; /* Align text to the left within the link block */
+        }
+        .nav-link:hover {
+            background-color: #e2e8f0; /* slate-200 */
+            color: #1e293b; /* slate-900 */
+        }
+        /* Custom styles to match the provided homepage's aesthetic */
+        .main-container-style {
+            background-color: #ffffff;
+            border-top: 8px solid #4f46e5; /* indigo-600 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            padding: 1rem;
+        }
+        @media (min-width: 640px) {
+            .main-container-style {
+                padding: 2rem;
+                max-width: 640px;
+            }
+        }
+        @media (min-width: 768px) {
+            .main-container-style {
+                padding: 2.5rem;
+                max-width: 768px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .main-container-style {
+                padding: 3rem;
+                max-width: 1024px;
+            }
+        }
+
+        /* Header styles */
+        .top-fruitful-header {
+            background-color: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 1024px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 640px) {
+            .top-fruitful-header {
+                padding: 1rem 2rem;
+                margin-bottom: 2rem;
+            }
+        }
+        .fruitful-logo-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-right: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .fruitful-logo-text {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* FAA.ZONE Logo/Header */
+        .faazone-header h1 {
+            font-size: 1.75rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        .faazone-header span {
+             font-size: 2.5rem;
+        }
+        @media (min-width: 640px) {
+            .faazone-header span {
+                font-size: 3rem;
+            }
+        }
+
+        /* Document item styles */
+        .document-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .document-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+        .document-item:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #a78bfa;
+        }
+        .document-item .icon {
+            flex-shrink: 0;
+            font-size: 2rem;
+            color: #4f46e5;
+        }
+        @media (min-width: 640px) {
+            .document-item .icon {
+                font-size: 2.5rem;
+            }
+        }
+        .document-item-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content h3 {
+                font-size: 1.125rem;
+            }
+        }
+        .document-item-content p {
+            font-size: 0.875rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        @media (min-width: 640px) {
+            .document-item-content p {
+                font-size: 0.95rem;
+            }
+        }
+        .code-snippet {
+            background-color: #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            color: #1e293b;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        @media (min-width: 640px) {
+            .code-snippet {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- New Top Header for Fruitful™ Logo -->
+    <header class="top-fruitful-header">
+        <span class="fruitful-logo-text">Fruitful™</span>
+    </header>
+
+    <div class="main-container-style p-8 rounded-3xl max-w-4xl w-full flex flex-col min-h-[80vh]">
+        <div class="flex-grow">
+            <!-- FAA.ZONE Logo/Header -->
+            <div class="flex items-center justify-center gap-3 mb-8 faazone-header">
+                <span class="text-4xl">🦍</span>
+                <h1 class="font-bold text-3xl text-slate-800">FAA.ZONE&trade;</h1>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 tracking-tight text-center">
+                Minutes of Meeting: <span class="text-indigo-600">Firebase Scalable Admin Panel (7000 Sites)</span>
+            </h2>
+            
+            <div class="space-y-6 mb-8 flex flex-col items-center w-full"> 
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">💡</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Overview & Goal</h3>
+                        <p>This document provides a comprehensive, step-by-step guide for building a robust and highly scalable admin panel using Firebase, specifically designed to support up to 7000 distinct websites/businesses and their respective administrators.</p>
+                        <p>The goal is to provide a centralized, secure, and performant administration interface with granular access control, detailing the setup of Firebase's 'Build' features for this scale.</p>
+                        <p><strong>Firebase Project Name:</strong> FAA Nexus (<a href="https://console.firebase.google.com/project/faa-nexus/overview" target="_blank" class="text-indigo-600 font-semibold hover:underline">Console Link</a>)</p>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🆔</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Step 1: Firebase Authentication (Build -> Authentication)</h3>
+                        <p>Set up the core user identity solution. Firebase Auth handles user storage, password hashing, and session management at scale, essential for a large number of administrators.</p>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">1.1 Enable Sign-in Methods:</h4>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>Go to <a href="https://console.firebase.google.com/project/faa-nexus/authentication/users" target="_blank" class="text-indigo-600 hover:underline">Firebase Console -> Build -> Authentication -> Sign-in method</a>.</li>
+                            <li>For a scalable solution supporting 7000 sites, enable the following providers based on your user base's needs:
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>**Anonymous:** (Already enabled for initial Xero setup). Useful for temporary or unauthenticated access to specific parts of the app.</li>
+                                    <li>**Email/Password:** Provides a universal, direct authentication method. Recommended for basic admin access.</li>
+                                    <li>**Google:** Highly convenient for users who already have Google accounts (very common in business environments). Simplifies user experience.</li>
+                                    <li>**Microsoft:** Beneficial for businesses heavily utilizing Microsoft 365 or Azure Active Directory.</li>
+                                    <li>**(Optional - Enterprise SSO):** **OpenID Connect / SAML:** This is the recommended approach for true enterprise-level single sign-on. It allows your clients' users to log in with their existing corporate identity providers (e.g., Okta, Azure AD, Auth0, Ping Identity). This requires more complex setup per client but provides seamless and secure access for large organizations.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">1.2 Client-Side Authentication Code (Login/Signup Pages):</h4>
+                        <p>The client-side code integrates Firebase Auth methods. You'll build dedicated login/signup pages that use these functions. The `firebaseAuth` function should be extended to handle various login types.</p>
+                        <pre class="code-snippet"><code>import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import { getAuth, signInAnonymously, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+// ... other necessary imports for Firestore, etc.
+
+const firebaseConfig = { /* YOUR ACTUAL FIREBASE CONFIG HERE */ }; // From Firebase Console -> Project settings -> Your apps -> Web app
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Generic function to handle various authentication methods
+window.handleFirebaseAuth = async function(method, email = '', password = '') {
+    try {
+        let userCredential;
+        if (method === 'anonymous') {
+            userCredential = await signInAnonymously(auth);
+            console.log("Anonymous Firebase authentication successful.");
+        } else if (method === 'emailLogin') {
+            userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log("Email/Password login successful.");
+        } else if (method === 'emailSignup') {
+            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            console.log("Email/Password signup successful.");
+        } else if (method === 'google') {
+            const provider = new GoogleAuthProvider();
+            userCredential = await signInWithPopup(auth, provider);
+            console.log("Google authentication successful.");
+        }
+        // TODO: Add logic for Microsoft, Apple, etc.
+        return userCredential.user;
+    } catch (error) {
+        console.error("Firebase authentication failed:", error);
+        window.showMessageBox(`Authentication failed: ${error.message}`, "error");
+        throw error; // Re-throw to allow calling function to handle UI updates
+    }
+};
+
+// Listen for authentication state changes (essential for global user state)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is signed in. Update UI, fetch user-specific data.
+        // You can get user.uid, user.email, user.displayName, etc.
+    } else {
+        // User is signed out. Redirect to login page or update UI.
+    }
+});
+
+// Logout function
+window.logout = async function() {
+    try {
+        await signOut(auth);
+        window.showMessageBox("Logged out successfully.");
+        // Redirect to login page
+    } catch (error) {
+        console.error("Error logging out:", error);
+        window.showMessageBox(`Logout failed: ${error.message}`, "error");
+    }
+};</code></pre>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🗄️</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Step 2: Cloud Firestore (Build -> Firestore Database)</h3>
+                        <p>Design a robust and scalable data structure to manage user profiles, granular permissions, and website-specific data for 7000 distinct websites.</p>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">2.1 Scalable Database Design for 7000 Sites:</h4>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>Go to <a href="https://console.firebase.google.com/project/faa-nexus/firestore/data" target="_blank" class="text-indigo-600 hover:underline">Firebase Console -> Build -> Firestore Database</a>.</li>
+                            <li>Ensure database is created (in Production Mode).</li>
+                            <li><strong>Recommended Core Collections for 7000 Sites:</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>`/users/{userId}`: Stores central user profiles (e.g., email, display name, global roles like `superAdmin`). This links directly to Firebase Auth `uid`.</li>
+                                    <li>`/websites/{websiteId}`: Stores global metadata and settings for each of the 7000 websites/businesses. `websiteId` should be a unique, immutable identifier (e.g., a slug or auto-generated ID).</li>
+                                    <li>`/websites/{websiteId}/admins/{userId}`: A sub-collection within each website document to explicitly define which specific `userId`s have administrative access to that particular `websiteId`. This is crucial for granular Role-Based Access Control (RBAC).</li>
+                                    <li>`/websites/{websiteId}/data/{collection}`: This is where you store all *actual operational data* for each website. This could include sub-collections like `/products`, `/orders`, `/content`, `/analyticsSummaries`, `/clientProfiles`, etc. This structure ensures strong data isolation per website.</li>
+                                    <li>`/artifacts/{appId}/users/{userId}/xeroTokens/{document}`: (Already implemented for user-specific Xero token storage).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Multi-Tenancy Strategy:</strong> Data is segregated by `websiteId`. Access control will be enforced via Firestore Security Rules and potentially Firebase Custom Claims.</li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">2.2 Scalable Firestore Security Rules (Critical for 7000 Sites):</h4>
+                        <p>These rules are paramount for enforcing granular access control and data isolation across your 7000 websites. They ensure users can only read/write data for the websites they are authorized to manage.</p>
+                        <pre class="code-snippet"><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Rule for application-level artifacts (e.g., Xero tokens)
+    match /artifacts/{appId}/users/{userId}/xeroTokens/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Rule for central user profiles
+    match /users/{userId} {
+      // Users can read/update their own profile
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      // New authenticated users can create their own profile
+      allow create: if request.auth != null; 
+      // Example for superAdmin access to all user profiles (optional)
+      // allow read: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superAdmin';
+    }
+
+    // Rule for Website Metadata (e.g., Website Name, Plan Type)
+    match /websites/{websiteId} {
+      // Authenticated users can read website metadata if they are an admin of that website
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/websites/$(websiteId)/admins/$(request.auth.uid));
+      // Only a global 'superAdmin' can create, update, or delete website entries
+      allow create, update, delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superAdmin';
+    }
+
+    // Rule for Website-Specific Admin Assignments
+    match /websites/{websiteId}/admins/{adminId} {
+      // Admins can only see their own admin entry for a specific website
+      allow read: if request.auth != null && request.auth.uid == adminId;
+      // Only an existing admin of the website, or a superAdmin, can add/remove other admins
+      allow create, update, delete: if request.auth != null && (exists(/databases/$(database)/documents/websites/$(websiteId)/admins/$(request.auth.uid)) || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superAdmin');
+    }
+
+    // Rule for ALL Website-Specific Operational Data (e.g., Products, Orders, Content, Client Data)
+    match /websites/{websiteId}/{collection=**} {
+      // Authenticated users can read/write data within a website ONLY if they are an admin for that specific website
+      allow read, write: if request.auth != null && exists(/databases/$(database)/documents/websites/$(websiteId)/admins/$(request.auth.uid));
+    }
+  }
+}</code></pre>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">2.3 Client-Side Firestore Interactions for Multi-Site Admin:</h4>
+                        <p>Code examples for fetching website-specific data after a user authenticates and selects a website.</p>
+                        <pre class="code-snippet"><code>import { getFirestore, doc, getDoc, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+// ...
+const db = getFirestore(app);
+
+// Get list of websites the current user is an admin for
+async function getUserAuthorizedWebsites(currentUserId) {
+    const websitesRef = collection(db, "websites");
+    // This query assumes a map 'admins' on each website doc, like { 'admins': { 'userId1': true, 'userId2': true } }
+    // OR it could query the subcollection /websites/{websiteId}/admins/
+    const q = query(websitesRef, where(`admins.${currentUserId}`, '==', true));
+    const querySnapshot = await getDocs(q);
+    const websites = [];
+    querySnapshot.forEach((doc) => {
+        websites.push({ id: doc.id, ...doc.data() });
+    });
+    return websites;
+}
+
+// Fetch specific data (e.g., products) for a chosen website
+async function getWebsiteProducts(websiteId) {
+    const productsRef = collection(db, `websites/${websiteId}/products`);
+    const q = query(productsRef); // Add ordering, filtering as needed
+    const querySnapshot = await getDocs(q);
+    const products = [];
+    querySnapshot.forEach((doc) => {
+        products.push({ id: doc.id, ...doc.data() });
+    });
+    return products;
+}
+
+// Listen for real-time updates on orders for a specific website
+function subscribeToWebsiteOrders(websiteId, callback) {
+    const ordersRef = collection(db, `websites/${websiteId}/orders`);
+    const unsubscribe = onSnapshot(ordersRef, (snapshot) => {
+        const orders = [];
+        snapshot.forEach(doc => {
+            orders.push({ id: doc.id, ...doc.data() });
+        });
+        callback(orders);
+    });
+    return unsubscribe; // Important: call this function when component unmounts or listener is no longer needed
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">🌐</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Step 3: Firebase Hosting (Build -> Hosting) - Multi-Site Deployment Strategy</h3>
+                        <p>Strategies for hosting a single admin panel instance that serves 7000 distinct websites/businesses, potentially with custom domains for each.</p>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">3.1 Scalable Hosting Model:</h4>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>**Recommended: Single Firebase Hosting Site with Dynamic Routing:**
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Host *one* core `admin_panel.html` (or a React/Vue SPA) on a single Firebase Hosting site.</li>
+                                    <li>Use Firebase Hosting Rewrites or Cloudflare Workers/Functions to map individual client domains (e.g., `client1.faazone.com`, `client2.faazone.com`) to this single hosted admin panel.</li>
+                                    <li>Upon access, the admin panel determines the `websiteId` from the domain or URL path, and then fetches appropriate data via Firestore based on the authenticated user's permissions for that `websiteId`.</li>
+                                    <li>**Benefits:** Centralized codebase, easier updates, lower hosting cost for 7000 instances.</li>
+                                </ul>
+                            </li>
+                            <li>**Alternative: Firebase Multi-Site Hosting (limited utility for 7000 sites):**
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Firebase Hosting supports multiple sites per project, each with its own `firebase.json` and custom domain.</li>
+                                    <li>**Consideration:** While technically possible, managing 7000 individual hosting sites within one Firebase project could become operationally complex and potentially hit project limits over time. More suitable for a handful of distinct apps.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">3.2 Custom Domain Setup & Automation:</h4>
+                        <p>For custom domains for each of the 7000 websites, manual setup is impractical. Automation is key.</p>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>Go to <a href="https://console.firebase.google.com/project/faa-nexus/hosting" target="_blank" class="text-indigo-600 hover:underline">Firebase Console -> Build -> Hosting</a>.</li>
+                            <li>Manual setup: Click "Add custom domain" and follow the DNS verification steps for each domain.</li>
+                            <li>**Automation for Scale:** For 7000 sites, this process would need to be highly automated. Consider:
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>**Wildcard Domains:** If all 7000 sites are subdomains of a single domain (e.g., `client1.faazone.com`, `client2.faazone.com`), a single wildcard DNS record (`*.faazone.com`) can point to your Firebase Hosting, significantly simplifying setup.</li>
+                                    <li>**API Integration with DNS Provider:** Use scripting (e.g., Firebase CLI, Google Cloud SDK) to programmatically add and verify domains with your DNS provider's API.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">3.3 Deployment Process (`firebase deploy`):</h4>
+                        <p>Automate deployment of the core admin panel application to your chosen hosting target.</p>
+                        <pre class="code-snippet"><code># Install Firebase CLI: npm install -g firebase-tools
+# Authenticate: firebase login
+# Initialize project (if not already): firebase init hosting
+
+# To deploy the core admin panel to a single Firebase Hosting site:
+firebase deploy --only hosting
+
+# If using Firebase Multi-Site Hosting (for distinct sites):
+# firebase deploy --only hosting:your-client-specific-site-id
+
+# Continuous Deployment (Recommended for production):
+# Integrate `firebase deploy` into a CI/CD pipeline (e.g., GitHub Actions, Cloud Build)
+# triggered on code commits to automate updates.</code></pre>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">💻</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Step 4: Cloud Functions / Cloud Run (Build -> Functions) - Backend Logic</h3>
+                        <p>Implementing secure and scalable backend logic for sensitive operations, webhooks, and complex user management.</p>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">4.1 Backend Necessity:</h4>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>**Sensitive Operations:** The Xero Client Secret MUST be moved from frontend to a secure backend. Firebase Functions or Cloud Run are ideal for this token exchange.</li>
+                            <li>**Xero Webhooks:** Xero will send real-time updates via POST requests. A backend endpoint is required to receive, verify, and process these.</li>
+                            <li>**Custom Authentication/Authorization Logic:** For complex RBAC, custom user claims can be set via a backend.</li>
+                            <li>**Bulk User/Website Provisioning:** Automation scripts for onboarding 7000 clients will run on the backend.</li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">4.2 Firebase Functions (Serverless Backend):</h4>
+                        <p>Event-driven functions that execute in response to Firebase events or HTTP requests.</p>
+                        <pre class="code-snippet"><code>// Example Firebase Function for Xero Token Exchange (Node.js)
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+exports.exchangeXeroCode = functions.https.onCall(async (data, context) => {
+    // Ensure user is authenticated
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    }
+
+    const { code, redirect_uri, state } = data;
+    const userId = context.auth.uid;
+
+    // Securely retrieve XERO_CLIENT_ID and XERO_CLIENT_SECRET from Firebase Environment Config
+    // firebase functions:config:set xero.client_id="YOUR_ID" xero.client_secret="YOUR_SECRET"
+    const XERO_CLIENT_ID = functions.config().xero.client_id;
+    const XERO_CLIENT_SECRET = functions.config().xero.client_secret;
+
+    if (!XERO_CLIENT_ID || !XERO_CLIENT_SECRET) {
+        throw new functions.https.HttpsError('internal', 'Xero credentials not configured in backend.');
+    }
+
+    try {
+        const response = await fetch('https://identity.xero.com/connect/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + Buffer.from(`${XERO_CLIENT_ID}:${XERO_CLIENT_SECRET}`).toString('base64')
+            },
+            body: new URLSearchParams({
+                'grant_type': 'authorization_code',
+                'code': code,
+                'redirect_uri': redirect_uri
+            }).toString()
+        });
+
+        const tokens = await response.json();
+
+        if (response.ok) {
+            // Save tokens to Firestore for the user
+            await admin.firestore().doc(`artifacts/faa-nexus/users/${userId}/xeroTokens/xero_oauth`).set(tokens);
+            return { status: 'success', message: 'Xero connected' };
+        } else {
+            throw new functions.https.HttpsError('unauthenticated', tokens.error_description || tokens.error);
+        }
+    } catch (error) {
+        throw new functions.https.HttpsError('internal', `Failed to exchange code: ${error.message}`);
+    }
+});
+
+// Example Firebase Function for Xero Webhook Receiver (HTTP trigger)
+exports.xeroWebhook = functions.https.onRequest(async (req, res) => {
+    // Webhook secret from Xero Console -> App Settings -> Webhooks key
+    const WEBHOOK_KEY = '2fd5LQV0TQDI3572Er/sg66zqEbl8mFWRyfX3XkoKFZGRLK2cZPGpWV/j4yMTU7aUpbgBCfeZkuHnQIwD/0igw=='; 
+
+    if (req.method !== 'POST') {
+        return res.status(405).send('Method Not Allowed');
+    }
+
+    // Xero sends a webhook-signature header for verification
+    const xeroSignature = req.headers['x-webhook-signature'];
+    const payload = req.rawBody; // Raw body is needed for signature verification
+
+    // Implement webhook signature verification here
+    // const crypto = require('crypto');
+    // const hash = crypto.createHmac('sha256', WEBHOOK_KEY).update(payload).digest('base64');
+    // if (hash !== xeroSignature) {
+    //     console.warn("Webhook signature mismatch!");
+    //     return res.status(401).send('Unauthorized');
+    // }
+
+    console.log('Received Xero Webhook:', req.body);
+
+    // Process webhook events (e.g., update Firestore, trigger other actions)
+    // Example: if (req.body.events && req.body.events[0].resourceId) { ... }
+
+    return res.status(200).send('OK');
+});</code></pre>
+                        <h4 class="font-semibold text-slate-800 mt-4 mb-2">4.3 Cloud Run (Fully Managed Compute Platform):</h4>
+                        <p>For more complex backend services, persistent connections, or larger workloads than Firebase Functions might suit, Cloud Run can be used. It builds and deploys stateless containers via HTTP requests.</p>
+                        <ul class="list-disc list-inside text-slate-700 ml-4 space-y-1">
+                            <li>**Benefits:** More control over environment, longer request timeouts, broader language support.</li>
+                            <li>**Use Cases:** Microservices, long-running batch jobs, WebSocket servers.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="document-item p-4 max-w-full">
+                    <div class="icon">➡️</div>
+                    <div class="document-item-content flex-grow">
+                        <h3>Action Items & Immediate Next Steps</h3>
+                        <ul class="list-disc list-inside text-slate-700">
+                            <li>Develop the detailed database schema for `/users`, `/websites`, `/websites/{websiteId}/admins`, and `/websites/{websiteId}/data` collections in Cloud Firestore.</li>
+                            <li>Implement scalable Firebase Authentication UI in the Seedwave Admin Panel (`admin_panel_xero.html`) to support Email/Password and social logins.</li>
+                            <li>Begin developing Firebase Functions for secure Xero token exchange and webhook processing.</li>
+                            <li>Strategize on automated custom domain provisioning for 7000 websites via Firebase Hosting.</li>
+                            <li>**Overall:** Continue building out the scalable backend and frontend components as outlined in this document.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAA.ZONE Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center">
+            <div class="text-xs text-slate-400">
+                <p>&copy; 2025 FAA.ZONE™</p>
+                <p>Firebase Scalable Admin Panel (7000 Sites) v1.0</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="page_title">Fruitful Mining | Strategic Partnership Proposal for Siyandisa Trust</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #0071e3;
+            --secondary-color: #B8860B;
+            --text-light: #f5f5f7;
+            --text-dark: #1d1d1f;
+            --bg-dark: #0a0a0a;
+            --card-dark: #1a1a1c;
+            --border-dark: #3a3a3e;
+            --light-bg: #f5f5f7;
+            --light-card: #ffffff;
+            --light-border: #e8e8ed;
+            --hyper-primary: #ff00ff;
+            --hyper-secondary: #00ffff;
+            --hyper-bg: #000000;
+            --hyper-card: #1c001c;
+            --hyper-border: #500050;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        .fade-in-section {
+            opacity: 0;
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            transform: translateY(20px);
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Default Dark Theme */
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        .header-style { background-color: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-dark); }
+        .hero-section { background: linear-gradient(-45deg, #000000, #001f3f, #003F5C, #000000); background-size: 400% 400%; animation: gradient-animation 20s ease infinite; }
+        .card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
+        .highlight-card { background: linear-gradient(135deg, rgba(0, 113, 227, 0.1), rgba(184, 134, 11, 0.1)); border: 1px solid var(--primary-color);}
+        .text-primary { color: var(--primary-color); }
+        .text-secondary { color: var(--secondary-color); }
+        .cta-button { background-color: var(--primary-color); color: white; }
+        .cta-button:hover { background-color: #005bb5; }
+        .secondary-cta-button { background-color: transparent; color: var(--secondary-color); border: 1px solid var(--secondary-color); }
+        .secondary-cta-button:hover { background-color: rgba(184, 134, 11, 0.1); }
+        .footer-style { background-color: var(--bg-dark); border-top: 1px solid var(--border-dark); color: #888; }
+        .language-select, .theme-toggle-btn { background-color: var(--card-dark); color: var(--text-light); border: 1px solid var(--border-dark); }
+        .mobile-menu { background-color: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); }
+
+        /* Light Theme */
+        body.theme-light {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+        .theme-light .header-style { background-color: rgba(255, 255, 255, 0.8); border-bottom-color: var(--light-border); }
+        .theme-light .hero-section { background: linear-gradient(-45deg, #e0f2fe, #bfdbfe, #ffffff, #e0f2fe); background-size: 400% 400%; animation: gradient-animation 20s ease infinite; }
+        .theme-light .card { background-color: var(--light-card); border-color: var(--light-border); }
+        .theme-light .highlight-card { background: linear-gradient(135deg, rgba(0, 113, 227, 0.05), rgba(184, 134, 11, 0.05)); border-color: var(--primary-color); }
+        .theme-light .secondary-cta-button { color: var(--secondary-color); }
+        .theme-light .footer-style { background-color: var(--light-bg); border-top-color: var(--light-border); color: #555; }
+        .theme-light .language-select, .theme-light .theme-toggle-btn { background-color: var(--light-card); color: var(--text-dark); border-color: var(--light-border); }
+        .theme-light .mobile-menu { background-color: rgba(255, 255, 255, 0.98); }
+
+        /* Hyper Theme */
+        body.theme-hyper {
+            background-color: var(--hyper-bg);
+            color: var(--text-light);
+        }
+        .theme-hyper .header-style { background-color: rgba(0, 0, 0, 0.8); border-bottom: 1px solid var(--hyper-border); box-shadow: 0 0 15px var(--hyper-primary); }
+        .theme-hyper .hero-section { background: linear-gradient(-45deg, #000, #330033, #ff00ff, #000); background-size: 400% 400%; animation: gradient-animation 10s ease infinite; }
+        .theme-hyper .card { background-color: var(--hyper-card); border: 1px solid var(--hyper-border); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3); }
+        .theme-hyper .highlight-card { background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1)); border: 1px solid var(--hyper-primary); box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+        .theme-hyper .text-primary { color: var(--hyper-primary); }
+        .theme-hyper .text-secondary { color: var(--hyper-secondary); }
+        .theme-hyper .cta-button { background-color: var(--hyper-primary); color: var(--text-dark); box-shadow: 0 0 15px var(--hyper-primary); }
+        .theme-hyper .cta-button:hover { background-color: #cc00cc; }
+        .theme-hyper .secondary-cta-button { color: var(--hyper-secondary); border-color: var(--hyper-secondary); }
+        .theme-hyper .secondary-cta-button:hover { background-color: rgba(0, 255, 255, 0.1); }
+        .theme-hyper .footer-style { background-color: var(--hyper-bg); border-top: 1px solid var(--hyper-border); }
+        .theme-hyper .language-select, .theme-hyper .theme-toggle-btn { background-color: var(--hyper-card); color: var(--text-light); border-color: var(--hyper-border); }
+        .theme-hyper .mobile-menu { background-color: rgba(0, 0, 0, 0.95); }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            max-height: 50vh;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .footer-links a {
+            transition: color 0.2s ease;
+        }
+        .footer-style, .footer-style a {
+             color: #888;
+        }
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        body.theme-light .footer-style, body.theme-light .footer-style a {
+            color: #555;
+        }
+        body.theme-light .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        body.theme-hyper .footer-style, body.theme-hyper .footer-style a {
+            color: #aaa;
+        }
+        body.theme-hyper .footer-links a:hover {
+            color: var(--hyper-primary);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-style sticky top-0 z-50 transition-colors duration-500">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-black text-inherit">
+                <a href="#" data-i18n="logo_text">Fruitful™ Mining</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#vision" class="hover:text-primary transition-colors" data-i18n="nav_vision">Our Vision</a>
+                <a href="#synergy" class="hover:text-primary transition-colors" data-i18n="nav_synergy">Synergy</a>
+                <a href="#leadership" class="hover:text-primary transition-colors" data-i18n="nav_leadership">Leadership</a>
+                <a href="#contact" class="cta-button px-6 py-2 rounded-full font-semibold transition-transform transform hover:scale-105" data-i18n="nav_contact">Contact Us</a>
+            </div>
+            <div class="flex items-center space-x-2">
+                <select id="language-select" class="language-select rounded-full px-3 py-1 text-sm cursor-pointer transition-colors duration-500">
+                </select>
+                <button id="theme-toggle" class="theme-toggle-btn w-10 h-10 rounded-full flex items-center justify-center text-lg transition-transform transform hover:rotate-12">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="md:hidden">
+                    <button id="hamburger-btn" class="focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 w-full h-full z-40 flex flex-col items-center justify-center space-y-8 text-2xl font-bold transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <a href="#vision" class="mobile-link" data-i18n="nav_vision">Our Vision</a>
+        <a href="#synergy" class="mobile-link" data-i18n="nav_synergy">Synergy</a>
+        <a href="#leadership" class="mobile-link" data-i18n="nav_leadership">Leadership</a>
+        <a href="#contact" class="mobile-link" data-i18n="nav_contact">Contact Us</a>
+    </div>
+
+    <main>
+        <section class="hero-section h-screen flex items-center justify-center text-center -mt-16">
+            <div class="px-4">
+                <h1 class="text-4xl md:text-7xl font-black text-white uppercase tracking-wider" data-i18n="hero_title">Forging the Future of Mining</h1>
+                <p class="mt-4 text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto" data-i18n="hero_subtitle">A strategic partnership proposal to Siyandisa Trust, built on shared values of innovation, growth, and sustainable transformation.</p>
+                <a href="#vision" class="mt-8 inline-block cta-button text-lg font-semibold px-10 py-4 rounded-full transition-transform transform hover:scale-105" data-i18n="hero_cta">Discover Our Vision</a>
+            </div>
+        </section>
+
+        <div class="container mx-auto px-6 py-16 space-y-24">
+
+            <section id="siyandisa-highlight" class="fade-in-section">
+                <div class="highlight-card p-8 md:p-12 rounded-lg text-center">
+                    <i class="fas fa-lightbulb text-5xl text-secondary mb-4"></i>
+                    <h2 class="text-3xl md:text-4xl font-black text-primary" data-i18n="siyandisa_highlight_title">A Partnership with a Pioneer</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto text-gray-300" data-i18n="siyandisa_highlight_desc">We recognize Siyandisa Trust not just as an investor, but as an innovator. Your forward-thinking strategy of creating value through network integration and long-term collaboration is precisely what the industry needs. It is this pioneering spirit we wish to partner with.</p>
+                </div>
+            </section>
+
+            <section id="vision" class="fade-in-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-black text-primary" data-i18n="vision_title">A Partnership Built on Shared Values</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto text-gray-400" data-i18n="vision_subtitle">Our foundation is a direct alignment with Siyandisa's core principles, creating a powerful synergy for mutual success.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card p-8 text-center transition-transform transform hover:-translate-y-2">
+                        <i class="fas fa-chart-line text-4xl text-secondary mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2" data-i18n="value_growth_title">Long-Term Growth</h3>
+                        <p class="text-gray-400" data-i18n="value_growth_desc">Investing in sustainable futures, not just immediate returns. We see growth as a collaborative journey.</p>
+                    </div>
+                    <div class="card p-8 text-center transition-transform transform hover:-translate-y-2 flex flex-col">
+                        <i class="fas fa-cogs text-4xl text-secondary mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2" data-i18n="value_innovation_title">Technological Synergy</h3>
+                        <p class="text-gray-400 flex-grow" data-i18n="value_innovation_desc">Leveraging our MineNest™ platform to unlock efficiencies across Siyandisa's industrial network.</p>
+                        <div class="mt-6 space-y-3">
+                            <a href="https://mining.seedwave.faa.zone/index.html" target="_blank" class="block cta-button text-sm font-semibold px-4 py-2 rounded-full transition-transform transform hover:scale-105" data-i18n="synergy_button_explore">Explore Platform</a>
+                            <a href="https://mining.seedwave.faa.zone/dashboard.html" target="_blank" class="block secondary-cta-button text-sm font-semibold px-4 py-2 rounded-full transition-transform transform hover:scale-105" data-i18n="synergy_button_dashboard">View Dashboard</a>
+                        </div>
+                    </div>
+                    <div class="card p-8 text-center transition-transform transform hover:-translate-y-2">
+                        <i class="fas fa-globe-africa text-4xl text-secondary mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2" data-i18n="value_transformation_title">Meaningful Transformation</h3>
+                        <p class="text-gray-400" data-i18n="value_transformation_desc">A deep commitment to B-BBEE and creating a lasting, positive impact on the South African economy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="synergy" class="fade-in-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-black text-primary" data-i18n="synergy_title">Data-Driven Synergy Analysis</h2>
+                    <p class="mt-4 text-lg max-w-3xl mx-auto text-gray-400" data-i18n="synergy_subtitle">We've identified key sectors within the Siyandisa portfolio where our technology can create immediate, measurable value.</p>
+                </div>
+                <div class="card p-8">
+                    <div class="chart-container">
+                        <canvas id="synergyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="leadership" class="fade-in-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-black text-primary" data-i18n="leadership_title">Leadership with Vision</h2>
+                </div>
+                <div class="card p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                    <img src="https://placehold.co/200x200/0071e3/FFFFFF?text=TN" alt="Thabo Ntlatleng" class="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover flex-shrink-0 border-4 border-secondary shadow-lg" style="animation: subtle-float 6s ease-in-out infinite;">
+                    <div class="text-center md:text-left">
+                        <h3 class="text-3xl font-bold" data-i18n="ceo_name">Thabo Ntlatleng</h3>
+                        <p class="text-xl font-medium text-secondary mb-4" data-i18n="ceo_title">CEO, Fruitful Mining (Pty) Ltd</p>
+                        <p class="text-gray-400" data-i18n="ceo_bio">Under Thabo's visionary leadership, Fruitful Mining is pioneering new benchmarks for operational excellence and strategic growth. His profound expertise and commitment to innovation are at the heart of our success, guiding our path towards a more efficient, sustainable, and transformative future for the entire mining sector.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="fade-in-section text-center">
+                <h2 class="text-4xl md:text-5xl font-black text-primary" data-i18n="contact_title">Let's Build the Future Together</h2>
+                <p class="mt-4 text-lg max-w-3xl mx-auto text-gray-400" data-i18n="contact_subtitle">We formally request a meeting to present our detailed strategic vision and explore the significant, mutually beneficial returns this partnership can generate.</p>
+                <a href="mailto:info@fruitfulmining.co.za?subject=Strategic%20Partnership%20Discussion%3A%20Fruitful%20Mining%20%26%20Siyandisa%20Trust" class="mt-8 inline-block cta-button text-lg font-semibold px-10 py-4 rounded-full transition-transform transform hover:scale-105" data-i18n="contact_cta">Schedule a Discovery Session</a>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer-style pt-12 pb-8">
+        <div class="container mx-auto text-center">
+            <div class="footer-links">
+                <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" data-i18n="footerPrivacy">Privacy</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" data-i18n="footerTerms">Terms</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" data-i18n="footerContact">Contact</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" data-i18n="footerCopyrightLink">Copyright</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" data-i18n="footerDevelopers">Developers</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" data-i18n="footerVaultMeshLink">VaultMesh</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" data-i18n="footerFruitfulLink">Fruitful</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/about.html" data-i18n="footerAboutLink">About</a>
+                <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" data-i18n="footerAccessibility">Accessibility</a>
+            </div>
+            <p class="text-sm">
+                <span data-i18n="footerCopyrightText">© 2025 FAA™ Treaty System™. All Rights Reserved.</span>
+                <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Translations Data ---
+            const translations = {
+                en: {
+                    page_title: "Fruitful Mining | Strategic Partnership Proposal for Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Our Vision",
+                    nav_synergy: "Synergy",
+                    nav_leadership: "Leadership",
+                    nav_contact: "Contact Us",
+                    hero_title: "Forging the Future of Mining",
+                    hero_subtitle: "A strategic partnership proposal to Siyandisa Trust, built on shared values of innovation, growth, and sustainable transformation.",
+                    hero_cta: "Discover Our Vision",
+                    siyandisa_highlight_title: "A Partnership with a Pioneer",
+                    siyandisa_highlight_desc: "We recognize Siyandisa Trust not just as an investor, but as an innovator. Your forward-thinking strategy of creating value through network integration and long-term collaboration is precisely what the industry needs. It is this pioneering spirit we wish to partner with.",
+                    vision_title: "A Partnership Built on Shared Values",
+                    vision_subtitle: "Our foundation is a direct alignment with Siyandisa's core principles, creating a powerful synergy for mutual success.",
+                    value_growth_title: "Long-Term Growth",
+                    value_growth_desc: "Investing in sustainable futures, not just immediate returns. We see growth as a collaborative journey.",
+                    value_innovation_title: "Technological Synergy",
+                    value_innovation_desc: "Leveraging our MineNest™ platform to unlock efficiencies across Siyandisa's industrial network.",
+                    synergy_button_explore: "Explore Platform",
+                    synergy_button_dashboard: "View Dashboard",
+                    value_transformation_title: "Meaningful Transformation",
+                    value_transformation_desc: "A deep commitment to B-BBEE and creating a lasting, positive impact on the South African economy.",
+                    synergy_title: "Data-Driven Synergy Analysis",
+                    synergy_subtitle: "We've identified key sectors within the Siyandisa portfolio where our technology can create immediate, measurable value.",
+                    synergy_chart_label: "Synergy Potential Score",
+                    leadership_title: "Leadership with Vision",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Under Thabo's visionary leadership, Fruitful Mining is pioneering new benchmarks for operational excellence and strategic growth. His profound expertise and commitment to innovation are at the heart of our success, guiding our path towards a more efficient, sustainable, and transformative future for the entire mining sector.",
+                    contact_title: "Let's Build the Future Together",
+                    contact_subtitle: "We formally request a meeting to present our detailed strategic vision and explore the significant, mutually beneficial returns this partnership can generate.",
+                    contact_cta: "Schedule a Discovery Session",
+                    footerPrivacy: 'Privacy',
+                    footerTerms: 'Terms',
+                    footerContact: 'Contact',
+                    footerCopyrightLink: 'Copyright',
+                    footerDevelopers: 'Developers',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'About',
+                    footerAccessibility: 'Accessibility',
+                    footerCopyrightText: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                    footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+                },
+                af: {
+                    page_title: "Fruitful Mining | Strategiese Vennootskapvoorstel vir Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Ons Visie",
+                    nav_synergy: "Sinérgie",
+                    nav_leadership: "Leierskap",
+                    nav_contact: "Kontak Ons",
+                    hero_title: "Smee die Toekoms van Mynbou",
+                    hero_subtitle: "'n Strategiese vennootskapvoorstel aan Siyandisa Trust, gebou op gedeelde waardes van innovasie, groei en volhoubare transformasie.",
+                    hero_cta: "Ontdek Ons Visie",
+                    siyandisa_highlight_title: "'n Vennootskap met 'n Pionier",
+                    siyandisa_highlight_desc: "Ons erken Siyandisa Trust nie net as 'n belegger nie, maar as 'n innoveerder. U vooruitstrewende strategie om waarde te skep deur netwerkintegrasie en langtermyn-samewerking is presies wat die bedryf nodig het. Dit is hierdie pioniersgees waarmee ons wil saamwerk.",
+                    vision_title: "'n Vennootskap Gebou op Gedeelde Waardes",
+                    vision_subtitle: "Ons fondament is 'n direkte belyning met Siyandisa se kernbeginsels, wat 'n kragtige sinergie vir wedersydse sukses skep.",
+                    value_growth_title: "Langtermyn Groei",
+                    value_growth_desc: "Belê in volhoubare toekoms, nie net onmiddellike opbrengste nie. Ons sien groei as 'n samewerkende reis.",
+                    value_innovation_title: "Tegnologiese Sinérgie",
+                    value_innovation_desc: "Gebruik ons MineNest™-platform om doeltreffendheid oor Siyandisa se industriële netwerk te ontsluit.",
+                    synergy_button_explore: "Verken Platform",
+                    synergy_button_dashboard: "Sien Kontroleskerm",
+                    value_transformation_title: "Betekenisvolle Transformasie",
+                    value_transformation_desc: "'n Diep verbintenis tot B-BBEE en die skep van 'n blywende, positiewe impak op die Suid-Afrikaanse ekonomie.",
+                    synergy_title: "Data-gedrewe Sinérgie-analise",
+                    synergy_subtitle: "Ons het sleutelsektore binne die Siyandisa-portefeulje geïdentifiseer waar ons tegnologie onmiddellike, meetbare waarde kan skep.",
+                    synergy_chart_label: "Sinérgiepotensiaal-telling",
+                    leadership_title: "Leierskap met Visie",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "VD, Fruitful Mining (Edms) Bpk",
+                    ceo_bio: "Onder Thabo se visioenêre leiding, baan Fruitful Mining nuwe maatstawwe vir operasionele uitnemendheid en strategiese groei. Sy diepgaande kundigheid en toewyding tot innovasie is die kern van ons sukses, en lei ons pad na 'n meer doeltreffende, volhoubare en transformerende toekoms vir die hele mynbousektor.",
+                    contact_title: "Kom Ons Bou die Toekoms Saam",
+                    contact_subtitle: "Ons versoek formeel 'n vergadering om ons gedetailleerde strategiese visie voor te lê en die beduidende, wedersyds voordelige opbrengste wat hierdie vennootskap kan genereer, te verken.",
+                    contact_cta: "Skeduleer 'n Ontdekkingsessie",
+                    footerPrivacy: 'Privaatheid',
+                    footerTerms: 'Terme',
+                    footerContact: 'Kontak',
+                    footerCopyrightLink: 'Kopiereg',
+                    footerDevelopers: 'Ontwikkelaars',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Oor ons',
+                    footerAccessibility: 'Toeganklikheid',
+                    footerCopyrightText: '© 2025 FAA™ Verdragstelsel™. Alle regte voorbehou.',
+                    footerPoweredBy: 'Aangedryf deur 🦍 gliewe + Vault API. Gesinkroniseer met Seedwave™.'
+                },
+                st: {
+                    page_title: "Fruitful Mining | Tlhahiso ea Tšebelisano 'moho ea Leano bakeng sa Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Pono ea Rona",
+                    nav_synergy: "Tšebelisano",
+                    nav_leadership: "Boetapele",
+                    nav_contact: "Ikopanye le Rona",
+                    hero_title: "Ho Bopa Bokamoso ba Merafo",
+                    hero_subtitle: "Tlhahiso ea tšebelisano 'moho ea leano ho Siyandisa Trust, e hahiloeng holim'a litekanyetso tse tšoanang tsa boqapi, kholo, le phetoho e tsitsitseng.",
+                    hero_cta: "Fumana Pono ea Rona",
+                    siyandisa_highlight_title: "Tšebelisano le Moqapi",
+                    siyandisa_highlight_desc: "Re ananela Siyandisa Trust eseng feela joaloka motseteli, empa joaloka moqapi. Leano la hau la ho nahana pele la ho theha boleng ka kopanyo ea marang-rang le tšebelisano ea nako e telele ke sona hantle seo indasteri e se hlokang. Ke moea ona oa bo-pula-maliboho oo re lakatsang ho sebelisana le oona.",
+                    vision_title: "Tšebelisano e Hahiloeng Holim'a Litekanyetso tse Tšoanang",
+                    vision_subtitle: "Motsoako oa rona ke khokahano e tobileng le melao-motheo ea mantlha ea Siyandisa, e theha tšebelisano e matla bakeng sa katleho e tšoanang.",
+                    value_growth_title: "Kholo ea Nako e Telele",
+                    value_growth_desc: "Ho tsetela bokamosong bo tsitsitseng, eseng feela meputso ea hang-hang. Re bona kholo e le leeto la tšebelisano.",
+                    value_innovation_title: "Tšebelisano ea Theknoloji",
+                    value_innovation_desc: "Ho sebelisa sethala sa rona sa MineNest™ ho bula menyetla ea katleho ho pholletsa le marang-rang a indasteri a Siyandisa.",
+                    synergy_button_explore: "Hlahloba Sethala",
+                    synergy_button_dashboard: "Sheba Dashboard",
+                    value_transformation_title: "Phetoho e Nang le Morero",
+                    value_transformation_desc: "Boitlamo bo tebileng ho B-BBEE le ho theha tšusumetso e ntle ea nako e telele moruong oa Afrika Boroa.",
+                    synergy_title: "Tlhahlobo ea Tšebelisano e Thehiloeng ho Data",
+                    synergy_subtitle: "Re supile makala a bohlokoa ka har'a potefolio ea Siyandisa moo theknoloji ea rona e ka thehang boleng bo potlakileng, bo ka lekanyetsoang.",
+                    synergy_chart_label: "Lintlha tsa Bokhoni ba Tšebelisano",
+                    leadership_title: "Boetapele bo nang le Pono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Tlas'a boetapele ba pono ba Thabo, Fruitful Mining e bula mekhoa e mecha bakeng sa bokhabane ba ts'ebetso le kholo ea maano. Tsebo ea hae e tebileng le boitlamo ba hae ho boqapi ke khubu ea katleho ea rona, e tataisang tsela ea rona ho ea bokamosong bo sebetsang hantle, bo tsitsitseng le bo fetolang bakeng sa lekala lohle la merafo.",
+                    contact_title: "Ha re Aheng Bokamoso 'Moho",
+                    contact_subtitle: "Re kopa ka molao kopano ho hlahisa pono ea rona e qaqileng ea leano le ho hlahloba meputso e meholo, e molemo ka bobeli eo tšebelisano ena e ka e hlahisang.",
+                    contact_cta: "Lokisetsa Seboka sa Tlhahlobo",
+                    footerPrivacy: 'Lekunutu',
+                    footerTerms: 'Melao',
+                    footerContact: 'Ikopanye',
+                    footerCopyrightLink: 'Litokelo tsa molao',
+                    footerDevelopers: 'Bahlahisi',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Mabapi',
+                    footerAccessibility: 'Phumaneho',
+                    footerCopyrightText: '© 2025 Sistimi ea Selekane sa FAA™. Litokelo Tsohle Li Sirelelitsoe.',
+                    footerPoweredBy: 'E tsamaisoa ke 🦍 li-glyphs + Vault API. E hokahantsoe le Seedwave™.'
+                },
+                zu: {
+                    page_title: "Fruitful Mining | Isiphakamiso Sokubambisana Kwamasu se-Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Umbono Wethu",
+                    nav_synergy: "Ukusebenzisana",
+                    nav_leadership: "Ubuholi",
+                    nav_contact: "Xhumana Nathi",
+                    hero_title: "Ukwakha Ikusasa Lezimayini",
+                    hero_subtitle: "Isiphakamiso sokubambisana kwamasu ku-Siyandisa Trust, esakhelwe phezu kwezindinganiso ezifanayo zokusungula, ukukhula, kanye noguquko olusimeme.",
+                    hero_cta: "Thola Umbono Wethu",
+                    siyandisa_highlight_title: "Ukubambisana Nomqambi",
+                    siyandisa_highlight_desc: "Sibona i-Siyandisa Trust hhayi nje njengomtshali-zimali, kodwa njengomqambi. Isu lakho lokucabanga phambili lokudala inani ngokuhlanganiswa kwenethiwekhi nokubambisana kwesikhathi eside yikho kanye okudingwa yimboni. Yilo moya wokuphayona esifisa ukubambisana nawo.",
+                    vision_title: "Ukubambisana Okwakhelwe Phezu Kwezindinganiso Ezifanayo",
+                    vision_subtitle: "Isisekelo sethu wukuhambisana ngqo nezimiso eziwumgogodla ze-Siyandisa, okudala ukusebenzisana okunamandla kwempumelelo efanayo.",
+                    value_growth_title: "Ukukhula Kwesikhathi Eside",
+                    value_growth_desc: "Ukutshala imali ekusaseni elisimeme, hhayi nje izinzuzo ezisheshayo. Sibona ukukhula njengohambo lokubambisana.",
+                    value_innovation_title: "Ukusebenzisana Kwezobuchwepheshe",
+                    value_innovation_desc: "Ukusebenzisa inkundla yethu ye-MineNest™ ukuvula ukusebenza kahle kuyo yonke inethiwekhi yezimboni yakwa-Siyandisa.",
+                    synergy_button_explore: "Hlola Inkundla",
+                    synergy_button_dashboard: "Buka Ideshibhodi",
+                    value_transformation_title: "Uguquko Olunenjongo",
+                    value_transformation_desc: "Ukuzibophezela okujulile ku-B-BBEE kanye nokudala umthelela omuhle wesikhathi eside emnothweni waseNingizimu Afrika.",
+                    synergy_title: "Ukuhlaziywa Kokusebenzisana Okusekelwe Kwe-Data",
+                    synergy_subtitle: "Sikhombe imikhakha ebalulekile ngaphakathi kwephothifoliyo ye-Siyandisa lapho ubuchwepheshe bethu bungadala khona inani elisheshayo, elilinganisekayo.",
+                    synergy_chart_label: "Isikolo Samandla Okusebenzisana",
+                    leadership_title: "Ubuholi Obunombono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Ngaphansi kobuholi obunombono bukaThabo, i-Fruitful Mining isungula amazinga amasha okusebenza kahle kakhulu nokukhula kwamasu. Ubuchwepheshe bakhe obujulile nokuzibophezela ekusunguleni kuyisisekelo sempumelelo yethu, okuqondisa indlela yethu eya ekusaseni elisebenza kahle, elisimeme, neliguqulayo kuwo wonke umkhakha wezimayini.",
+                    contact_title: "Masakhe Ikusasa Ndawonye",
+                    contact_subtitle: "Sicela ngokusemthethweni umhlangano wokwethula umbono wethu wamasu oningiliziwe futhi sihlole izinzuzo ezinkulu, ezinenzuzo efanayo lolu bambiswano olungaziletha.",
+                    contact_cta: "Hlela Iseshini Yokuthola",
+                    footerPrivacy: 'Ubumfihlo',
+                    footerTerms: 'Imigomo',
+                    footerContact: 'Othintana naye',
+                    footerCopyrightLink: 'Imininingwane ye-copyright',
+                    footerDevelopers: 'Abathuthukisi',
+                    footerVaultMeshLink: 'I-VaultMesh',
+                    footerFruitfulLink: 'Okunezithelo',
+                    footerFAAZoneLink: 'I-FAA.Zone',
+                    footerAboutLink: 'Mayelana',
+                    footerAccessibility: 'Ukufinyeleleka',
+                    footerCopyrightText: '© 2025 Uhlelo Lwesivumelwano se-FAA™. Wonke Amalungelo Agodliwe.',
+                    footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Ivumelaniswe ne-Seedwave™.'
+                },
+                tn: {
+                    page_title: "Fruitful Mining | Kakanyo ya Tirisano ya Maano go Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Pono ya Rona",
+                    nav_synergy: "Tirisano",
+                    nav_leadership: "Boeteledipele",
+                    nav_contact: "Ikgolaganye le Rona",
+                    hero_title: "Go Bopa Isagwe ya Meepo",
+                    hero_subtitle: "Kakanyo ya tirisano ya maano go Siyandisa Trust, e e agilweng mo godimo ga boleng jo bo tshwanang jwa boitlhamedi, kgolo, le phetogo e e tsitsitseng.",
+                    hero_cta: "Bona Pono ya Rona",
+                    siyandisa_highlight_title: "Tirisano le Moitlhami",
+                    siyandisa_highlight_desc: "Re lemoga Siyandisa Trust e se fela jaaka motlamedi wa madi, mme jaaka moitlhami. Leano la lona la go akanya kwa pele la go dira boleng ka go kopanya dineteweke le tirisano ya lobaka lo loleele ke sone tota se madirelo a se tlhokang. Ke one moya ono wa bo-pula-madibogo o re eletsang go dirisana le one.",
+                    vision_title: "Tirisano e e Agilweng mo Godimo ga Boleng jo bo Tshwanang",
+                    vision_subtitle: "Motheo wa rona ke go tsamaelana ka tlhamalalo le melaometheo ya konokono ya Siyandisa, go dira tirisano e e maatla ya katlego e e tshwanang.",
+                    value_growth_title: "Kgolo ya Lebaka le leleele",
+                    value_growth_desc: "Go beeletsa mo isagweng e e tsitsitseng, e seng fela dipoelo tsa ka bonako. Re bona kgolo e le loeto lwa tirisano.",
+                    value_innovation_title: "Tirisano ya Thekenoloji",
+                    value_innovation_desc: "Go dirisa sethala sa rona sa MineNest™ go bula bokgoni go ralala le neteweke ya diindaseteri ya Siyandisa.",
+                    synergy_button_explore: "Sekaseka Sethala",
+                    synergy_button_dashboard: "Bona Dashboard",
+                    value_transformation_title: "Phetogo e e Nang le Bokao",
+                    value_transformation_desc: "Boineelo jo bo tseneletseng go B-BBEE le go dira tlhotlheletso e e ntle ya leruri mo ikonoming ya Aforika Borwa.",
+                    synergy_title: "Tlhatlhobo ya Tirisano e e Theilweng mo go Data",
+                    synergy_subtitle: "Re supile makala a botlhokwa mo teng ga potefolio ya Siyandisa kwa thekenoloji ya rona e ka dirang boleng jo bo bonako, jo bo ka lekanngwang.",
+                    synergy_chart_label: "Dintlha tsa Bokgoni jwa Tirisano",
+                    leadership_title: "Boeteledipele jo bo nang le Pono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Ka fa tlase ga boeteledipele jwa pono jwa ga Thabo, Fruitful Mining e tlhoma maemo a masha a bokgoni jwa tiro le kgolo ya maano. Bokgoni jwa gagwe jo bo tseneletseng le boineelo jwa gagwe go boitlhamedi ke pelo ya katlego ya rona, di kaela tsela ya rona go ya kwa isagweng e e nang le bokgoni, e e tsitsitseng, le e e fetolang lekala lotlhe la meepo.",
+                    contact_title: "A re Ageng Isagwe Mmogo",
+                    contact_subtitle: "Re kopa ka semolao kopano go tlhagisa pono ya rona ya maano e e tseneletseng le go sekaseka dipoelo tse di kwa godimo, tse di molemo ka bobedi tse tirisano eno e ka di tlisang.",
+                    contact_cta: "Rulaganya Kopano ya go Bona",
+                    footerPrivacy: 'Bophiri',
+                    footerTerms: 'Melawana',
+                    footerContact: 'Ikgolaganye',
+                    footerCopyrightLink: 'Ditshwanelo',
+                    footerDevelopers: 'Batswelapele',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Ka ga rona',
+                    footerAccessibility: 'Kgonagalo',
+                    footerCopyrightText: '© 2025 Sisteme ya Tumalano ya FAA™. Ditshwanelo Tsotlhe Di Sireleditswe.',
+                    footerPoweredBy: 'E tsamaisiwa ke 🦍 di-glyphs + Vault API. E hokahantswe le Seedwave™.'
+                },
+                zh: {
+                    page_title: "Fruitful Mining | 致Siyandisa信托的战略合作提案",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "我们的愿景",
+                    nav_synergy: "协同效应",
+                    nav_leadership: "领导力",
+                    nav_contact: "联系我们",
+                    hero_title: "铸就矿业未来",
+                    hero_subtitle: "向Siyandisa信托提出的战略合作提案，建立在创新、增长和可持续转型的共同价值观之上。",
+                    hero_cta: "发现我们的愿景",
+                    siyandisa_highlight_title: "与先驱者的伙伴关系",
+                    siyandisa_highlight_desc: "我们不仅将Siyandisa信托视为投资者，更视其为创新者。您通过网络整合和长期合作创造价值的前瞻性战略，正是行业所需要的。我们希望与之合作的正是这种开拓精神。",
+                    vision_title: "建立在共同价值观之上的伙伴关系",
+                    vision_subtitle: "我们的基础与Siyandisa的核心原则直接一致，为共同成功创造了强大的协同效应。",
+                    value_growth_title: "长期增长",
+                    value_growth_desc: "投资于可持续的未来，而不仅仅是眼前的回报。我们将增长视为一次合作之旅。",
+                    value_innovation_title: "技术协同",
+                    value_innovation_desc: "利用我们的MineNest™平台，在Siyandisa的工业网络中释放效率。",
+                    synergy_button_explore: "探索平台",
+                    synergy_button_dashboard: "查看仪表板",
+                    value_transformation_title: "有意义的转型",
+                    value_transformation_desc: "对B-BBEE的坚定承诺，并对南非经济产生持久的积极影响。",
+                    synergy_title: "数据驱动的协同效应分析",
+                    synergy_subtitle: "我们已经确定了Siyandisa投资组合中的关键领域，我们的技术可以在这些领域创造即时、可衡量的价值。",
+                    synergy_chart_label: "协同潜力得分",
+                    leadership_title: "有远见的领导力",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "首席执行官, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "在Thabo富有远见的领导下，Fruitful Mining正在为卓越运营和战略增长树立新的标杆。他深厚的专业知识和对创新的承诺是我们成功的核心，指引我们为整个采矿业走向一个更高效、可持续和变革性的未来。",
+                    contact_title: "让我们共创未来",
+                    contact_subtitle: "我们正式请求召开会议，介绍我们详细的战略愿景，并探讨这种伙伴关系可以产生的重大的、互利的的回报。",
+                    contact_cta: "安排探索会议",
+                    footerPrivacy: '隐私',
+                    footerTerms: '条款',
+                    footerContact: '联系',
+                    footerCopyrightLink: '版权',
+                    footerDevelopers: '开发者',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: '关于',
+                    footerAccessibility: '无障碍',
+                    footerCopyrightText: '© 2025 FAA™ 条约系统™. 保留所有权利。',
+                    footerPoweredBy: '由 🦍 符号 + Vault API 提供支持。与 Seedwave™ 同步。'
+                },
+                ar: {
+                    page_title: "Fruitful Mining | اقتراح شراكة استراتيجية لصندوق Siyandisa",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "رؤيتنا",
+                    nav_synergy: "التآزر",
+                    nav_leadership: "القيادة",
+                    nav_contact: "اتصل بنا",
+                    hero_title: "صياغة مستقبل التعدين",
+                    hero_subtitle: "اقتراح شراكة استراتيجية لصندوق Siyandisa، مبني على قيم مشتركة من الابتكار والنمو والتحول المستدام.",
+                    hero_cta: "اكتشف رؤيتنا",
+                    siyandisa_highlight_title: "شراكة مع رائد",
+                    siyandisa_highlight_desc: "نحن لا نرى صندوق Siyandisa كمستثمر فحسب، بل كمبتكر. إن استراتيجيتكم التقدمية لخلق القيمة من خلال تكامل الشبكات والتعاون طويل الأمد هي بالضبط ما تحتاجه الصناعة. هذه هي الروح الريادية التي نرغب في الشراكة معها.",
+                    vision_title: "شراكة مبنية على قيم مشتركة",
+                    vision_subtitle: "أساسنا هو التوافق المباشر مع مبادئ Siyandisa الأساسية، مما يخلق تآزرًا قويًا للنجاح المتبادل.",
+                    value_growth_title: "نمو طويل الأجل",
+                    value_growth_desc: "الاستثمار في مستقبل مستدام، وليس فقط عوائد فورية. نرى النمو كرحلة تعاونية.",
+                    value_innovation_title: "التآزر التكنولوجي",
+                    value_innovation_desc: "الاستفادة من منصة MineNest™ الخاصة بنا لإطلاق الكفاءات عبر شبكة Siyandisa الصناعية.",
+                    synergy_button_explore: "استكشف المنصة",
+                    synergy_button_dashboard: "عرض لوحة التحكم",
+                    value_transformation_title: "تحول هادف",
+                    value_transformation_desc: "التزام عميق بـ B-BBEE وخلق تأثير إيجابي دائم على اقتصاد جنوب إفريقيا.",
+                    synergy_title: "تحليل التآزر القائم على البيانات",
+                    synergy_subtitle: "لقد حددنا القطاعات الرئيسية ضمن محفظة Siyandisa حيث يمكن لتقنيتنا أن تخلق قيمة فورية وقابلة للقياس.",
+                    synergy_chart_label: "درجة إمكانات التآزر",
+                    leadership_title: "قيادة ذات رؤية",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "الرئيس التنفيذي، Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "تحت قيادة Thabo ذات الرؤية، تضع Fruitful Mining معايير جديدة للتميز التشغيلي والنمو الاستراتيجي. إن خبرته العميقة والتزامه بالابتكار هما في صميم نجاحنا، ويوجهان طريقنا نحو مستقبل أكثر كفاءة واستدامة وتحولًا لقطاع التعدين بأكمله.",
+                    contact_title: "دعونا نبني المستقبل معًا",
+                    contact_subtitle: "نطلب رسميًا عقد اجتماع لتقديم رؤيتنا الاستراتيجية المفصلة واستكشاف العوائد الكبيرة والمتبادلة المنفعة التي يمكن أن تحققها هذه الشراكة.",
+                    contact_cta: "حدد موعدًا لجلسة استكشافية",
+                    footerPrivacy: 'الخصوصية',
+                    footerTerms: 'الشروط',
+                    footerContact: 'اتصل',
+                    footerCopyrightLink: 'حقوق النشر',
+                    footerDevelopers: 'المطورون',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'حول',
+                    footerAccessibility: 'إمكانية الوصول',
+                    footerCopyrightText: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                    footerPoweredBy: 'بدعم من 🦍 glyphs + Vault API. متزامن مع Seedwave™.'
+                },
+                nso: {
+                    page_title: "Fruitful Mining | Tšhišinyo ya Tšhomišano ya Maano go Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Pono ya Rena",
+                    nav_synergy: "Tšhomišano",
+                    nav_leadership: "Boetapele",
+                    nav_contact: "Ikgokaganye le Rena",
+                    hero_title: "Go Bopa Bokamoso bja Meepo",
+                    hero_subtitle: "Tšhišinyo ya tšhomišano ya maano go Siyandisa Trust, yeo e theilwego godimo ga boleng bjo bo swanago bja boitlhamelo, kgolo, le phetogo ye e swarelelago.",
+                    hero_cta: "Utolla Pono ya Rena",
+                    siyandisa_highlight_title: "Tšhomišano le Moitlhami",
+                    siyandisa_highlight_desc: "Re lemoga Siyandisa Trust e sego fela bjalo ka motšhedi, eupša bjalo ka moitlhami. Leano la lena la go nagana pele la go hlola boleng ka go kopanya dineteweke le tšhomišano ya lebaka le letelele ke sona seo intaseteri e se hlokago. Ke moya wo wa bo-pula-madibogo woo re holofelago go dirišana le wona.",
+                    vision_title: "Tšhomišano ye e Agilwego godimo ga Boleng bjo bo Swanago",
+                    vision_subtitle: "Motheo wa rena ke go tsamaelana ka go lebanya le melawana ya motheo ya Siyandisa, go hlola tšhomišano ye maatla ya katlego ye e swanago.",
+                    value_growth_title: "Kgolo ya Lebaka le letelele",
+                    value_growth_desc: "Go beeletša bokamosong bjo bo swarelelago, e sego fela dipoelo tša ka pela. Re bona kgolo e le leeto la tšhomišano.",
+                    value_innovation_title: "Tšhomišano ya Theknolotši",
+                    value_innovation_desc: "Go diriša sethala sa rena sa MineNest™ go bula bokgoni go ralala le neteweke ya diintaseteri ya Siyandisa.",
+                    synergy_button_explore: "Hlahloba Sethala",
+                    synergy_button_dashboard: "Lebelela Dashboard",
+                    value_transformation_title: "Phetogo ye e nago le Mohola",
+                    value_transformation_desc: "Boineelo bjo bo tseneletšego go B-BBEE le go hlola khuetšo ye botse ya sa ruri mo ekonoming ya Afrika Borwa.",
+                    synergy_title: "Tshekatsheko ya Tšhomišano ye e Theilwego go Data",
+                    synergy_subtitle: "Re laeditše makala a bohlokwa ka gare ga potefolio ya Siyandisa moo theknolotši ya rena e ka hlolago boleng bja ka pela, bjo bo ka lekanwago.",
+                    synergy_chart_label: "Dintlha tša Bokgoni bja Tšhomišano",
+                    leadership_title: "Boetapele bjo bo nago le Pono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Ka fase ga boetapele bja pono bja Thabo, Fruitful Mining e bea maemo a mafsa a bokgabane bja tiro le kgolo ya maano. Bokgoni bja gagwe bjo bo tseneletšego le boineelo bja gagwe go boitlhamelo ke pelo ya katlego ya rena, di hlahla tsela ya rena go ya bokamosong bjo bo nago le bokgoni, bjo bo swarelelago, le bjo bo fetošago lekala ka moka la meepo.",
+                    contact_title: "A re Ageng Bokamoso Mmogo",
+                    contact_subtitle: "Re kgopela ka semmušo kopano go tšweletša pono ya rena ya maano ye e nabilego le go lekola dipoelo tše dikgolo, tše di holago ka bobedi tšeo tšhomišano ye e ka di tšweletšago.",
+                    contact_cta: "Rulaganya Kopano ya go Utolla",
+                    footerPrivacy: 'Sephiri',
+                    footerTerms: 'Melawana',
+                    footerContact: 'Ikgokaganye',
+                    footerCopyrightLink: 'Tokelo ya go gatiša',
+                    footerDevelopers: 'Bahlami',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Ka ga rena',
+                    footerAccessibility: 'Phihlelelo',
+                    footerCopyrightText: '© 2025 Sisteme ya Tumellano ya FAA™. Ditokelo ka moka di Sireleditšwe.',
+                    footerPoweredBy: 'E maatlafatšwa ke 🦍 di-glyphs + Vault API. E nyalantšhitšwe le Seedwave™.'
+                },
+                xh: {
+                    page_title: "Fruitful Mining | Isiphakamiso seNtsebenziswano soBuchule kwi-Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Umbono Wethu",
+                    nav_synergy: "Intsebenziswano",
+                    nav_leadership: "Ubunkokeli",
+                    nav_contact: "Qhagamshelana Nathi",
+                    hero_title: "Ukwakha Ikamva Lezimayini",
+                    hero_subtitle: "Isiphakamiso sentsebenziswano yobuchule kwi-Siyandisa Trust, esakhelwe phezu kweexabiso ezifanayo zokutsha, ukukhula, kunye nenguqu ezizinzileyo.",
+                    hero_cta: "Fumana Umbono Wethu",
+                    siyandisa_highlight_title: "Intsebenziswano noMvelisi",
+                    siyandisa_highlight_desc: "Asiyiboni i-Siyandisa Trust njengomtyali-mali kuphela, kodwa njengomvelisi. Isicwangciso sakho sokucinga phambili sokudala ixabiso ngokudityaniswa kwenethiwekhi kunye nentsebenziswano yexesha elide yile nto kanye ishishini liyifunayo. Kulo moya wokuphayona esinqwenela ukusebenzisana nawo.",
+                    vision_title: "Intsebenziswano Eyakhelwe Phezu Kweexabiso Ezifanayo",
+                    vision_subtitle: "Isiseko sethu kukulungelelaniswa ngqo nemigaqo engundoqo ye-Siyandisa, ukudala intsebenziswano enamandla yempumelelo efanayo.",
+                    value_growth_title: "Ukukhula Kwexesha Elide",
+                    value_growth_desc: "Ukutyala imali kwikamva elizinzileyo, kungekhona nje iimbuyekezo ezikhawulezileyo. Sibona ukukhula njengohambo lwentsebenziswano.",
+                    value_innovation_title: "Intsebenziswano Yezobuchwepheshe",
+                    value_innovation_desc: "Ukusebenzisa iqonga lethu le-MineNest™ ukuvula ukusebenza kakuhle kuyo yonke inethiwekhi yemizi-mveliso ye-Siyandisa.",
+                    synergy_button_explore: "Phonononga Iqonga",
+                    synergy_button_dashboard: "Jonga iDashboard",
+                    value_transformation_title: "Inguqu Enentsingiselo",
+                    value_transformation_desc: "Ukuzibophelela okunzulu kwi-B-BBEE kunye nokudala impembelelo entle ehlala ihleli kuqoqosho loMzantsi Afrika.",
+                    synergy_title: "Uhlalutyo Lwentsebenziswano Olusekwe Kwi-Data",
+                    synergy_subtitle: "Sichonge amacandelo aphambili ngaphakathi kwephothifoliyo ye-Siyandisa apho itekhnoloji yethu inokudala ixabiso elikhawulezileyo, elinokulinganiswa.",
+                    synergy_chart_label: "Amanqaku Amandla Entsebenziswano",
+                    leadership_title: "Ubunkokeli Obunombono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Ngaphantsi kobunkokeli obunombono bukaThabo, i-Fruitful Mining ivula iindlela ezintsha zokusebenza kakuhle nokukhula kobuchule. Ubuchwephesha bakhe obunzulu kunye nokuzibophelela ekusunguleni kusembindini wempumelelo yethu, kukhokela indlela yethu eya kwikamva elisebenza ngakumbi, elizinzileyo, neliguqulayo kulo lonke icandelo lezimayini.",
+                    contact_title: "Masakhe Ikamva Sisonke",
+                    contact_subtitle: "Sicela ngokusesikweni intlanganiso yokunikezela ngombono wethu wobuchule oneenkcukacha kwaye siphonononge iimbuyekezo ezibalulekileyo, eziluncedo ngokufanayo le ntsebenziswano enokuzivelisa.",
+                    contact_cta: "Cwangcisa iSeshoni yokuFumana",
+                    footerPrivacy: 'Ubumfihlo',
+                    footerTerms: 'Imigaqo',
+                    footerContact: 'Qhagamshelana',
+                    footerCopyrightLink: 'Ilungelo lokushicilela',
+                    footerDevelopers: 'Abaphuhlisi',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Malunga',
+                    footerAccessibility: 'Ukufikeleleka',
+                    footerCopyrightText: '© 2025 Inkqubo yesiVumelwano se-FAA™. Onke Amalungelo Agciniwe.',
+                    footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Idityaniswe ne-Seedwave™.'
+                },
+                es: {
+                    page_title: "Fruitful Mining | Propuesta de Alianza Estratégica para Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Nuestra Visión",
+                    nav_synergy: "Sinergia",
+                    nav_leadership: "Liderazgo",
+                    nav_contact: "Contáctenos",
+                    hero_title: "Forjando el Futuro de la Minería",
+                    hero_subtitle: "Una propuesta de alianza estratégica para Siyandisa Trust, construida sobre valores compartidos de innovación, crecimiento y transformación sostenible.",
+                    hero_cta: "Descubra Nuestra Visión",
+                    siyandisa_highlight_title: "Una Alianza con un Pionero",
+                    siyandisa_highlight_desc: "Reconocemos a Siyandisa Trust no solo como un inversor, sino como un innovador. Su estrategia vanguardista de crear valor a través de la integración de redes y la colaboración a largo plazo es precisamente lo que la industria necesita. Es con este espíritu pionero con el que deseamos asociarnos.",
+                    vision_title: "Una Alianza Construida Sobre Valores Compartidos",
+                    vision_subtitle: "Nuestra base es una alineación directa con los principios fundamentales de Siyandisa, creando una poderosa sinergia para el éxito mutuo.",
+                    value_growth_title: "Crecimiento a Largo Plazo",
+                    value_growth_desc: "Invertir en futuros sostenibles, no solo en rendimientos inmediatos. Vemos el crecimiento como un viaje colaborativo.",
+                    value_innovation_title: "Sinergia Tecnológica",
+                    value_innovation_desc: "Aprovechando nuestra plataforma MineNest™ para desbloquear eficiencias en toda la red industrial de Siyandisa.",
+                    synergy_button_explore: "Explorar Plataforma",
+                    synergy_button_dashboard: "Ver Panel de Control",
+                    value_transformation_title: "Transformación Significativa",
+                    value_transformation_desc: "Un profundo compromiso con B-BBEE y la creación de un impacto positivo y duradero en la economía sudafricana.",
+                    synergy_title: "Análisis de Sinergia Basado en Datos",
+                    synergy_subtitle: "Hemos identificado sectores clave dentro de la cartera de Siyandisa donde nuestra tecnología puede crear valor inmediato y medible.",
+                    synergy_chart_label: "Puntuación de Potencial de Sinergia",
+                    leadership_title: "Liderazgo con Visión",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Bajo el liderazgo visionario de Thabo, Fruitful Mining está estableciendo nuevos puntos de referencia para la excelencia operativa y el crecimiento estratégico. Su profunda experiencia y compromiso con la innovación son el corazón de nuestro éxito, guiando nuestro camino hacia un futuro más eficiente, sostenible y transformador para todo el sector minero.",
+                    contact_title: "Construyamos el Futuro Juntos",
+                    contact_subtitle: "Solicitamos formalmente una reunión para presentar nuestra visión estratégica detallada y explorar los significativos y mutuamente beneficiosos rendimientos que esta alianza puede generar.",
+                    contact_cta: "Programar una Sesión de Descubrimiento",
+                    footerPrivacy: 'Privacidad',
+                    footerTerms: 'Términos',
+                    footerContact: 'Contacto',
+                    footerCopyrightLink: 'Copyright',
+                    footerDevelopers: 'Desarrolladores',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Acerca de',
+                    footerAccessibility: 'Accesibilidad',
+                    footerCopyrightText: '© 2025 Sistema de Tratado FAA™. Todos los derechos reservados.',
+                    footerPoweredBy: 'Impulsado por 🦍 glifos + API de Vault. Sincronizado con Seedwave™.'
+                },
+                fr: {
+                    page_title: "Fruitful Mining | Proposition de Partenariat Stratégique pour Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Notre Vision",
+                    nav_synergy: "Synergie",
+                    nav_leadership: "Direction",
+                    nav_contact: "Contactez-nous",
+                    hero_title: "Forger l'Avenir de l'Exploitation Minière",
+                    hero_subtitle: "Une proposition de partenariat stratégique à Siyandisa Trust, bâtie sur des valeurs communes d'innovation, de croissance et de transformation durable.",
+                    hero_cta: "Découvrez Notre Vision",
+                    siyandisa_highlight_title: "Un Partenariat avec un Pionnier",
+                    siyandisa_highlight_desc: "Nous reconnaissons Siyandisa Trust non seulement comme un investisseur, mais aussi comme un innovateur. Votre stratégie avant-gardiste de création de valeur par l'intégration de réseaux et la collaboration à long terme est précisément ce dont l'industrie a besoin. C'est avec cet esprit pionnier que nous souhaitons nous associer.",
+                    vision_title: "Un Partenariat Bâti sur des Valeurs Communes",
+                    vision_subtitle: "Notre fondation est un alignement direct avec les principes fondamentaux de Siyandisa, créant une synergie puissante pour un succès mutuel.",
+                    value_growth_title: "Croissance à Long Terme",
+                    value_growth_desc: "Investir dans des avenirs durables, pas seulement des rendements immédiats. Nous voyons la croissance comme un voyage collaboratif.",
+                    value_innovation_title: "Synergie Technologique",
+                    value_innovation_desc: "Tirer parti de notre plateforme MineNest™ pour débloquer des efficiences à travers le réseau industriel de Siyandisa.",
+                    synergy_button_explore: "Explorer la Plateforme",
+                    synergy_button_dashboard: "Voir le Tableau de Bord",
+                    value_transformation_title: "Transformation Significative",
+                    value_transformation_desc: "Un engagement profond envers le B-BBEE et la création d'un impact positif et durable sur l'économie sud-africaine.",
+                    synergy_title: "Analyse de Synergie Basée sur les Données",
+                    synergy_subtitle: "Nous avons identifié des secteurs clés au sein du portefeuille de Siyandisa où notre technologie peut créer une valeur immédiate et mesurable.",
+                    synergy_chart_label: "Score de Potentiel de Synergie",
+                    leadership_title: "Une Direction Visionnaire",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "PDG, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Sous la direction visionnaire de Thabo, Fruitful Mining établit de nouvelles références en matière d'excellence opérationnelle et de croissance stratégique. Sa profonde expertise et son engagement envers l'innovation sont au cœur de notre succès, guidant notre chemin vers un avenir plus efficace, durable et transformateur pour l'ensemble du secteur minier.",
+                    contact_title: "Construisons l'Avenir Ensemble",
+                    contact_subtitle: "Nous demandons formellement une réunion pour présenter notre vision stratégique détaillée et explorer les rendements significatifs et mutuellement bénéfiques que ce partenariat peut générer.",
+                    contact_cta: "Planifier une Session de Découverte",
+                    footerPrivacy: 'Confidentialité',
+                    footerTerms: 'Termes',
+                    footerContact: 'Contact',
+                    footerCopyrightLink: 'Droit d\'auteur',
+                    footerDevelopers: 'Développeurs',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'À propos',
+                    footerAccessibility: 'Accessibilité',
+                    footerCopyrightText: '© 2025 Système de Traité FAA™. Tous droits réservés.',
+                    footerPoweredBy: 'Propulsé par 🦍 glyphes + API Vault. Synchronisé avec Seedwave™.'
+                },
+                it: {
+                    page_title: "Fruitful Mining | Proposta di Partnership Strategica per Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "La Nostra Visione",
+                    nav_synergy: "Sinergia",
+                    nav_leadership: "Leadership",
+                    nav_contact: "Contattaci",
+                    hero_title: "Forgiare il Futuro dell'Estrazione Mineraria",
+                    hero_subtitle: "Una proposta di partnership strategica a Siyandisa Trust, basata su valori condivisi di innovazione, crescita e trasformazione sostenibile.",
+                    hero_cta: "Scopri la Nostra Visione",
+                    siyandisa_highlight_title: "Una Partnership con un Pioniere",
+                    siyandisa_highlight_desc: "Riconosciamo Siyandisa Trust non solo come un investitore, ma come un innovatore. La vostra strategia lungimirante di creare valore attraverso l'integrazione di reti e la collaborazione a lungo termine è esattamente ciò di cui l'industria ha bisogno. È con questo spirito pionieristico che desideriamo collaborare.",
+                    vision_title: "Una Partnership Basata su Valori Condivisi",
+                    vision_subtitle: "La nostra fondazione è un allineamento diretto con i principi fondamentali di Siyandisa, creando una potente sinergia per il successo reciproco.",
+                    value_growth_title: "Crescita a Lungo Termine",
+                    value_growth_desc: "Investire in futuri sostenibili, non solo in rendimenti immediati. Vediamo la crescita come un viaggio collaborativo.",
+                    value_innovation_title: "Sinergia Tecnologica",
+                    value_innovation_desc: "Sfruttare la nostra piattaforma MineNest™ per sbloccare efficienze in tutta la rete industriale di Siyandisa.",
+                    synergy_button_explore: "Esplora la Piattaforma",
+                    synergy_button_dashboard: "Visualizza Dashboard",
+                    value_transformation_title: "Trasformazione Significativa",
+                    value_transformation_desc: "Un profondo impegno per il B-BBEE e la creazione di un impatto positivo e duraturo sull'economia sudafricana.",
+                    synergy_title: "Analisi di Sinergia Basata sui Dati",
+                    synergy_subtitle: "Abbiamo identificato settori chiave all'interno del portafoglio di Siyandisa in cui la nostra tecnologia può creare valore immediato e misurabile.",
+                    synergy_chart_label: "Punteggio Potenziale di Sinergia",
+                    leadership_title: "Leadership con Visione",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Sotto la guida visionaria di Thabo, Fruitful Mining sta stabilendo nuovi punti di riferimento per l'eccellenza operativa e la crescita strategica. La sua profonda competenza e il suo impegno per l'innovazione sono al centro del nostro successo, guidando il nostro percorso verso un futuro più efficiente, sostenibile e trasformativo per l'intero settore minerario.",
+                    contact_title: "Costruiamo il Futuro Insieme",
+                    contact_subtitle: "Richiediamo formalmente un incontro per presentare la nostra visione strategica dettagliata ed esplorare i significativi e reciprocamente vantaggiosi rendimenti che questa partnership può generare.",
+                    contact_cta: "Pianifica una Sessione di Scoperta",
+                    footerPrivacy: 'Privacy',
+                    footerTerms: 'Termini',
+                    footerContact: 'Contatto',
+                    footerCopyrightLink: 'Diritto d\'autore',
+                    footerDevelopers: 'Sviluppatori',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Chi siamo',
+                    footerAccessibility: 'Accessibilità',
+                    footerCopyrightText: '© 2025 Sistema di Trattato FAA™. Tutti i diritti riservati.',
+                    footerPoweredBy: 'Alimentato da 🦍 glifi + API Vault. Sincronizzato con Seedwave™.'
+                },
+                fat: {
+                    page_title: "Fruitful Mining | Lo Plan Wena Partnership Kanjani Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Lo Plan Ka Wena",
+                    nav_synergy: "Sebenza Msinyane",
+                    nav_leadership: "Basi Lo Mkhulu",
+                    nav_contact: "Khuluma Na Lapa",
+                    hero_title: "Wakha Ikusasa Lo Mayini",
+                    hero_subtitle: "Lo plan wena partnership hamba Siyandisa Trust, wakha phezu lo value fana fana, lo siza, lo khula, na lo change kamnandi.",
+                    hero_cta: "Bona Lo Plan",
+                    siyandisa_highlight_title: "Partnership na Pioneer",
+                    siyandisa_highlight_desc: "Wena bona Siyandisa Trust hayi kuphela investor, yena innovator. Lo plan ka yena for yenza value na network na sebenza zonke for nako long, yilo into lo industry funa. Yilo spirit wena funa partner na yona.",
+                    vision_title: "Partnership Wakha Phezu Value Fana Fana",
+                    vision_subtitle: "Lo foundation ka wena hamba straight na lo principle ka Siyandisa, yenza lo synergy strong for win-win.",
+                    value_growth_title: "Khula Nje Nje",
+                    value_growth_desc: "Invest for lo future kamnandi, hayi imali manje manje. Wena bona lo khula funa sebenza zonke.",
+                    value_innovation_title: "Technology Sebenza Msinyane",
+                    value_innovation_desc: "Sebenzisa lo platform ka wena MineNest™ for siza sebenza fast yonke ndawo ka Siyandisa.",
+                    synergy_button_explore: "Bona Platform",
+                    synergy_button_dashboard: "Bona Dashboard",
+                    value_transformation_title: "Change Mkhulu",
+                    value_transformation_desc: "Commitment mkhulu for B-BBEE na yenza into right for lo economy ka South Africa.",
+                    synergy_title: "Analysis Wena Synergy Na Data",
+                    synergy_subtitle: "Wena bona lo sector mkhulu lapa Siyandisa portfolio la lo technology ka wena yenza imali fast, wena bona.",
+                    synergy_chart_label: "Score Wena Synergy",
+                    leadership_title: "Basi Lo Mkhulu Na Plan",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "CEO, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Phezulu lo plan ka Thabo, Fruitful Mining yenza lo bar phezulu for sebenza right na khula. Lo know-how ka yena na lo commitment for siza, yenza wena win, hamba wena lapa future kamnandi, sebenza fast, na change for yonke mayini.",
+                    contact_title: "Wakha Ikusasa Sonke",
+                    contact_subtitle: "Wena cela meeting for khombisa lo plan mkhulu na bona lo win-win mkhulu wena na lapa partnership.",
+                    contact_cta: "Hlela Lo Meeting",
+                    footerPrivacy: 'Privacy',
+                    footerTerms: 'Terms',
+                    footerContact: 'Contact',
+                    footerCopyrightLink: 'Copyright',
+                    footerDevelopers: 'Developers',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'About',
+                    footerAccessibility: 'Accessibility',
+                    footerCopyrightText: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                    footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+                },
+                sw: {
+                    page_title: "Fruitful Mining | Pendekezo la Ushirikiano wa Kimkakati kwa Siyandisa Trust",
+                    logo_text: "Fruitful™ Mining",
+                    nav_vision: "Maono Yetu",
+                    nav_synergy: "Ushirikiano",
+                    nav_leadership: "Uongozi",
+                    nav_contact: "Wasiliana Nasi",
+                    hero_title: "Kuunda Mustakabali wa Uchimbaji Madini",
+                    hero_subtitle: "Pendekezo la ushirikiano wa kimkakati kwa Siyandisa Trust, lililojengwa juu ya maadili ya pamoja ya uvumbuzi, ukuaji, na mabadiliko endelevu.",
+                    hero_cta: "Gundua Maono Yetu",
+                    siyandisa_highlight_title: "Ushirikiano na Mwasisi",
+                    siyandisa_highlight_desc: "Tunatambua Siyandisa Trust si kama mwekezaji tu, bali kama mvumbuzi. Mkakati wako wa kufikiria mbele wa kuunda thamani kupitia ujumuishaji wa mtandao na ushirikiano wa muda mrefu ndivyo hasa sekta inavyohitaji. Ni roho hii ya upainia tunayotamani kushirikiana nayo.",
+                    vision_title: "Ushirikiano Uliojengwa Juu ya Maadili ya Pamoja",
+                    vision_subtitle: "Msingi wetu ni upatanisho wa moja kwa moja na kanuni za msingi za Siyandisa, na kuunda ushirikiano wenye nguvu kwa mafanikio ya pande zote.",
+                    value_growth_title: "Ukuaji wa Muda Mrefu",
+                    value_growth_desc: "Kuwekeza katika mustakabali endelevu, sio tu faida za haraka. Tunaona ukuaji kama safari ya ushirikiano.",
+                    value_innovation_title: "Ushirikiano wa Teknolojia",
+                    value_innovation_desc: "Kutumia jukwaa letu la MineNest™ kufungua ufanisi katika mtandao mzima wa viwanda wa Siyandisa.",
+                    synergy_button_explore: "Gundua Jukwaa",
+                    synergy_button_dashboard: "Tazama Dashibodi",
+                    value_transformation_title: "Mabadiliko Yenye Maana",
+                    value_transformation_desc: "Kujitolea kwa kina kwa B-BBEE na kuunda athari chanya ya kudumu kwa uchumi wa Afrika Kusini.",
+                    synergy_title: "Uchambuzi wa Ushirikiano unaotegemea Data",
+                    synergy_subtitle: "Tumebainisha sekta muhimu ndani ya kwingineko ya Siyandisa ambapo teknolojia yetu inaweza kuunda thamani ya haraka na inayoweza kupimika.",
+                    synergy_chart_label: "Alama ya Uwezo wa Ushirikiano",
+                    leadership_title: "Uongozi wenye Maono",
+                    ceo_name: "Thabo Ntlatleng",
+                    ceo_title: "Mkurugenzi Mtendaji, Fruitful Mining (Pty) Ltd",
+                    ceo_bio: "Chini ya uongozi wenye maono wa Thabo, Fruitful Mining inaweka viwango vipya vya ubora wa uendeshaji na ukuaji wa kimkakati. Utaalamu wake wa kina na kujitolea kwa uvumbuzi ndio kiini cha mafanikio yetu, ukiongoza njia yetu kuelekea mustakabali wenye ufanisi zaidi, endelevu, na wa mabadiliko kwa sekta nzima ya madini.",
+                    contact_title: "Tujenge Mustakabali Pamoja",
+                    contact_subtitle: "Tunaomba rasmi mkutano ili kuwasilisha maono yetu ya kimkakati ya kina na kuchunguza faida kubwa, za pande zote ambazo ushirikiano huu unaweza kuzalisha.",
+                    contact_cta: "Panga Kikao cha Ugunduzi",
+                    footerPrivacy: 'Faragha',
+                    footerTerms: 'Masharti',
+                    footerContact: 'Mawasiliano',
+                    footerCopyrightLink: 'Hakimiliki',
+                    footerDevelopers: 'Waendelezaji',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Kuhusu',
+                    footerAccessibility: 'Ufikiaji',
+                    footerCopyrightText: '© 2025 Mfumo wa Mkataba wa FAA™. Haki Zote Zimehifadhiwa.',
+                    footerPoweredBy: 'Inaendeshwa na 🦍 glyphs + Vault API. Imesawazishwa na Seedwave™.'
+                }
+            };
+
+            const languages = {
+                en: "English", af: "Afrikaans", st: "Sotho", zu: "Zulu", tn: "Tswana",
+                zh: "Chinese", ar: "Arabic", nso: "Sepedi", xh: "Xhosa", es: "Spanish",
+                fr: "French", it: "Italian", fat: "Fanagalo", sw: "Swahili"
+            };
+
+            // --- UI Elements ---
+            const languageSelect = document.getElementById('language-select');
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            // --- Populate Language Selector ---
+            Object.keys(languages).forEach(code => {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = languages[code];
+                languageSelect.appendChild(option);
+            });
+
+            // --- Functions ---
+            const applyTranslations = (lang) => {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        el.innerHTML = translations[lang][key];
+                    }
+                });
+                document.documentElement.lang = lang;
+                if (lang === 'ar') {
+                    document.documentElement.dir = 'rtl';
+                } else {
+                    document.documentElement.dir = 'ltr';
+                }
+                updateChartLanguage(lang);
+            };
+
+            const updateChartLanguage = (lang) => {
+                if (window.synergyChart) {
+                    window.synergyChart.data.datasets[0].label = translations[lang].synergy_chart_label || 'Synergy Potential Score';
+                    window.synergyChart.update();
+                }
+            };
+            
+            const setTheme = (theme) => {
+                body.classList.remove('theme-light', 'theme-hyper');
+                if (theme === 'light') body.classList.add('theme-light');
+                if (theme === 'hyper') body.classList.add('theme-hyper');
+                
+                const icon = theme === 'light' ? 'fa-moon' : theme === 'hyper' ? 'fa-bolt' : 'fa-sun';
+                themeToggle.innerHTML = `<i class="fas ${icon}"></i>`;
+                localStorage.setItem('theme', theme);
+                updateChartTheme();
+            };
+
+            const updateChartTheme = () => {
+                if (!window.synergyChart) return;
+                const theme = localStorage.getItem('theme') || 'dark';
+                let gridColor, tickColor;
+
+                if(theme === 'light') {
+                    gridColor = 'rgba(0, 0, 0, 0.1)';
+                    tickColor = '#333';
+                } else if (theme === 'hyper') {
+                    gridColor = 'rgba(255, 0, 255, 0.2)';
+                    tickColor = '#ff00ff';
+                } else {
+                    gridColor = 'rgba(255, 255, 255, 0.1)';
+                    tickColor = '#ccc';
+                }
+                
+                window.synergyChart.options.scales.x.grid.color = gridColor;
+                window.synergyChart.options.scales.y.grid.color = gridColor;
+                window.synergyChart.options.scales.x.ticks.color = tickColor;
+                window.synergyChart.options.scales.y.ticks.color = tickColor;
+                window.synergyChart.options.plugins.legend.labels.color = tickColor;
+                window.synergyChart.update();
+            };
+
+            // --- Event Listeners ---
+            languageSelect.addEventListener('change', (e) => {
+                localStorage.setItem('language', e.target.value);
+                applyTranslations(e.target.value);
+            });
+
+            themeToggle.addEventListener('click', () => {
+                let currentTheme = localStorage.getItem('theme') || 'dark';
+                const themes = ['dark', 'light', 'hyper'];
+                let nextThemeIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+                setTheme(themes[nextThemeIndex]);
+            });
+            
+            hamburgerBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('-translate-x-full');
+            });
+            
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('-translate-x-full');
+                });
+            });
+
+            // --- Intersection Observer for Animations ---
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            // --- Chart.js ---
+            const renderSynergyChart = () => {
+                const ctx = document.getElementById('synergyChart').getContext('2d');
+                const lang = localStorage.getItem('language') || 'en';
+                const chartData = {
+                    labels: [
+                        'Mining Equipment & Tech', 'Engineering', 'Mineral Processing', 'Technology', 
+                        'Transport & Logistics', 'Manufacturing', 'Construction Services'
+                    ],
+                    datasets: [{
+                        label: translations[lang].synergy_chart_label || 'Synergy Potential Score',
+                        data: [95, 92, 90, 88, 85, 78, 72],
+                        backgroundColor: 'rgba(184, 134, 11, 0.6)',
+                        borderColor: 'rgba(184, 134, 11, 1)',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        hoverBackgroundColor: 'rgba(184, 134, 11, 0.8)',
+                        hoverBorderColor: 'rgba(184, 134, 11, 1)',
+                    }]
+                };
+                
+                window.synergyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const item = tooltipItems[0];
+                                        let label = item.chart.data.labels[item.dataIndex];
+                                        return Array.isArray(label) ? label.join(' ') : label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { beginAtZero: true, max: 100 },
+                            y: {}
+                        }
+                    }
+                });
+                updateChartTheme();
+            };
+
+            // --- Initial Load ---
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageSelect.value = savedLang;
+            
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+
+            renderSynergyChart();
+            setTheme(savedTheme);
+            applyTranslations(savedLang);
+
+        });
+    </script>
+</body>
+</html>

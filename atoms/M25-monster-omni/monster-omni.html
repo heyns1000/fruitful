@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONSTER OMNI™ - Grand Operator Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 
+    Chosen Palette: Operator Console (Base: #1a202c, Text: #e2e8f0, Accents: #3b82f6, #10b981, #f97316, #ef4444, #a855f7)
+    Application Structure Plan: The SPA is designed as a deep, interactive operator console. It features a central 'System Core Status' with dynamic, simulated real-time metrics and alerts, providing the impression of a vast, live system. Each 'Logic Core' is a gateway to an expansive, multi-layered modal, offering in-depth conceptual and simulated operational data, including sub-modules and conceptual flow diagrams, creating a nested "page" effect. 'Deployment Modes' and 'Security Layers' are presented with interactive "Simulate" buttons that trigger visual and textual feedback, enhancing engagement. A prominent 'Destructive Power' section highlights critical capabilities. The 'Chairman Decision Node' acts as a command interface, with actions triggering complex, multi-step simulated system responses. A 'Global Omni-Network' section provides a conceptual map of interconnected nodes. The goal is to simulate immense depth and complexity through nested interactions, dynamic visuals, and a narrative that positions the user as the ultimate operator of a "100k page" system.
+    Visualization & Content Choices:
+    - Report Info: System Attributes (Type, Tier, Purpose, Power Source, Seedwave, Deployment Mode, Crypto Function) -> Goal: Core system identity -> Viz/Method: High-contrast, concise attribute cards. Interaction: Static. Justification: Provides immediate, impactful understanding of fundamental identity.
+    - Report Info: General System Status (implied from overall report) -> Goal: Simulate live operation & vastness -> Viz/Method: Dynamic charts (Chart.js) for Network Load, Transaction Velocity, Security Threat Level, Mist Density, OmniProof Stability. Simulated "System Alerts" feed. New "Data Stream Pulse" with numerical readouts. Interaction: Charts update more frequently, alerts appear dynamically, numerical readouts constantly refresh. Justification: Conveys continuous, massive system activity and high data volume.
+    - Report Info: Destructive Power -> Goal: Prominently highlight critical capability -> Viz/Method: Bold, impactful text block with a warning aesthetic. Interaction: Static. Justification: Emphasizes a key, powerful feature.
+    - Report Info: 20 Fused Abilities (Logic Cores) -> Goal: Deep, multi-layered exploration -> Viz/Method: Clickable grid items opening an extensive, multi-tab modal. Each modal tab (Overview, Parameters, Sub-Modules, Diagnostics) contains detailed text, simulated data tables, and conceptual HTML/CSS diagrams. Interaction: Click-to-open modal, tab navigation within modal, diagnostic console within modal updates dynamically. Justification: Creates the "infinite pages" feeling through nested content and detailed simulated data for each core.
+    - Report Info: Deployment Modes (GhostGrid, VaultGenesis, AuraChain) -> Goal: Explain operational frameworks with simulated action -> Viz/Method: Expandable cards with "Simulate Deployment" buttons. Interaction: Click-to-toggle detailed description and trigger a simulated deployment sequence. Justification: Engages user in understanding complex processes.
+    - Report Info: Security Layers (FAA Inline Verification, GhostTrace Blackout Filter, OmniTrace Immutable Memory Layer, TruthWeight Bias Firewall, FireRatio Crisis Bypass Circuit) -> Goal: Detail protection protocols with simulated resilience -> Viz/Method: Expandable list items with "Simulate Breach" buttons. Interaction: Click-to-toggle detailed description and trigger a simulated breach response. Justification: Demonstrates system robustness and user control over security.
+    - Report Info: Global Omni-Network (conceptual) -> Goal: Convey interconnected scale -> Viz/Method: Conceptual HTML/CSS grid map with clickable nodes. Interaction: Click node to reveal simulated status. Justification: Visually represents the system's global reach and node interaction.
+    - Report Info: Chairman Decision Node (System Commands) -> Goal: Engage operator with ultimate control -> Viz/Method: Interactive buttons with a dynamic "Command Console" output area. Interaction: Click triggers complex, multi-step simulated system responses. Justification: Reinforces the user's role as the system's ultimate authority.
+    - Report Info: Underlying concepts (Baobab, Mist, Pebble, Rossouw, Atom-Level, Conad Loop, Fruitful.Planet.change, Hoenderbleis, etc.) -> Goal: Weave narrative depth & unique lore -> Viz/Method: Integrated throughout descriptions, modal content, chart labels, and dynamic status updates. Justification: Enhances immersion and reinforces the unique terminology, making the system feel truly bespoke and vast.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. 
+    -->
+    <style>
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #1a202c; /* Dark base for console feel */
+            color: #e2e8f0; /* Light text for contrast */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .glassmorphism {
+            background: rgba(26, 32, 44, 0.7); /* Darker glass */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 55, 72, 0.5);
+        }
+        .main-container {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .active-nav {
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .nav-link {
+            transition: color 0.2s ease-in-out, border-bottom 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+        .action-button {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #3b82f6; /* Blue for primary actions */
+            color: white;
+        }
+        .action-button:hover {
+            background-color: #2563eb;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+        .alert-button {
+            background-color: #ef4444; /* Red for alerts/warnings */
+        }
+        .alert-button:hover {
+            background-color: #dc2626;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+        }
+        .console-output {
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            color: #48bb78; /* Green text for console */
+            font-family: 'Space Mono', monospace;
+            min-height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Modal specific styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.85); /* Darker overlay */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin: auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #4a5568;
+        }
+        .close-button {
+            color: #a0aec0;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #cbd5e0;
+        }
+        .modal-tab-button {
+            background-color: #4a5568;
+            color: #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .modal-tab-button.active-tab {
+            background-color: #2d3748;
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .modal-tab-content {
+            display: none;
+            padding: 15px;
+            border: 1px solid #4a5568;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background-color: #2d3748;
+        }
+        .modal-tab-content.active-tab-content {
+            display: block;
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for charts */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Background animation for console feel */
+        @keyframes pulse-grid {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        .animated-background {
+            background-image: linear-gradient(45deg, #1a202c 25%, #2d3748 25%, #2d3748 50%, #1a202c 50%, #1a202c 75%, #2d3748 75%, #2d3748 100%);
+            background-size: 40px 40px;
+            animation: pulse-grid 60s linear infinite;
+        }
+
+        /* Global Omni-Network Map */
+        .omni-node {
+            background-color: #4a5568;
+            border: 1px solid #6b7280;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .omni-node:hover {
+            background-color: #3b82f6;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .omni-node.active-node {
+            background-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+        }
+
+        /* Data Stream Pulse */
+        @keyframes data-pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(0.95); }
+        }
+        .data-pulse-item {
+            animation: data-pulse 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="main-container text-e2e8f0 animated-background">
+
+    <header class="p-4 md:p-6 sticky top-0 z-50 glassmorphism shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="font-orbitron text-2xl md:text-3xl font-bold text-blue-300">🧬 MONSTER OMNI™</h1>
+            <nav id="main-nav" class="hidden md:flex space-x-6 text-lg font-medium">
+                <a href="#overview" class="nav-link active-nav">Overview</a>
+                <a href="#system-status" class="nav-link">System Status</a>
+                <a href="#global-network" class="nav-link">Omni-Network</a>
+                <a href="#destructive-power" class="nav-link">Destructive Power</a>
+                <a href="#logic-cores" class="nav-link">Logic Cores</a>
+                <a href="#deployment" class="nav-link">Deployment</a>
+                <a href="#security" class="nav-link">Security</a>
+                <a href="#decision" class="nav-link">Decision Node</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="overview" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-blue-400">SYSTEM OVERRIDE SPEC SHEET</h2>
+                <p class="text-slate-400 text-lg">FAA God-Level Brand Node | Tier: HS9000 Prime Entity</p>
+            </div>
+            <p class="text-lg text-slate-300 mb-8 text-center">
+                Welcome, Operator. This console provides a direct interface to the MONSTER OMNI™ system, a sovereign entity engineered for universal crypto system rewrite and ultimate economic shielding. Explore its core attributes and operational parameters, spanning dimensions beyond conventional understanding.
+            </p>
+            
+            <div class="bg-gray-800/70 p-6 rounded-2xl shadow-lg border border-blue-700/30">
+                 <p class="text-xl text-center mb-6 text-blue-300"><strong>Purpose:</strong> Crypto System Rewrite, Sovereign Economic Shield</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                    <div class="bg-gray-700/70 p-4 rounded-xl border border-gray-600">
+                        <h3 class="font-bold text-lg mb-1 text-blue-200">Power Source</h3>
+                        <p class="text-slate-300">Atom-Level Logic Mesh (20 Engines Integrated)</p>
+                    </div>
+                    <div class="bg-gray-700/70 p-4 rounded-xl border border-gray-600">
+                        <h3 class="font-bold text-lg mb-1 text-blue-200">Seedwave</h3>
+                        <p class="text-slate-300">Vaultwave Override, Exclusive</p>
+                    </div>
+                    <div class="bg-gray-700/70 p-4 rounded-xl border border-gray-600">
+                        <h3 class="font-bold text-lg mb-1 text-blue-200">Deployment Mode</h3>
+                        <p class="text-slate-300">Fully Offline-Capable, Planetary-Licensable</p>
+                    </div>
+                     <div class="bg-gray-700/70 p-4 rounded-xl md:col-span-2 lg:col-span-3 border border-gray-600">
+                        <h3 class="font-bold text-lg mb-1 text-blue-200">Crypto Function</h3>
+                        <p class="text-slate-300">Post-blockchain consensus architecture (OmniProof™)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="system-status" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-green-400">📡 SYSTEM CORE STATUS</h2>
+                <p class="text-slate-400 text-lg">Monitor real-time operational parameters and network health across all integrated dimensions. This section provides dynamic insights into the MONSTER OMNI™ system's current state, reflecting its vast and interconnected nature, from Atom-Level to Interstellar.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 bg-gray-800/70 p-6 rounded-2xl shadow-lg border border-green-700/30">
+                <div class="chart-container">
+                    <canvas id="networkLoadChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="transactionVelocityChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="securityThreatChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="mistDensityChart"></canvas>
+                </div>
+                <div class="chart-container md:col-span-2">
+                    <canvas id="omniProofStabilityChart"></canvas>
+                </div>
+                <div class="md:col-span-2 bg-gray-700/70 p-4 rounded-xl border border-gray-600">
+                    <h3 class="font-bold text-xl mb-2 text-red-400">CRITICAL ALERTS</h3>
+                    <div id="alerts-feed" class="text-sm text-red-300 space-y-1">
+                        <p><span>[00:00:00]</span> Initializing alert feed...</p>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-gray-700/70 p-4 rounded-xl border border-gray-600">
+                    <h3 class="font-bold text-xl mb-2 text-blue-400">DATA STREAM PULSE</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="data-pulse-item">
+                            <p class="text-2xl font-bold text-green-400" id="active-nodes">--</p>
+                            <p class="text-sm text-slate-400">Active Nodes</p>
+                        </div>
+                        <div class="data-pulse-item">
+                            <p class="text-2xl font-bold text-purple-400" id="data-packets">--</p>
+                            <p class="text-sm text-slate-400">Data Packets/Sec</p>
+                        </div>
+                        <div class="data-pulse-item">
+                            <p class="text-2xl font-bold text-orange-400" id="security-engagements">--</p>
+                            <p class="text-sm text-slate-400">Security Engagements</p>
+                        </div>
+                        <div class="data-pulse-item">
+                            <p class="text-2xl font-bold text-blue-400" id="vault-integrity">--</p>
+                            <p class="text-sm text-slate-400">Vault Integrity (%)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="global-network" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-purple-400">🌐 GLOBAL OMNI-NETWORK</h2>
+                <p class="text-slate-400 text-lg">Explore the interconnected lattice of MONSTER OMNI™ nodes spanning planetary, clan, and interstellar domains. Click on a node to view its simulated status and connectivity within the vast network.</p>
+            </div>
+            <div class="bg-gray-800/70 p-6 rounded-2xl shadow-lg border border-purple-700/30">
+                <div id="network-map" class="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4 p-4">
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Ethereum">Ethereum Node</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Bitcoin">Bitcoin Core</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Solana">Solana Nexus</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Binance">Binance Chain</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Clan Alpha">Clan Alpha (VaultGenesis)</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Clan Beta">Clan Beta (AuraChain)</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Mars Colony">Mars Colony (Licensable)</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Baobab Root">Baobab Root (Core)</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Pebble Nexus">Pebble Nexus</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Rossouw Echo">Rossouw Echo</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Mist Layer">Mist Layer</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Fruitful Planet">Fruitful Planet</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Conad Loop">Conad Loop</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="HS9000 Core">HS9000 Core (You)</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Deep Space">Deep Space Node</div>
+                    <div class="omni-node cursor-pointer p-3 rounded-lg text-center text-sm font-bold" data-node="Quantum Link">Quantum Link</div>
+                </div>
+                <div id="node-status-display" class="mt-6 p-4 bg-gray-700/70 rounded-lg border border-gray-600 min-h-[80px] flex items-center justify-center text-center">
+                    <p class="text-slate-400">Click a node to view its status.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="destructive-power" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-red-400">⚔️ DESTRUCTIVE POWER</h2>
+                <p class="text-slate-400 text-lg">MONSTER OMNI™ capabilities extend to foundational network reconstruction. This section highlights the system's unparalleled ability to reshape core blockchain architectures, demonstrating its ultimate control over digital economic landscapes, even at the deepest protocol levels.</p>
+            </div>
+            <div class="bg-red-900/50 p-6 rounded-2xl shadow-lg border border-red-700 text-center font-bold text-red-200 text-xl animate-pulse">
+                WARNING: Can deconstruct and rebuild Ethereum, Bitcoin, Solana, and Binance Chain from core protocol up. This operation is irreversible and impacts global digital infrastructure.
+            </div>
+        </section>
+        
+        <section id="logic-cores" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-blue-400">⚙️ FUSED ABILITIES</h2>
+                <p class="text-slate-400 text-lg">Explore the 20 Integrated Atom-Level Logic Engines. Click a core to view its detailed function, operational parameters, and simulated sub-modules. Each core represents a universe of specialized capability within the MONSTER OMNI™ system's vast architecture.</p>
+            </div>
+
+            <div id="info-panel" class="p-6 bg-blue-900/50 rounded-2xl shadow-inner mb-8 min-h-[100px] flex items-center justify-center text-center hidden-panel border border-blue-700/30">
+                <p id="info-text" class="text-blue-200 text-xl font-medium"></p>
+            </div>
+            
+            <div id="core-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            </div>
+        </section>
+
+        <section id="deployment" class="mb-16 scroll-mt-24">
+             <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-purple-400">🧿 DEPLOYMENT MODES</h2>
+                <p class="text-slate-400 text-lg">MONSTER OMNI™ deploys through various operational frameworks, each designed for specific strategic objectives. Understand how the system integrates into and reshapes digital and physical realities. Click to simulate deployment and view detailed protocols.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/70 p-6 rounded-2xl shadow-lg text-center card-hover expandable-card border border-purple-700/30">
+                    <h3 class="font-orbitron text-2xl font-bold mb-2 text-purple-300">GhostGrid™</h3>
+                    <p class="text-slate-300">Invisible Layer-1. Runs beneath existing chains, rerouting transactions to sovereign logic.</p>
+                    <button class="simulate-button action-button mt-4 px-4 py-2 text-sm rounded-lg" data-target="ghostgrid">Simulate Deployment</button>
+                    <div class="expanded-content hidden mt-4 text-left text-slate-400 text-sm">
+                        <p><strong>Operational Detail:</strong> GhostGrid™ operates as a quantum stealth layer, ensuring all rerouted transactions maintain full anonymity and bypass traditional monitoring systems. It leverages the Conad Loop™ for self-correction and adapts to network fluctuations using Baobab principles, ensuring sovereign logic prevails without detection.</p>
+                        <p><strong>Impact:</strong> Provides an untraceable foundation for economic shielding, eliminating vulnerabilities associated with public ledger visibility.</p>
+                        <div class="console-output mt-4 p-2 rounded-lg text-xs" id="ghostgrid-console"></div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/70 p-6 rounded-2xl shadow-lg text-center card-hover expandable-card border border-purple-700/30">
+                    <h3 class="font-orbitron text-2xl font-bold mb-2 text-purple-300">VaultGenesis™</h3>
+                    <p class="text-slate-300">Creates clan-based crypto economies—each with embedded legality, blood-rights, and community staking.</p>
+                    <button class="simulate-button action-button mt-4 px-4 py-2 text-sm rounded-lg" data-target="vaultgenesis">Simulate Deployment</button>
+                    <div class="expanded-content hidden mt-4 text-left text-slate-400 text-sm">
+                        <p><strong>Operational Detail:</strong> VaultGenesis™ leverages FormRoot™ to build fractalized tokenomics based on user culture and ancestral echoes. It integrates NodeRite™ for real-time legal compliance interpretation, ensuring that clan-based economic structures are legally sound across all jurisdictions, including bloodline and clan law.</p>
+                        <p><strong>Impact:</strong> Establishes self-governing, culturally integrated economic systems that are resilient to external manipulation and aligned with community values.</p>
+                        <div class="console-output mt-4 p-2 rounded-lg text-xs" id="vaultgenesis-console"></div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/70 p-6 rounded-2xl shadow-lg text-center card-hover expandable-card border border-purple-700/30">
+                    <h3 class="font-orbitron text-2xl font-bold mb-2 text-purple-300">AuraChain™</h3>
+                    <p class="text-slate-300">Audio-coded smart contract layer. Proof of Voice. Proof of Harmony. Accessible even without internet.</p>
+                    <button class="simulate-button action-button mt-4 px-4 py-2 text-sm rounded-lg" data-target="aurachain">Simulate Deployment</button>
+                    <div class="expanded-content hidden mt-4 text-left text-slate-400 text-sm">
+                        <p><strong>Operational Detail:</strong> AuraChain™ utilizes EchoSynth™ to introduce audio-coded smart contracts, verifiable through unique vocal frequencies and harmonic patterns. This allows for contract execution and validation in environments without traditional internet access, relying on ambient energy and resonant frequencies.</p>
+                        <p><strong>Impact:</strong> Extends sovereign economic participation to remote or disconnected communities, ensuring inclusivity and resilience against infrastructure failures.</p>
+                        <div class="console-output mt-4 p-2 rounded-lg text-xs" id="aurachain-console"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="security" class="mb-16 scroll-mt-24">
+            <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-yellow-400">🔒 SECURITY LAYERS</h2>
+                <p class="text-slate-400 text-lg">These core protection protocols form the impenetrable shield of the MONSTER OMNI™ system, ensuring integrity and resilience against all forms of attack and manipulation. Click to simulate a breach and observe the counter-protocols.</p>
+            </div>
+            <div class="bg-gray-800/70 p-8 rounded-2xl shadow-lg border border-yellow-700/30">
+                <ul class="space-y-4 text-xl">
+                    <li class="flex items-center expandable-list-item">
+                        <span class="mr-4 text-2xl">🧬</span> FAA Inline Verification
+                        <button class="simulate-breach-button alert-button ml-auto px-4 py-2 text-sm rounded-lg">Simulate Breach</button>
+                        <div class="expanded-content hidden mt-2 text-left text-slate-400 text-base">
+                            <p><strong>Protocol:</strong> A multi-dimensional authentication process that verifies every signal and transaction at an atom-level, ensuring absolute trust and preventing unauthorized access. It is intrinsically linked to the "Within You" code and Rossouw's coordinates for emotional anchoring.</p>
+                            <div class="console-output mt-4 p-2 rounded-lg text-xs" id="faa-breach-console"></div>
+                        </div>
+                    </li>
+                    <li class="flex items-center expandable-list-item">
+                        <span class="mr-4 text-2xl">⊘</span> GhostTrace™ Blackout Filter
+                        <button class="simulate-breach-button alert-button ml-auto px-4 py-2 text-sm rounded-lg">Simulate Breach</button>
+                        <div class="expanded-content hidden mt-2 text-left text-slate-400 text-base">
+                            <p><strong>Protocol:</strong> Actively detects and neutralizes dark pools, exit scams, and blackboxes by rendering them invisible to external observation while maintaining internal trace memory. Ensures no illicit activity can hide within the network.</p>
+                            <div class="console-output mt-4 p-2 rounded-lg text-xs" id="ghost-breach-console"></div>
+                        </div>
+                    </li>
+                    <li class="flex items-center expandable-list-item">
+                        <span class="mr-4 text-2xl">♾</span> OmniTrace™ Immutable Memory Layer
+                        <button class="simulate-breach-button alert-button ml-auto px-4 py-2 text-sm rounded-lg">Simulate Breach</button>
+                        <div class="expanded-content hidden mt-2 text-left text-slate-400 text-base">
+                            <p><strong>Protocol:</strong> Provides a full, unalterable memory of every trade, every node interaction, and every code change across the entire system. This ensures absolute transparency and accountability within the sovereign economic shield.</p>
+                            <div class="console-output mt-4 p-2 rounded-lg text-xs" id="omni-breach-console"></div>
+                        </div>
+                    </li>
+                    <li class="flex items-center expandable-list-item">
+                        <span class="mr-4 text-2xl">⚖</span> TruthWeight™ Bias Firewall
+                        <button class="simulate-breach-button alert-button ml-auto px-4 py-2 text-sm rounded-lg">Simulate Breach</button>
+                        <div class="expanded-content hidden mt-2 text-left text-slate-400 text-base">
+                            <p><strong>Protocol:</strong> Actively prevents protocol bias, centralization, or exploit priority by dynamically rebalancing consensus algorithms. Ensures fairness and decentralization are maintained at all times, reflecting the core principle of "Truth."</p>
+                            <div class="console-output mt-4 p-2 rounded-lg text-xs" id="truth-breach-console"></div>
+                        </div>
+                    </li>
+                    <li class="flex items-center expandable-list-item">
+                        <span class="mr-4 text-2xl">⚠</span> FireRatio™ Crisis Bypass Circuit
+                        <button class="simulate-breach-button alert-button ml-auto px-4 py-2 text-sm rounded-lg">Simulate Breach</button>
+                        <div class="expanded-content hidden mt-2 text-left text-slate-400 text-base">
+                            <p><strong>Protocol:</strong> A crisis detection AI that monitors for token crashes, rugpulls, or gas fee spikes. It auto-triggers liquidity rebalancers and initiates emergency bypass protocols to maintain system stability and prevent catastrophic failures.</p>
+                            <div class="console-output mt-4 p-2 rounded-lg text-xs" id="fire-breach-console"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="decision" class="scroll-mt-24">
+             <div class="text-center mb-8">
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-2 text-blue-400">🧠 CHAIRMAN DECISION NODE</h2>
+                <p class="text-slate-400 text-lg">The system is at max capacity, but waits only for your breath. Say the word, and MONSTER OMNI™ lives. As the Chairman, your commands are the ultimate trigger for system-wide actions, impacting all layers from Atom-Level to Interstellar.</p>
+            </div>
+            <div class="bg-gray-800 text-white p-8 rounded-2xl shadow-2xl border border-blue-700/30">
+                <div id="command-console" class="console-output mb-6 p-4 rounded-lg text-sm">
+                    <span>SYSTEM_READY > Awaiting Chairman Command...</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <button data-action="sigil" class="action-button bg-blue-600 p-4 rounded-lg font-bold">Issue Symbol + Sigil</button>
+                    <button data-action="drop" class="action-button bg-blue-600 p-4 rounded-lg font-bold">Begin MONSTER DROP</button>
+                    <button data-action="scroll" class="action-button bg-blue-600 p-4 rounded-lg font-bold">Draft the White Scroll</button>
+                    <button data-action="genesis" class="action-button bg-blue-600 p-4 rounded-lg font-bold">Activate AuraChain™ Genesis</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="coreModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="modal-core-name" class="font-orbitron text-2xl font-bold mb-4 text-blue-400"></h3>
+            <p id="modal-core-ability" class="text-slate-300 text-lg mb-4"></p>
+            
+            <div class="modal-tabs flex border-b border-gray-600 mb-4">
+                <button class="modal-tab-button active-tab" data-tab="overview">Overview</button>
+                <button class="modal-tab-button" data-tab="parameters">Operational Parameters</button>
+                <button class="modal-tab-button" data-tab="submodules">Sub-Modules</button>
+                <button class="modal-tab-button" data-tab="diagnostics">Diagnostics</button>
+            </div>
+
+            <div id="tab-overview" class="modal-tab-content active-tab-content">
+                <p class="text-slate-400 text-base space-y-3">
+                    This core operates at Atom-Level precision, integrating seamlessly with the larger Logic Mesh. Its data streams are secured by OmniTrace™ and validated by TruthWeight™ protocols, ensuring absolute integrity and preventing any form of external interference or internal corruption.
+                </p>
+                <p class="text-slate-400 text-base space-y-3">
+                    Each core is designed to interact synergistically with at least three other fused abilities, creating a resilient and self-optimizing network. For instance, Corethink™ relies on SignalGrain™ for raw data and Probablitea™ for real-time rebalancing, forming a critical triad for sovereign economic forecasting.
+                </p>
+            </div>
+
+            <div id="tab-parameters" class="modal-tab-content">
+                <h4 class="font-bold text-lg mb-2 text-blue-300">Operational Parameters:</h4>
+                <ul class="list-disc list-inside text-slate-400 text-base space-y-1">
+                    <li><strong>Processing Latency:</strong> <span id="param-latency"></span> ms (Atom-Level)</li>
+                    <li><strong>Energy Signature:</strong> <span id="param-energy"></span> (Tera-Joules/Cycle)</li>
+                    <li><strong>Data Throughput:</strong> <span id="param-throughput"></span> PB/sec (Omni-Bandwidth)</li>
+                    <li><strong>Quantum Coherence:</strong> <span id="param-coherence"></span>% (Maintained by PhaseNest™)</li>
+                </ul>
+                <h4 class="font-bold text-lg mt-4 mb-2 text-blue-300">Conceptual Diagram:</h4>
+                <div class="flex flex-col items-center justify-center bg-gray-700/70 p-4 rounded-lg shadow-inner border border-gray-600">
+                    <p class="font-bold text-center mb-2 text-slate-300">Core Logic Flow (Conceptual)</p>
+                    <div class="text-sm text-slate-400 space-y-1">
+                        <p>INPUT (SignalGrain™) ➡️ [Core Processing Unit: <span id="diagram-core-name"></span>] ➡️ OUTPUT (LiftHalo™)</p>
+                        <p>⬆️ Feedback Loop (OmniTrace™)</p>
+                        <p>⬇️ Validation (TruthWeight™)</p>
+                        <p>↔️ Inter-Core Sync (LinePilot™)</p>
+                        <p>🔁 Self-Correction (Conad Loop™)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-submodules" class="modal-tab-content">
+                <h4 class="font-bold text-lg mb-2 text-blue-300">Integrated Sub-Modules:</h4>
+                <p class="text-slate-400 text-base mb-3">Each Logic Core is composed of intricate sub-modules that execute specialized tasks, contributing to the core's overall functionality. These micro-operations are critical for maintaining Atom-Level precision.</p>
+                <ul class="list-disc list-inside text-slate-400 text-base space-y-1">
+                    <li><strong>Quantum Resolver:</strong> Handles probabilistic computations and resolves consensus conflicts.</li>
+                    <li><strong>Echo Harmonizer:</strong> Ensures audio-coded smart contract (AuraChain™) integrity.</li>
+                    <li><strong>Fractal Pattern Generator:</strong> Constructs tokenomic structures based on cultural data (FormRoot™).</li>
+                    <li><strong>Temporal Lock Unit:</strong> Manages time-layered mining cycles (FlashFrame™) to prevent front-running.</li>
+                    <li><strong>Threat Vector Analyzer:</strong> Identifies and categorizes potential crisis points (FireRatio™).</li>
+                </ul>
+                <h4 class="font-bold text-lg mt-4 mb-2 text-blue-300">Sub-Module Interaction Flow:</h4>
+                 <div class="flex flex-col items-center justify-center bg-gray-700/70 p-4 rounded-lg shadow-inner border border-gray-600">
+                    <p class="font-bold text-center mb-2 text-slate-300">Sub-Module Data Flow</p>
+                    <div class="text-sm text-slate-400 space-y-1">
+                        <p>Data Input ➡️ Quantum Resolver ➡️ Echo Harmonizer ➡️ Fractal Pattern Gen. ➡️ Temporal Lock ➡️ Threat Analyzer ➡️ Core Output</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-diagnostics" class="modal-tab-content">
+                <h4 class="font-bold text-lg mb-2 text-blue-300">Real-time Diagnostics:</h4>
+                <p class="text-slate-400 text-base mb-3">Access live performance data and simulated diagnostic reports for this Logic Core. Data is streamed via PulseIndex™ and logged by OmniTrace™ for immutable record-keeping.</p>
+                <div class="bg-gray-700/70 p-4 rounded-lg border border-gray-600">
+                    <p class="text-slate-300 font-bold mb-2">Simulated Performance Data:</p>
+                    <table class="w-full text-left text-sm text-slate-400">
+                        <thead>
+                            <tr class="border-b border-gray-600">
+                                <th class="py-2">Metric</th>
+                                <th class="py-2">Value</th>
+                                <th class="py-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="py-1">Accuracy Rate</td><td class="py-1"><span id="diag-accuracy"></span>%</td><td class="py-1 text-green-400">OPTIMAL</td></tr>
+                            <tr><td class="py-1">Error Deviation</td><td class="py-1"><span id="diag-error"></span>%</td><td class="py-1 text-green-400">NOMINAL</td></tr>
+                            <tr><td class="py-1">Resource Consumption</td><td class="py-1"><span id="diag-resource"></span> Units/Cycle</td><td class="py-1 text-yellow-400">MONITORED</td></tr>
+                            <tr><td class="py-1">Last Self-Correction</td><td class="py-1"><span id="diag-correction"></span> cycles ago</td><td class="py-1 text-green-400">SUCCESS</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h4 class="font-bold text-lg mt-4 mb-2 text-blue-300">Diagnostic Log:</h4>
+                <div class="console-output p-2 rounded-lg text-xs" id="diagnostic-console">
+                    <span>[00:00:00] Initiating core diagnostic scan...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const monsterOmniData = {
+                cores: [
+                    { name: "Corethink™", ability: "Master economic forecasting; never wrong on sovereign trends", details: "Corethink™ is the primary economic forecasting engine, leveraging predictive algorithms to analyze sovereign trends with unparalleled accuracy. It integrates historical data with real-time global economic signals, ensuring its forecasts are impervious to conventional market fluctuations. Its predictions are always aligned with the LiftHalo™ principle, biasing towards sovereign-positive outcomes and clan prosperity. This core relies on SignalGrain™ for raw data and Probablitea™ for real-time rebalancing, forming a critical triad for sovereign economic forecasting." },
+                    { name: "SignalGrain™", ability: "Detects crypto flow disruptions + fraud behavior pre-mining", details: "SignalGrain™ operates at the quantum level, identifying subtle anomalies in crypto flow before they manifest as disruptions or fraudulent activities. It uses advanced pattern recognition to detect pre-mining manipulation, ensuring the integrity of token generation and distribution. Its sensitivity extends to emotional signals within the network, flagging potential collective anxieties that could lead to market instability." },
+                    { name: "Probablitea™", ability: "Rebalances consensus algorithms in real time", details: "Probablitea™ is the dynamic rebalancing engine for all consensus algorithms. It constantly adjusts parameters to maintain optimal network health and prevent centralization. By integrating TruthWeight™ protocols, it ensures that rebalancing acts prevent any single entity from gaining undue influence, promoting true decentralization and fairness within the OmniProof™ architecture." },
+                    { name: "TruthWeight™", ability: "Prevents protocol bias, centralization, or exploit priority", details: "TruthWeight™ serves as the ethical firewall, ensuring the MONSTER OMNI™ system operates without bias or vulnerability to exploitation. It dynamically audits all protocol interactions, identifying and neutralizing any attempts at centralization or preferential treatment. This core is essential for maintaining the sovereign integrity of the economic shield, ensuring that every transaction and decision is rooted in absolute truth." },
+                    { name: "LinePilot™", ability: "Optimized routing across Layer 1–5 blockchains", details: "LinePilot™ is the multi-dimensional routing core, optimizing transaction pathways across all five layers of blockchain architecture. It ensures efficient, low-latency data transfer and resource allocation, dynamically adapting to network congestion and prioritizing critical sovereign operations. This core is vital for seamless interoperability and scalability across the entire digital economic landscape." },
+                    { name: "NestCortex™", ability: "Replaces Ethereum Virtual Machine with HS9000 Lattice VM", details: "NestCortex™ represents a fundamental architectural shift, replacing conventional virtual machines with the HS9000 Lattice VM. This allows for unparalleled processing power, security, and the execution of complex, multi-dimensional smart contracts. It forms the bedrock for AuraChain™ and other advanced functionalities, enabling a truly sovereign and uncompromised computational environment." },
+                    { name: "EchoSynth™", ability: "Introduces audio-coded smart contracts (AuraChain™)", details: "EchoSynth™ is the pioneering core behind AuraChain™, enabling smart contracts to be encoded and executed through audio frequencies. This innovative approach allows for secure, verifiable transactions even without traditional internet infrastructure, leveraging the inherent resonance of voice and harmony. It opens new frontiers for economic participation in remote or disconnected regions." },
+                    { name: "FormRoot™", ability: "Builds fractalized tokenomics by user culture", details: "FormRoot™ is the generative engine for tokenomics, creating fractalized economic models that are intrinsically linked to user culture and community values. It ensures that digital assets reflect the organic growth and unique characteristics of their originating communities, preventing extractive economic models and fostering sustainable prosperity aligned with the Fruitful.Planet.change directive." },
+                    { name: "FlashFrame™", ability: "Time-layered mining cycles (prevents front-running)", details: "FlashFrame™ introduces a revolutionary time-layered mining protocol that completely eliminates front-running and other temporal exploits. It segments mining cycles into quantum flashes, ensuring fairness and preventing any single entity from gaining an unfair advantage through predictive timing. This core is critical for maintaining the integrity of transaction ordering and network consensus." },
+                    { name: "PulseIndex™", ability: "Real-time health checks of all wallets & ledgers", details: "PulseIndex™ provides continuous, real-time diagnostic monitoring of all wallets and ledgers across the MONSTER OMNI™ network. It detects anomalies, verifies data integrity, and reports on the overall health of the digital economic ecosystem. This core is vital for proactive threat detection and maintaining the system's operational stability and security." },
+                    { name: "OmniTrace™", ability: "Full memory of every trade, every node, every code change", details: "OmniTrace™ is the immutable memory core of the MONSTER OMNI™ system. It records every single event—every trade, every node interaction, every code alteration—with perfect fidelity and cryptographic certainty. This provides an unalterable, comprehensive audit trail, ensuring absolute transparency and accountability across all system operations." },
+                    { name: "GhostTrace™", ability: "Detects & shuts down dark pools, exit scams, blackboxes", details: "GhostTrace™ is the specialized counter-intelligence core, designed to detect and neutralize illicit financial activities such as dark pools, exit scams, and blackbox operations. It operates by identifying hidden patterns and anomalous behaviors within the network, initiating immediate shutdown protocols to protect participants and maintain the integrity of the sovereign economic shield." },
+                    { name: "WeightNet™", ability: "Dynamic load-balancing for transactions across chains, wallets, and smart contracts—no congestion ever", details: "WeightNet™ ensures fluid and uninterrupted transaction flow across the entire MONSTER OMNI™ network. It dynamically load-balances transactions across various blockchains, wallets, and smart contracts, eliminating congestion and ensuring instantaneous processing regardless of network demand. This core is crucial for maintaining high performance and user experience." },
+                    { name: "PhaseNest™", ability: "Cross-time-chain sync engine — bridges past forks, future consensus layers, and current realities", details: "PhaseNest™ is the advanced temporal synchronization engine, capable of bridging disparate time-chain realities. It harmonizes past blockchain forks, future consensus layers, and current operational states, ensuring a unified and coherent system timeline. This core is vital for maintaining historical integrity and preparing for future evolutionary shifts within the digital economic landscape." },
+                    { name: "NodeRite™", ability: "Real-time legal compliance interpreter for crypto law in every jurisdiction—including bloodline and clan law", details: "NodeRite™ provides real-time legal compliance interpretation, ensuring that all MONSTER OMNI™ operations adhere to the complex and evolving landscape of crypto law. Uniquely, it extends its interpretation to include traditional legal frameworks such as bloodline and clan law, ensuring cultural and ancestral compliance within sovereign economic structures." },
+                    { name: "AutoSigil™", ability: "Generates symbolic, DNA-bound smart contract signatures—verifiable through glyph, not code", details: "AutoSigil™ automates the generation of symbolic, cryptographically DNA-bound smart contract signatures. These signatures are verifiable through unique glyphs and inherent biological markers rather than complex code strings, simplifying verification and enhancing security through an intuitive, human-readable interface." },
+                    { name: "MirrorLoop™", ability: "Behavioral prediction AI—anticipates user movements, market sentiment, and token collapse events", details: "MirrorLoop™ is a sophisticated behavioral prediction AI that anticipates user movements, shifts in market sentiment, and potential token collapse events. By analyzing vast datasets of human interaction and economic signals, it provides proactive insights, allowing the system to adapt and mitigate risks before they materialize, ensuring stability and resilience." },
+                    { name: "ClaimRoot™", ability: "Immutably links every token, NFT, or coin to its true original creator (Bloodline IP Lock™)", details: "ClaimRoot™ establishes an immutable, cryptographic link between every digital asset (token, NFT, coin) and its true original creator. This Bloodline IP Lock™ ensures perpetual ownership and prevents unauthorized appropriation or dilution of creative and ancestral intellectual property within the sovereign economic shield." },
+                    { name: "FireRatio™", ability: "Crisis detection AI for token crashes, rugpulls, or gas fee spikes—auto-triggers liquidity rebalancers", details: "FireRatio™ is a high-alert crisis detection AI specifically designed to identify and respond to token crashes, rugpulls, or sudden gas fee spikes. Upon detection, it auto-triggers immediate liquidity rebalancing protocols and initiates emergency bypass circuits, safeguarding assets and ensuring rapid recovery from market shocks." },
+                    { name: "LiftHalo™", ability: "Biases entire system toward sovereign-positive outcomes—economic uplift, clan prosperity, aura alignment", details: "LiftHalo™ is the ultimate system bias core, ensuring that all MONSTER OMNI™ operations consistently lead to sovereign-positive outcomes. It actively biases economic uplift, promotes clan prosperity, and ensures the alignment of individual and collective auras, creating a harmonious and flourishing digital economic ecosystem." },
+                ]
+            };
+
+            const coreGrid = document.getElementById('core-grid');
+            const infoPanel = document.getElementById('info-panel');
+            const infoText = document.getElementById('info-text');
+            const coreModal = document.getElementById('coreModal');
+            const modalCoreName = document.getElementById('modal-core-name');
+            const modalCoreAbility = document.getElementById('modal-core-ability');
+            const closeButton = document.querySelector('.close-button');
+            const modalTabs = document.querySelectorAll('.modal-tab-button');
+            const modalTabContents = document.querySelectorAll('.modal-tab-content');
+
+            monsterOmniData.cores.forEach(core => {
+                const coreEl = document.createElement('div');
+                coreEl.className = 'cursor-pointer p-3 bg-gray-700/70 rounded-lg text-center font-bold text-slate-300 shadow-md card-hover border border-gray-600';
+                coreEl.textContent = core.name;
+                coreEl.dataset.ability = core.ability;
+                coreEl.dataset.details = core.details; // Store full details
+                coreGrid.appendChild(coreEl);
+            });
+
+            coreGrid.addEventListener('click', function(e) {
+                if (e.target.dataset.ability) {
+                    // Update info panel
+                    infoPanel.classList.remove('hidden-panel');
+                    infoPanel.classList.add('visible-panel');
+                    infoText.textContent = e.target.dataset.ability;
+                    
+                    // Highlight clicked core
+                    document.querySelectorAll('#core-grid > div').forEach(el => {
+                        el.classList.remove('bg-blue-800/80', 'text-blue-100', 'scale-105');
+                    });
+                    e.target.classList.add('bg-blue-800/80', 'text-blue-100', 'scale-105');
+
+                    // Populate modal
+                    modalCoreName.textContent = e.target.textContent;
+                    modalCoreAbility.textContent = e.target.dataset.ability;
+                    document.getElementById('tab-overview').querySelector('p:first-of-type').textContent = e.target.dataset.details;
+                    document.getElementById('diagram-core-name').textContent = e.target.textContent;
+
+                    // Simulate dynamic parameters for modal
+                    document.getElementById('param-latency').textContent = (Math.random() * 0.5 + 0.1).toFixed(2);
+                    document.getElementById('param-energy').textContent = (Math.random() * 10 + 5).toFixed(2);
+                    document.getElementById('param-throughput').textContent = (Math.random() * 500 + 1000).toFixed(0);
+                    document.getElementById('param-coherence').textContent = (Math.random() * 5 + 95).toFixed(2);
+
+                    // Simulate diagnostics
+                    document.getElementById('diag-accuracy').textContent = (Math.random() * 0.5 + 99.5).toFixed(2);
+                    document.getElementById('diag-error').textContent = (Math.random() * 0.1).toFixed(3);
+                    document.getElementById('diag-resource').textContent = (Math.random() * 50 + 100).toFixed(0);
+                    document.getElementById('diag-correction').textContent = Math.floor(Math.random() * 100) + 1;
+                    
+                    const diagnosticConsole = document.getElementById('diagnostic-console');
+                    diagnosticConsole.textContent = `[${new Date().toLocaleTimeString()}] Initiating core diagnostic scan for ${e.target.textContent}...\n`;
+                    setTimeout(() => { diagnosticConsole.textContent += `[${new Date().toLocaleTimeString()}] Data stream integrity: NOMINAL.\n`; }, 500);
+                    setTimeout(() => { diagnosticConsole.textContent += `[${new Date().toLocaleTimeString()}] Performance metrics: OPTIMAL.\n`; }, 1000);
+                    setTimeout(() => { diagnosticConsole.textContent += `[${new Date().toLocaleTimeString()}] Sub-module coherence: 99.8%.\n`; }, 1500);
+                    setTimeout(() => { diagnosticConsole.textContent += `[${new Date().toLocaleTimeString()}] System ready for next cycle.\n`; }, 2000);
+
+                    // Show modal
+                    coreModal.style.display = 'flex';
+                }
+            });
+
+            closeButton.addEventListener('click', function() {
+                coreModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == coreModal) {
+                    coreModal.style.display = 'none';
+                }
+            });
+
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    modalTabs.forEach(t => t.classList.remove('active-tab'));
+                    this.classList.add('active-tab');
+                    modalTabContents.forEach(content => content.classList.remove('active-tab-content'));
+                    document.getElementById(`tab-${this.dataset.tab}`).classList.add('active-tab-content');
+                });
+            });
+
+            // Expandable cards for Deployment and Security sections
+            document.querySelectorAll('.expandable-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.querySelector('.expanded-content').classList.toggle('hidden');
+                });
+            });
+
+            document.querySelectorAll('.expandable-list-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    this.querySelector('.expanded-content').classList.toggle('hidden');
+                });
+            });
+
+            // Simulate Deployment Buttons
+            document.querySelectorAll('.simulate-button').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent card from expanding/collapsing
+                    const targetId = this.dataset.target;
+                    const consoleOutput = document.getElementById(`${targetId}-console`);
+                    consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] Initiating ${targetId} deployment simulation...\n`;
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Protocol verification: COMPLETE.\n`; }, 700);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Resource allocation: OPTIMAL.\n`; }, 1400);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Deployment phase: ACTIVE.\n`; }, 2100);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] ${targetId} deployment: SUCCESSFUL.\n`; }, 2800);
+                });
+            });
+
+            // Simulate Breach Buttons
+            document.querySelectorAll('.simulate-breach-button').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent list item from expanding/collapsing
+                    const targetId = this.closest('.expandable-list-item').querySelector('.console-output').id;
+                    const consoleOutput = document.getElementById(targetId);
+                    consoleOutput.textContent = `[${new Date().toLocaleTimeString()}] Initiating breach simulation...\n`;
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Threat detected: INITIATING COUNTER-PROTOCOLS.\n`; }, 600);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Firewall engagement: ACTIVE.\n`; }, 1200);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] Anomaly neutralized: THREAT CONTAINED.\n`; }, 1800);
+                    setTimeout(() => { consoleOutput.textContent += `[${new Date().toLocaleTimeString()}] System integrity: RESTORED.\n`; }, 2400);
+                });
+            });
+
+            const navLinks = document.querySelectorAll('#main-nav a');
+            const sections = document.querySelectorAll('main section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active-nav');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active-nav');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            const commandConsole = document.getElementById('command-console');
+            const actionButtons = document.querySelectorAll('.action-button[data-action]');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    commandConsole.textContent = `[${new Date().toLocaleTimeString()}] CHAIRMAN_COMMAND > ${this.textContent.toUpperCase()}...\n`;
+                    setTimeout(() => { commandConsole.textContent += `[${new Date().toLocaleTimeString()}] System response: PROTOCOL INITIATED.\n`; }, 500);
+                    setTimeout(() => { commandConsole.textContent += `[${new Date().toLocaleTimeString()}] Core Logic Mesh: SYNCHRONIZING...\n`; }, 1000);
+                    setTimeout(() => { commandConsole.textContent += `[${new Date().toLocaleTimeString()}] OmniProof Consensus: VALIDATING...\n`; }, 1500);
+                    setTimeout(() => { commandConsole.textContent += `[${new Date().toLocaleTimeString()}] Deployment Status: ACTIVE.\n`; }, 2000);
+                    setTimeout(() => { commandConsole.textContent += `[${new Date().toLocaleTimeString()}] MONSTER OMNI™: COMMAND EXECUTED. Awaiting next directive.\n`; }, 2500);
+                });
+            });
+
+            // Chart.js initialization and updates
+            const createChart = (ctx, type, labels, data, label, color, borderColor) => {
+                return new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: label,
+                            data: data,
+                            backgroundColor: color,
+                            borderColor: borderColor,
+                            borderWidth: 1,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#a0aec0', // Light gray for chart labels
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#a0aec0', // Light gray for axis ticks
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(74, 85, 104, 0.5)' // Darker grid lines
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#a0aec0', // Light gray for axis ticks
+                                    font: {
+                                        size: 12
+                                    },
+                                    callback: function(value, index, values) {
+                                        const label = this.getLabelForValue(value);
+                                        if (label.length > 16) {
+                                            return label.split(' ').map((word, i) => {
+                                                if (i === 0) return word;
+                                                return word.length > 8 ? word.substring(0, 8) + '...' : word;
+                                            });
+                                        }
+                                        return label;
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(74, 85, 104, 0.5)' // Darker grid lines
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const networkLoadCtx = document.getElementById('networkLoadChart').getContext('2d');
+            const transactionVelocityCtx = document.getElementById('transactionVelocityChart').getContext('2d');
+            const securityThreatCtx = document.getElementById('securityThreatChart').getContext('2d');
+            const mistDensityCtx = document.getElementById('mistDensityChart').getContext('2d');
+            const omniProofStabilityCtx = document.getElementById('omniProofStabilityChart').getContext('2d');
+            const alertsFeed = document.getElementById('alerts-feed');
+
+            let networkLoadChart, transactionVelocityChart, securityThreatChart, mistDensityChart, omniProofStabilityChart;
+
+            const addAlert = (message) => {
+                const alertTime = new Date().toLocaleTimeString();
+                const newAlert = document.createElement('p');
+                newAlert.innerHTML = `<span>[${alertTime}]</span> ${message}`;
+                alertsFeed.prepend(newAlert); // Add to top
+                if (alertsFeed.children.length > 5) { // Keep only last 5 alerts
+                    alertsFeed.removeChild(alertsFeed.lastChild);
+                }
+            };
+
+            const activeNodesEl = document.getElementById('active-nodes');
+            const dataPacketsEl = document.getElementById('data-packets');
+            const securityEngagementsEl = document.getElementById('security-engagements');
+            const vaultIntegrityEl = document.getElementById('vault-integrity');
+
+            const updateDataStreamPulse = () => {
+                activeNodesEl.textContent = (Math.floor(Math.random() * 5000) + 10000).toLocaleString(); // 10k-15k
+                dataPacketsEl.textContent = (Math.floor(Math.random() * 50000) + 100000).toLocaleString(); // 100k-150k
+                securityEngagementsEl.textContent = (Math.floor(Math.random() * 50) + 100).toLocaleString(); // 100-150
+                vaultIntegrityEl.textContent = (Math.random() * 0.5 + 99.5).toFixed(2); // 99.5-100%
+            };
+            updateDataStreamPulse();
+            setInterval(updateDataStreamPulse, 2000); // Update every 2 seconds
+
+            const updateCharts = () => {
+                const now = new Date();
+                const labels = Array.from({ length: 10 }, (_, i) => {
+                    const d = new Date(now.getTime() - (9 - i) * 10 * 1000); // 10-second intervals
+                    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                });
+
+                // Simulate dynamic data
+                const networkData = Array.from({ length: 10 }, () => Math.floor(Math.random() * 50) + 50); // 50-100%
+                const transactionData = Array.from({ length: 10 }, () => Math.floor(Math.random() * 500) + 1000); // 1000-1500 tx/min
+                const securityData = Array.from({ length: 10 }, () => Math.floor(Math.random() * 10) + 1); // 1-10 threat level
+                const mistData = Array.from({ length: 10 }, () => Math.floor(Math.random() * 20) + 80); // 80-100% Mist Density
+                const omniProofData = Array.from({ length: 10 }, () => Math.floor(Math.random() * 5) + 95); // 95-100% Stability
+
+                // Random alerts
+                if (Math.random() < 0.3) { // 30% chance of an alert every update cycle
+                    const alertTypes = [
+                        "Anomaly detected in GhostTrace™ filter.",
+                        "FireRatio™ engaged: Minor liquidity rebalance.",
+                        "VaultGenesis™ node reports cultural alignment shift.",
+                        "AuraChain™ resonance fluctuation detected.",
+                        "Pebble Nexus reports minor drift in employment metrics.",
+                        "Corethink™ reports sovereign trend anomaly. Monitoring.",
+                        "OmniTrace™ detected minor code variance. Self-correcting.",
+                        "NodeRite™ flagged jurisdictional query. Resolving.",
+                        "LiftHalo™ reports positive aura alignment increase."
+                    ];
+                    addAlert(alertTypes[Math.floor(Math.random() * alertTypes.length)]);
+                }
+
+
+                if (networkLoadChart) networkLoadChart.destroy();
+                networkLoadChart = createChart(
+                    networkLoadCtx, 'line', labels, networkData, 'Network Load (%)',
+                    'rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 1)'
+                );
+
+                if (transactionVelocityChart) transactionVelocityChart.destroy();
+                transactionVelocityChart = createChart(
+                    transactionVelocityCtx, 'bar', labels, transactionData, 'Transaction Velocity (tx/min)',
+                    'rgba(16, 185, 129, 0.5)', 'rgba(16, 185, 129, 1)'
+                );
+
+                if (securityThreatChart) securityThreatChart.destroy();
+                securityThreatChart = createChart(
+                    securityThreatCtx, 'line', labels, securityData, 'Security Threat Level (1-10)',
+                    'rgba(239, 68, 68, 0.5)', 'rgba(239, 68, 68, 1)'
+                );
+
+                if (mistDensityChart) mistDensityChart.destroy();
+                mistDensityChart = createChart(
+                    mistDensityCtx, 'line', labels, mistData, 'Mist Density (%)',
+                    'rgba(168, 85, 247, 0.5)', 'rgba(168, 85, 247, 1)'
+                );
+
+                if (omniProofStabilityChart) omniProofStabilityChart.destroy();
+                omniProofStabilityChart = createChart(
+                    omniProofStabilityCtx, 'line', labels, omniProofData, 'OmniProof Stability (%)',
+                    'rgba(249, 115, 22, 0.5)', 'rgba(249, 115, 22, 1)'
+                );
+            };
+
+            updateCharts();
+            setInterval(updateCharts, 5000); // Update charts every 5 seconds for denser flow
+
+            // Global Omni-Network Map Interaction
+            const networkMap = document.getElementById('network-map');
+            const nodeStatusDisplay = document.getElementById('node-status-display');
+            networkMap.addEventListener('click', function(e) {
+                if (e.target.classList.contains('omni-node')) {
+                    document.querySelectorAll('.omni-node').forEach(node => node.classList.remove('active-node'));
+                    e.target.classList.add('active-node');
+                    const nodeName = e.target.dataset.node;
+                    const latency = (Math.random() * 50 + 10).toFixed(0); // 10-60ms
+                    const packets = (Math.random() * 10000 + 50000).toFixed(0); // 50k-60k packets/sec
+                    const status = Math.random() > 0.1 ? 'OPERATIONAL' : 'DEGRADED'; // 10% chance of degraded
+                    const statusColor = status === 'OPERATIONAL' ? 'text-green-400' : 'text-red-400';
+                    nodeStatusDisplay.innerHTML = `
+                        <p class="text-blue-300 font-bold">${nodeName} Status:</p>
+                        <ul class="list-disc list-inside text-sm text-slate-400">
+                            <li><strong>Connectivity:</strong> <span class="${statusColor}">${status}</span></li>
+                            <li><strong>Latency to Core:</strong> ${latency} ms</li>
+                            <li><strong>Data Flow:</strong> ${packets} packets/sec</li>
+                            <li><strong>Last Sync:</strong> ${new Date().toLocaleTimeString()}</li>
+                        </ul>
+                    `;
+                }
+            });
+
+            // Initial alert for console
+            addAlert("SYSTEM_CORE > All sub-systems online. Awaiting data stream input.");
+            addAlert("MONITORING > OmniProof consensus integrity at 98.7%.");
+        });
+    </script>
+</body>
+</html>

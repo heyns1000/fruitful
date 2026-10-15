@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindLift™ Core Protocol – FAA.zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Consistent with FAA.zone theme, optimized for product page */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --mindlift-color: #7B68EE; /* MediumPurple for MindLift theme */
+            --mindlift-accent-color: #9370DB; /* Brighter purple */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .logo {
+            color: var(--text-color-dark);
+        }
+        .logo-faa {
+            color: var(--primary-color);
+        }
+        .logo-buildnest {
+            color: var(--text-color-light);
+        }
+        .dark-mode .logo-buildnest {
+            color: var(--text-color-dark);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+
+        /* Section Styling */
+        .section-padding {
+            padding: 80px 20px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+
+        /* MindLift Specific Styles */
+        .mindlift-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--mindlift-color) 0%, var(--mindlift-accent-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(123, 104, 238, 0.4);
+        }
+        .mindlift-hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.05em;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .mindlift-hero p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .mindlift-hero .cta-button {
+            background-color: white;
+            color: var(--mindlift-color);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .mindlift-hero .cta-button:hover {
+            background-color: #f0f0f0;
+            color: var(--mindlift-accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .feature-card {
+            background-color: var(--card-bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-light);
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dark-mode .feature-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .feature-card .icon {
+            font-size: 2.5rem;
+            color: var(--mindlift-color);
+            margin-bottom: 15px;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .feature-card h3 {
+            color: var(--text-color-dark);
+        }
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--muted-text-light);
+            line-height: 1.6;
+        }
+        .dark-mode .feature-card p {
+            color: var(--muted-text-dark);
+        }
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .feature-card ul li {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+            margin-bottom: 5px;
+        }
+        .dark-mode .feature-card ul li {
+            color: var(--muted-text-dark);
+        }
+        .feature-card ul li strong {
+            color: var(--text-color-light);
+        }
+        .dark-mode .feature-card ul li strong {
+            color: var(--text-color-dark);
+        }
+
+
+        .pricing-section {
+            background-color: var(--bg-color-light);
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .dark-mode .pricing-section {
+            background-color: var(--bg-color-dark);
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .pricing-card {
+            background-color: var(--card-bg-light);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .dark-mode .pricing-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .dark-mode .pricing-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .pricing-card.highlight {
+            border-color: var(--mindlift-color);
+            box-shadow: 0 8px 25px rgba(123, 104, 238, 0.3);
+            transform: translateY(-8px);
+        }
+        .pricing-card.highlight .price-button {
+            background-color: var(--mindlift-color);
+        }
+        .pricing-card.highlight .price-button:hover {
+            background-color: var(--mindlift-accent-color);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .pricing-card h3 {
+            color: var(--text-color-dark);
+        }
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--mindlift-color);
+            margin-bottom: 15px;
+        }
+        .pricing-card .price-description {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+            margin-bottom: 20px;
+        }
+        .dark-mode .pricing-card .price-description {
+            color: var(--muted-text-dark);
+        }
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        .pricing-card ul li {
+            font-size: 1rem;
+            color: var(--muted-text-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dark-mode .pricing-card ul li {
+            color: var(--muted-text-dark);
+        }
+        .pricing-card ul li i {
+            color: var(--mindlift-color);
+            margin-right: 10px;
+        }
+        .pricing-card .price-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pricing-card .price-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .metadata-metrics-section {
+            background-color: var(--card-bg-light);
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .dark-mode .metadata-metrics-section {
+            background-color: var(--card-bg-dark);
+        }
+        .metadata-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .metadata-card {
+            background-color: var(--bg-color-light);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color-light);
+            text-align: left;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .dark-mode .metadata-card {
+            background-color: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+        }
+        .metadata-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .metadata-card h3 {
+            color: var(--text-color-dark);
+        }
+        .metadata-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .metadata-card ul li {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .dark-mode .metadata-card ul li {
+            color: var(--muted-text-dark);
+        }
+        .metadata-card ul li strong {
+            color: var(--text-color-light);
+        }
+        .dark-mode .metadata-card ul li strong {
+            color: var(--text-color-dark);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin-top: auto;
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            flex: 1 1 300px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--muted-text-light);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .copyright {
+            color: var(--muted-text-dark);
+        }
+
+        .footer-links {
+            display: flex;
+            flex: 2 1 500px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-column {
+            flex: 1 1 150px;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .footer-column h4 {
+            color: var(--text-color-dark);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+            margin-bottom: 8px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .footer-column a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg-light);
+                border-bottom: 1px solid var(--border-color-light);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+            }
+            .dark-mode .main-nav {
+                background-color: var(--card-bg-dark);
+                border-bottom-color: var(--border-color-dark);
+            }
+            .main-nav.active {
+                display: flex;
+            }
+            .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            .nav-list li {
+                width: 100%;
+            }
+            .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            .nav-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color-light);
+            }
+            .dark-mode .nav-actions {
+                border-top-color: var(--border-color-dark);
+            }
+            .nav-actions .cta-button {
+                width: calc(100% - 40px);
+                margin: 0 20px;
+                text-align: center;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .mindlift-hero h1 {
+                font-size: 3rem;
+            }
+            .mindlift-hero p {
+                font-size: 1.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#contact">Contact Sales</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="connect-to-omni-grid.html" class="cta-button nav-cta">Get Started</a>
+                </div>
+            </nav>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="overview" class="mindlift-hero">
+            <div class="container">
+                <h1>MindLift™ Core Protocol</h1>
+                <p>An innovative FAA.ZONE protocol, specifically engineered for the demands of the 📚 Education & IP industry. Its deep integration with the PulseGrid ensures secure, real-time data flows and enhanced decision-making.</p>
+                <a href="#pricing" class="cta-button">View Pricing &rarr;</a>
+            </div>
+        </section>
+
+        <section id="features" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Unlock Your Education & IP Potential</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-link icon"></i>
+                        <h3>Seamless Integration</h3>
+                        <p>Direct integration with FAA 🧾 Professional Services Mesh, ensuring all your core educational and IP services work in harmony.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-sync-alt icon"></i>
+                        <h3>Advanced Data Synchronization</h3>
+                        <p>Real-time data flows with BoostTrack for up-to-the-minute information and decision-making.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt icon"></i>
+                        <h3>Real-time Compliance Validation</h3>
+                        <p>Ensure regulatory adherence with VaultLink™ (education specific) for continuous compliance monitoring.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-expand-arrows-alt icon"></i>
+                        <h3>Massive Scalability</h3>
+                        <p>Scalable architecture for x38 node expansion, ready to grow with your institution's demands.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line icon"></i>
+                        <h3>Predictive Analytics</h3>
+                        <p>Leverage our predictive analytics module for MindLift performance, anticipating trends and optimizing outcomes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-puzzle-piece icon"></i>
+                        <h3>Open API Access</h3>
+                        <p>Full API access for seamless interoperability, allowing custom integrations and extending functionality.</p>
+                    </div>
+                </div>
+
+                <h2 class="section-title" style="margin-top: 80px;">MindLift™ Subnodes</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-rocket icon"></i>
+                        <h3>BoostTrack</h3>
+                        <p>Accelerate data processing and tracking for enhanced operational efficiency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lightbulb icon"></i>
+                        <h3>LearnSignal</h3>
+                        <p>Intelligent signal processing for educational content delivery and engagement analysis.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-arrow-alt-circle-up icon"></i>
+                        <h3>LevelUp</h3>
+                        <p>Gamified learning pathways and progress tracking for student and professional development.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-crosshairs icon"></i>
+                        <h3>FocusPath</h3>
+                        <p>Personalized learning paths and content recommendations based on individual progress.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-vault icon"></i>
+                        <h3>VaultPace</h3>
+                        <p>Secure, high-speed data vaulting and retrieval for critical educational and IP assets.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-brain icon"></i>
+                        <h3>Self-Optimizing Node Distribution</h3>
+                        <p>Achieve peak efficiency with intelligent node distribution that adapts to demand.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-network-wired icon"></i>
+                        <h3>Secure Multi-Party Computation</h3>
+                        <p>Enable collaborative data analysis while preserving privacy and security.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-file-invoice icon"></i>
+                        <h3>One-Click Regulatory Reporting</h3>
+                        <p>Generate audit trails and compliance reports effortlessly for regulatory needs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-fingerprint icon"></i>
+                        <h3>AI-Driven Anomaly Detection</h3>
+                        <p>Proactive fraud prevention and security threat detection with intelligent AI.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Flexible Pricing for Every Need</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Starter Node</h3>
+                        <p class="price">FCU 75/mo</p>
+                        <p class="price-description">Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.</p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Essential features</li>
+                            <li><i class="fas fa-check-circle"></i> Basic data sync</li>
+                            <li><i class="fas fa-check-circle"></i> Community support</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> High-volume data processing</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Priority support</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Expanded analytics</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Full VaultMesh access</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Dedicated account management</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Custom integrations</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> 24/7 Premium Support</li>
+                        </ul>
+                        <a href="contact-support.html?subject=MindLift Starter Node Inquiry" class="price-button">Get Started</a>
+                    </div>
+                    <div class="pricing-card highlight">
+                        <h3>Pro Grid</h3>
+                        <p class="price">FCU 205/mo</p>
+                        <p class="price-description">Designed for growing firms needing advanced capabilities. Includes 4 core features and enhanced performance.</p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Advanced features</li>
+                            <li><i class="fas fa-check-circle"></i> High-volume data processing</li>
+                            <li><i class="fas fa-check-circle"></i> Priority support</li>
+                            <li><i class="fas fa-check-circle"></i> Expanded analytics</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Full VaultMesh access</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Dedicated account management</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> Custom integrations</li>
+                            <li><i class="fas fa-times-circle" style="color: var(--muted-text-light);"></i> 24/7 Premium Support</li>
+                        </ul>
+                        <a href="contact-support.html?subject=MindLift Pro Grid Inquiry" class="price-button">Choose Pro Grid</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Enterprise Omni-Sync</h3>
+                        <p class="price">Custom pricing</p>
+                        <p class="price-description">For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.</p>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Full VaultMesh access</li>
+                            <li><i class="fas fa-check-circle"></i> Dedicated account management</li>
+                            <li><i class="fas fa-check-circle"></i> Custom integrations</li>
+                            <li><i class="fas fa-check-circle"></i> 24/7 Premium Support</li>
+                        </ul>
+                        <a href="contact-support.html?subject=MindLift Enterprise Inquiry" class="price-button">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="metadata-metrics-section section-padding">
+            <div class="container">
+                <h2 class="section-title">FAA Metadata & Real-Time Metrics</h2>
+                <div class="metadata-metrics-grid">
+                    <div class="metadata-card">
+                        <h3>FAA Metadata & Compliance</h3>
+                        <ul>
+                            <li><strong>Product ID:</strong> MIN-EDU-5075</li>
+                            <li><strong>VaultID:</strong> VAULT-E7SA</li>
+                            <li><strong>Signal Echo Layer:</strong> Layer Beta v2.0</li>
+                            <li><strong>Deployment Zone:</strong> Zone C 2</li>
+                            <li><strong>Security Rating:</strong> FAA-SEC B+</li>
+                            <li><strong>Active Nodes:</strong> 3,258</li>
+                            <li><strong>Last Audit:</strong> 2025-05-15</li>
+                            <li><strong>Compliance Status:</strong> Active & Certified</li>
+                        </ul>
+                    </div>
+                    <div class="metadata-card">
+                        <h3>Real-Time Metrics Overview</h3>
+                        <ul>
+                            <li><strong>Current Pulse Activity:</strong> 88,940 pulses/sec</li>
+                            <li><strong>Data Volume Processed (24h):</strong> 71.69 TB</li>
+                            <li><strong>Latency Average:</strong> 105 ms</li>
+                        </ul>
+                        <h4 style="margin-top: 20px; font-size: 1.2rem; color: var(--text-color-light);">VaultTrace™ Ledger Entries:</h4>
+                        <ul>
+                            <li>#1331 - MINDL Pulse Tx - Pending</li>
+                            <li>#2994 - EDUCA Data Sync - Completed</li>
+                            <li>#6903 - Node Actuation Confirm - Active</li>
+                            <li>#5020 - VaultTrace Audit - Passed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA.zone. All systems, symbols, and brand echoes protected by the Omni Present Copyright™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="index.html#overview">Features</a></li>
+                        <li><a href="index.html#architecture">Use Cases</a></li>
+                        <li><a href="index.html#connectivity">Pricing</a></li>
+                        <li><a href="plotvault.html">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone</h4>
+                    <ul>
+                        <li><a href="about-faa.html">About FAA Systems™</a></li>
+                        <li><a href="index.html">Omni Grid™</a></li>
+                        <li><a href="baobab-archive.html">Baobab Archive™</a></li>
+                        <li><a href="compliance.html">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                        <li><a href="developer-api.html">Developer API</a></li>
+                        <li><a href="legal-privacy.html">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode) {
+                body.classList.add(savedMode);
+            } else {
+                body.classList.add('light-mode');
+            }
+
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', () => {
+                    if (mainNav) {
+                        mainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    if (mainNav && mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                    }
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindLift™ FCU & Exchange Protocol – FAA.zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Consistent with FAA.zone theme, with a financial/protocol accent */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --fcu-color: #4CAF50; /* Green for currency */
+            --fcu-accent-color: #66BB6A; /* Lighter green */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .logo {
+            color: var(--text-color-dark);
+        }
+        .logo-faa {
+            color: var(--primary-color);
+        }
+        .logo-buildnest {
+            color: var(--text-color-light);
+        }
+        .dark-mode .logo-buildnest {
+            color: var(--text-color-dark);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+
+        /* Section Styling */
+        .section-padding {
+            padding: 80px 20px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+
+        /* Page Specific Hero */
+        .fcu-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--fcu-color) 0%, var(--fcu-accent-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+        .fcu-hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.05em;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .fcu-hero p {
+            font-size: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .fcu-hero .cta-button {
+            background-color: white;
+            color: var(--fcu-color);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .fcu-hero .cta-button:hover {
+            background-color: #f0f0f0;
+            color: var(--fcu-accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 60px 20px;
+            text-align: left;
+        }
+        .content-section h2, .content-section h3 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            color: var(--muted-text-light);
+        }
+        .dark-mode .content-section p {
+            color: var(--muted-text-dark);
+        }
+        .content-section ul {
+            list-style: disc;
+            padding-left: 25px;
+            margin-bottom: 20px;
+            color: var(--muted-text-light);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .dark-mode .content-section ul {
+            color: var(--muted-text-dark);
+        }
+        .content-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .finance-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .finance-card {
+            background-color: var(--card-bg-light);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color-light);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dark-mode .finance-card {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .finance-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color-light);
+        }
+        .dark-mode .finance-card h3 {
+            color: var(--text-color-dark);
+        }
+        .finance-card .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .finance-card label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color-light);
+        }
+        .dark-mode .finance-card label {
+            color: var(--text-color-dark);
+        }
+        .finance-card input[type="number"],
+        .finance-card select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color-light);
+            border-radius: 8px;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .dark-mode .finance-card input,
+        .dark-mode .finance-card select {
+            background-color: var(--bg-color-dark);
+            border-color: var(--border-color-dark);
+            color: var(--text-color-dark);
+        }
+        .finance-card input:focus,
+        .finance-card select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+        }
+        .finance-card .result-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            color: var(--fcu-color);
+            min-height: 24px; /* Ensure space even when empty */
+        }
+        .finance-card .action-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .finance-card .action-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .disclaimer-section {
+            background-color: var(--bg-color-light);
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #cc0000; /* Red color for warning */
+            border-top: 1px solid var(--border-color-light);
+            margin-top: 40px;
+        }
+        .dark-mode .disclaimer-section {
+            background-color: var(--bg-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .disclaimer-section p strong {
+            font-weight: 700;
+        }
+
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin-top: auto;
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            flex: 1 1 300px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--muted-text-light);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .copyright {
+            color: var(--muted-text-dark);
+        }
+
+        .footer-links {
+            display: flex;
+            flex: 2 1 500px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-column {
+            flex: 1 1 150px;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .footer-column h4 {
+            color: var(--text-color-dark);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+            margin-bottom: 8px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .footer-column a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg-light);
+                border-bottom: 1px solid var(--border-color-light);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+            }
+            .dark-mode .main-nav {
+                background-color: var(--card-bg-dark);
+                border-bottom-color: var(--border-color-dark);
+            }
+            .main-nav.active {
+                display: flex;
+            }
+            .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            .nav-list li {
+                width: 100%;
+            }
+            .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            .nav-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color-light);
+            }
+            .dark-mode .nav-actions {
+                border-top-color: var(--border-color-dark);
+            }
+            .nav-actions .cta-button {
+                width: calc(100% - 40px);
+                margin: 0 20px;
+                text-align: center;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .fcu-hero h1 {
+                font-size: 3rem;
+            }
+            .fcu-hero p {
+                font-size: 1.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .finance-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#fcu-explained">FCU Explained</a></li>
+                    <li><a href="#payment-portal">Payment Portal</a></li>
+                    <li><a href="#currency-exchange">Currency Exchange</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="contact-sales.html?subject=MindLift Sales Inquiry" class="cta-button nav-cta">Contact Sales</a>
+                </div>
+            </nav>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="overview" class="fcu-hero">
+            <div class="container">
+                <h1>MindLift™ FCU & Exchange Protocol</h1>
+                <p>Facilitating seamless transactions and transparent value exchange within the FAA.zone ecosystem using Fruitful Currency Units (FCU).</p>
+                <a href="#payment-portal" class="cta-button">Access Payment Portal &rarr;</a>
+            </div>
+        </section>
+
+        <section id="fcu-explained" class="content-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Understanding Fruitful Currency Units (FCU)</h2>
+                <p>FCU, or Fruitful Currency Unit, is the standardized unit of value exchange within the FAA.zone ecosystem. It is designed to simplify transactions across our diverse sectors, from Education & IP to Motion, Media & Sonic, by providing a consistent and transparent measure of value for services, data, and resources.</p>
+                <p>FCU aims to streamline the financial interactions, making pricing clear and predictable for all users and partners.</p>
+                <ul>
+                    <li><strong>Standardized Value:</strong> One universal unit for all FAA.zone services.</li>
+                    <li><strong>Transparent Transactions:</strong> All FCU transactions are recorded on the VaultTrace™ Ledger for auditability.</li>
+                    <li><strong>Ecosystem Integration:</strong> Directly linked to service consumption and resource allocation within the PulseGrid™.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="payment-portal" class="content-section section-padding" style="background-color: var(--bg-color-light);">
+            <div class="container">
+                <h2 class="section-title">Payment Portal</h2>
+                <p>Easily acquire FCU for your MindLift™ subscriptions or other FAA.zone services. Select your desired service and quantity to proceed.</p>
+                <div class="finance-card-grid">
+                    <div class="finance-card">
+                        <h3>Acquire FCU</h3>
+                        <div class="form-group">
+                            <label for="fcu-amount">Amount of FCU</label>
+                            <input type="number" id="fcu-amount" value="75" min="1" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="fcu-service">For MindLift™ Plan</label>
+                            <select id="fcu-service">
+                                <option value="starter">MindLift Starter Node (FCU 75/mo)</option>
+                                <option value="pro">MindLift Pro Grid (FCU 205/mo)</option>
+                                <option value="custom">Enterprise Omni-Sync (Custom)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="payment-method">Payment Method</label>
+                            <select id="payment-method">
+                                <option value="usd_card">USD (Credit Card)</option>
+                                <option value="usd_bank">USD (Bank Transfer)</option>
+                                <option value="btc">Bitcoin (BTC)</option>
+                                <option value="eth">Ethereum (ETH)</option>
+                                <option value="other_crypto">Other Crypto</option>
+                            </select>
+                        </div>
+                        <p class="result-text" id="payment-info-display"></p>
+                        <button class="action-button" onclick="simulatePayment()">Pay Now</button>
+                    </div>
+
+                    <div class="finance-card">
+                        <h3>Payment & PayNet Links</h3>
+                        <p style="font-size: 1rem; color: var(--muted-text-light); margin-bottom: 20px;">Utilize our secure PayNet links for direct, verified transactions within the FAA.zone network.</p>
+                        <p style="font-size: 0.9rem; color: var(--muted-text-light);">
+                            <strong>PayNet Direct Link:</strong> <a href="#" style="color: var(--primary-color); text-decoration: none;">Secure.FAA.zone/PayNet/FCU-Tx</a><br>
+                            <strong>Partner API Integration:</strong> <a href="developer-api.html" style="color: var(--primary-color); text-decoration: none;">View PayNet API Docs</a>
+                        </p>
+                        <h4 style="margin-top: 20px; font-size: 1.2rem;">Accepted Payment Methods:</h4>
+                        <ul>
+                            <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fas fa-credit-card" style="margin-right: 8px;"></i> Major Credit/Debit Cards</li>
+                            <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fab fa-bitcoin" style="margin-right: 8px;"></i> Bitcoin (BTC)</li>
+                            <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fab fa-ethereum" style="margin-right: 8px;"></i> Ethereum (ETH)</li>
+                            <li style="font-size: 0.95rem; display: flex; align-items: center;"><i class="fas fa-money-bill-wave" style="margin-right: 8px;"></i> Bank Transfers (Fiat)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="currency-exchange" class="content-section section-padding">
+            <div class="container">
+                <h2 class="section-title">Currency Exchange & Conversion</h2>
+                <p>Convert between various fiat currencies, cryptocurrencies, and FCU using our transparent exchange protocol.</p>
+                <div class="finance-card-grid">
+                    <div class="finance-card">
+                        <h3>Convert Currencies</h3>
+                        <div class="form-group">
+                            <label for="from-currency">From</label>
+                            <select id="from-currency">
+                                <option value="usd">USD</option>
+                                <option value="zar">ZAR</option>
+                                <option value="eur">EUR</option>
+                                <option value="btc">Bitcoin (BTC)</option>
+                                <option value="eth">Ethereum (ETH)</option>
+                                <option value="fcu">FCU</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="to-currency">To</label>
+                            <select id="to-currency">
+                                <option value="fcu">FCU</option>
+                                <option value="usd">USD</option>
+                                <option value="zar">ZAR</option>
+                                <option value="eur">EUR</option>
+                                <option value="btc">Bitcoin (BTC)</option>
+                                <option value="eth">Ethereum (ETH)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exchange-amount">Amount</label>
+                            <input type="number" id="exchange-amount" value="1" min="0.01" step="0.01">
+                        </div>
+                        <p class="result-text" id="exchange-quote-display"></p>
+                        <button class="action-button" onclick="simulateExchangeQuote()">Get Quote</button>
+                        <button class="action-button" onclick="simulateExchange()">Exchange Now</button>
+                    </div>
+
+                    <div class="finance-card">
+                        <h3>Exchange Protocol Details</h3>
+                        <p style="font-size: 1rem; color: var(--muted-text-light); margin-bottom: 20px;">Our exchange protocol ensures fair and transparent conversion rates. Rates are dynamic and based on real-time market data (simulated).</p>
+                        <p style="font-size: 0.9rem; color: var(--muted-text-light);">
+                            <strong>Current FCU Rate (Simulated):</strong> 1 FCU ≈ 1.25 USD (Subject to change)<br>
+                            <strong>Transaction Fees:</strong> 0.5% per conversion (simulated)<br>
+                            <strong>Processing Time:</strong> Instant (simulated)<br>
+                        </p>
+                        <h4 style="margin-top: 20px; font-size: 1.2rem;">Supported Currencies:</h4>
+                        <ul>
+                            <li style="font-size: 0.95rem;">Fiat: USD, ZAR, EUR, GBP</li>
+                            <li style="font-size: 0.95rem;">Crypto: Bitcoin (BTC), Ethereum (ETH), Litecoin (LTC)</li>
+                            <li style="font-size: 0.95rem;">Internal: Fruitful Currency Units (FCU)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="disclaimer-section">
+            <div class="container">
+                <p><strong>Disclaimer:</strong> This page is a static HTML demonstration. It does NOT process any real financial transactions, exchange real currency, or interact with live payment gateways or cryptocurrency networks. All displayed prices, rates, and transaction statuses are simulated for illustrative purposes only. Do NOT enter any real personal or financial information. For actual FAA.zone services and transactions, please refer to our official and secure platforms.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">MindLift™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA.zone. All systems, symbols, and brand echoes protected by the Omni Present Copyright™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="index.html#overview">Features</a></li>
+                        <li><a href="index.html#architecture">Use Cases</a></li>
+                        <li><a href="index.html#connectivity">Pricing</a></li>
+                        <li><a href="plotvault.html">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone</h4>
+                    <ul>
+                        <li><a href="about-faa.html">About FAA Systems™</a></li>
+                        <li><a href="index.html">Omni Grid™</a></li>
+                        <li><a href="baobab-archive.html">Baobab Archive™</a></li>
+                        <li><a href="compliance.html">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                        <li><a href="developer-api.html">Developer API</a></li>
+                        <li><a href="legal-privacy.html">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode) {
+                body.classList.add(savedMode);
+            } else {
+                body.classList.add('light-mode');
+            }
+
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', () => {
+                    if (mainNav) {
+                        mainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    if (mainNav && mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                    }
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+
+            // Simulated Payment Logic
+            window.simulatePayment = function() {
+                const fcuAmount = document.getElementById('fcu-amount').value;
+                const fcuService = document.getElementById('fcu-service').value;
+                const paymentMethod = document.getElementById('payment-method').value;
+                const paymentInfoDisplay = document.getElementById('payment-info-display');
+
+                if (fcuAmount <= 0) {
+                    paymentInfoDisplay.textContent = 'Please enter a valid FCU amount.';
+                    paymentInfoDisplay.style.color = 'red';
+                    return;
+                }
+
+                // Simulate processing time
+                paymentInfoDisplay.textContent = `Processing payment of FCU ${fcuAmount} for ${fcuService} via ${paymentMethod}...`;
+                paymentInfoDisplay.style.color = 'orange';
+
+                setTimeout(() => {
+                    // Simulate success
+                    paymentInfoDisplay.textContent = `Payment successful! FCU ${fcuAmount} acquired for ${fcuService}.`;
+                    paymentInfoDisplay.style.color = var(--fcu-color);
+                    console.log(`Simulated payment: FCU ${fcuAmount} for ${fcuService} using ${paymentMethod}`);
+                }, 2000);
+            };
+
+            // Simulated Exchange Logic
+            const exchangeRates = {
+                'usd_to_fcu': 0.8,   // 1 USD = 0.8 FCU
+                'fcu_to_usd': 1.25,  // 1 FCU = 1.25 USD
+                'zar_to_fcu': 0.065, // 1 ZAR = 0.065 FCU (example)
+                'fcu_to_zar': 15.38, // 1 FCU = 15.38 ZAR (example)
+                'eur_to_fcu': 0.9,   // 1 EUR = 0.9 FCU (example)
+                'fcu_to_eur': 1.11,  // 1 FCU = 1.11 EUR (example)
+                'btc_to_fcu': 50000, // 1 BTC = 50000 FCU (example)
+                'fcu_to_btc': 0.00002, // 1 FCU = 0.00002 BTC (example)
+                'eth_to_fcu': 1500,  // 1 ETH = 1500 FCU (example)
+                'fcu_to_eth': 0.00066, // 1 FCU = 0.00066 ETH (example)
+
+                // For conversions between fiat/crypto without FCU intermediate
+                'usd_to_zar': 18.5,
+                'zar_to_usd': 0.054,
+                'usd_to_eur': 0.92,
+                'eur_to_usd': 1.08,
+                'btc_to_usd': 60000,
+                'usd_to_btc': 0.000016,
+                'eth_to_usd': 3000,
+                'usd_to_eth': 0.00033
+            };
+
+            window.simulateExchangeQuote = function() {
+                const fromCurrency = document.getElementById('from-currency').value;
+                const toCurrency = document.getElementById('to-currency').value;
+                const amount = parseFloat(document.getElementById('exchange-amount').value);
+                const exchangeQuoteDisplay = document.getElementById('exchange-quote-display');
+
+                if (isNaN(amount) || amount <= 0) {
+                    exchangeQuoteDisplay.textContent = 'Please enter a valid amount.';
+                    exchangeQuoteDisplay.style.color = 'red';
+                    return;
+                }
+
+                let result = 'N/A';
+                exchangeQuoteDisplay.style.color = var(--muted-text-light);
+
+                // Direct conversion
+                const directRateKey = `${fromCurrency}_to_${toCurrency}`;
+                if (exchangeRates[directRateKey]) {
+                    result = (amount * exchangeRates[directRateKey]).toFixed(2);
+                    exchangeQuoteDisplay.textContent = `${amount} ${fromCurrency.toUpperCase()} = ${result} ${toCurrency.toUpperCase()}`;
+                    return;
+                }
+
+                // Convert via FCU if direct path not found
+                if (fromCurrency !== 'fcu' && toCurrency !== 'fcu') {
+                    const toFcuRateKey = `${fromCurrency}_to_fcu`;
+                    const fromFcuRateKey = `fcu_to_${toCurrency}`;
+                    if (exchangeRates[toFcuRateKey] && exchangeRates[fromFcuRateKey]) {
+                        const amountInFcu = amount * exchangeRates[toFcuRateKey];
+                        result = (amountInFcu * exchangeRates[fromFcuRateKey]).toFixed(2);
+                        exchangeQuoteDisplay.textContent = `${amount} ${fromCurrency.toUpperCase()} = ${result} ${toCurrency.toUpperCase()} (via FCU)`;
+                        return;
+                    }
+                }
+
+                exchangeQuoteDisplay.textContent = 'Conversion not supported.';
+                exchangeQuoteDisplay.style.color = 'red';
+            };
+
+            window.simulateExchange = function() {
+                const fromCurrency = document.getElementById('from-currency').value;
+                const toCurrency = document.getElementById('to-currency').value;
+                const amount = parseFloat(document.getElementById('exchange-amount').value);
+                const exchangeQuoteDisplay = document.getElementById('exchange-quote-display');
+
+                if (isNaN(amount) || amount <= 0) {
+                    exchangeQuoteDisplay.textContent = 'Please enter a valid amount.';
+                    exchangeQuoteDisplay.style.color = 'red';
+                    return;
+                }
+
+                // Simulate processing
+                exchangeQuoteDisplay.textContent = `Initiating exchange of ${amount} ${fromCurrency.toUpperCase()} to ${toCurrency.toUpperCase()}...`;
+                exchangeQuoteDisplay.style.color = 'orange';
+
+                setTimeout(() => {
+                    // This would be where actual exchange logic happens in a real app
+                    // For demo, just show a success message
+                    let convertedAmount = 'N/A';
+                    const directRateKey = `${fromCurrency}_to_${toCurrency}`;
+                    if (exchangeRates[directRateKey]) {
+                        convertedAmount = (amount * exchangeRates[directRateKey]).toFixed(2);
+                    } else if (fromCurrency !== 'fcu' && toCurrency !== 'fcu') {
+                        const toFcuRateKey = `${fromCurrency}_to_fcu`;
+                        const fromFcuRateKey = `fcu_to_${toCurrency}`;
+                        if (exchangeRates[toFcuRateKey] && exchangeRates[fromFcuRateKey]) {
+                            const amountInFcu = amount * exchangeRates[toFcuRateKey];
+                            convertedAmount = (amountInFcu * exchangeRates[fromFcuRateKey]).toFixed(2);
+                        }
+                    }
+
+                    if (convertedAmount !== 'N/A') {
+                        exchangeQuoteDisplay.textContent = `Exchange successful! ${amount} ${fromCurrency.toUpperCase()} converted to ${convertedAmount} ${toCurrency.toUpperCase()}.`;
+                        exchangeQuoteDisplay.style.color = var(--fcu-color);
+                        console.log(`Simulated exchange: ${amount} ${fromCurrency.toUpperCase()} to ${convertedAmount} ${toCurrency.toUpperCase()}`);
+                    } else {
+                        exchangeQuoteDisplay.textContent = 'Exchange failed or not supported.';
+                        exchangeQuoteDisplay.style.color = 'red';
+                    }
+
+                }, 2500); // Simulate network delay
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful.Music™ Launch Concept - Integrated Manual & App - FAA.Zone</title>
+    <link rel="icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for data visualizations (used in manual's demo section) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <!-- React and ReactDOM for UI rendering (for embedded app) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation (for embedded React app) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Firebase SDKs for the React App -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        // Global variables for Firebase (will be populated at runtime by Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Expose Firebase instances globally for use in React component
+        window.firebase = {
+            db,
+            auth,
+            signInAnonymously,
+            signInWithCustomToken,
+            onAuthStateChanged,
+            doc,
+            getDoc,
+            addDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            onSnapshot,
+            collection,
+            query,
+            where
+        };
+    </script>
+
+    <style>
+        /* Base Palette (Overall Document - Serene Orbit from manual) */
+        :root {
+            --bg-light: #F8F9FA; /* Overall document background */
+            --text-dark: #343A40; /* Overall document text */
+            --primary-blue: #007BFF; /* Manual link/heading accent */
+            --success-green: #28A745; /* Manual success/heading accent */
+            --warning-yellow: #FFC107; /* Manual warning accent */
+            --border-light: #E9ECEF; /* Manual border */
+            --card-bg: #FFFFFF; /* Manual section background */
+            --hover-light: #F0F2F5; /* Manual hover/code background */
+            --font-inter: 'Inter', sans-serif;
+
+            /* Fruitful.Music™ App Palette (Embedded App) */
+            --app-dark-bg: #1a1a1d; /* Deep charcoal for app's root */
+            --app-header-bg: #2a2a2e; /* App's header/sidebar/section background */
+            --app-text-light: #e0e0e0; /* App's general text */
+            --app-text-muted: #9ca3af; /* App's muted text */
+            --app-primary-green: #22c55e; /* App's vibrant green accents */
+            --app-secondary-blue: #3b82f6; /* App's soft blue accents */
+            --app-cta-button-bg: #4f46e5; /* App's indigo CTAs */
+            --app-hover-bg: #374151; /* App's dark gray hover states */
+            --app-border-dark: #4b5563; /* App's dark borders */
+            --app-aura-teal: #20c997; /* App's Aura output */
+            --app-core-brand-purple: #8B5CF6; /* New: Core Brand Purple */
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: var(--bg-light); /* Overall light background */
+            color: var(--text-dark); /* Overall dark dark text */
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Overall Document Header/Nav/Main Sections */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-bottom: 1px solid var(--border-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .logo-fruitful { color: var(--primary-blue); }
+        .logo-separator { color: var(--border-light); font-size: 1.2rem; font-weight: 600; }
+        .logo-seedwave { color: var(--success-green); }
+        .nav-link {
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            background-color: var(--hover-light);
+            color: var(--primary-blue);
+        }
+        .nav-link.active {
+            color: var(--primary-blue);
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-light);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--success-green);
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p { margin-bottom: 1rem; }
+        ul, ol { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: var(--primary-blue); }
+        em { color: var(--success-green); }
+
+        code {
+            background-color: var(--hover-light);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.9em;
+            color: var(--text-dark);
+        }
+        pre {
+            background-color: var(--hover-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            color: var(--text-dark);
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        /* Interactive Elements (for manual's demo) */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.2);
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 20px rgba(0,123,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .accordion-header {
+            background-color: var(--hover-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: background-color 0.2s ease;
+            margin-top: 0.5rem;
+        }
+        .accordion-header:hover { background-color: var(--border-light); }
+        .accordion-content {
+            padding: 1rem;
+            border: 1px solid var(--border-light);
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 500px; /* Max height for expansion */
+            padding: 1rem;
+        }
+        .accordion-header i { transition: transform 0.3s ease; }
+        .accordion-header.active i { transform: rotate(180deg); }
+
+        /* Chart Containers (for manual's demo) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+            background-color: var(--hover-light);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Spotify Demo Section (for manual's demo) */
+        .spotify-controls button {
+            background-color: #1DB954; /* Spotify Green */
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .spotify-controls button:hover { background-color: #1ed760; }
+        .spotify-output {
+            background-color: var(--hover-light);
+            border: 1px solid var(--border-light);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .spotify-output ul { list-style: none; padding: 0; }
+        .spotify-output li { padding: 0.4rem 0; border-bottom: 1px solid var(--border-light); }
+        .spotify-output li:last-child { border-bottom: none; }
+        .spotify-output strong { color: var(--primary-blue); }
+        .spotify-output iframe { border-radius: 0.5rem; }
+
+        /* Overall Document Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: rgba(255,255,255,0.7);
+            padding: 2.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2.5rem;
+        }
+        footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        footer a:hover { color: var(--primary-blue); }
+
+        /* Fruitful.Music™ App Specific Styles (Encapsulated) */
+        .fruitful-music-app-container {
+            background-color: var(--app-dark-bg); /* App's overall dark background */
+            color: var(--app-text-light); /* App's general text */
+            font-family: var(--font-inter);
+            min-height: 700px; /* Min height to ensure app content is visible */
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8); /* Strong shadow for app block */
+            border: 1px solid var(--app-border-dark);
+            margin-top: 2rem; /* Space from previous section */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Contains internal scrolling if present */
+        }
+        .fruitful-music-app-container header {
+            background-color: var(--app-header-bg);
+            box-shadow: none; /* App's header should not cast shadow outside its container */
+            border-bottom: 1px solid var(--app-border-dark);
+            padding: 1rem 2rem; /* Keep app's header padding */
+        }
+        .fruitful-music-app-container header .text-green-500 { color: var(--app-primary-green); }
+        .fruitful-music-app-container header .text-gray-400 { color: var(--app-text-muted); }
+        .fruitful-music-app-container header input {
+            background-color: var(--app-hover-bg);
+            border: 1px solid var(--app-border-dark);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container header input::placeholder { color: var(--app-text-muted); }
+        .fruitful-music-app-container header input:focus {
+            border-color: var(--app-primary-green);
+            box-shadow: 0 0 0 2px rgba(34,197,94,0.3);
+        }
+
+        .fruitful-music-app-container nav {
+            background-color: var(--app-sidebar-bg);
+            border-right: 1px solid var(--app-border-dark);
+        }
+        .fruitful-music-app-container nav button {
+            color: var(--app-text-muted);
+        }
+        .fruitful-music-app-container nav button:hover {
+            background-color: var(--app-hover-bg);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container nav button.bg-gray-700 { /* Active tab for app */
+            background-color: var(--app-hover-bg);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container nav .fas { color: var(--app-text-muted); }
+        .fruitful-music-app-container nav .fas:hover { color: var(--app-text-light); }
+        .fruitful-music-app-container nav .fa-gem { color: var(--app-secondary-blue); }
+        /* Specific icon color for SonicNest */
+        .fruitful-music-app-container nav .fa-headphones-alt,
+        .fruitful-music-app-container nav .fa-film {
+            color: #ff3b30; /* Vibrant Red for SonicNest */
+        }
+        /* New: Core Brand icon color */
+        .fruitful-music-app-container nav .fa-sitemap {
+            color: var(--app-core-brand-purple); /* Purple for Core Brands */
+        }
+
+
+        .fruitful-music-app-container main {
+            background-color: var(--app-dark-bg);
+            padding: 1.5rem; /* Adjust main content padding within app */
+        }
+        .fruitful-music-app-container main h2 {
+            color: var(--app-primary-green);
+            border-bottom: none; /* Remove section border from app's h2 */
+            padding-bottom: 0;
+        }
+        .fruitful-music-app-container main section {
+            background-color: var(--app-header-bg); /* App's section background */
+            border: 1px solid var(--app-border-dark);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2); /* Lighter shadow for app's internal sections */
+            padding: 1.5rem; /* Adjust section padding within app */
+        }
+        .fruitful-music-app-container main section h2.text-green-400 { color: var(--app-primary-green); }
+        .fruitful-music-app-container main section h2.text-blue-400 { color: var(--app-secondary-blue); }
+        .fruitful-music-app-container main section h2.text-yellow-400 { color: var(--warning-yellow); } /* Keep yellow as is */
+        .fruitful-music-app-container main section h2.text-purple-400 { color: var(--app-cta-button-bg); }
+        .fruitful-music-app-container main section h2.text-indigo-400 { color: var(--app-secondary-blue); }
+        /* New section header colors for SonicNest */
+        .fruitful-music-app-container main section h2.text-red-400 { color: #ff3b30; } /* SonicNest Red */
+        .fruitful-music-app-container main section h2.text-orange-400 { color: #f97316; } /* Another accent for SonicNest */
+        /* New: Core Brand section header */
+        .fruitful-music-app-container main section h2.text-purple-600 { color: var(--app-core-brand-purple); }
+
+
+        .fruitful-music-app-container main section h3 { color: var(--app-text-light); }
+        .fruitful-music-app-container main section p { color: var(--app-text-muted); }
+        .fruitful-music-app-container main section img { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container main section .bg-gray-800 { background-color: var(--app-header-bg); }
+        .fruitful-music-app-container main section .bg-green-600 { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container main section .bg-green-600:hover { background-color: #1a9c4b; }
+        .fruitful-music-app-container main section .bg-indigo-600 { background-color: var(--app-cta-button-bg); }
+        .fruitful-music-app-container main section .bg-indigo-600:hover { background-color: #3f36a0; }
+        .fruitful-music-app-container main section .bg-gray-800.shadow-md:hover { background-color: var(--app-hover-bg); }
+        /* New: Core Brand button styling */
+        .fruitful-music-app-container main section .bg-purple-700 { background-color: var(--app-core-brand-purple); }
+        .fruitful-music-app-container main section .bg-purple-700:hover { background-color: #7c3aed; }
+
+
+        /* Aura Suggestion Output (for app) */
+        .fruitful-music-app-container #auraSuggestionOutput {
+            background-color: var(--app-hover-bg);
+            border: 1px solid var(--app-border-dark);
+            color: var(--app-text-light);
+        }
+        .fruitful-music-app-container .text-teal-400 { color: var(--app-aura-teal); }
+
+        /* Footer / Now Playing Bar (for app) */
+        .fruitful-music-app-container footer {
+            background-color: var(--app-header-bg);
+            border-top: 1px solid var(--app-border-dark);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+        }
+        .fruitful-music-app-container footer img { background-color: var(--app-primary-green); }
+        .fruitful-music-app-container footer p { color: var(--app-text-light); }
+        .fruitful-music-app-container footer .text-gray-400 { color: var(--app-text-muted); }
+        .fruitful-music-app-container footer button { color: var(--app-text-muted); }
+        .fruitful-music-app-container footer button:hover { color: var(--app-text-light); }
+        .fruitful-music-app-container footer button.bg-white { background-color: white; color: var(--app-dark-bg); }
+        .fruitful-music-app-container footer button.bg-white:hover { background-color: #f0f0f0; }
+        .fruitful-music-app-container footer .text-green-500 { color: var(--app-primary-green); }
+        .fruitful-music-app-container footer .text-red-500:hover { color: #ef4444; }
+        .fruitful-music-app-container footer .accent-green-500 { accent-color: var(--app-primary-green); }
+        .fruitful-music-app-container footer iframe { border: 1px solid var(--app-border-dark); }
+
+        /* Custom Modal for App-specific alerts (within the React app scope) */
+        .app-custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .app-custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .app-custom-modal-content {
+            background-color: var(--app-header-bg);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            color: var(--app-text-light);
+            border: 1px solid var(--app-border-dark);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .app-custom-modal-overlay.active .app-custom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .app-custom-modal-content h3 {
+            color: var(--app-primary-green);
+            margin-bottom: 1rem;
+        }
+        .app-custom-modal-content button {
+            background-color: var(--app-primary-green);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 1rem;
+        }
+        .app-custom-modal-content button:hover {
+            background-color: #1a9c4b;
+        }
+        /* Specific styles for Live Demo Modal */
+        .live-demo-modal-content {
+            max-width: 800px; /* Wider for demos */
+            width: 95%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            padding: 0; /* Remove padding from content wrapper */
+            overflow: hidden; /* Hide scrollbars on modal content itself */
+        }
+        .live-demo-modal-header {
+            background-color: var(--app-primary-green);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .live-demo-modal-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem; /* Negative margin to align icon */
+        }
+        .live-demo-modal-body {
+            flex-grow: 1;
+            background-color: var(--app-dark-bg);
+            overflow-y: auto; /* Allow scrolling within the body */
+            padding: 1.5rem;
+        }
+        .live-demo-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white; /* Default background for iframe content */
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overall Document Header (from Spotify Integration Manual) -->
+    <header>
+        <div class="logo-group">
+            <span class="logo-fruitful">Fruitful™</span>
+            <span class="logo-separator">|</span>
+            <span class="logo-seedwave">Seedwave™</span>
+        </div>
+        <nav class="flex gap-4">
+            <a href="#overview" class="nav-link">Overview</a>
+            <a href="#spotify-demo-manual" class="nav-link">Live Demo (Manual)</a>
+            <a href="#metrics" class="nav-link">Metrics</a>
+            <a href="#strategy" class="nav-link">Strategy</a>
+            <a href="#technical" class="nav-link">Technical</a>
+            <a href="#fruitful-music-app-section" class="nav-link active">Fruitful.Music™ App</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Content from Spotify Integration Manual -->
+        <section id="overview" class="mb-8">
+            <h1>Spotify Integration Overview</h1>
+            <p class="text-lg text-center mb-6">Explore the seamless integration of Spotify's music pulse into the Seedwave™ ecosystem. This interactive manual provides insights into its purpose, functionality, and strategic importance.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h2>Purpose & Strategic Benefits</h2>
+                    <p>The Spotify integration enhances personalization, engagement, and offers unique utility within Seedwave™. It transforms how users interact with their music while showcasing our technical adaptability.</p>
+                    <ul>
+                        <li><strong>Elevated User Personalization:</strong> Tailored music experiences directly reflecting user listening habits.</li>
+                        <li><strong>Enhanced Platform Engagement:</strong> Interactive music features encourage extended user sessions.</li>
+                        <li><strong>Tangible Utility & Creative Curation:</strong> Create and manage Spotify playlists from within Seedwave™.</li>
+                        <li><strong>Demonstration of Technical Prowess:</strong> Showcases seamless integration with leading external APIs.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Future Expansions</h2>
+                    <p>This integration lays a critical groundwork for more sophisticated musical features and and unique cross-platform experiences.</p>
+                    <ul>
+                        <li><strong>Collaborative Playlists:</strong> Synced with "Job Ant Hut" project management.</li>
+                        <li><strong>AI-Generated Soundtracks:</b> Dynamic music based on "Noodle Soup Innovations" data.</li>
+                        <li><strong>Personalized Music Feeds:</strong> Advanced recommendations from combined data.</li>
+                        <li><strong>Gamified Music Discovery:</strong> Interactive encounters with new artists via "Rhino Strike Protocols."</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="spotify-demo-manual" class="mb-8">
+            <h2>Live Spotify Demo: Music Pulse Interaction (Manual Section)</h2>
+            <p>Experience the core functionalities of the Spotify integration directly. Retrieve your top tracks, create a playlist, and listen to snippets without leaving this page.</p>
+            <div class="flex flex-wrap justify-center gap-4 my-6 spotify-controls">
+                <button id="getTopTracksBtn" class="cta-button">
+                    <i class="fab fa-spotify"></i> Get My Top 5 Tracks
+                </button>
+                <button id="createPlaylistBtn" class="cta-button bg-gray-500 hover:bg-gray-600">
+                    <i class="fas fa-save"></i> Save to Playlist
+                </button>
+                <button id="playTracksBtn" class="cta-button bg-green-500 hover:bg-green-600">
+                    <i class="fas fa-play-circle"></i> Listen Now
+                </button>
+            </div>
+
+            <div id="demo-output" class="bg-white p-4 rounded-lg shadow-inner border border-gray-200">
+                <p id="demo-message" class="text-center text-sm mb-4">Click a button to interact with Spotify.</p>
+                <div id="top-tracks-list" class="hidden spotify-output">
+                    <h3>Your Top Tracks:</h3>
+                    <ul class="text-sm"></ul>
+                </div>
+                <div id="audio-players" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 text-center">
+                Note: This demo uses a sample token for illustration. For full functionality, a valid Spotify token is required.
+            </p>
+        </section>
+
+        <section id="metrics" class="mb-8">
+            <h2>Integration Metrics: Operational Pulse</h2>
+            <p>Monitor the health and activity of the Spotify integration through key performance indicators. These charts provide insights into API usage, success rates, and token management.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <div class="chart-container">
+                    <canvas id="apiCallChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="successRateChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="mb-8">
+            <h2>Strategic Vision: Evolving the Pulse</h2>
+            <p>The Spotify integration is a foundational element for Seedwave™'s future growth, extending our digital footprint and enhancing user experiences with personalized content streams. This section outlines our forward-looking approach.</p>
+            <h3>Expanding Reach and Personalization:</h3>
+            <p>By leveraging user musical preferences, Seedwave™ can create more tailored content experiences, from custom news feeds to personalized educational modules. The integration allows us to understand user 'vibration' at a deeper level.</p>
+            <h3>Monetization Pathways:</h3>
+            <p>Future iterations envision curated music-driven experiences, potentially leading to new partnership opportunities with artists, labels, and event organizers. This can unlock novel revenue streams by linking digital commerce directly to cultural engagement, aligning with the spirit of 'Crate Dance™' activations.</p>
+            <h3>Data-Driven Innovation:</h3>
+            <p>The continuous flow of musical interaction data provides a rich source for our AI and machine learning models. This data can inform the development of more advanced 'Noodle Soup Innovations' in content delivery and 'Rhino Strike Protocols' in user interaction, ensuring Seedwave™ remains at the cutting edge of personalized digital ecosystems.</p>
+        </section>
+
+        <section id="technical" class="mb-8">
+            <h2>Technical Deep Dive: Under the Hood</h2>
+            <p>Understand the core components and security considerations that power the Spotify integration. This section provides an interactive breakdown of key technical aspects.</p>
+
+            <h3>4.1. <code>fetchWebApi()</code>: The API Gateway</h3>
+            <div class="accordion">
+                <div class="accordion-header">
+                    Function Details <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>This is the central function for all Spotify API calls. It handles requests, headers (including authorization tokens), and initial error responses.</p>
+                    <h4>Parameters:</h4>
+                    <ul>
+                        <li><code>endpoint</code>: The specific API resource (e.g., <code>v1/me/top/tracks</code>).</li>
+                        <li><code>method</code>: HTTP method (<code>GET</code>, <code>POST</code>).</li>
+                        <li><code>body</code>: Optional JSON payload for <code>POST</code> requests.</li>
+                    </ul>
+                    <p>It includes robust error handling to catch network issues and API-specific errors, providing clear messages to the user.</p>
+                </div>
+            </div>
+
+            <h3>5. Security Considerations: OAuth 2.0 Imperative</h3>
+            <div class="accordion">
+                <div class="accordion-header">
+                    Hardcoded Tokens: The Risk <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p><strong>Critical Warning:</strong> The current demo uses a hardcoded Spotify access token directly in the client-side code. This is **highly insecure** and suitable only for demonstrations.</p>
+                    <p><strong>Risks:</strong> Exposure to malicious actors, unauthorized data access, rapid expiration, and violation of user privacy and Spotify policies.</p>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">
+                    OAuth 2.0 Authorization Code Flow: The Secure Solution <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>For production, a secure <strong>OAuth 2.0 Authorization Code Flow</strong> must be implemented. This requires a backend server to handle sensitive token exchange.</p>
+                    <h4>High-Level Steps:</h4>
+                    <ol>
+                        <li>User initiates authorization (client-side redirects to Spotify).</li>
+                        <li>User grants permission (Spotify redirects back with `authorization_code`).</li>
+                        <li>Backend server exchanges `authorization_code` for `access_token` and `refresh_token` (using Client ID/Secret securely).</li>
+                        <li>Backend securely manages and provides `access_token` to client for API calls.</li>
+                    </ol>
+                    <p>A backend is indispensable because the Client Secret must never be exposed publicly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fruitful.Music™ Launch Concept Application Section (Embedded) -->
+        <section id="fruitful-music-app-section" class="mb-8">
+            <h2 class="text-center text-3xl font-extrabold text-blue-600 mb-6">Fruitful.Music™ Launch Concept Design</h2>
+            <p class="text-center text-gray-700 mb-8 max-w-2xl mx-auto">This interactive application showcases the core functionalities and design principles of the Fruitful.Music™ platform. Explore trending songs, browse categories, manage playlists, and discover FAA Family Brands integrated with music and aura concepts.</p>
+            <div class="fruitful-music-app-container">
+                <div id="fruitful-music-app-root"></div> <!-- React app will mount here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Overall Document Footer -->
+    <footer>
+        <p>Fruitful.America™ Sovereign Scrolls · VaultMesh · TreatyMesh Validated</p>
+        <p>&copy; 2025 Seedwave™. All rights reserved. A proud partner of <a href="https://faa.zone/" target="_blank">FAA.Zone™ Treaty System™</a></p>
+    </footer>
+
+    <script type="text/babel">
+        // --- React App Code (Fruitful.Music™ Launch Concept Design) ---
+        const { useState, useEffect } = React;
+        const { db, auth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection } = window.firebase;
+
+        // Get the unique app ID from the global variable
+        const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const INITIAL_AUTH_TOKEN = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+
+        // Custom Modal Component for the React App
+        function AppCustomModal({ isOpen, onClose, title, message }) {
+            if (!isOpen) return null;
+
+            return (
+                <div className="app-custom-modal-overlay active">
+                    <div className="app-custom-modal-content active">
+                        <h3 className="text-2xl font-bold mb-4">{title}</h3>
+                        <p className="text-md text-gray-300 mb-6">{message}</p>
+                        <button onClick={onClose}>Close</button>
+                    </div>
+                </div>
+            );
+        }
+
+        // NEW: Edit Project Modal Component
+        function EditProjectModal({ isOpen, onClose, project, onSave }) {
+            const [title, setTitle] = useState(project ? project.title : '');
+            const [description, setDescription] = useState(project ? project.description : '');
+
+            useEffect(() => {
+                if (project) {
+                    setTitle(project.title);
+                    setDescription(project.description);
+                }
+            }, [project]);
+
+            if (!isOpen || !project) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                onSave(project.id, { title, description });
+                onClose();
+            };
+
+            return (
+                <div className="app-custom-modal-overlay active">
+                    <div className="app-custom-modal-content active">
+                        <h3 className="text-2xl font-bold mb-4">Edit Project: {project.title}</h3>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4 text-left">
+                                <label htmlFor="editTitle" className="block text-gray-300 text-sm font-medium mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    id="editTitle"
+                                    className="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4 text-left">
+                                <label htmlFor="editDescription" className="block text-gray-300 text-sm font-medium mb-1">Description</label>
+                                <textarea
+                                    id="editDescription"
+                                    rows="3"
+                                    className="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button type="button" onClick={onClose} className="bg-gray-600 hover:bg-gray-700 text-white text-sm py-2 px-4 rounded-full">Cancel</button>
+                                <button type="submit" className="bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-full">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        }
+
+        // NEW: Product Details Modal Component
+        function ProductDetailsModal({ isOpen, onClose, product }) {
+            if (!isOpen || !product) return null;
+
+            return (
+                <div className="app-custom-modal-overlay active">
+                    <div className="app-custom-modal-content active live-demo-modal-content"> {/* Reusing some live-demo styles for wider modal */}
+                        <div className="live-demo-modal-header">
+                            <h3>{product.name || product.title} Details</h3>
+                            <button onClick={onClose}><i className="fas fa-times"></i></button>
+                        </div>
+                        <div className="live-demo-modal-body text-left">
+                            <p className="text-gray-300 mb-4">{product.description}</p>
+                            {product.features && (
+                                <div className="mb-4">
+                                    <h4 className="text-xl font-bold text-teal-400 mb-2">Key Features:</h4>
+                                    <ul className="list-disc list-inside text-gray-300 ml-4">
+                                        {product.features.map((feature, index) => <li key={index}>{feature}</li>)}
+                                    </ul>
+                                </div>
+                            )}
+                            {product.technologies && (
+                                <div className="mb-4">
+                                    <h4 className="text-xl font-bold text-teal-400 mb-2">Technologies Used:</h4>
+                                    <ul className="list-disc list-inside text-gray-300 ml-4">
+                                        {product.technologies.map((tech, index) => <li key={index}>{tech}</li>)}
+                                    </ul>
+                                </div>
+                            )}
+                             {product.useCases && (
+                                <div className="mb-4">
+                                    <h4 className="text-xl font-bold text-teal-400 mb-2">Typical Use Cases:</h4>
+                                    <ul className="list-disc list-inside text-gray-300 ml-4">
+                                        {product.useCases.map((useCase, index) => <li key={index}>{useCase}</li>)}
+                                    </ul>
+                                </div>
+                            )}
+                            {product.integrationNotes && (
+                                <div className="mb-4">
+                                    <h4 className="text-xl font-bold text-teal-400 mb-2">Integration Notes:</h4>
+                                    <p className="text-gray-300">{product.integrationNotes}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // NEW: Live Demo Modal Component
+        function LiveDemoModal({ isOpen, onClose, project }) {
+            if (!isOpen || !project) return null;
+
+            // Simulated live content for the iframe
+            const liveContentHtml = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Live Demo - ${project.title}</title>
+                    <style>
+                        body {
+                            font-family: 'Inter', sans-serif;
+                            background-color: #1a1a1d; /* App dark background */
+                            color: #e0e0e0; /* App text light */
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 100vh;
+                            padding: 20px;
+                            text-align: center;
+                            overflow: hidden;
+                        }
+                        .demo-container {
+                            background-color: #2a2a2e; /* App header background */
+                            border: 1px solid #4b5563; /* App border dark */
+                            border-radius: 1rem;
+                            padding: 2rem;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                            width: 90%;
+                            max-width: 600px;
+                        }
+                        h1 {
+                            color: #22c55e; /* App primary green */
+                            font-size: 2em;
+                            margin-bottom: 1rem;
+                        }
+                        p {
+                            color: #9ca3af; /* App text muted */
+                            margin-bottom: 1.5rem;
+                        }
+                        .visualizer-placeholder {
+                            width: 100%;
+                            height: 150px;
+                            background-color: #374151; /* App hover bg */
+                            border-radius: 0.5rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 1.2em;
+                            color: #e0e0e0;
+                            border: 2px dashed #4b5563;
+                            margin-bottom: 1.5rem;
+                        }
+                        .play-button {
+                            background-color: #4f46e5; /* App CTA button bg */
+                            color: white;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 9999px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: background-color 0.2s ease;
+                        }
+                        .play-button:hover {
+                            background-color: #3f36a0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="demo-container">
+                        <h1>Live Demo: ${project.title}</h1>
+                        <p>Experience your deployed project in action!</p>
+                        <div class="visualizer-placeholder">
+                            <i class="fas fa-play-circle text-4xl mr-2"></i> Simulated Live Content
+                        </div>
+                        <p class="text-sm">This content is streamed live via OmniGrid™.</p>
+                        <button class="play-button">Engage Now</button>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            return (
+                <div className="app-custom-modal-overlay active">
+                    <div className="app-custom-modal-content active live-demo-modal-content">
+                        <div className="live-demo-modal-header">
+                            <h3>Live Demo: {project.title}</h3>
+                            <button onClick={onClose}><i className="fas fa-times"></i></button>
+                        </div>
+                        <div className="live-demo-modal-body">
+                            <iframe
+                                srcDoc={liveContentHtml}
+                                className="live-demo-iframe"
+                                sandbox="allow-scripts allow-same-origin"
+                                title={`Live Demo: ${project.title}`}
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+
+        // Main App component
+        function App() {
+            const [searchTerm, setSearchTerm] = useState('');
+            const [activeTab, setActiveTab] = useState('browse');
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [isShuffleOn, setIsShuffleOn] = useState(false);
+            const [repeatMode, setRepeatMode] = useState('off');
+
+            const [auraSuggestionOutput, setAuraSuggestionOutput] = useState('');
+            const [isGeneratingAuraSuggestion, setIsGeneratingAuraSuggestion] = useState(false);
+
+            const [coreBrandAlignmentOutput, setCoreBrandAlignmentOutput] = useState('');
+            const [isGeneratingCoreBrandAlignment, setIsGeneratingCoreBrandAlignment] = useState(false);
+            const [coreBrandProjectIdea, setCoreBrandProjectIdea] = useState('');
+            const [selectedCoreBrand, setSelectedCoreBrand] = useState(null);
+            const [integrationStepsOutput, setIntegrationStepsOutput] = useState(''); // New state for integration steps
+            const [isGeneratingIntegrationSteps, setIsGeneratingIntegrationSteps] = useState(false); // New state for loading
+
+            // Firestore states
+            const [userId, setUserId] = useState(null);
+            const [isAuthReady, setIsAuthReady] = useState(false);
+            const [myMotionProjects, setMyMotionProjects] = useState([]);
+            const [mySoundTools, setMySoundTools] = useState([]);
+            const [liveMotionProjectsCount, setLiveMotionProjectsCount] = useState(0); // New state for live count
+            const [firestoreLoading, setFirestoreLoading] = useState(true);
+            const [firestoreError, setFirestoreError] = useState(null);
+
+            // Edit modal state
+            const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+            const [projectToEdit, setProjectToEdit] = useState(null);
+
+            // Product Details Modal State
+            const [isProductDetailsModalOpen, setIsProductDetailsModalOpen] = useState(false);
+            const [selectedProduct, setSelectedProduct] = useState(null);
+
+            // Live Demo Modal State
+            const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+            const [projectToDemo, setProjectToDemo] = useState(null);
+
+
+            // Initialize Firebase and set up listeners
+            useEffect(() => {
+                const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        setUserId(user.uid);
+                        setIsAuthReady(true);
+                        console.log("Firebase User ID:", user.uid);
+                    } else {
+                        try {
+                            if (INITIAL_AUTH_TOKEN) {
+                                await signInWithCustomToken(auth, INITIAL_AUTH_TOKEN);
+                            } else {
+                                await signInAnonymously(auth);
+                            }
+                        } catch (error) {
+                            console.error("Firebase Auth Error:", error);
+                            setFirestoreError("Authentication failed. Some features may not work.");
+                            setIsAuthReady(true); // Still set ready to allow UI to render, but with error
+                        }
+                    }
+                });
+
+                return () => unsubscribeAuth(); // Cleanup auth listener
+            }, []);
+
+            // Firestore data listeners (depend on userId and isAuthReady)
+            useEffect(() => {
+                let unsubscribeProjects = () => {};
+                let unsubscribeTools = () => {};
+                let unsubscribeLiveCount = () => {};
+
+                if (isAuthReady && userId) {
+                    setFirestoreLoading(true);
+                    setFirestoreError(null);
+
+                    // Listener for My Motion Projects
+                    const projectsCollectionRef = collection(db, `artifacts/${APP_ID}/users/${userId}/motionProjects`);
+                    unsubscribeProjects = onSnapshot(projectsCollectionRef, (snapshot) => {
+                        const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        setMyMotionProjects(projects);
+                        setFirestoreLoading(false);
+                    }, (error) => {
+                        console.error("Error fetching motion projects:", error);
+                        setFirestoreError("Failed to load motion projects.");
+                        setFirestoreLoading(false);
+                    });
+
+                    // Listener for My Sound Tools
+                    const toolsCollectionRef = collection(db, `artifacts/${APP_ID}/users/${userId}/soundTools`);
+                    unsubscribeTools = onSnapshot(toolsCollectionRef, (snapshot) => {
+                        const tools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        setMySoundTools(tools);
+                        setFirestoreLoading(false);
+                    }, (error) => {
+                        console.error("Error fetching sound tools:", error);
+                        setFirestoreError("Failed to load sound tools.");
+                        setFirestoreLoading(false);
+                    });
+
+                    // Listener for Live Motion Projects Count
+                    // Ensure the path matches the security rules: /artifacts/{appId}/sonicNestMetrics/liveProjects
+                    const liveCountDocRef = doc(db, `artifacts/${APP_ID}/sonicNestMetrics`, 'liveProjects');
+                    unsubscribeLiveCount = onSnapshot(liveCountDocRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            setLiveMotionProjectsCount(docSnap.data().count || 0);
+                            console.log("Live projects count updated:", docSnap.data().count); // Debug log
+                        } else {
+                            // Initialize if it doesn't exist
+                            setDoc(liveCountDocRef, { count: 0 }).catch(console.error); // Ensure initialization is attempted
+                            setLiveMotionProjectsCount(0);
+                            console.log("Live projects count initialized to 0."); // Debug log
+                        }
+                    }, (error) => {
+                        console.error("Error fetching live projects count:", error);
+                        // This is the error the user reported. Provide guidance.
+                        setFirestoreError("Permission denied for live projects count. Please update Firebase Security Rules.");
+                    });
+
+                } else if (isAuthReady && !userId) {
+                    setFirestoreLoading(false); // Not authenticated, so no data to load
+                }
+
+                return () => {
+                    unsubscribeProjects(); // Cleanup listeners
+                    unsubscribeTools();
+                    unsubscribeLiveCount();
+                };
+            }, [isAuthReady, userId]); // Re-run when auth state changes
+
+
+            // State for custom modal (general purpose)
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [modalContent, setModalContent] = useState({ title: '', message: '' });
+
+            const showAppModal = (title, message) => {
+                setModalContent({ title, message });
+                setIsModalOpen(true);
+            };
+
+            const closeAppModal = () => {
+                setIsModalOpen(false);
+                setModalContent({ title: '', message: '' });
+            };
+
+
+            // Placeholder data for demonstration
+            const trendingSongs = [
+                { id: '1', title: 'Mountain Sound', artist: 'Of Monsters and Men', embedId: '3SPVZJzf1Hs30rB6yXVf2y' },
+                { id: '2', title: 'Starlight', artist: 'Muse', embedId: '3skZ3pB2rK8F8F8j8f8f8f' }, // Placeholder embed ID
+                { id: '3', title: 'Blinding Lights', artist: 'The Weeknd', embedId: '3SPVZJzf1Hs30rB6yXVf2y' }, // Placeholder embed ID
+                { id: '4', title: 'Levitating', artist: 'Dua Lipa', embedId: '3SPVZJzf1Hs30rB6yXVf2y' }, // Placeholder embed ID
+            ];
+
+            const categories = [
+                { name: 'Pop', icon: '🎵' },
+                { name: 'Rock', icon: '🎸' },
+                { name: 'Electronic', icon: '🎧' },
+                { name: 'Hip Hop', icon: '🎤' },
+                { name: 'Chill', icon: '🍃' },
+                { name: 'Workout', icon: '💪' },
+            ];
+
+            const playlists = [
+                { name: 'Daily Mix 1', description: 'Your daily dose of amazing music.', count: '50 songs' },
+                { name: 'Discover Weekly', description: 'New music every Monday.', count: '30 songs' },
+                { name: 'Chill Vibes', description: 'Relaxing tunes for your evening.', count: '70 songs' },
+            ];
+
+            // FAA Family Brands data
+            const faaFamilyBrands = [
+                { id: 'faa-1', name: 'HarmonyHearth™', icon: '👨‍👩‍👧‍👦', description: 'Facilitates family gatherings centered around music, fostering unity and shared experiences.', auraBenefit: 'Unity Aura' },
+                { id: 'faa-2', name: 'MelodyMosaic™', icon: '🎶', description: 'Offers customizable music experiences tailored to individual and familial preferences, enhancing the collective aura.', auraBenefit: 'Personalized Aura Flow' },
+                { id: 'faa-3', name: 'AuraAcoustics™', icon: '🔊', description: 'Specializes in soundscapes designed to elevate the ambient energy of living spaces, promoting well-being.', auraBenefit: 'Ambient Aura Elevation' },
+                { id: 'faa-4', name: 'RhythmRoots™', icon: '🥁', description: 'Connects families to ancestral musical traditions, strengthening cultural ties and personal identity.', auraBenefit: 'Cultural Aura Strengthening' },
+                { id: 'faa-5', name: 'SerenadeSphere™', icon: '🧘‍♀️', description: 'Provides immersive musical environments aimed at relaxation and aura cleansing.', auraBenefit: 'Relaxation & Aura Cleansing' },
+            ];
+
+            // SonicNest Motion & Media Projects (Static examples)
+            const motionMediaProjects = [
+                { id: 'mm-1', title: 'Dynamic Visualizer Suite', description: 'Real-time interactive visualizers for live performances.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Visualizer',
+                  features: ['Real-time audio analysis', 'Customizable particle effects', 'Multi-screen support'],
+                  technologies: ['WebGL', 'Web Audio API', 'React'],
+                  useCases: ['Live concerts', 'Interactive art installations', 'Music videos']
+                },
+                { id: 'mm-2', title: 'Short Film Scoring', description: 'Original score and sound design for independent short films.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Film',
+                  features: ['Adaptive scoring engine', 'Foley sound library integration', 'Dialogue enhancement'],
+                  technologies: ['DAW Integration', 'AI Composition Algorithms', 'Dolby Atmos'],
+                  useCases: ['Independent films', 'Documentaries', 'Commercials']
+                },
+                { id: 'mm-3', title: 'VR Experience Soundtrack', description: 'Immersive 3D audio for virtual reality environments.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=VR',
+                  features: ['Spatial audio rendering', 'Interactive soundscapes', 'Haptic feedback synchronization'],
+                  technologies: ['Ambisonics', 'Unity/Unreal Audio Engine', 'OpenVR'],
+                  useCases: ['VR games', 'Virtual tours', 'Training simulations']
+                },
+                { id: 'mm-4', title: 'Brand Identity Animation', description: 'Animated logos and intros with custom sound effects for corporate branding.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Brand',
+                  features: ['Vector animation support', 'Custom sound logo creation', 'Cross-platform export'],
+                  technologies: ['After Effects', 'Cinema 4D', 'Wwise'],
+                  useCases: ['Corporate branding', 'Product launches', 'Event intros']
+                },
+                { id: 'mm-5', title: 'Interactive Documentary', description: 'Engaging documentary experience with user-controlled narrative paths.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Doc',
+                  features: ['Branching narratives', 'Dynamic media loading', 'User choice tracking'],
+                  technologies: ['HTML5 Video', 'JavaScript Frameworks', 'Node.js Backend'],
+                  useCases: ['Educational content', 'Interactive storytelling', 'Archival presentations']
+                },
+                { id: 'mm-6', title: 'Podcast Video Series', description: 'Visual enhancements and motion graphics for podcast episodes.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Podcast',
+                  features: ['Automated waveform visualization', 'Dynamic lower thirds', 'Social media optimization'],
+                  technologies: ['Adobe Premiere Pro', 'DaVinci Resolve', 'AI Transcription'],
+                  useCases: ['Podcast promotion', 'YouTube content', 'Social media snippets']
+                },
+                { id: 'mm-7', title: 'Generative Art Installation', description: 'AI-driven visual art reacting to live sound inputs.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=Generative',
+                  features: ['Real-time audio reactivity', 'Algorithmic pattern generation', 'Audience interaction'],
+                  technologies: ['p5.js', 'Web Audio API', 'Machine Learning Models'],
+                  useCases: ['Museum exhibits', 'Public spaces', 'Interactive events']
+                },
+                { id: 'mm-8', title: '3D Audio Walkthrough', description: 'Spatial audio experience for architectural visualizations.', imageUrl: 'https://placehold.co/150x150/ff3b30/ffffff?text=3D+Audio',
+                  features: ['Immersive sound positioning', 'Material acoustic simulation', 'Multi-platform deployment'],
+                  technologies: ['Wwise', 'FMOD', 'Unity/Unreal Engine'],
+                  useCases: ['Architectural design reviews', 'Real estate tours', 'Virtual museums']
+                },
+            ];
+
+            // SonicNest Sonic Production Tools (Static examples)
+            const sonicProductionTools = [
+                { id: 'sp-1', name: 'AudioMix Pro', description: 'Professional-grade mixing and mastering console.', icon: 'fas fa-sliders-h',
+                  features: ['Unlimited tracks', 'Vocal tuning algorithms', 'AI-powered mastering presets'],
+                  technologies: ['VST/AU Plugin Support', 'Cloud Processing', 'Real-time Collaboration'],
+                  useCases: ['Music production', 'Podcast editing', 'Film audio post-production']
+                },
+                { id: 'sp-2', name: 'SoundFX Library', description: 'Vast collection of royalty-free sound effects and ambiences.', icon: 'fas fa-volume-up',
+                  features: ['Categorized library', 'Advanced search filters', 'Direct DAW integration'],
+                  technologies: ['Cloud Storage', 'Metadata Tagging', 'API Access'],
+                  useCases: ['Game development', 'Film/TV production', 'Advertising']
+                },
+                { id: 'sp-3', name: 'VocalTune AI', description: 'AI-powered vocal pitch correction and harmony generation.', icon: 'fas fa-microphone-alt',
+                  features: ['Real-time pitch correction', 'Automatic harmony generation', 'Vibrato control'],
+                  technologies: ['Machine Learning', 'DSP Algorithms', 'MIDI Integration'],
+                  useCases: ['Vocal production', 'Demo recording', 'Live performance enhancement']
+                },
+                { id: 'sp-4', name: 'BeatForge Studio', description: 'Intuitive drum machine and beat sequencing software.', icon: 'fas fa-drum',
+                  features: ['Extensive drum kit library', 'Pattern sequencer', 'MIDI export'],
+                  technologies: ['Sampler Engine', 'Step Sequencer', 'Quantization Algorithms'],
+                  useCases: ['Beatmaking', 'Electronic music production', 'Hip-hop production']
+                },
+                { id: 'sp-5', name: 'Synthesizer Suite', description: 'Comprehensive collection of virtual synthesizers for diverse soundscapes.', icon: 'fas fa-keyboard',
+                  features: ['Analog, FM, Wavetable synthesis', 'Modulation matrix', 'Preset management'],
+                  technologies: ['Virtual Analog Modeling', 'DSP Synthesis', 'Polyphony Engine'],
+                  useCases: ['Sound design', 'Electronic music', 'Film scoring']
+                },
+                { id: 'sp-6', name: 'Mastering Lab', description: 'Tools for final audio polish and loudness optimization.', icon: 'fas fa-waveform',
+                  features: ['Multi-band compression', 'Limiting and Loudness metering', 'ISRC/UPC embedding'],
+                  technologies: ['Loudness Normalization', 'True Peak Limiting', 'Codec Optimization'],
+                  useCases: ['Final audio mastering', 'Broadcast preparation', 'Streaming platform delivery']
+                },
+                { id: 'sp-7', name: 'Spatial Audio Designer', description: 'Design and mix immersive 3D audio environments.', icon: 'fas fa-cube',
+                  features: ['Object-based audio mixing', 'Room acoustic simulation', 'HRTF integration'],
+                  technologies: ['Ambisonics', 'Binaural Rendering', 'Dolby Atmos Tools'],
+                  useCases: ['VR/AR audio', 'Immersive film experiences', 'Interactive installations']
+                },
+                { id: 'sp-8', name: 'AI Composer Assistant', description: 'AI-powered tool to assist with melodic and harmonic composition.', icon: 'fas fa-robot',
+                  features: ['Melody generation', 'Chord progression suggestions', 'Style transfer'],
+                  technologies: ['Generative AI', 'Neural Networks', 'Music Theory Algorithms'],
+                  useCases: ['Music composition', 'Creative brainstorming', 'Background music generation']
+                },
+            ];
+
+            // Core Fruitful Global Brands
+            const coreBrands = [
+                { id: 'cb-1', name: 'VaultMesh™', icon: 'fas fa-lock', description: 'Secure blockchain-based data and transaction integrity across all sectors.', focusArea: 'Security & Trust' },
+                { id: 'cb-2', name: 'OmniGrid™', icon: 'fas fa-globe', description: 'Interconnected global digital infrastructure for seamless data flow and resource allocation.', focusArea: 'Global Connectivity' },
+                { id: 'cb-3', name: 'ClaimRoot™', icon: 'fas fa-certificate', description: 'Automated intellectual property and licensing management for digital assets.', focusArea: 'Licensing & IP' },
+                { id: 'cb-4', name: 'CodeNest™', icon: 'fas fa-code', description: 'Development and deployment platform for AI-driven applications and smart contracts.', focusArea: 'Innovation & Development' },
+                { id: 'cb-5', name: 'TreatyMesh™', icon: 'fas fa-handshake', description: 'Framework for digital treaties, agreements, and collaborative governance.', focusArea: 'Governance & Collaboration' },
+                { id: 'cb-6', name: 'EcoFlow™', icon: 'fas fa-leaf', description: 'Sustainable resource management and environmental data integration.', focusArea: 'Sustainability & Resources' },
+                { id: 'cb-7', name: 'BioSense™', icon: 'fas fa-dna', description: 'Biometric authentication and personalized health data management.', focusArea: 'Health & Identity' },
+                { id: 'cb-8', name: 'CrateDance™', icon: 'fas fa-box-open', description: 'Optimized logistics and supply chain solutions for physical and digital goods.', focusArea: 'Logistics & Supply Chain' },
+                { id: 'cb-9', name: 'AuraSync™', icon: 'fas fa-lightbulb', description: 'Harmonizing digital experiences with user emotional and energetic states.', focusArea: 'Personalization & Well-being' },
+                { id: 'cb-10', name: 'MetaVerse Nexus™', icon: 'fas fa-vr-cardboard', description: 'Interoperable gateway to diverse metaverse environments and digital realities.', focusArea: 'Virtual Worlds & Immersion' },
+                { id: 'cb-11', name: 'DataStream Forge™', icon: 'fas fa-database', description: 'Real-time data processing and analytics for dynamic content generation and insights.', focusArea: 'Data Analytics & AI' },
+                { id: 'cb-12', name: 'QuantumPulse™', icon: 'fas fa-atom', description: 'Leveraging quantum computing principles for ultra-secure and high-speed data operations.', focusArea: 'Advanced Computing & Security' },
+            ];
+
+
+            const [currentPlayingTrack, setCurrentPlayingTrack] = useState(trendingSongs[0]);
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+            useEffect(() => {
+                console.log('Now playing:', currentPlayingTrack.title);
+            }, [currentPlayingTrack]);
+
+            const handlePlayPause = () => setIsPlaying(!isPlaying);
+            const handlePreviousTrack = () => {
+                const newIndex = (currentTrackIndex - 1 + trendingSongs.length) % trendingSongs.length;
+                setCurrentTrackIndex(newIndex);
+                setCurrentPlayingTrack(trendingSongs[newIndex]);
+                setIsPlaying(true);
+            };
+            const handleNextTrack = () => {
+                const newIndex = (currentTrackIndex + 1) % trendingSongs.length;
+                setCurrentTrackIndex(newIndex);
+                setCurrentPlayingTrack(trendingSongs[newIndex]);
+                setIsPlaying(true);
+            };
+            const handleShuffle = () => setIsShuffleOn(!isShuffleOn);
+            const handleRepeat = () => {
+                if (repeatMode === 'off') setRepeatMode('all');
+                else if (repeatMode === 'all') setRepeatMode('one');
+                else setRepeatMode('off');
+            };
+            const handleLike = () => showAppModal('Feature', 'Liked current track! (Simulation)');
+            const handleQueue = () => showAppModal('Feature', 'Opening queue! (Simulation)');
+            const handleFAABrandClick = (brandName, auraBenefit) => {
+                console.log(`Interacting with FAA Family Brand: ${brandName}. Aura Benefit: ${auraBenefit}.`);
+            };
+
+            const generateAuraMusicSuggestion = async (auraBenefit) => {
+                setIsGeneratingAuraSuggestion(true);
+                setAuraSuggestionOutput('✨ Generating music suggestions...');
+
+                const prompt = `Based on the aura benefit "${auraBenefit}", suggest 3-5 distinct music genres, instruments, or sound characteristics that would enhance this aura. Be concise and creative.`;
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        setAuraSuggestionOutput(result.candidates[0].content.parts[0].text);
+                    } else {
+                        setAuraSuggestionOutput('Failed to generate suggestions. Please try again.');
+                    }
+                } catch (error) {
+                    setAuraSuggestionOutput('Error connecting to AI. Please check your network.');
+                } finally {
+                    setIsGeneratingAuraSuggestion(false);
+                }
+            };
+
+            const generateCoreBrandAlignment = async (brandName, focusArea, projectIdea) => {
+                setIsGeneratingCoreBrandAlignment(true);
+                setCoreBrandAlignmentOutput('✨ Generating alignment brief...');
+                setIntegrationStepsOutput(''); // Clear previous integration steps
+
+                if (!projectIdea) {
+                    showAppModal('Input Required', 'Please enter your project idea to generate the alignment brief.');
+                    setIsGeneratingCoreBrandAlignment(false);
+                    setCoreBrandAlignmentOutput('');
+                    return;
+                }
+
+                const prompt = `You are an AI assistant for Fruitful Global. A user is developing a new music/media project with the idea: "${projectIdea}". They want to align it with the core brand "${brandName}", which focuses on "${focusArea}". Provide a concise 3-4 sentence brief (max 100 words) on how this specific music or media project could effectively embody the principles and objectives of this brand.`;
+
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        setCoreBrandAlignmentOutput(result.candidates[0].content.parts[0].text);
+                    } else {
+                        setCoreBrandAlignmentOutput('Failed to generate alignment brief. Please try again.');
+                    }
+                } catch (error) {
+                    setCoreBrandAlignmentOutput('Error connecting to AI. Please check your network.');
+                } finally {
+                    setIsGeneratingCoreBrandAlignment(false);
+                }
+            };
+
+            // NEW: Function to generate integration steps for core brand alignment
+            const generateIntegrationSteps = async (brandName, projectIdea, alignmentBrief) => {
+                setIsGeneratingIntegrationSteps(true);
+                setIntegrationStepsOutput('✨ Suggesting integration steps...');
+
+                const prompt = `Based on the core brand "${brandName}" (focus: "${selectedCoreBrand.focusArea}") and the project idea "${projectIdea}", and the alignment brief: "${alignmentBrief}", suggest 3-5 concrete steps or considerations for how this music/media project could technically or strategically integrate with the capabilities of ${brandName}. Be specific and actionable. Format as a markdown list.`;
+
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        setIntegrationStepsOutput(result.candidates[0].content.parts[0].text);
+                    } else {
+                        setIntegrationStepsOutput('Failed to suggest integration steps. Please try again.');
+                    }
+                } catch (error) {
+                    setIntegrationStepsOutput('Error connecting to AI. Please check your network.');
+                } finally {
+                    setIsGeneratingIntegrationSteps(false);
+                }
+            };
+
+            // NEW: Function to add a motion project to Firestore
+            const addMyMotionProject = async () => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+                const newTitle = prompt("Enter new project title:");
+                if (newTitle) {
+                    const newDescription = prompt("Enter project description:");
+                    try {
+                        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/motionProjects`), {
+                            title: newTitle,
+                            description: newDescription,
+                            status: 'Draft',
+                            createdAt: new Date().toISOString()
+                        });
+                        showAppModal('Project Added', `"${newTitle}" has been added to My Motion Projects.`);
+                    } catch (e) {
+                        showAppModal('Error', `Failed to add project: ${e.message}`);
+                        console.error("Error adding motion project:", e);
+                    }
+                }
+            };
+
+            // NEW: Function to delete a motion project from Firestore
+            const deleteMyMotionProject = async (projectId, projectTitle) => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+                if (confirm(`Are you sure you want to delete "${projectTitle}"?`)) {
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${APP_ID}/users/${userId}/motionProjects`, projectId));
+                        showAppModal('Project Deleted', `"${projectTitle}" has been deleted.`);
+                    } catch (e) {
+                        showAppModal('Error', `Failed to delete project: ${e.message}`);
+                        console.error("Error deleting motion project:", e);
+                    }
+                }
+            };
+
+            // NEW: Function to open edit modal for a motion project
+            const openEditProjectModal = (project) => {
+                setProjectToEdit(project);
+                setIsEditModalOpen(true);
+            };
+
+            // NEW: Function to save edited motion project to Firestore
+            const saveEditedProject = async (projectId, updatedData) => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+                try {
+                    await updateDoc(doc(db, `artifacts/${APP_ID}/users/${userId}/motionProjects`, projectId), {
+                        ...updatedData,
+                        lastModified: new Date().toISOString()
+                    });
+                    showAppModal('Project Updated', `"${updatedData.title}" has been updated.`);
+                } catch (e) {
+                    showAppModal('Error', `Failed to update project: ${e.message}`);
+                    console.error("Error updating motion project:", e);
+                }
+            };
+
+            // NEW: Function to deploy a motion project (update status and live count)
+            const deployMyMotionProject = async (projectId, projectTitle) => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+
+                // Check if already live
+                const project = myMotionProjects.find(p => p.id === projectId);
+                if (project && project.status === 'Live') {
+                    showAppModal('Already Live', `"${projectTitle}" is already deployed.`);
+                    return;
+                }
+
+                if (confirm(`Are you sure you want to deploy "${projectTitle}"? This will make it live.`)) {
+                    try {
+                        // Update project status to 'Live'
+                        await updateDoc(doc(db, `artifacts/${APP_ID}/users/${userId}/motionProjects`, projectId), {
+                            status: 'Live',
+                            deployedAt: new Date().toISOString()
+                        });
+
+                        // Increment live projects count
+                        const liveCountRef = doc(db, `artifacts/${APP_ID}/sonicNestMetrics`, 'liveProjects');
+                        const liveCountSnap = await getDoc(liveCountRef);
+                        const currentCount = liveCountSnap.exists() ? liveCountSnap.data().count : 0;
+                        await setDoc(liveCountRef, { count: currentCount + 1 });
+
+                        showAppModal('Project Deployed!', `"${projectTitle}" has been successfully deployed and is now live.`);
+                    } catch (e) {
+                        showAppModal('Deployment Error', `Failed to deploy project: ${e.message}`);
+                        console.error("Error deploying motion project:", e);
+                    }
+                }
+            };
+
+            // NEW: Function to add a sound tool to favorites in Firestore
+            const addMySoundTool = async (tool) => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+                if (mySoundTools.some(t => t.id === tool.id)) {
+                    showAppModal('Already Added', `"${tool.name}" is already in your favorites.`);
+                    return;
+                }
+                try {
+                    await setDoc(doc(db, `artifacts/${APP_ID}/users/${userId}/soundTools`, tool.id), {
+                        name: tool.name,
+                        icon: tool.icon,
+                        description: tool.description, // Include description for consistency
+                        addedAt: new Date().toISOString()
+                    });
+                    showAppModal('Tool Added', `"${tool.name}" added to My Favorite Tools.`);
+                } catch (e) {
+                    showAppModal('Error', `Failed to add tool: ${e.message}`);
+                    console.error("Error adding sound tool:", e);
+                }
+            };
+
+            // NEW: Function to delete a sound tool from favorites in Firestore
+            const deleteMySoundTool = async (toolId, toolName) => {
+                if (!userId) {
+                    showAppModal('Authentication Required', 'Please wait for authentication to complete.');
+                    return;
+                }
+                if (confirm(`Are you sure you want to remove "${toolName}" from your favorites?`)) {
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${APP_ID}/users/${userId}/soundTools`, toolId));
+                        showAppModal('Tool Removed', `"${toolName}" removed from favorites.`);
+                    } catch (e) {
+                        showAppModal('Error', `Failed to remove tool: ${e.message}`);
+                        console.error("Error deleting sound tool:", e);
+                    }
+                }
+            };
+
+            // NEW: Function to open Product Details Modal
+            const openProductDetailsModal = (product) => {
+                setSelectedProduct(product);
+                setIsProductDetailsModalOpen(true);
+            };
+
+            // NEW: Function to open Live Demo Modal
+            const openLiveDemoModal = (project) => {
+                setProjectToDemo(project);
+                setIsLiveDemoModalOpen(true);
+            };
+
+
+            return (
+                <div className="min-h-screen bg-gray-900 text-white font-inter flex flex-col antialiased">
+                    {/* Custom Modals */}
+                    <AppCustomModal isOpen={isModalOpen} onClose={closeAppModal} title={modalContent.title} message={modalContent.message} />
+                    <EditProjectModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} project={projectToEdit} onSave={saveEditedProject} />
+                    <ProductDetailsModal isOpen={isProductDetailsModalOpen} onClose={() => setIsProductDetailsModalOpen(false)} product={selectedProduct} />
+                    <LiveDemoModal isOpen={isLiveDemoModalOpen} onClose={() => setIsLiveDemoModalOpen(false)} project={projectToDemo} />
+
+                    {/* Header */}
+                    <header className="bg-gray-800 p-4 shadow-lg sticky top-0 z-50 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="text-3xl font-extrabold text-green-500">Fruitful.Music™</span>
+                            <span className="text-xl font-medium text-gray-400">| SonicNest™</span> {/* Added SonicNest branding */}
+                        </div>
+                        <div className="relative w-1/3 max-w-sm">
+                            <input
+                                type="text"
+                                placeholder="Search for artists, songs, podcasts..."
+                                className="w-full p-2 pl-10 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        {/* User/Auth section would go here in a real app */}
+                    </header>
+
+                    {/* Main Content Area */}
+                    <div className="flex flex-grow">
+                        {/* Sidebar Navigation */}
+                        <nav className="w-64 bg-gray-800 p-4 border-r border-gray-700 flex flex-col justify-between">
+                            <div>
+                                <ul className="space-y-4">
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('browse')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'browse' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-home"></i> Home
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('search')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'search' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-search"></i> Search
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('playlists')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'playlists' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-bookmark"></i> Playlists & Licenses {/* Renamed tab */}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('faa-brands')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'faa-brands' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-gem"></i> FAA Brands
+                                        </button>
+                                    </li>
+                                    {/* NEW: SonicNest Motion & Media Tab */}
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('motion-media')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'motion-media' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-film"></i> Motion & Media
+                                        </button>
+                                    </li>
+                                    {/* NEW: SonicNest Sonic Production Tab */}
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('sonic-production')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'sonic-production' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-headphones-alt"></i> Sonic Production
+                                        </button>
+                                    </li>
+                                    {/* NEW: Fruitful Ecosystem Tab */}
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('fruitful-ecosystem')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'fruitful-ecosystem' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-sitemap"></i> Fruitful Ecosystem
+                                        </button>
+                                    </li>
+                                    {/* NEW: Live Demos Tab */}
+                                    <li>
+                                        <button
+                                            onClick={() => setActiveTab('live-demos')}
+                                            className={`flex items-center gap-3 w-full p-3 rounded-lg text-lg font-medium transition duration-200 ${
+                                                activeTab === 'live-demos' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                                            }`}
+                                        >
+                                            <i className="fas fa-broadcast-tower"></i> Live Demos ({liveMotionProjectsCount})
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <div className="mt-8 pt-4 border-t border-gray-700">
+                                    <h3 className="text-gray-400 text-sm uppercase mb-3 px-3">Playlists</h3>
+                                    <ul className="space-y-2">
+                                        {playlists.map(playlist => (
+                                            <li key={playlist.name}>
+                                                <a href="#" className="flex flex-col text-gray-400 hover:text-white p-2 rounded-md transition duration-200">
+                                                    <span className="font-medium">{playlist.name}</span>
+                                                    <span className="text-xs text-gray-500">{playlist.description}</span>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                            {/* Display User ID from Firestore */}
+                            {isAuthReady && userId && (
+                                <div className="mt-auto text-center text-xs text-gray-500 pt-4 border-t border-gray-700">
+                                    User ID: {userId}
+                                </div>
+                            )}
+                            {firestoreLoading && (
+                                <div className="mt-auto text-center text-xs text-gray-500 pt-4">
+                                    Loading data... <i className="fas fa-spinner fa-spin"></i>
+                                </div>
+                            )}
+                            {firestoreError && (
+                                <div className="mt-auto text-center text-xs text-red-500 pt-4">
+                                    Error: {firestoreError}
+                                </div>
+                            )}
+                        </nav>
+
+                        {/* Dynamic Content Area */}
+                        <main className="flex-grow p-6 bg-gray-900 overflow-y-auto">
+                            {activeTab === 'browse' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-green-400">Trending Now</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                        {trendingSongs.map(song => (
+                                            <div key={song.id} className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <img
+                                                    src={`https://placehold.co/150x150/22c55e/ffffff?text=${song.title.split(' ')[0]}`}
+                                                    alt={song.title}
+                                                    className="w-full h-auto rounded-md mb-3"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/4b5563/d1d5db?text=No+Image"; }}
+                                                />
+                                                <h3 className="text-lg font-semibold truncate">{song.title}</h3>
+                                                <p className="text-gray-400 text-sm">{song.artist}</p>
+                                                <button className="mt-3 bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full" onClick={() => { setCurrentPlayingTrack(song); setIsPlaying(true); }}>Play</button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <h2 className="text-3xl font-bold mb-6 mt-12 text-blue-400">Browse Categories</h2>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                                        {categories.map(category => (
+                                            <div key={category.name} className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <span className="text-4xl block mb-2">{category.icon}</span>
+                                                <h3 className="text-lg font-semibold">{category.name}</h3>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            )}
+
+                            {activeTab === 'search' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-yellow-400">Search Results</h2>
+                                    <p className="text-gray-400">
+                                        Type in the search bar above to simulate searching.
+                                        A full Spotify integration would fetch live results here.
+                                    </p>
+                                    {searchTerm && (
+                                        <div className="mt-8">
+                                            <h3 className="text-xl font-semibold mb-4">Simulated Results for "{searchTerm}"</h3>
+                                            <ul className="space-y-3">
+                                                <li className="bg-gray-800 p-3 rounded-lg flex items-center justify-between">
+                                                    <span>Song: "{searchTerm} Rock Mix"</span>
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full">Play</button>
+                                                </li>
+                                                <li className="bg-gray-800 p-3 rounded-lg flex items-center justify-between">
+                                                    <span>Artist: "{searchTerm} Band"</span>
+                                                    <button className="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full">Follow</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+
+                            {activeTab === 'playlists' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-purple-400">Your Playlists & Licenses</h2> {/* Updated tab title */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                        {playlists.map(playlist => (
+                                            <div key={playlist.name} className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <h3 className="text-xl font-semibold mb-2">{playlist.name}</h3>
+                                                <p className="text-gray-400 text-sm">{playlist.description}</p>
+                                                <p className="text-gray-500 text-xs mt-2">{playlist.count}</p>
+                                                <button className="mt-4 bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-full">View Playlist</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {/* Placeholder for Licensed Content/Royalties */}
+                                    <h2 className="text-3xl font-bold mb-6 mt-12 text-blue-400">Your Licensed Content & Royalties</h2>
+                                    <div className="bg-gray-800 p-5 rounded-lg shadow-md">
+                                        <p className="text-gray-400 mb-4">Here you'll find an overview of your licensed content and associated royalty earnings from SonicNest™ and other Fruitful Global integrations.</p>
+                                        <ul className="list-disc list-inside text-gray-300">
+                                            <li><strong>"The Quantum Leap" Soundtrack:</strong> Monthly Royalty Est. $500</li>
+                                            <li><strong>"Cityscape Motion Loop":</strong> Quarterly Royalty Est. $1200</li>
+                                            <li><strong>"Ambient Forest Soundscape":</strong> Annual Royalty Est. $300</li>
+                                        </ul>
+                                        <button className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 px-4 rounded-full">View Full Royalty Report</button>
+                                    </div>
+                                </section>
+                            )}
+
+                            {activeTab === 'faa-brands' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-indigo-400">🎵 FAA Family Brands — Music & Aura Integration</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        Within the FAA's Sovereign Brand Architecture, several family-centric brands intertwine music and aura enhancement. These brands exemplify the FAA's commitment to integrating music into family life to enhance the collective aura and well-being.
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                        {faaFamilyBrands.map(brand => (
+                                            <div
+                                                key={brand.id}
+                                                className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105"
+                                            >
+                                                <span className="text-4xl block mb-2">{brand.icon}</span>
+                                                <h3 className="text-xl font-semibold mb-2">{brand.name}</h3>
+                                                <p className="text-gray-400 text-sm">{brand.description}</p>
+                                                <p className="text-gray-500 text-xs mt-2">Aura Benefit: {brand.auraBenefit}</p>
+                                                <button
+                                                    onClick={() => generateAuraMusicSuggestion(brand.auraBenefit)}
+                                                    className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 px-4 rounded-full w-full"
+                                                    disabled={isGeneratingAuraSuggestion}
+                                                >
+                                                    {isGeneratingAuraSuggestion ? (
+                                                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                    ) : (
+                                                        '✨ Suggest Aura Music'
+                                                    )}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md text-left">
+                                        <h3 className="text-xl font-bold text-teal-400 mb-4">Generated Aura Music Insights:</h3>
+                                        <div id="auraSuggestionOutput" className="text-gray-300 whitespace-pre-wrap min-h-[50px] flex items-center">
+                                            {auraSuggestionOutput || 'Click "Suggest Aura Music" to generate insights.'}
+                                        </div>
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Motion & Media Section */}
+                            {activeTab === 'motion-media' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-red-400">🎬 SonicNest™ Motion & Media Projects</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        Explore a curated selection of motion graphics, video productions, and interactive media projects powered by SonicNest™'s advanced rendering and streaming capabilities.
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {motionMediaProjects.map(project => (
+                                            <div key={project.id} className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <img
+                                                    src={project.imageUrl}
+                                                    alt={project.title}
+                                                    className="w-full h-32 object-cover rounded-md mb-3"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/150x150/4b5563/d1d5db?text=Media+Art"; }}
+                                                />
+                                                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                                                <p className="text-gray-400 text-sm">{project.description}</p>
+                                                <button
+                                                    onClick={() => openProductDetailsModal(project)}
+                                                    className="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm py-2 px-4 rounded-full"
+                                                >
+                                                    View Details
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* NEW: My Motion Projects Section (Firestore-backed) */}
+                                    <h2 className="text-3xl font-bold mb-6 mt-12 text-blue-400">My Motion Projects</h2>
+                                    <div className="bg-gray-800 p-5 rounded-lg shadow-md mb-6">
+                                        {firestoreLoading ? (
+                                            <p className="text-gray-400">Loading your projects... <i className="fas fa-spinner fa-spin"></i></p>
+                                        ) : myMotionProjects.length === 0 ? (
+                                            <p className="text-gray-400">You haven't added any motion projects yet.</p>
+                                        ) : (
+                                            <ul className="space-y-3">
+                                                {myMotionProjects.map(project => (
+                                                    <li key={project.id} className="flex items-center justify-between bg-gray-700 p-3 rounded-md">
+                                                        <div>
+                                                            <p className="font-semibold text-lg">{project.title}</p>
+                                                            <p className="text-gray-400 text-sm">{project.description}</p>
+                                                            <p className="text-gray-500 text-xs">Status: {project.status}</p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => openEditProjectModal(project)}
+                                                                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                onClick={() => deployMyMotionProject(project.id, project.title)}
+                                                                className={`bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded-full ${project.status === 'Live' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                disabled={project.status === 'Live'}
+                                                            >
+                                                                {project.status === 'Live' ? 'Deployed' : 'Deploy'}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => showAppModal('Manage Project', `Simulating management interface for "${project.title}".`)}
+                                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Manage
+                                                            </button>
+                                                            <button
+                                                                onClick={() => deleteMyMotionProject(project.id, project.title)}
+                                                                className="bg-red-600 hover:bg-red-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                        <button
+                                            onClick={addMyMotionProject}
+                                            className="mt-4 bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-full"
+                                        >
+                                            Add New Project
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md text-left">
+                                        <h3 className="text-xl font-bold text-orange-400 mb-4">AI-Powered Motion & Media Brief Generator</h3>
+                                        <p className="text-gray-400 mb-4">Describe your vision, and our AI will generate a detailed project brief for your next motion or media production.</p>
+                                        <textarea
+                                            id="motionMediaBriefInput"
+                                            rows="4"
+                                            className="w-full p-3 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            placeholder="e.g., A 30-second animated intro for a tech startup, featuring futuristic cityscapes and dynamic data visualization."
+                                        ></textarea>
+                                        <button
+                                            onClick={async () => {
+                                                const input = document.getElementById('motionMediaBriefInput').value;
+                                                const output = document.getElementById('motionMediaBriefOutput');
+                                                const status = document.getElementById('motionMediaBriefStatus');
+                                                const button = document.querySelector('#motion-media .llm-button-brief'); // Target the correct button
+                                                if (!input.trim()) {
+                                                    showAppModal('Input Required', 'Please enter a brief description to generate a project brief.');
+                                                    return;
+                                                }
+                                                output.textContent = 'Generating brief...';
+                                                output.classList.remove('hidden');
+                                                status.textContent = 'Generating...';
+                                                status.classList.remove('hidden');
+                                                button.disabled = true;
+                                                button.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Generating...`;
+
+                                                const prompt = `Generate a detailed project brief for a motion or media project based on the following input: "${input}". Include sections for: Project Title, Objective, Target Audience, Key Visual Elements, Desired Tone, Deliverables, and Technical Requirements. Be comprehensive and professional.`;
+
+                                                try {
+                                                    let chatHistory = [];
+                                                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                                                    const payload = { contents: chatHistory };
+                                                    const apiKey = "";
+                                                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                                                    const response = await fetch(apiUrl, {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify(payload)
+                                                    });
+                                                    const result = await response.json();
+                                                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                                                        output.textContent = result.candidates[0].content.parts[0].text;
+                                                        status.textContent = 'Brief generated successfully!';
+                                                    } else {
+                                                        output.textContent = 'Failed to generate brief. Please try again.';
+                                                        status.textContent = 'Error generating brief.';
+                                                    }
+                                                } catch (error) {
+                                                    output.textContent = 'Error connecting to AI. Please check your network.';
+                                                    status.textContent = 'Network error.';
+                                                    console.error("Error calling Gemini API:", error);
+                                                } finally {
+                                                    button.disabled = false;
+                                                    button.innerHTML = `✨ Generate Brief`;
+                                                    setTimeout(() => status.classList.add('hidden'), 3000);
+                                                }
+                                            }}
+                                            className="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm py-2 px-4 rounded-full llm-button-brief"
+                                        >
+                                            ✨ Generate Brief
+                                        </button>
+                                        <p id="motionMediaBriefStatus" className="text-xs text-gray-400 mt-1 hidden"></p>
+                                        <div id="motionMediaBriefOutput" className="mt-4 p-4 bg-gray-700 rounded-md text-gray-300 whitespace-pre-wrap hidden"></div>
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* Sonic Production Section */}
+                            {activeTab === 'sonic-production' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-red-400">🎧 SonicNest™ Production Suite</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        Access powerful tools and resources for audio production, sound design, and music composition. From raw sound to polished masters, SonicNest™ empowers your creative flow.
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {sonicProductionTools.map(tool => (
+                                            <div key={tool.id} className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                <span className="text-4xl block mb-2 text-red-400"><i className={tool.icon}></i></span>
+                                                <h3 className="text-xl font-semibold mb-2">{tool.name}</h3>
+                                                <p className="text-gray-400 text-sm">{tool.description}</p>
+                                                <button
+                                                    onClick={() => openProductDetailsModal(tool)}
+                                                    className="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm py-2 px-4 rounded-full"
+                                                >
+                                                    Explore Features
+                                                </button>
+                                                <button
+                                                    onClick={() => addMySoundTool(tool)}
+                                                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded-full w-full"
+                                                >
+                                                    Add to Favorites
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* NEW: My Favorite Tools Section (Firestore-backed) */}
+                                    <h2 className="text-3xl font-bold mb-6 mt-12 text-blue-400">My Favorite Tools</h2>
+                                    <div className="bg-gray-800 p-5 rounded-lg shadow-md mb-6">
+                                        {firestoreLoading ? (
+                                            <p className="text-gray-400">Loading your tools... <i className="fas fa-spinner fa-spin"></i></p>
+                                        ) : mySoundTools.length === 0 ? (
+                                            <p className="text-gray-400">You haven't added any favorite tools yet.</p>
+                                        ) : (
+                                            <ul className="space-y-3">
+                                                {mySoundTools.map(tool => (
+                                                    <li key={tool.id} className="flex items-center justify-between bg-gray-700 p-3 rounded-md">
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="text-2xl text-red-400"><i className={tool.icon}></i></span>
+                                                            <p className="font-semibold text-lg">{tool.name}</p>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => showAppModal('Tool Configuration', `Simulating configuration for "${tool.name}".`)}
+                                                                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Configure
+                                                            </button>
+                                                            <button
+                                                                onClick={() => openProductDetailsModal(tool)}
+                                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Details
+                                                            </button>
+                                                            <button
+                                                                onClick={() => deleteMySoundTool(tool.id, tool.name)}
+                                                                className="bg-red-600 hover:bg-red-700 text-white text-sm py-1 px-3 rounded-full"
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md text-left">
+                                        <h3 className="text-xl font-bold text-orange-400 mb-4">AI-Powered Sound Design Concept Generator</h3>
+                                        <p className="text-gray-400 mb-4">Describe a scene or emotion, and our AI will suggest sound design concepts, instruments, and effects.</p>
+                                        <textarea
+                                            id="soundDesignConceptInput"
+                                            rows="4"
+                                            className="w-full p-3 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            placeholder="e.g., A tense, futuristic chase scene through a neon-lit city, or a serene meditation in a bamboo forest."
+                                        ></textarea>
+                                        <button
+                                            onClick={async () => {
+                                                const input = document.getElementById('soundDesignConceptInput').value;
+                                                const output = document.getElementById('soundDesignConceptOutput');
+                                                const status = document.getElementById('soundDesignConceptStatus');
+                                                const button = document.querySelector('#sonic-production .llm-button-concept'); // Target the correct button
+                                                if (!input.trim()) {
+                                                    showAppModal('Input Required', 'Please enter a description to generate sound design concepts.');
+                                                    return;
+                                                }
+                                                output.textContent = 'Generating concepts...';
+                                                output.classList.remove('hidden');
+                                                status.textContent = 'Generating...';
+                                                status.classList.remove('hidden');
+                                                button.disabled = true;
+                                                button.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Generating...`;
+
+                                                const prompt = `Based on the following scene/emotion: "${input}", suggest 3-5 distinct sound design concepts, including specific instruments, effects, or atmospheric elements. Be creative and concise.`;
+
+                                                try {
+                                                    let chatHistory = [];
+                                                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                                                    const payload = { contents: chatHistory };
+                                                    const apiKey = "";
+                                                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                                                    const response = await fetch(apiUrl, {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify(payload)
+                                                    });
+                                                    const result = await response.json();
+                                                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                                                        output.textContent = result.candidates[0].content.parts[0].text;
+                                                        status.textContent = 'Concepts generated successfully!';
+                                                    } else {
+                                                        output.textContent = 'Failed to generate concepts. Please try again.';
+                                                        status.textContent = 'Error generating concepts.';
+                                                    }
+                                                } catch (error) {
+                                                    output.textContent = 'Error connecting to AI. Please check your network.';
+                                                    status.textContent = 'Network error.';
+                                                    console.error("Error calling Gemini API:", error);
+                                                } finally {
+                                                    button.disabled = false;
+                                                    button.innerHTML = `✨ Generate Concepts`;
+                                                    setTimeout(() => status.classList.add('hidden'), 3000);
+                                                }
+                                            }}
+                                            className="mt-4 bg-red-600 hover:bg-red-700 text-white text-sm py-2 px-4 rounded-full llm-button-concept"
+                                        >
+                                            ✨ Generate Concepts
+                                        </button>
+                                        <p id="soundDesignConceptStatus" className="text-xs text-gray-400 mt-1 hidden"></p>
+                                        <div id="soundDesignConceptOutput" className="mt-4 p-4 bg-gray-700 rounded-md text-gray-300 whitespace-pre-wrap hidden"></div>
+                                    </div>
+                                </section>
+                            )}
+
+                            {/* NEW: Fruitful Ecosystem Section (Core Brands) */}
+                            {activeTab === 'fruitful-ecosystem' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-purple-600">🌐 Fruitful Global Ecosystem — Core Brands</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        Explore the foundational brands of the Fruitful Global ecosystem. Each brand represents a core pillar of our interconnected digital universe, influencing and supporting all creative endeavors, including music and media.
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                        {coreBrands.map(brand => (
+                                            <div
+                                                key={brand.id}
+                                                className={`bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer ${selectedCoreBrand && selectedCoreBrand.id === brand.id ? 'border-2 border-purple-600' : ''}`}
+                                                onClick={() => {
+                                                    setSelectedCoreBrand(brand);
+                                                    setCoreBrandAlignmentOutput(''); // Clear previous output
+                                                    setCoreBrandProjectIdea(''); // Clear previous input
+                                                    setIntegrationStepsOutput(''); // Clear previous integration steps
+                                                }}
+                                            >
+                                                <span className="text-4xl block mb-2 text-purple-600"><i className={brand.icon}></i></span>
+                                                <h3 className="text-xl font-semibold mb-2">{brand.name}</h3>
+                                                <p className="text-gray-400 text-sm">{brand.description}</p>
+                                                <p className="text-gray-500 text-xs mt-2">Focus: {brand.focusArea}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {selectedCoreBrand && (
+                                        <div className="mt-8 p-6 bg-gray-800 rounded-lg shadow-md text-left">
+                                            <h3 className="text-xl font-bold text-purple-600 mb-4">Integrate with {selectedCoreBrand.name}</h3>
+                                            <p className="text-gray-400 mb-4">How can your music/media project leverage {selectedCoreBrand.name}'s capabilities?</p>
+                                            <label htmlFor="coreBrandProjectSelect" className="block text-gray-300 text-sm font-medium mb-2">Select your project:</label>
+                                            <select
+                                                id="coreBrandProjectSelect"
+                                                className="w-full p-3 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4"
+                                                value={coreBrandProjectIdea}
+                                                onChange={(e) => setCoreBrandProjectIdea(e.target.value)}
+                                            >
+                                                <option value="">-- Select a project or type below --</option>
+                                                {myMotionProjects.map(project => (
+                                                    <option key={project.id} value={project.title}>{project.title}</option>
+                                                ))}
+                                            </select>
+                                            <textarea
+                                                id="coreBrandProjectIdeaInput"
+                                                rows="3"
+                                                className="w-full p-3 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                placeholder={`Or describe your project idea here (e.g., A new music streaming service, a short film, an interactive album) to see how it aligns with ${selectedCoreBrand.name}.`}
+                                                value={coreBrandProjectIdea}
+                                                onChange={(e) => setCoreBrandProjectIdea(e.target.value)}
+                                            ></textarea>
+                                            <button
+                                                onClick={() => generateCoreBrandAlignment(selectedCoreBrand.name, selectedCoreBrand.focusArea, coreBrandProjectIdea)}
+                                                className="mt-4 bg-purple-700 hover:bg-purple-800 text-white text-sm py-2 px-4 rounded-full w-full"
+                                                disabled={isGeneratingCoreBrandAlignment || !coreBrandProjectIdea.trim()}
+                                            >
+                                                {isGeneratingCoreBrandAlignment ? (
+                                                    <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                ) : (
+                                                    '✨ Generate Alignment Brief'
+                                                )}
+                                            </button>
+                                            <div className="mt-4 p-4 bg-gray-700 rounded-md text-gray-300 whitespace-pre-wrap min-h-[50px] flex items-center">
+                                                {coreBrandAlignmentOutput || 'Your alignment brief will appear here.'}
+                                            </div>
+                                            {coreBrandAlignmentOutput && (
+                                                <button
+                                                    onClick={() => generateIntegrationSteps(selectedCoreBrand.name, coreBrandProjectIdea, coreBrandAlignmentOutput)}
+                                                    className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-full w-full"
+                                                    disabled={isGeneratingIntegrationSteps}
+                                                >
+                                                    {isGeneratingIntegrationSteps ? (
+                                                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                    ) : (
+                                                        '✨ Suggest Integration Steps'
+                                                    )}
+                                                </button>
+                                            )}
+                                            {integrationStepsOutput && (
+                                                <div className="mt-4 p-4 bg-gray-700 rounded-md text-gray-300 whitespace-pre-wrap">
+                                                    <h4 className="text-xl font-bold text-teal-400 mb-2">Suggested Integration Steps:</h4>
+                                                    {integrationStepsOutput}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+
+                            {/* NEW: Live Demos Section */}
+                            {activeTab === 'live-demos' && (
+                                <section>
+                                    <h2 className="text-3xl font-bold mb-6 text-red-400">📡 Live Demos from My Projects</h2>
+                                    <p className="text-gray-400 mb-8 max-w-3xl mx-auto">
+                                        These are your motion and media projects that are currently deployed and live. Click "View Live" to see them in action!
+                                    </p>
+                                    <p className="text-gray-400 text-lg mb-4">Total Live Projects: <span className="font-bold text-green-400">{liveMotionProjectsCount}</span></p>
+
+                                    {firestoreLoading ? (
+                                        <p className="text-gray-400">Loading live demos... <i className="fas fa-spinner fa-spin"></i></p>
+                                    ) : myMotionProjects.filter(p => p.status === 'Live').length === 0 ? (
+                                        <p className="text-gray-400">No live demos found. Deploy a project from the "Motion & Media" tab to see it here!</p>
+                                    ) : (
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {myMotionProjects.filter(p => p.status === 'Live').map(project => (
+                                                <div key={project.id} className="bg-gray-800 p-5 rounded-lg shadow-md hover:bg-gray-700 transition duration-300 transform hover:scale-105 cursor-pointer">
+                                                    <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                                                    <p className="text-gray-400 text-sm">{project.description}</p>
+                                                    <p className="text-gray-500 text-xs mt-2">Deployed: {new Date(project.deployedAt).toLocaleDateString()}</p>
+                                                    <button
+                                                        onClick={() => openLiveDemoModal(project)}
+                                                        className="mt-4 bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-4 rounded-full"
+                                                    >
+                                                        View Live
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </section>
+                            )}
+                        </main>
+                    </div>
+
+                    {/* Now Playing Bar (fixed at bottom) */}
+                    <footer className="bg-gray-800 p-4 border-t border-gray-700 flex items-center justify-between sticky bottom-0 z-50 flex-wrap sm:flex-nowrap gap-2 sm:gap-4">
+                        {/* Track Info (always visible) */}
+                        <div className="flex items-center gap-4 flex-grow-0 flex-shrink-0 min-w-[150px] sm:min-w-[200px]">
+                            {currentPlayingTrack && (
+                                <>
+                                    <img
+                                        src={`https://placehold.co/60x60/22c55e/ffffff?text=${currentPlayingTrack.title.split(' ')[0]}`}
+                                        alt="Album Art"
+                                        className="w-16 h-16 rounded-md"
+                                        onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/60x60/4b5563/d1d5db?text=Art"; }}
+                                    />
+                                    <div className="truncate">
+                                        <p className="text-lg font-semibold truncate">{currentPlayingTrack.title}</p>
+                                        <p className="text-gray-400 text-sm truncate">{currentPlayingTrack.artist}</p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        
+                        {/* Playback Controls (centered) */}
+                        <div className="flex items-center justify-center gap-4 flex-grow order-last sm:order-none w-full sm:w-auto mt-2 sm:mt-0">
+                            <button onClick={handleShuffle} className={`p-2 rounded-full transition duration-200 ${isShuffleOn ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}>
+                                <i className={`fas fa-random text-xl ${isShuffleOn ? 'text-green-500' : ''}`}></i>
+                            </button>
+                            <button onClick={handlePreviousTrack} className="p-2 rounded-full text-gray-400 hover:text-white transition duration-200">
+                                <i className="fas fa-step-backward text-xl"></i>
+                            </button>
+                            <button onClick={handlePlayPause} className="p-3 rounded-full bg-white text-gray-900 hover:scale-105 transition duration-200 shadow-md">
+                                <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'} text-2xl`}></i>
+                            </button>
+                            <button onClick={handleNextTrack} className="p-2 rounded-full text-gray-400 hover:text-white transition duration-200">
+                                <i className="fas fa-step-forward text-xl"></i>
+                            </button>
+                            <button onClick={handleRepeat} className={`p-2 rounded-full transition duration-200 ${repeatMode !== 'off' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}>
+                                {repeatMode === 'one' ? <i className="fas fa-redo-alt text-xl"></i> : <i className="fas fa-redo text-xl"></i>}
+                            </button>
+                        </div>
+
+                        {/* Spotify Embed Player (flex-grow to take available space) */}
+                        <div className="flex-grow mx-4 max-w-xl hidden sm:block"> {/* Hide on small mobile, show on sm and up */}
+                            <iframe
+                                src={`https://open.spotify.com/embed/track/${currentPlayingTrack.embedId}?utm_source=generator&theme=0`}
+                                width="100%"
+                                height="80" /* Adjusted height for a more compact player in the footer */
+                                frameBorder="0"
+                                allowFullScreen=""
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"
+                                style={{ borderRadius: '8px' }}
+                            ></iframe>
+                        </div>
+
+                        {/* Volume & Additional Controls (flex-grow-0 flex-shrink-0 to keep content compact) */}
+                        <div className="flex items-center gap-4 flex-grow-0 flex-shrink-0 text-gray-400 ml-auto mr-0 sm:mr-4">
+                            <button onClick={handleLike} className="p-2 rounded-full hover:text-red-500 transition duration-200">
+                                <i className="fas fa-heart text-xl"></i>
+                            </button>
+                            <button onClick={handleQueue} className="p-2 rounded-full hover:text-white transition duration-200">
+                                <i className="fas fa-list-ul text-xl"></i>
+                            </button>
+                            <i className="fas fa-volume-up text-xl cursor-pointer hover:text-white"></i>
+                            <input type="range" className="w-24 accent-green-500" defaultValue="70" />
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('fruitful-music-app-root')).render(<App />);
+
+
+        // --- Core Application Logic (from the Spotify Manual) ---
+
+        // Helper function to show/hide elements and update messages for the MANUAL's demo
+        function displayDemoMessage(message, type = 'info') {
+            const msgBox = document.getElementById('demo-message');
+            // Ensure elements exist before trying to update them
+            if (!msgBox) {
+                console.warn("displayDemoMessage called but #demo-message element not found.");
+                return;
+            }
+            msgBox.textContent = message;
+            msgBox.className = 'text-center text-sm mb-4'; // Reset classes
+            if (type === 'success') {
+                msgBox.classList.add('text-green-600', 'font-semibold');
+            } else if (type === 'error') {
+                msgBox.classList.add('text-red-600', 'font-semibold');
+            } else if (type === 'warning') {
+                msgBox.classList.add('text-yellow-600', 'font-semibold');
+            } else { // info
+                msgBox.classList.add('text-gray-600');
+            }
+        }
+
+        let globalTopTracks = []; // Stores fetched tracks for manual demo
+        let currentUserId = null; // Stores Spotify user ID for manual demo
+
+        // IMPORTANT: In a real app, never hardcode your Spotify token like this.
+        // Implement an OAuth 2.0 flow to securely obtain and refresh tokens.
+        const SPOTIFY_ACCESS_TOKEN = 'BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhUhB-X6koPd92H-XfYNV-j1x1kdXGEpzlx1'; // Replace with a valid token for actual testing
+
+
+        async function fetchSpotifyWebApi(endpoint, method, body = null) {
+            try {
+                const response = await fetch(`https://api.spotify.com/${endpoint}`, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${SPOTIFY_ACCESS_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error ? errorData.error.message : 'Spotify API Error');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Spotify API call failed:", error);
+                displayDemoMessage(`API Error: ${error.message}. Please check token validity.`, 'error');
+                return null;
+            }
+        }
+
+        async function getUserSpotifyProfile() {
+            if (currentUserId) return { id: currentUserId }; // Avoid refetching
+            const profile = await fetchSpotifyWebApi('v1/me', 'GET');
+            if (profile && profile.id) {
+                currentUserId = profile.id;
+                return profile;
+            }
+            return null;
+        }
+
+        // --- Demo Functions (for the Manual section) ---
+        async function getTopTracksDemo() {
+            displayDemoMessage('Fetching your top 5 tracks...', 'info');
+            const topTracksListElem = document.querySelector('#top-tracks-list ul');
+            const topTracksContainer = document.getElementById('top-tracks-list');
+            const audioPlayersContainer = document.getElementById('audio-players');
+
+            if (!topTracksListElem || !topTracksContainer || !audioPlayersContainer) {
+                console.error("Manual demo elements not found. Cannot run getTopTracksDemo.");
+                displayDemoMessage("Demo elements not found. Please ensure they exist.", "error");
+                return;
+            }
+
+            topTracksListElem.innerHTML = '';
+            audioPlayersContainer.innerHTML = '';
+            topTracksContainer.classList.add('hidden');
+
+            const data = await fetchSpotifyWebApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET');
+            if (data && data.items && data.items.length > 0) {
+                globalTopTracks = data.items;
+                globalTopTracks.forEach(track => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${track.name}</strong> by ${track.artists.map(a => a.name).join(', ')}`;
+                    topTracksListElem.appendChild(li);
+                });
+                topTracksContainer.classList.remove('hidden');
+                displayDemoMessage('Top 5 tracks loaded!', 'success');
+            } else {
+                displayDemoMessage('No top tracks found or API error. Try a fresh token.', 'warning');
+                globalTopTracks = [];
+            }
+        }
+
+        async function createPlaylistDemo() {
+            if (globalTopTracks.length === 0) {
+                displayDemoMessage('First, get your top tracks!', 'warning');
+                return;
+            }
+            displayDemoMessage('Creating playlist and adding songs...', 'info');
+            const userProfile = await getUserSpotifyProfile();
+
+            if (!userProfile) {
+                displayDemoMessage('Could not get user ID. Token might be invalid.', 'error');
+                return;
+            }
+
+            const playlistName = `Seedwave Playlist - ${new Date().toLocaleDateString()}`;
+            const playlistDescription = "Top tracks from Seedwave™ Spotify Integration Demo.";
+            const createResponse = await fetchSpotifyWebApi(
+                `v1/users/${userProfile.id}/playlists`, 'POST',
+                { name: playlistName, public: false, description: playlistDescription }
+            );
+
+            if (createResponse && createResponse.id) {
+                const trackUris = globalTopTracks.map(track => track.uri);
+                const addResponse = await fetchSpotifyWebApi(
+                    `v1/playlists/${createResponse.id}/tracks`, 'POST', { uris: trackUris }
+                );
+                if (addResponse) {
+                    displayDemoMessage(`Playlist "${playlistName}" created and tracks added!`, 'success');
+                } else {
+                    displayDemoMessage('Playlist created, but failed to add tracks.', 'error');
+                }
+            } else {
+                displayDemoMessage('Failed to create playlist.', 'error');
+            }
+        }
+
+        async function playTracksDemo() {
+            if (globalTopTracks.length === 0) {
+                displayDemoMessage('First, get your top tracks!', 'warning');
+                return;
+            }
+            displayDemoMessage('Loading audio players...', 'info');
+            const audioPlayersContainer = document.getElementById('audio-players');
+
+            if (!audioPlayersContainer) {
+                   console.error("Manual demo audio players container not found. Cannot run playTracksDemo.");
+                   displayDemoMessage("Demo audio players container not found. Please ensure it exists.", "error");
+                   return;
+            }
+
+            audioPlayersContainer.innerHTML = ''; // Clear previous players
+
+            globalTopTracks.forEach(track => {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://open.spotify.com/embed/track/${track.id}?utm_source=generator&theme=0`;
+                iframe.width = "100%";
+                iframe.height = "80";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                audioPlayersContainer.appendChild(iframe);
+            });
+            displayDemoMessage('Audio players loaded!', 'success');
+        }
+
+        // --- Chart.js Initialization for Manual Demo ---
+        let apiCallChartInstance = null;
+        let successRateChartInstance = null;
+
+        function initializeCharts() {
+            const apiCtx = document.getElementById('apiCallChart')?.getContext('2d');
+            const successCtx = document.getElementById('successRateChart')?.getContext('2d');
+
+            if (apiCallChartInstance) apiCallChartInstance.destroy();
+            if (successRateChartInstance) successRateChartInstance.destroy();
+
+            const apiCallData = [
+                { label: 'Mon', value: 120 }, { label: 'Tue', value: 150 }, { label: 'Wed', value: 130 },
+                { label: 'Thu', value: 180 }, { label: 'Fri', value: 200 }, { label: 'Sat', value: 160 },
+                { label: 'Sun', value: 110 }
+            ];
+            const successRateData = [
+                { label: 'Success', value: 92 }, { label: 'Failure', value: 8 }
+            ];
+
+            // Helper to convert CSS variable to rgba for Chart.js
+            function var_to_rgba(varName, alpha) {
+                const color = getComputedStyle(document.documentElement).getPropertyValue(varName);
+                const rgb = color.match(/\d+/g);
+                return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+            }
+
+            if (apiCtx) {
+                apiCallChartInstance = new Chart(apiCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: apiCallData.map(d => d.label),
+                        datasets: [{
+                            label: 'API Calls / Day',
+                            data: apiCallData.map(d => d.value),
+                            backgroundColor: var_to_rgba('--primary-blue', 0.8),
+                            borderColor: var_to_rgba('--primary-blue', 1),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: var_to_rgba('--text-dark', 0.9) } },
+                            tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.raw}` } }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: var_to_rgba('--text-dark', 0.8) },
+                                grid: { color: var_to_rgba('--border-light', 0.5) }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: var_to_rgba('--text-dark', 0.8) },
+                                grid: { color: var_to_rgba('--border-light', 0.5) }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (successCtx) {
+                successRateChartInstance = new Chart(successCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: successRateData.map(d => d.label),
+                        datasets: [{
+                            data: successRateData.map(d => d.value),
+                            backgroundColor: [var_to_rgba('--success-green', 0.8), var_to_rgba('--warning-yellow', 0.8)],
+                            borderColor: [var_to_rgba('--success-green', 1), var_to_rgba('--warning-yellow', 1)],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: var_to_rgba('--text-dark', 0.9) } } },
+                        tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw}%` } }
+                    }
+                });
+            }
+        }
+
+        // --- Accordion Logic ---
+        function setupAccordions() {
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    header.classList.toggle('active');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        content.style.padding = '0 1rem'; // Collapse padding
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.padding = '1rem'; // Expand padding
+                    }
+                });
+            });
+        }
+
+        // --- Navigation Active State ---
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${entry.target.id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 }); // Trigger when 50% of section is visible
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Set initial active link on load
+            const firstSection = document.querySelector('main section');
+            if (firstSection) {
+                const firstNavLink = document.querySelector(`[href="#${firstSection.id}"]`);
+                if (firstNavLink) firstNavLink.classList.add('active');
+            }
+        }
+
+
+        // --- Initialize all scripts after DOM and React App are fully loaded ---
+        window.addEventListener('load', () => {
+            // Manual Demo related initializations
+            document.getElementById('getTopTracksBtn')?.addEventListener('click', getTopTracksDemo);
+            document.getElementById('createPlaylistBtn')?.addEventListener('click', createPlaylistDemo);
+            document.getElementById('playTracksBtn')?.addEventListener('click', playTracksDemo);
+            initializeCharts(); // Initialize Chart.js visualizations
+            setupAccordions(); // Initialize accordion functionality
+            setupNavigation(); // Set up scroll-based navigation highlighting
+
+            // Mount the Fruitful.Music™ React App AFTER the main document's elements are ready
+            // The React App is mounted to its specific root div within the overall HTML.
+            const fruitfulMusicAppRoot = document.getElementById('fruitful-music-app-root');
+            if (fruitfulMusicAppRoot) {
+                ReactDOM.createRoot(fruitfulMusicAppRoot).render(<App />);
+            } else {
+                console.error("Fruitful.Music™ app root element not found. Cannot mount React app.");
+            }
+        });
+    </script>
+</body>
+</html>

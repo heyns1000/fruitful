@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 53rd Birthday, Muller 'Moto' Schoeman!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <script type="module">
+        // Firebase imports - all necessary modules for the app
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the Canvas environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Global references to DOM elements
+        let wishInput, generateWishBtn, wishResult;
+        let chatWindow, chatInput, chatSendBtn, chatLoading;
+        let jokeInput, saveJokeBtn, jokeList, jokeLanguageSelect;
+        let ttsAudioPlayer;
+        let currentUserId = null;
+        let isAuthReady = false;
+        
+        // --- Voice Recording variables ---
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Multilingual content map
+        const content = {
+            en: {
+                birthdayMessage: "Happy 53rd Birthday, Muller!",
+                tagline: "A Lifetime of Loyalty & Grand Adventures",
+                introTitle: "53 Years of a Legend",
+                introText: "Today, we celebrate a man forged by loyalty, camaraderie, and the rugged beauty of the bush. From the dusty tracks of Mahlapye to the thorn trees of Marken, your journey has been one of strength, integrity, and unforgettable stories told around a campfire.",
+                secretTransmissionTitle: "Top Secret Transmission",
+                secretTransmissionText1: "Hau, wena Moto! We remember that young, fit daga mixer in Botswana. Manje wena sebenza strong-strong long time! Ja, wena lo mlungu number one!",
+                secretTransmissionText2: "Seriously though, after your recent argument with gravity, we're bloody glad you decided to stick around. This world is a lot more fun with you in it. You're too tough to quit!",
+                wishGeneratorTitle: "Personal Wish Generator",
+                wishGeneratorText: "Type in a special memory or an inside joke and let <strong>Fruitful Assist™</strong> create a unique birthday wish for Moto!",
+                wishInputPlaceholder: "e.g., 'daga mixer in Botswana' or 'the time with the lion'",
+                generateWishBtn: "Generate a Wish",
+                generatingText: "Creating a masterpiece...",
+                wishErrorText: "Sorry, the AI is currently drinking a coffee. Please try again later.",
+                chatTitle: "Chat with Fruitful Assist™",
+                chatPlaceholder: "Type your message here...",
+                chatSendBtn: "Send",
+                chatInitialMsg: "Hello! Leave a message or ask me anything about the legend, Moto!",
+                chatError: "Oops! Something went wrong. Make sure the internet is on and try again.",
+                jokeBookTitle: "Moto's Joke Book",
+                jokeBookText: "Record a joke or write one down to start the first chapter of your bestseller.",
+                jokeRecordBtn: "Record a Joke",
+                jokeRecordStatus: "Press to record",
+                jokeRecordingStatus: "Recording... Press again to stop.",
+                jokeSaveStatus: "Recording saved!",
+                jokeWritePlaceholder: "Write the joke here...",
+                saveJokeBtn: "Save Joke",
+                jokeInputError: "Please write a joke first!",
+                jokeSaveError: "Could not save the joke. Please try again.",
+                jokeTitlePrompt: "Give your masterpiece a name:",
+                statsTitle: "Moto's Lifetime Stats (Averages)",
+                statsDays: "Days Lived",
+                statsHeartbeats: "Heartbeats",
+                statsBreaths: "Breaths Taken",
+                statsSeconds: "Seconds",
+                statsDriven: "Driven",
+                statsBoerewors: "Boerewors Braaied",
+                statsCampfires: "Campfires Lit",
+                statsFixes: "of 'Boer Maak 'n Plan' Fixes",
+                statsLaughter: "of Laughter Generated",
+                statsStars: "Stars Counted",
+                statsThoughts: "Thoughts Thought",
+                statsChristmases: "Christmases",
+                statsSeasons: "Seasons Enjoyed",
+                statsNights: "Nights Slept",
+                statsDreams: "Dreams Dreamt",
+                statsDrinks: "Of Drinks",
+                statsFood: "Of Food",
+                statsSteps: "Steps Walked",
+                statsAnimals: "Animals Hunted (Maybe)",
+                familyTreeTitle: "Schoeman Family Tree",
+                familyTreeText1: "Connection to main database is under construction...",
+                familyTreeText2: "Please stand by for legendary lineage.",
+                loyaltyTitle: "The Loyalty Compass",
+                loyaltyText: "For 53 years, your loyalty has been the true north for family and friends. A constant, unwavering force that has guided so many through calm and storm. It's a legacy more enduring than any landmark.",
+                bushveldTitle: "Bushveld Chronicles",
+                bushveldText: "The route from Mahlapye to Marken isn't just a line on a map; it's a saga written in tyre tracks and campfire smoke. A testament to grand adventures, legendary tales, and the spirit of a true outdoorsman.",
+                cheersTitle: "Here's to You, Moto!",
+                cheersText: "May your path ahead be as clear as a starry bushveld sky, your campfire always be warm, and your adventures be even grander.",
+                cheersText2: "Cheers to 53 years!",
+                footerText: "Lekker verjaar, ou Grote!",
+                footerText2: "From Kobus, Zollie, Hanlie, Christo and the motos",
+                footerText3: "This transmission from Muller.faa.zone has been authorized by the Schoeman Bureau of Birthday Wishes.",
+            },
+            af: {
+                birthdayMessage: "Lekker 53ste Verjaarsdag, Muller!",
+                tagline: "ʼn Lewe van Lojaliteit en Groot Avonture",
+                introTitle: "53 Jaar van 'n Legende",
+                introText: "Vandag vier ons 'n man wat gesmee is deur lojaliteit, kameraadskap en die ruwe skoonheid van die Bosveld. Van die stowwerige paaie van Mahlapye tot die doringbome van Marken, jou reis was een van krag, integriteit en onvergeetlike stories wat om 'n kampvuur vertel word.",
+                secretTransmissionTitle: "Top Geheime Transmissie",
+                secretTransmissionText1: "Hau, wena Moto! Ons onthou daai jong, fiks daga mixer in Botswana. Manje wena sebenza strong-strong long time! Ja, wena lo mlungu number one!",
+                secretTransmissionText2: "Maar ernstig, na jou onlangse argument met swaartekrag, is ons donders bly jy het besluit om rond te bly. Hierdie wêreld is 'n stuk lekkerder met jou daarin. Jy's te taai om op te gee!",
+                wishGeneratorTitle: "Persoonlike Wens Genereerder",
+                wishGeneratorText: "Tik 'n spesiale herinnering of 'n binne-grap in en laat <strong>Fruitful Assist™</strong> 'n unieke verjaarsdagwens vir Moto skep!",
+                wishInputPlaceholder: "Bv. 'daga mixer in Botswana' of 'die tyd met die leeu'",
+                generateWishBtn: "Genereer 'n Wens",
+                generatingText: "Besig om 'n meesterstuk te skep...",
+                wishErrorText: "Jammer, die AI is tans besig om 'n koffie te drink. Probeer weer netnou.",
+                chatTitle: "Gesels met Fruitful Assist™",
+                chatPlaceholder: "Tik jou boodskap hier...",
+                chatSendBtn: "Stuur",
+                chatInitialMsg: "Hello! Los 'n boodskap of vra my enige iets oor die legende, Moto!",
+                chatError: "Oeps! Iets het verkeerd geloop. Probeer weer later.",
+                jokeBookTitle: "Moto se Grap-Boek",
+                jokeBookText: "Neem 'n grap op of skryf een neer om die eerste hoofstuk van jou topverkoper te begin.",
+                jokeRecordBtn: "Neem 'n Grap op",
+                jokeRecordStatus: "Druk om op te neem",
+                jokeRecordingStatus: "Besig om op te neem... Druk weer om te stop.",
+                jokeSaveStatus: "Opname gestoor!",
+                jokeWritePlaceholder: "Skryf die grap hier...",
+                saveJokeBtn: "Stoor Grap",
+                jokeInputError: "Tik asseblief eers 'n grap!",
+                jokeSaveError: "Kon nie die grap stoor nie. Probeer weer.",
+                jokeTitlePrompt: "Gee jou meesterstuk 'n naam:",
+                statsTitle: "Moto se Lewensstatistieke (Gemiddeldes)",
+                statsDays: "Dae Geleef",
+                statsHeartbeats: "Hartklop",
+                statsBreaths: "Asemteuges Geneem",
+                statsSeconds: "Sekondes",
+                statsDriven: "Gery",
+                statsBoerewors: "Boerewors Gebraai",
+                statsCampfires: "Kampvure Aangesteek",
+                statsFixes: "van 'Boer Maak 'n Plan' Oplossings",
+                statsLaughter: "uur van Gelag",
+                statsStars: "Sterte Getel",
+                statsThoughts: "Gedagtes Gedink",
+                statsChristmases: "Kersfeeste",
+                statsSeasons: "Seisoene Geniet",
+                statsNights: "Nagte Geslaap",
+                statsDreams: "Drome Gedroom",
+                statsDrinks: "Liter Drank",
+                statsFood: "kg Kos",
+                statsSteps: "Treetjies Gelê",
+                statsAnimals: "Diere Gejag (Dalk)",
+                familyTreeTitle: "Schoeman Familieboom",
+                familyTreeText1: "Verbinding met hoofdatabasis is onder konstruksie...",
+                familyTreeText2: "Staan asseblief gereed vir legendariese bloedlyn.",
+                loyaltyTitle: "Die Lojaliteitskompas",
+                loyaltyText: "Vir 53 jaar was jou lojaliteit die ware noorde vir familie en vriende. 'n Konstante, onwankelbare krag wat so baie mense deur kalmte en storm gelei het. Dis 'n nalatenskap wat meer blywend is as enige landmerk.",
+                bushveldTitle: "Bosveld Kronieke",
+                bushveldText: "Die roete van Mahlapye na Marken is nie net 'n lyn op 'n kaart nie; dit is 'n sage geskryf in bandspore en kampvuurrook. 'n Getuienis van groot avonture, legendariese verhale, en die gees van 'n ware buiteman.",
+                cheersTitle: "Hier's op Jou, Moto!",
+                cheersText: "Mag jou pad vorentoe so helder wees soos 'n sterre-besaaide Bosveld-lug, jou kampvuur altyd warm wees, en jou avonture nog groter wees.",
+                cheersText2: "Cheers vir 53 jaar!",
+                footerText: "Lekker verjaar, ou Grote!",
+                footerText2: "Van Kobus, Zollie, Hanlie, Christo en die moto's",
+                footerText3: "Hierdie transmissie van Muller.faa.zone is gemagtig deur die Schoeman Buro vir Verjaarsdagwense.",
+            }
+        };
+
+        let currentLang = 'af'; // Default to Afrikaans
+
+        // Function to update all UI text based on the selected language
+        const updateUI = () => {
+            document.querySelector('[data-lang="birthdayMessage"]').textContent = content[currentLang].birthdayMessage;
+            document.querySelector('[data-lang="tagline"]').textContent = content[currentLang].tagline;
+            document.querySelector('[data-lang="introTitle"]').textContent = content[currentLang].introTitle;
+            document.querySelector('[data-lang="introText"]').textContent = content[currentLang].introText;
+            document.querySelector('[data-lang="secretTransmissionTitle"]').textContent = content[currentLang].secretTransmissionTitle;
+            document.querySelector('[data-lang="secretTransmissionText1"]').textContent = content[currentLang].secretTransmissionText1;
+            document.querySelector('[data-lang="secretTransmissionText2"]').textContent = content[currentLang].secretTransmissionText2;
+            document.querySelector('[data-lang="wishGeneratorTitle"]').innerHTML = `
+                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.456-2.456L12.75 18l1.178-.398a3.375 3.375 0 002.456-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456L20.25 18l-1.178.398a3.375 3.375 0 00-2.456 2.456z" /></svg>
+                ${content[currentLang].wishGeneratorTitle}`;
+            document.querySelector('[data-lang="wishGeneratorText"]').innerHTML = content[currentLang].wishGeneratorText;
+            document.getElementById('wishInput').placeholder = content[currentLang].wishInputPlaceholder;
+            document.getElementById('generateWishBtn').textContent = content[currentLang].generateWishBtn;
+            document.querySelector('[data-lang="chatTitle"]').innerHTML = `<span>${content[currentLang].chatTitle}</span> <span role="img" aria-label="smiling-fruit">🍊</span>`;
+            document.getElementById('chat-input').placeholder = content[currentLang].chatPlaceholder;
+            document.getElementById('chat-send-btn').textContent = content[currentLang].chatSendBtn;
+            document.querySelector('[data-lang="chatInitialMsg"]').textContent = content[currentLang].chatInitialMsg;
+            document.querySelector('[data-lang="jokeBookTitle"]').textContent = content[currentLang].jokeBookTitle;
+            document.querySelector('[data-lang="jokeBookText"]').textContent = content[currentLang].jokeBookText;
+            document.getElementById('recordJokeBtnText').textContent = content[currentLang].jokeRecordBtn;
+            document.getElementById('recordStatus').textContent = content[currentLang].jokeRecordStatus;
+            document.getElementById('jokeInput').placeholder = content[currentLang].jokeWritePlaceholder;
+            document.getElementById('saveJokeBtn').textContent = content[currentLang].saveJokeBtn;
+            document.querySelector('[data-lang="statsTitle"]').textContent = content[currentLang].statsTitle;
+            document.querySelector('[data-lang="statsDays"]').textContent = content[currentLang].statsDays;
+            document.querySelector('[data-lang="statsHeartbeats"]').textContent = content[currentLang].statsHeartbeats;
+            document.querySelector('[data-lang="statsBreaths"]').textContent = content[currentLang].statsBreaths;
+            document.querySelector('[data-lang="statsSeconds"]').textContent = content[currentLang].statsSeconds;
+            document.querySelector('[data-lang="statsDriven"]').textContent = content[currentLang].statsDriven;
+            document.querySelector('[data-lang="statsBoerewors"]').textContent = content[currentLang].statsBoerewors;
+            document.querySelector('[data-lang="statsCampfires"]').textContent = content[currentLang].statsCampfires;
+            document.querySelector('[data-lang="statsFixes"]').textContent = content[currentLang].statsFixes;
+            document.querySelector('[data-lang="statsLaughter"]').textContent = content[currentLang].statsLaughter;
+            document.querySelector('[data-lang="statsStars"]').textContent = content[currentLang].statsStars;
+            document.querySelector('[data-lang="statsThoughts"]').textContent = content[currentLang].statsThoughts;
+            document.querySelector('[data-lang="statsChristmases"]').textContent = content[currentLang].statsChristmases;
+            document.querySelector('[data-lang="statsSeasons"]').textContent = content[currentLang].statsSeasons;
+            document.querySelector('[data-lang="statsNights"]').textContent = content[currentLang].statsNights;
+            document.querySelector('[data-lang="statsDreams"]').textContent = content[currentLang].statsDreams;
+            document.querySelector('[data-lang="statsDrinks"]').textContent = content[currentLang].statsDrinks;
+            document.querySelector('[data-lang="statsFood"]').textContent = content[currentLang].statsFood;
+            document.querySelector('[data-lang="statsSteps"]').textContent = content[currentLang].statsSteps;
+            document.querySelector('[data-lang="statsAnimals"]').textContent = content[currentLang].statsAnimals;
+            document.querySelector('[data-lang="familyTreeTitle"]').textContent = content[currentLang].familyTreeTitle;
+            document.querySelector('[data-lang="familyTreeText1"]').textContent = content[currentLang].familyTreeText1;
+            document.querySelector('[data-lang="familyTreeText2"]').textContent = content[currentLang].familyTreeText2;
+            document.querySelector('[data-lang="loyaltyTitle"]').textContent = content[currentLang].loyaltyTitle;
+            document.querySelector('[data-lang="loyaltyText"]').textContent = content[currentLang].loyaltyText;
+            document.querySelector('[data-lang="bushveldTitle"]').textContent = content[currentLang].bushveldTitle;
+            document.querySelector('[data-lang="bushveldText"]').textContent = content[currentLang].bushveldText;
+            document.querySelector('[data-lang="cheersTitle"]').textContent = content[currentLang].cheersTitle;
+            document.querySelector('[data-lang="cheersText"]').textContent = content[currentLang].cheersText;
+            document.querySelector('[data-lang="cheersText2"]').textContent = content[currentLang].cheersText2;
+            document.querySelector('[data-lang="footerText"]').textContent = content[currentLang].footerText;
+            document.querySelector('[data-lang="footerText2"]').textContent = content[currentLang].footerText2;
+            document.querySelector('[data-lang="footerText3"]').textContent = content[currentLang].footerText3;
+        };
+
+        const toggleLanguage = () => {
+            currentLang = currentLang === 'af' ? 'en' : 'af';
+            updateUI();
+        };
+
+        // Utility function to convert PCM audio data to WAV Blob
+        function pcmToWav(pcmData, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+            
+            // RIFF chunk descriptor
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            
+            // FMT sub-chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // Audio format (1 = PCM)
+            view.setUint16(22, 1, true); // Number of channels (1)
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true); // Byte rate
+            view.setUint16(32, 2, true); // Block align
+            view.setUint16(34, 16, true); // Bits per sample
+            
+            // Data sub-chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+            
+            // Write PCM data
+            let offset = 44;
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(offset, pcmData[i], true);
+                offset += 2;
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        // Helper for pcmToWav
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Function to play TTS audio
+        const playTtsAudio = async (text, language) => {
+            const voiceName = language === 'en' ? 'Zephyr' : 'Kore';
+            const prompt = `Say in ${language === 'en' ? 'English' : 'Afrikaans'}: ${text}`;
+            
+            // Use a short, non-streaming model for TTS
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: voiceName }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            const apiKey = ""; // Canvas will provide this
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+                
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    // Extract sample rate from mimeType, e.g., audio/L16;rate=24000
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    ttsAudioPlayer.src = audioUrl;
+                    ttsAudioPlayer.play();
+                } else {
+                    console.error('TTS API response error or missing audio data:', result);
+                    alert("TTS audio could not be generated.");
+                }
+
+            } catch (error) {
+                console.error('Error with TTS API:', error);
+                alert("Error generating speech. Please try again.");
+            }
+        };
+
+        // DOMContentLoaded event listener to ensure all elements are available
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign DOM elements
+            wishInput = document.getElementById('wishInput');
+            generateWishBtn = document.getElementById('generateWishBtn');
+            wishResult = document.getElementById('wishResult');
+            chatWindow = document.getElementById('chat-window');
+            chatInput = document.getElementById('chat-input');
+            chatSendBtn = document.getElementById('chat-send-btn');
+            chatLoading = document.getElementById('chat-loading');
+            jokeInput = document.getElementById('jokeInput');
+            saveJokeBtn = document.getElementById('saveJokeBtn');
+            jokeList = document.getElementById('jokeList');
+            jokeLanguageSelect = document.getElementById('jokeLanguage');
+            ttsAudioPlayer = document.getElementById('ttsAudioPlayer');
+            
+            const recordJokeBtn = document.getElementById('recordJokeBtn');
+            const recordStatus = document.getElementById('recordStatus');
+            const toggleLangBtn = document.getElementById('toggleLangBtn');
+
+            // Initial UI update
+            updateUI();
+
+            // Language toggle
+            toggleLangBtn.addEventListener('click', toggleLanguage);
+
+            // Set up authentication state listener
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUserId = user.uid;
+                } else {
+                    // Sign in anonymously if not authenticated
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                        currentUserId = auth.currentUser.uid;
+                    } catch (error) {
+                        console.error("Authentication failed:", error);
+                    }
+                }
+                isAuthReady = true;
+                // Once authenticated, start listening for jokes
+                if (isAuthReady) {
+                    setupJokeListener();
+                }
+            });
+
+            // --- Wish Generator Functionality ---
+            generateWishBtn.addEventListener('click', async () => {
+                const userMemory = wishInput.value;
+                if (!userMemory) {
+                    wishResult.textContent = content[currentLang].jokeInputError;
+                    wishResult.classList.remove('hidden');
+                    return;
+                }
+
+                wishResult.textContent = content[currentLang].generatingText;
+                wishResult.classList.remove('hidden');
+                generateWishBtn.disabled = true;
+
+                const prompt = `Write a short, funny, and heartfelt birthday wish in ${currentLang === 'af' ? 'Afrikaans' : 'English'} for my brother Muller, whose nickname is Moto. He is a big guy (180kg+ teddy bear) with a kind heart. Use this memory as inspiration: "${userMemory}". Keep the tone fun and celebratory.`;
+                
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        wishResult.textContent = text;
+                    } else {
+                        wishResult.textContent = content[currentLang].wishErrorText;
+                        console.error('Unexpected API response:', result);
+                    }
+                } catch (error) {
+                    console.error('Error calling Gemini API:', error);
+                    wishResult.textContent = content[currentLang].chatError;
+                } finally {
+                    generateWishBtn.disabled = false;
+                }
+            });
+
+            // --- Chatbot Functionality ---
+            const addMessage = (message, sender) => {
+                const messageWrapper = document.createElement('div');
+                messageWrapper.classList.add('flex', 'mb-4', sender === 'user' ? 'justify-end' : 'justify-start');
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add('rounded-lg', 'p-3', 'max-w-xs', sender === 'user' ? 'bg-pink-600' : 'bg-purple-700');
+                messageBubble.innerHTML = `<p class="text-sm">${message}</p>`;
+                messageWrapper.appendChild(messageBubble);
+                chatWindow.appendChild(messageWrapper);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            };
+
+            const handleChatSend = async () => {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                chatInput.value = '';
+                chatSendBtn.disabled = true;
+                
+                // Show loading indicator
+                chatLoading.classList.remove('hidden');
+
+                const prompt = `You are a friendly chatbot for a birthday website celebrating Muller 'Moto' Schoeman. He's a fun-loving, adventurous guy. The user has a question for you in Afrikaans or English. Respond in the same language as the user's message. Don't be too formal. Here is the user's message: ${message}`;
+                
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        addMessage(text, 'bot');
+                    } else {
+                        addMessage('Sorry, I couldn\'t get a response right now. Please try again.', 'bot');
+                        console.error('Unexpected API response:', result);
+                    }
+                } catch (error) {
+                    console.error('Error calling Gemini API for chat:', error);
+                    addMessage(content[currentLang].chatError, 'bot');
+                } finally {
+                    chatSendBtn.disabled = false;
+                    chatLoading.classList.add('hidden');
+                }
+            };
+
+            chatSendBtn.addEventListener('click', handleChatSend);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleChatSend();
+                }
+            });
+
+            // --- Joke Book Functionality (Firestore) ---
+            
+            // Function to add a new joke to Firestore
+            const saveJoke = async (jokeData) => {
+                try {
+                    // Reference to the public collection
+                    const jokesColRef = collection(db, `artifacts/${appId}/public/data/jokes`);
+                    await addDoc(jokesColRef, {
+                        ...jokeData,
+                        timestamp: serverTimestamp(),
+                        userId: currentUserId,
+                    });
+                } catch (error) {
+                    console.error("Error adding joke to Firestore:", error);
+                    alert(content[currentLang].jokeSaveError);
+                }
+            };
+
+            // Function to set up a real-time listener for jokes from Firestore
+            const setupJokeListener = () => {
+                if (!isAuthReady) return; // Wait for authentication to be ready
+                
+                const jokesColRef = collection(db, `artifacts/${appId}/public/data/jokes`);
+                const q = query(jokesColRef);
+
+                onSnapshot(q, (snapshot) => {
+                    const jokes = [];
+                    snapshot.forEach(doc => {
+                        jokes.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderJokes(jokes.sort((a,b) => b.timestamp?.toMillis() - a.timestamp?.toMillis()));
+                });
+            };
+
+            // Function to render the jokes on the page
+            const renderJokes = (jokes) => {
+                jokeList.innerHTML = ''; // Clear existing jokes
+                jokes.forEach(joke => {
+                    const jokeItem = document.createElement('div');
+                    jokeItem.classList.add('flex', 'justify-between', 'items-center', 'bg-purple-900/50', 'p-3', 'rounded-lg', 'mt-2', 'text-white');
+                    
+                    const jokeText = document.createElement('p');
+                    jokeText.textContent = joke.text || ''; // Handle potential missing text for voice notes
+                    jokeText.classList.add('flex-grow');
+                    
+                    const controls = document.createElement('div');
+                    controls.classList.add('flex', 'items-center', 'ml-4', 'gap-2');
+
+                    // Language badge
+                    const langBadge = document.createElement('span');
+                    langBadge.classList.add('px-2', 'py-1', 'rounded-full', 'text-xs', 'font-bold');
+                    if (joke.language === 'af') {
+                        langBadge.textContent = 'AF';
+                        langBadge.classList.add('bg-pink-600');
+                    } else {
+                        langBadge.textContent = 'EN';
+                        langBadge.classList.add('bg-cyan-500');
+                    }
+                    controls.appendChild(langBadge);
+
+                    // Play button (for both text and audio jokes)
+                    const playBtn = document.createElement('button');
+                    playBtn.innerHTML = `
+                        <svg class="w-6 h-6 text-gray-300 hover:text-white transition duration-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                        </svg>
+                    `;
+                    playBtn.classList.add('flex-shrink-0');
+                    playBtn.title = `Play this joke in ${joke.language === 'en' ? 'English' : 'Afrikaans'}`;
+                    playBtn.addEventListener('click', () => {
+                        if (joke.audio) {
+                            const audioBlob = base64toBlob(joke.audio, 'audio/webm; codecs=opus');
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            new Audio(audioUrl).play();
+                        } else if (joke.text) {
+                            playTtsAudio(joke.text, joke.language);
+                        }
+                    });
+                    controls.appendChild(playBtn);
+                    
+                    jokeItem.appendChild(jokeText);
+                    jokeItem.appendChild(controls);
+                    jokeList.appendChild(jokeItem);
+                });
+            };
+            
+            // --- Voice Recording Logic ---
+            const startRecording = async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { 'type' : 'audio/webm; codecs=opus' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob); 
+                        reader.onloadend = () => {
+                            const base64Audio = reader.result.split(',')[1];
+                            const jokeTitle = prompt(content[currentLang].jokeTitlePrompt, `Grap #${Math.floor(Math.random() * 1000)}`);
+                            if (jokeTitle) {
+                                saveJoke({ title: jokeTitle, audio: base64Audio, language: currentLang, type: 'audio' });
+                            }
+                        };
+                    };
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordJokeBtn.classList.add('recording-pulse');
+                    recordStatus.textContent = content[currentLang].jokeRecordingStatus;
+                } catch (error) {
+                    console.error("Error accessing microphone:", error);
+                    alert("Could not access your microphone. Please allow microphone access.");
+                }
+            };
+            
+            const stopRecording = () => {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordJokeBtn.classList.remove('recording-pulse');
+                recordStatus.textContent = content[currentLang].jokeRecordStatus;
+            };
+            
+            recordJokeBtn.addEventListener('click', () => {
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            });
+
+            // Helper to convert Base64 to Blob for playback
+            const base64toBlob = (base64, mimeType) => {
+                const byteString = atob(base64);
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], { type: mimeType });
+            };
+
+            // Text Joke functionality
+            const saveTextJokeBtn = document.getElementById('saveJokeBtn');
+            saveTextJokeBtn.addEventListener('click', async () => {
+                const jokeText = jokeInput.value.trim();
+                if (!jokeText) {
+                    alert(content[currentLang].jokeInputError);
+                    return;
+                }
+                saveJoke({ text: jokeText, language: currentLang, type: 'text' });
+                jokeInput.value = '';
+            });
+        });
+
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a052a; /* Deep Purple */
+            color: #f0eaff;
+        }
+        .hero {
+            background: linear-gradient(45deg, rgba(26, 5, 42, 0.8), rgba(42, 10, 68, 0.8)), url('https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=1912&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 30px rgba(192, 72, 255, 0.3);
+        }
+        .neon-glow {
+            animation: neon-glow-animation 2s infinite alternate;
+        }
+        @keyframes neon-glow-animation {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073, 0 0 20px #e60073, 0 0 25px #e60073, 0 0 30px #e60073, 0 0 35px #e60073;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6;
+            }
+        }
+        .text-gradient {
+            background: linear-gradient(45deg, #30cfd0, #c448ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .recording-pulse {
+            animation: recording-pulse-animation 1.5s infinite;
+        }
+        @keyframes recording-pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 166, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 77, 166, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 166, 0); }
+        }
+    </style>
+</head>
+<body class="bg-purple-900">
+
+    <!-- Language Toggle Button -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="toggleLangBtn" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full transition duration-300">
+            EN / AF
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero min-h-screen flex flex-col items-center justify-center text-white p-6 text-center">
+        <h1 class="text-7xl md:text-9xl font-black uppercase neon-glow">MOTO</h1>
+        <p class="text-2xl md:text-4xl mt-4 font-bold text-gray-200" data-lang="birthdayMessage">Happy 53rd Birthday, Muller!</p>
+        <p class="mt-4 text-lg text-gray-300" data-lang="tagline">A Lifetime of Loyalty & Grand Adventures</p>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-20">
+
+        <!-- Introduction -->
+        <div class="text-center max-w-3xl mx-auto mb-20">
+            <h2 class="text-5xl font-black uppercase text-gradient mb-4" data-lang="introTitle">53 Years of a Legend</h2>
+            <p class="text-lg text-gray-300 leading-relaxed" data-lang="introText">
+                Today, we celebrate a man forged by loyalty, camaraderie, and the rugged beauty of the bush. From the dusty tracks of Mahlapye to the thorn trees of Marken, your journey has been one of strength, integrity, and unforgettable stories told around a campfire.
+            </p>
+        </div>
+
+        <!-- Fun Message Section -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-4xl mx-auto text-center">
+            <h3 class="text-3xl font-bold text-gradient mb-4" data-lang="secretTransmissionTitle">Top Secret Transmission</h3>
+            <p class="text-gray-300 italic" data-lang="secretTransmissionText1">Hau, wena Moto! We remember that young, fit daga mixer in Botswana. Manje wena sebenza strong-strong long time! Ja, wena lo mlungu number one!</p>
+            <p class="text-gray-300 mt-4" data-lang="secretTransmissionText2">Seriously though, after your recent argument with gravity, we're bloody glad you decided to stick around. This world is a lot more fun with you in it. You're too tough to quit!</p>
+        </div>
+        
+        <!-- Gemini Wish Generator Section -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-4xl mx-auto text-center">
+            <h3 class="text-3xl font-bold text-gradient mb-4 flex items-center justify-center gap-3" data-lang="wishGeneratorTitle">
+                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.5 21.75l-.398-1.178a3.375 3.375 0 00-2.456-2.456L12.75 18l1.178-.398a3.375 3.375 0 002.456-2.456L16.5 14.25l.398 1.178a3.375 3.375 0 002.456 2.456L20.25 18l-1.178.398a3.375 3.375 0 00-2.456 2.456z" /></svg>
+                Persoonlike Wens Genereerder
+            </h3>
+            <p class="text-gray-300 mb-6" data-lang="wishGeneratorText">Tik 'n spesiale herinnering of 'n binne-grap in en laat <strong>Fruitful Assist™</strong> 'n unieke verjaarsdagwens vir Moto skep!</p>
+            <div class="flex flex-col gap-4">
+                <input type="text" id="wishInput" placeholder="Bv. 'daga mixer in Botswana' of 'die tyd met die leeu'" class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-700 text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button id="generateWishBtn" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                    Genereer 'n Wens
+                </button>
+            </div>
+            <div id="wishResult" class="mt-6 p-6 bg-purple-900/50 rounded-lg min-h-[100px] text-left italic text-gray-300 hidden"></div>
+        </div>
+
+        <!-- New Chatbot Section -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-4xl mx-auto">
+            <h3 class="text-3xl font-bold text-gradient mb-4 flex items-center justify-center gap-3" data-lang="chatTitle">
+                <span>Gesels met Fruitful Assist™</span>
+                <span role="img" aria-label="smiling-fruit">🍊</span>
+            </h3>
+            <div class="bg-purple-900/50 rounded-lg p-4 h-96 flex flex-col">
+                <div id="chat-window" class="flex-grow overflow-y-auto pr-2">
+                    <!-- Chat messages will appear here -->
+                    <div class="flex justify-start mb-4">
+                        <div class="bg-purple-700 rounded-lg p-3 max-w-xs">
+                            <p class="text-sm" data-lang="chatInitialMsg">Hello! Los 'n boodskap of vra my enige iets oor die legende, Moto!</p>
+                        </div>
+                    </div>
+                    <div id="chat-loading" class="hidden flex justify-start items-center p-2 mb-4">
+                        <div class="w-3 h-3 bg-gray-400 rounded-full animate-pulse mr-1"></div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full animate-pulse mr-1" style="animation-delay: 0.2s;"></div>
+                        <div class="w-3 h-3 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <input type="text" id="chat-input" class="flex-grow p-3 rounded-lg bg-purple-900/50 border border-purple-700 text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-pink-500" placeholder="Tik jou boodskap hier...">
+                    <button id="chat-send-btn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold p-3 rounded-lg transition duration-300">Stuur</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Joke Book Section with recording -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-4xl mx-auto text-center">
+            <h3 class="text-3xl font-bold text-gradient mb-4" data-lang="jokeBookTitle">Moto se Grap-Boek</h3>
+            <p class="text-gray-300 mb-6" data-lang="jokeBookText">Neem 'n grap op of skryf een neer om die eerste hoofstuk van jou topverkoper te begin.</p>
+            
+            <div class="flex flex-col items-center gap-4">
+                <!-- Recording Button -->
+                <button id="recordJokeBtn" class="w-24 h-24 bg-red-600 hover:bg-red-700 rounded-full flex flex-col items-center justify-center mx-auto transition duration-300 text-white p-2">
+                    <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m12 0v-1.5a6 6 0 00-6-6v1.5m-6 0v-1.5a6 6 0 00-6 6v1.5m6-7.5v1.5m6 7.5a3 3 0 01-3-3v-1.5a3 3 0 013-3v1.5a3 3 0 013 3v1.5a3 3 0 01-3 3z" /></svg>
+                    <span id="recordJokeBtnText" class="mt-1 text-xs font-bold"></span>
+                </button>
+                <p id="recordStatus" class="text-purple-300 mt-4" data-lang="jokeRecordStatus">Druk om op te neem</p>
+                
+                <div class="text-center w-full my-4 text-gray-400">
+                    <p>-- OF --</p>
+                </div>
+
+                <!-- Text Input -->
+                <div class="w-full flex flex-col gap-4">
+                    <textarea id="jokeInput" rows="4" placeholder="Skryf die grap hier..." class="w-full p-3 rounded-lg bg-purple-900/50 border border-purple-700 text-white placeholder-purple-400 focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+                    <div class="flex gap-2 items-center">
+                        <select id="jokeLanguage" class="p-2 rounded-lg bg-purple-900/50 border border-purple-700 text-white">
+                            <option value="af">Afrikaans</option>
+                            <option value="en">English</option>
+                        </select>
+                        <button id="saveJokeBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex-grow">
+                            Stoor Grap
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jokeList" class="mt-6 text-left">
+                <!-- Jokes will be rendered here from Firestore -->
+            </div>
+            <audio id="ttsAudioPlayer" controls class="hidden"></audio>
+        </div>
+
+        <!-- Lifetime Stats Section -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-5xl mx-auto">
+            <h3 class="text-3xl font-bold text-gradient mb-6 text-center" data-lang="statsTitle">Moto's Lifetime Stats (Averages)</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 text-center">
+                <div><p class="text-3xl md:text-4xl font-bold text-cyan-300">19,358</p><p class="text-sm text-gray-400" data-lang="statsDays">Days Lived</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-pink-400">2.2 Billion</p><p class="text-sm text-gray-400" data-lang="statsHeartbeats">Heartbeats</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-green-300">446 Million</p><p class="text-sm text-gray-400" data-lang="statsBreaths">Breaths Taken</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-yellow-300">1.6 Billion</p><p class="text-sm text-gray-400" data-lang="statsSeconds">Seconds</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-yellow-300">3.8 Million km</p><p class="text-sm text-gray-400" data-lang="statsDriven">Driven</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-red-400">1,900 kg</p><p class="text-sm text-gray-400" data-lang="statsBoerewors">Boerewors Braaied</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-blue-400">5,300</p><p class="text-sm text-gray-400" data-lang="statsCampfires">Campfires Lit</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-indigo-400">Countless</p><p class="text-sm text-gray-400" data-lang="statsFixes">"Boer Maak 'n Plan" Fixes</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-orange-400">1.2 Million Hours</p><p class="text-sm text-gray-400" data-lang="statsLaughter">of Laughter Generated</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-purple-400">Infinite</p><p class="text-sm text-gray-400" data-lang="statsStars">Stars Counted</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-teal-300">387 Million</p><p class="text-sm text-gray-400" data-lang="statsThoughts">Thoughts Thought</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-lime-300">53</p><p class="text-sm text-gray-400" data-lang="statsChristmases">Christmases</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-fuchsia-400">212</p><p class="text-sm text-gray-400" data-lang="statsSeasons">Seasons Enjoyed</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-rose-400">~19,358</p><p class="text-sm text-gray-400" data-lang="statsNights">Nights Slept</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-amber-400">~97,000</p><p class="text-sm text-gray-400" data-lang="statsDreams">Dreams Dreamt</p></div>
+                 <div><p class="text-3xl md:text-4xl font-bold text-indigo-400">48,400 Litres</p><p class="text-sm text-gray-400" data-lang="statsDrinks">Of Drinks</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-orange-400">38,700 kg</p><p class="text-sm text-gray-400" data-lang="statsFood">Of Food</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-purple-400">97 Million</p><p class="text-sm text-gray-400" data-lang="statsSteps">Steps Walked</p></div>
+                <div><p class="text-3xl md:text-4xl font-bold text-cyan-400">0</p><p class="text-sm text-gray-400" data-lang="statsAnimals">Animals Hunted (Maybe)</p></div>
+            </div>
+        </div>
+        
+        <!-- Family Tree Section -->
+        <div class="card rounded-2xl p-8 mb-20 max-w-4xl mx-auto text-center">
+            <h3 class="text-3xl font-bold text-gradient mb-4" data-lang="familyTreeTitle">Schoeman Family Tree</h3>
+            <p class="text-gray-300" data-lang="familyTreeText1">Connection to main database is under construction...</p>
+            <p class="text-gray-400 mt-2 text-sm" data-lang="familyTreeText2">Please stand by for legendary lineage.</p>
+        </div>
+
+        <!-- Cards Section -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card rounded-2xl p-8">
+                <div class="flex items-center mb-4">
+                    <svg class="w-12 h-12 text-cyan-300 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <h3 class="text-3xl font-bold text-gradient" data-lang="loyaltyTitle">The Loyalty Compass</h3>
+                </div>
+                <p class="text-gray-400" data-lang="loyaltyText">
+                    For 53 years, your loyalty has been the true north for family and friends. A constant, unwavering force that has guided so many through calm and storm. It's a legacy more enduring than any landmark.
+                </p>
+            </div>
+            <div class="card rounded-2xl p-8">
+                <div class="flex items-center mb-4">
+                     <svg class="w-12 h-12 text-pink-400 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 14.121a3 3 0 100-4.242 3 3 0 000 4.242z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z"></path></svg>
+                    <h3 class="text-3xl font-bold text-gradient" data-lang="bushveldTitle">Bushveld Chronicles</h3>
+                </div>
+                <p class="text-gray-400" data-lang="bushveldText">
+                    The route from Mahlapye to Marken isn't just a line on a map; it's a saga written in tyre tracks and campfire smoke. A testament to grand adventures, legendary tales, and the spirit of a true outdoorsman.
+                </p>
+            </div>
+        </div>
+
+        <!-- Call to Action / Toast -->
+        <div class="text-center mt-20">
+            <h2 class="text-5xl font-black uppercase text-gradient mb-4" data-lang="cheersTitle">Here's to You, Moto!</h2>
+            <p class="text-lg text-gray-300" data-lang="cheersText">May your path ahead be as clear as a starry bushveld sky, your campfire always be warm, and your adventures be even grander.</p>
+            <p class="text-2xl mt-6 font-bold" data-lang="cheersText2">Cheers to 53 years!</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 border-t border-purple-800 mt-12">
+        <p class="text-purple-200 text-lg mb-4 font-bold" data-lang="footerText">Lekker verjaar, ou Grote!</p>
+        <p class="text-purple-300 text-sm mb-6" data-lang="footerText2">Van Kobus, Zollie, Hanlie, Christo en die moto's</p>
+        <p class="text-purple-400 text-xs" data-lang="footerText3">This transmission from Muller.faa.zone has been authorized by the Schoeman Bureau of Birthday Wishes.</p>
+    </footer>
+
+</body>
+</html>

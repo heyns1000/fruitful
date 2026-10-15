@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="Brand">Montana Family Butchery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Kruger-inspired Palette */
+        :root {
+            --color-primary: #1E4D2B; /* Dark Kruger Green */
+            --color-secondary: #D4AF37; /* Gold/Ochre Accent */
+            --color-accent: #A0522D; /* Khaki/Earth Brown */
+            --color-text: #333333;
+            --color-bg: #F8F8F0; /* Off-White/Sand */
+        }
+        body { background-color: var(--color-bg); font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: var(--color-primary); }
+        .nav-item { color: #f0f0f0; transition: background-color 0.2s, color 0.2s; }
+        .nav-item:hover, .nav-item.active { background-color: rgba(212, 175, 55, 0.2); color: var(--color-secondary); }
+        .content-card { background-color: white; border-left: 6px solid var(--color-secondary); }
+        .header-bg { background-color: var(--color-accent); }
+        .btn-primary { background-color: var(--color-secondary); color: var(--color-primary); font-weight: bold; }
+        .btn-primary:hover { background-color: #B8860B; }
+        /* Safari and iOS fix for fixed sidebar */
+        .sidebar { -webkit-overflow-scrolling: touch; }
+        
+        /* Utility for the custom greeting to stand out */
+        .greeting { color: var(--color-accent); border-bottom: 2px solid #EEE; padding-bottom: 0.75rem; margin-bottom: 1rem; font-style: italic; font-size: 1.1rem; }
+    </style>
+
+    <script>
+        // --- TRANSLATION DATA & LOGIC ---
+        const translations = {
+            EN: { 
+                Greeting: "Hello Uncle, Auntie, have a great day further.",
+                Brand: "Montana Family Butchery", Home: "Home", Products: "Products & Cuts", Tradition: "The Old Ways (Fingers)", Locations: "Find a Butcher", AboutUs: "Our Heritage", Sustainability: "Sustainability & Wildlife", CIGuide: "CI Guide & Naming", Franchise: "Franchise Opportunities", Testimonials: "Testimonials & Gallery", Careers: "Careers", Contact: "Contact Us", FAQs: "FAQs",
+                Tagline: "The national chain built on family values and traditional white-coute butchery, starting in Montana, Pretoria.",
+                ContactDetails: "Contact Details: +27 72 414 0117",
+                EmailUs: "Email Us", CallUs: "Call Us", FindUs: "Find Our HQ",
+                HQ: "Montana, Pretoria, Braam Pretorius, next to Kolletjies Kaffe.",
+                FooterText: "© 2025 Montana Family Butchery. Proudly supporting FAA Wildlife & Habitat initiatives.",
+                ProductTitle: "Our Premium Cuts and Services",
+                ProductDesc: "We specialize in fresh, high-quality white-coute butchery. Our traditional 'fingers' technique ensures superior texture and flavor.",
+                OldWaysTitle: "Honoring the Old Ways: The 'Fingers' Cut",
+                OldWaysDesc: "This is the essence of our butchery. The 'fingers' (hand-cut portioning) method ensures minimum waste and maximum flavor, done the old-fashioned way, just like Oom and Tannie remember.",
+                LocationTitle: "Our National Network (WildButcher.faa.zone)",
+                LocationDesc: "Our naming convention uses the local town name followed by our corporate respiratory: [Town Name].WildButcher.faa.zone. This integrates local presence with our national brand and FAA commitment.",
+                AboutTitle: "Our Heritage: From Montana, Pretoria to the Nation",
+                AboutDesc: "Founded in Montana, Pretoria, our mission is to deliver traditional quality and respect across all our national outlets, maintaining the highest standards of preparation and customer service.",
+                SustTitle: "Our Commitment to Sustainability and Wildlife",
+                SustDesc: "We recognize our responsibility to the environment. We partner with the FAA Wildlife & Habitat sector to ensure our sourcing practices are ethical and support conservation efforts.",
+                CITitle: "Corporate Identity and Naming Guide",
+                CIDesc: "Our CI is green and gold, reflecting the South African bushveld and premium quality. The domain WildButcher.faa.zone links us directly to the conservation sector, reinforcing our sustainability pledge.",
+                FranchiseTitle: "Join the Montana Family",
+                FranchiseDesc: "We offer complete franchise packages built on tradition, quality, and a commitment to wildlife preservation. Contact us for a full prospectus.",
+                TestimonialTitle: "What Our Clients Say",
+                CareerTitle: "Careers at Montana Family Butchery",
+                FAQSlogan: "Quick Answers to Your Questions",
+            },
+            AF: { 
+                Greeting: "Hello Oom, Tannie, lekker dag verder.",
+                Brand: "Montana Familie Slaghuis", Home: "Tuis", Products: "Produkte & Snitte", Tradition: "Die Ou Manier (Vingers)", Locations: "Fumana Slaghuis", AboutUs: "Ons Erfenis", Sustainability: "Volhoubaarheid & Wildlewe", CIGuide: "KI Gids & Naamgewing", Franchise: "Franchise Geleenthede", Testimonials: "Getuienisse & Galery", Careers: "Loopbane", Contact: "Kontak Ons", FAQs: "Gereelde Vrae",
+                Tagline: "Die nasionale ketting gebou op familiewaardes en tradisionele wit-coute slag, begin in Montana, Pretoria.",
+                ContactDetails: "Kontak Besonderhede: +27 72 414 0117",
+                EmailUs: "E-pos Ons", CallUs: "Bel Ons", FindUs: "Vind Ons Hoofkantoor",
+                HQ: "Montana, Pretoria, Braam Pretorius, langs Kolletjies Kaffe.",
+                FooterText: "© 2025 Montana Familie Slaghuis. Trotse ondersteuners van FAA Wildlewe & Habitat inisiatiewe.",
+                ProductTitle: "Ons Premium Snitte en Dienste",
+                ProductDesc: "Ons spesialiseer in vars, hoë-gehalte wit-coute slag. Ons tradisionele 'vingers' tegniek verseker uitstekende tekstuur en geur.",
+                OldWaysTitle: "Eer Die Ou Manier: Die 'Vingers' Sny",
+                OldWaysDesc: "Dit is die wese van ons slag. Die 'vingers' (handgesnyde porsie) metode verseker minimum vermorsing en maksimum geur, gedoen op die outydse manier, net soos Oom en Tannie onthou.",
+                LocationTitle: "Ons Nasionale Netwerk (WildButcher.faa.zone)",
+                LocationDesc: "Ons naamgewing gebruik die plaaslike dorpsnaam gevolg deur ons korporatiewe respiratoriese: [Dorpsnaam].WildButcher.faa.zone. Dit integreer plaaslike teenwoordigheid met ons nasionale handelsmerk en FAA verbintenis.",
+                AboutTitle: "Ons Erfenis: Van Montana, Pretoria na die Nasie",
+                AboutDesc: "Gestig in Montana, Pretoria, is ons missie om tradisionele kwaliteit en respek oor al ons nasionale winkels te lewer, terwyl ons die hoogste standaarde van voorbereiding en kliëntediens handhaaf.",
+                SustTitle: "Ons Verbintenis tot Volhoubaarheid en Wildlewe",
+                SustDesc: "Ons erken ons verantwoordelikheid teenoor die omgewing. Ons werk saam met die FAA Wildlewe & Habitat sektor om te verseker dat ons verkrygingspraktyke eties is en bewaringspogings ondersteun.",
+                CITitle: "Korporatiewe Identiteit en Naamgewing Gids",
+                CIDesc: "Ons KI is groen en goud, wat die Suid-Afrikaanse bosveld en premium gehalte weerspieël. Die domein WildButcher.faa.zone verbind ons direk met die bewarings sektor, wat ons volhoubaarheidsbelofte versterk.",
+                FranchiseTitle: "Sluit Aan By Die Montana Familie",
+                FranchiseDesc: "Ons bied volledige franchise pakkette gebou op tradisie, kwaliteit, en 'n verbintenis tot wildbewaring. Kontak ons vir 'n volledige prospektus.",
+                TestimonialTitle: "Wat Ons Kliënte Sê",
+                CareerTitle: "Loopbane by Montana Familie Slaghuis",
+                FAQSlogan: "Vinnige Antwoorde Op U Vrae",
+            },
+            st: { 
+                Greeting: "Lumela Malome, Mme, be le letsatsi le monate le le lelele.",
+                Brand: "Montana Family Butchery", Home: "Lehae", Products: "Lihlahisoa & Likarolo", Tradition: "Mekhoa ea Khale (Menoana)", Locations: "Fumana Setsi", AboutUs: "Bohlale ba Rona", Sustainability: "Tšireletso le Liphoofolo", CIGuide: "Tokomane ea CI", Franchise: "Menyetla ea Franchise", Testimonials: "Bopaki & Pokello", Careers: "Mesebetsi", Contact: "Ikopanye le Rona", FAQs: "Lipotso",
+                Tagline: "Ketane ea naha e hahiloeng ka litekanyetso tsa lelapa le ho phethola ha litloaelo, ho qala Montana, Pretoria.",
+                ContactDetails: "Lintlha tsa Khokahano: +27 72 414 0117",
+                EmailUs: "Romella Imeile", CallUs: "Bitsa Rona", FindUs: "Fumana HQ",
+                HQ: "Montana, Pretoria, Braam Pretorius, haufi le Kolletjies Kaffe.",
+                FooterText: "© 2025 Montana Family Butchery. Ho tšehetsa FAA Wildlife & Habitat.",
+                ProductTitle: "Likarolo le Litšebeletso tsa Rona tsa Premium",
+                ProductDesc: "Re sebetsa ka ho khetheha ka ho phethola ho hloekileng le boleng bo holimo. Mokhoa oa rona oa 'menoana' o netefatsa tatso e phahameng.",
+                OldWaysTitle: "Ho Hlompha Mekhoa ea Khale: Karolo ea 'Menoana'",
+                OldWaysDesc: "Mokhoa oa 'menoana' o tiisa tšebeliso e fokolang le tatso e ntle ka ho fetisisa, joalo ka ha Malome le Mme ba hopola.",
+                SustTitle: "Boitlamo ba Rona ba Tšireletso le Liphoofolo",
+                SustDesc: "Re sebelisana le FAA ho netefatsa hore ts'ebetiso ea rona e na le boitšoaro le ho tšehetsa boiteko ba tšireletso.",
+            },
+            tn: { 
+                Greeting: "Dumelang Malome, Mme, e-ba le letsatsi le monate le letelele.",
+                Brand: "Montana Family Butchery", Home: "Lehae", Products: "Dihlahiswa & Dikgaolo", Tradition: "Mekgwa ya Kgale (Menwana)", Locations: "Fumana Setsi", AboutUs: "Boswa ba Rona", Sustainability: "Tshireletso le Diphologolo", CIGuide: "Pukwana ya CI", Franchise: "Ditshono tsa Franchise", Testimonials: "Bopaki & Galari", Careers: "Mesebetsi", Contact: "Itshwarele le Rona", FAQs: "Dipotsiso",
+                Tagline: "Kgetsi ya bosadi e agilweng mo mabotsong a lelapa le go hlabela ka mokgwa wa setso, e simolola kwa Montana, Pretoria.",
+                ContactDetails: "Dintlha tsa go Ikgolaganya: +27 72 414 0117",
+                EmailUs: "Romela Imeile", CallUs: "Bitsa Rona", FindUs: "Fumana HQ",
+                HQ: "Montana, Pretoria, Braam Pretorius, gaufi le Kolletjies Kaffe.",
+                FooterText: "© 2025 Montana Family Butchery. Ke tshegetsa FAA Wildlife & Habitat.",
+                ProductTitle: "Dikgaolo le Ditirelo tsa Rona tsa Premium",
+                ProductDesc: "Re kgethegile mo go hlabeleng ka mokgwa o mosweu o o phepa le boleng bo bogolo. Mokgwa wa rona wa setso wa 'menwana' o netefatsa tatso e ntle.",
+                OldWaysTitle: "Go Tlotla Mekgwa ya Kgale: Kgato ya 'Menwana'",
+                OldWaysDesc: "Mokgwa wa 'menwana' o tlhomamisa go dirisa ditshenyegelo tse dinnye le tatso e e botlhokwa, jaaka Malome le Mme ba gopola.",
+                SustTitle: "Boitlamo Jwa Rona mo Tshireletsong le Diphologolo",
+                SustDesc: "Re dirisana le FAA go netefatsa gore mekgwa ya rona ya go bona dilo e na le boitshwaro le go tshegetsa tshireletso.",
+            },
+            zu: { 
+                Greeting: "Sawubona Malume, Anti, ube nosuku oluhle.",
+                Brand: "Montana Family Butchery", Home: "Ekhaya", Products: "Imikhiqizo Nezingxenye", Tradition: "Izindlela Zakudala (Iminwe)", Locations: "Thola Isitolo", AboutUs: "Ifa Lethu", Sustainability: "Ukusimama & Izilwane", CIGuide: "Umhlahlandlela we-CI", Franchise: "Amathuba E-Franchise", Testimonials: "Ubufakazi Negalari", Careers: "Imisebenzi", Contact: "Xhumana Nathi", FAQs: "Imibuzo",
+                Tagline: "Uchungechunge lwesizwe olwakhelwe phezu kwamanani omndeni nokuhlinza kwesintu okumhlophe, okuqala eMontana, ePretoria.",
+                ContactDetails: "Imininingwane Yokuxhumana: +27 72 414 0117",
+                EmailUs: "Thumela I-imeyili", CallUs: "Sishayele", FindUs: "Thola I-HQ Yethu",
+                HQ: "EMontana, ePretoria, eBraam Pretorius, eduze neKolletjies Kaffe.",
+                FooterText: "© 2025 Montana Family Butchery. Sisekela FAA Wildlife & Habitat.",
+                ProductTitle: "Izingxenye Nezinkonzo Zethu Ze-Premium",
+                ProductDesc: "Sigxila ekuhlinzeni okumhlophe, okusha nokuseqophelweni eliphezulu. Indlela yethu yendabuko 'yeminwe' iqinisekisa ukunambitheka okuhle.",
+                OldWaysTitle: "Ukuhlonipha Izindlela Zakudala: Ukusika Kwe-'Minwe'",
+                OldWaysDesc: "Indlela 'yeminwe' iqinisekisa ukumosha okuncane kanye nokunambitheka okuhle kakhulu, njengoba uMalume noAnti bekhumbula.",
+                SustTitle: "Ukuzibophezela Kwethu Ekusimameni Nezilwane",
+                SustDesc: "Sisebenzisana ne-FAA ukuqinisekisa ukuthi izindlela zethu zokuthola zihambisana nokuziphatha futhi zisekela imizamo yokonga.",
+            },
+            fa: { 
+                Greeting: "Hamba kahle, Bizo, go on for a nice day.",
+                Brand: "Montana Family Butchery", Home: "Khaya", Products: "Planga & Sika", Tradition: "Wena lo Mlomo (Fingers)", Locations: "Funeka Butcha", AboutUs: "Wena Heritage", Sustainability: "Lontekela & Phoroko", CIGuide: "Pukwana Guide", Franchise: "Franchise", Testimonials: "Bopaki", Careers: "Funeka Job", Contact: "Shova Foni", FAQs: "Lotjeng Pitsa",
+                Tagline: "Lo chain lo national agiwe lo family value na old fashion butcha, qala Montana, Pretoria.",
+                ContactDetails: "Lo Foni: +27 72 414 0117",
+                EmailUs: "Emaili Thina", CallUs: "Shova Foni", FindUs: "Funeka Lo HQ",
+                HQ: "Montana, Pretoria, Braam Pretorius, eceleni Kolletjies Kaffe.",
+                FooterText: "© 2025 Montana Family Butchery. Sekela FAA Wildlife.",
+                ProductTitle: "Lo Sika Lo Nice Na Lo Funi",
+                ProductDesc: "Thina sika lo white coute nice kakhulu. Lo 'fingers' style funa lo flavor lo nice.",
+                OldWaysTitle: "Hlonipa Lo Old Ways: Lo 'Fingers' Sika",
+                OldWaysDesc: "Lo 'fingers' style funa lo waste lo mnono na lo flavor lo nice kakhulu, njenga lo Oom na Tannie khumbula.",
+                SustTitle: "Lo Lontekela Na Lo Phoroko Funeka",
+                SustDesc: "Thina funa lo nice na lo environment. Thina sebenzisana na lo FAA funa lo sourcing lo right na sekela lo phoroko.",
+            },
+        };
+
+        let currentLang = 'AF'; // Default to Afrikaans as per the greeting context
+
+        const setLanguage = (lang) => {
+            currentLang = lang;
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                    // Also update title for the brand name
+                    if (key === 'Brand') {
+                        document.title = translations[lang][key];
+                    }
+                }
+            });
+            // Update the greeting for the main content areas
+            document.querySelectorAll('.greeting').forEach(el => {
+                el.textContent = translations[lang].Greeting;
+            });
+            // Update the language selector display
+            document.getElementById('lang-select-btn').textContent = lang;
+            // Update the HQ description which often includes other languages
+            if (lang === 'AF') {
+                 document.querySelector('#hq-desc').innerHTML = "Ons Hoofkantoor is geleë in **Montana, Pretoria, Braam Pretorius**, net langs die bekende Kolletjies Kaffe. Ons verwelkom jou altyd vir 'n geselsie.";
+            } else {
+                 document.querySelector('#hq-desc').innerHTML = `Our Headquarters are located in **Montana, Pretoria, Braam Pretorius**, right next to the famous Kolletjies Kaffe. You are always welcome for a chat.`;
+            }
+        };
+
+        // --- NAVIGATION & SPA LOGIC ---
+        const sections = [
+            { id: 'home', icon: '🏠', key: 'Home' },
+            { id: 'products', icon: '🥩', key: 'Products' },
+            { id: 'tradition', icon: '🖐️', key: 'Tradition' },
+            { id: 'locations', icon: '📍', key: 'Locations' },
+            { id: 'about', icon: '📜', key: 'AboutUs' },
+            { id: 'sustainability', icon: '🦁', key: 'Sustainability' },
+            { id: 'ci-guide', icon: '🎨', key: 'CIGuide' },
+            { id: 'franchise', icon: '🔗', key: 'Franchise' },
+            { id: 'testimonials', icon: '🌟', key: 'Testimonials' },
+            { id: 'careers', icon: '💼', key: 'Careers' },
+            { id: 'contact', icon: '📞', key: 'Contact' },
+            { id: 'faqs', icon: '❓', key: 'FAQs' },
+        ];
+
+        const navigateTo = (sectionId) => {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+
+            // Update URL hash for clean navigation
+            window.location.hash = sectionId;
+        };
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            setLanguage(currentLang);
+            
+            // Handle language change dropdown
+            document.getElementById('lang-selector').addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    setLanguage(e.target.getAttribute('data-lang'));
+                }
+            });
+
+            // Handle hash-based navigation on load
+            const initialSection = window.location.hash.substring(1) || 'home';
+            if (sections.map(s => s.id).includes(initialSection)) {
+                navigateTo(initialSection);
+            } else {
+                navigateTo('home');
+            }
+        };
+
+        // FAA Metadata (simplified from conversation) for the Sustainability page
+        const FAA_METADATA = {
+            "Core Protocol": "WildTrace™",
+            "Tagline": "Real-time compliance validation via VaultLink™ (wildlife specific).",
+            "Product ID": "WIL-WIL-1285",
+            "Deployment Zone": "Zone A 7",
+            "Security Rating": "FAA-SEC B+",
+            "Last Audit": "2025-10-04",
+            "Compliance Status": "Active & Certified",
+            "Pulse Activity": "10,364 pulses/sec",
+            "Data Volume Processed (24h)": "20.83 TB",
+        };
+
+        const generateFAAMetadata = () => {
+            let html = '<div class="space-y-4">';
+            for (const key in FAA_METADATA) {
+                html += `
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm">
+                        <span class="text-sm font-semibold text-gray-700">${key}:</span>
+                        <span class="text-sm font-mono text-right text-green-700">${FAA_METADATA[key]}</span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="mt-8 p-4 bg-green-100 rounded-lg border-l-4 border-green-600 text-green-800">
+                    <p class="font-bold">Protocol Status:</p>
+                    <p>WildTrace™ Core Protocol is Active and Certified, ensuring verifiable data provenance for conservation efforts.</p>
+                </div>
+            `;
+            html += '</div>';
+            return html;
+        }
+
+        // --- CONTACT MODAL (Replaces alert/confirm) ---
+        const showContactModal = (type) => {
+            const modal = document.getElementById('contact-modal');
+            const modalContent = document.getElementById('modal-content');
+            let content = '';
+
+            if (type === 'call') {
+                content = `
+                    <h3 class="text-2xl font-bold text-center mb-4">📞 Call Us</h3>
+                    <p class="text-lg text-gray-700 text-center mb-6">We'd love to hear from you, Oom/Tannie. Call our dedicated line:</p>
+                    <a href="tel:+27724140117" class="block w-full text-center py-3 bg-[#D4AF37] text-[#1E4D2B] font-bold rounded-lg hover:bg-yellow-600 transition-colors text-xl">+27 72 414 0117</a>
+                `;
+            } else if (type === 'email') {
+                content = `
+                    <h3 class="text-2xl font-bold text-center mb-4">📧 Email Us</h3>
+                    <p class="text-lg text-gray-700 text-center mb-6">Send your queries or orders to our national team:</p>
+                    <a href="mailto:info@wildbutcher.faa.zone" class="block w-full text-center py-3 bg-[#A0522D] text-white font-bold rounded-lg hover:bg-amber-700 transition-colors text-xl">info@WildButcher.faa.zone</a>
+                `;
+            } else if (type === 'hq') {
+                content = `
+                    <h3 class="text-2xl font-bold text-center mb-4">📍 Find Our HQ (Montana, Pretoria)</h3>
+                    <p class="text-lg text-gray-700 text-center mb-6">Our national operations center is located at:</p>
+                    <p class="text-xl font-semibold text-[#1E4D2B] text-center mb-4">Montana, Pretoria, Braam Pretorius</p>
+                    <p class="text-sm text-gray-500 text-center">Next to Kolletjies Kaffe.</p>
+                `;
+            }
+
+            modalContent.innerHTML = content;
+            modal.classList.remove('hidden');
+        };
+
+        const hideContactModal = () => {
+            document.getElementById('contact-modal').classList.add('hidden');
+        };
+    </script>
+</head>
+
+<body class="min-h-screen flex flex-col lg:flex-row antialiased">
+
+    <!-- Modal for Contact Buttons (Replaces Alert) -->
+    <div id="contact-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-75 flex items-center justify-center transition-opacity" onclick="hideContactModal()">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-11/12 max-w-md" onclick="event.stopPropagation()">
+            <div id="modal-content">
+                <!-- Content injected by JS -->
+            </div>
+            <button onclick="hideContactModal()" class="mt-6 w-full py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400 transition-colors" data-translate="Close">Close</button>
+        </div>
+    </div>
+
+
+    <!-- Sidebar Navigation (12 Pages) -->
+    <nav class="sidebar w-full lg:w-64 flex-shrink-0 shadow-xl overflow-y-auto">
+        <div class="p-6">
+            <h1 class="text-3xl font-extrabold text-[#D4AF37] border-b border-yellow-700 pb-3">
+                <span data-translate="Brand">Montana Family Butchery</span>
+            </h1>
+            <p class="text-xs mt-2 text-gray-300 font-medium">Head Office: Montana, PTA</p>
+        </div>
+
+        <div class="p-4 space-y-2">
+            <div class="dropdown inline-block relative w-full">
+                <button id="lang-select-btn" class="bg-[#D4AF37] text-[#1E4D2B] font-bold py-2 px-4 rounded-lg inline-flex items-center w-full justify-between">
+                    AF
+                </button>
+                <ul id="lang-selector" class="dropdown-menu absolute hidden text-gray-700 pt-1 z-10 w-full rounded-lg shadow-lg">
+                    <li class="bg-white hover:bg-gray-100 rounded-t-lg"><a class="block py-2 px-4" href="#" data-lang="EN">EN (English)</a></li>
+                    <li class="bg-white hover:bg-gray-100"><a class="block py-2 px-4" href="#" data-lang="AF">AF (Afrikaans)</a></li>
+                    <li class="bg-white hover:bg-gray-100"><a class="block py-2 px-4" href="#" data-lang="st">ST (Sotho)</a></li>
+                    <li class="bg-white hover:bg-gray-100"><a class="block py-2 px-4" href="#" data-lang="tn">TN (Tswana)</a></li>
+                    <li class="bg-white hover:bg-gray-100"><a class="block py-2 px-4" href="#" data-lang="zu">ZU (Zulu)</a></li>
+                    <li class="bg-white hover:bg-gray-100 rounded-b-lg"><a class="block py-2 px-4" href="#" data-lang="fa">FA (Fanagalo)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <ul class="p-4 space-y-1">
+            <li class="rounded-lg">
+                <a id="nav-home" href="#home" onclick="navigateTo('home')" class="nav-item flex items-center p-3 rounded-lg active">
+                    <span class="mr-3">🏠</span> <span data-translate="Home">Home</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-products" href="#products" onclick="navigateTo('products')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">🥩</span> <span data-translate="Products">Products & Cuts</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-tradition" href="#tradition" onclick="navigateTo('tradition')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">🖐️</span> <span data-translate="Tradition">The Old Ways (Fingers)</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-locations" href="#locations" onclick="navigateTo('locations')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">📍</span> <span data-translate="Locations">Find a Butcher</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-about" href="#about" onclick="navigateTo('about')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">📜</span> <span data-translate="AboutUs">Our Heritage</span>
+                </a>
+            </li>
+            <!-- --- WILDLIFE & SUSTAINABILITY SECTION --- -->
+            <li class="rounded-lg border-t border-yellow-700 mt-4 pt-4">
+                <a id="nav-sustainability" href="#sustainability" onclick="navigateTo('sustainability')" class="nav-item flex items-center p-3 rounded-lg font-bold text-[#06D6A0]">
+                    <span class="mr-3">🦁</span> <span data-translate="Sustainability">Sustainability & Wildlife</span>
+                </a>
+            </li>
+            <!-- --- MANAGEMENT SECTIONS --- -->
+            <li class="rounded-lg border-t border-yellow-700 mt-4 pt-4">
+                <a id="nav-ci-guide" href="#ci-guide" onclick="navigateTo('ci-guide')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">🎨</span> <span data-translate="CIGuide">CI Guide & Naming</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-franchise" href="#franchise" onclick="navigateTo('franchise')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">🔗</span> <span data-translate="Franchise">Franchise Opportunities</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-testimonials" href="#testimonials" onclick="navigateTo('testimonials')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">🌟</span> <span data-translate="Testimonials">Testimonials & Gallery</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-careers" href="#careers" onclick="navigateTo('careers')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">💼</span> <span data-translate="Careers">Careers</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-contact" href="#contact" onclick="navigateTo('contact')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">📞</span> <span data-translate="Contact">Contact Us</span>
+                </a>
+            </li>
+            <li class="rounded-lg">
+                <a id="nav-faqs" href="#faqs" onclick="navigateTo('faqs')" class="nav-item flex items-center p-3 rounded-lg">
+                    <span class="mr-3">❓</span> <span data-translate="FAQs">FAQs</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+        
+        <!-- Header -->
+        <header class="header-bg p-6 md:p-8 rounded-xl shadow-lg mb-8 text-white">
+            <h2 class="text-3xl md:text-5xl font-extrabold" data-translate="Brand">Montana Family Butchery</h2>
+            <p class="mt-2 text-md md:text-xl font-light italic" data-translate="Tagline">The national chain built on family values and traditional white-coute butchery, starting in Montana, Pretoria.</p>
+        </header>
+
+        <!-- --- 1. HOME SECTION --- -->
+        <section id="home" class="content-section content-card p-6 md:p-8 shadow-xl">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="Home">Home</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="col-span-1 md:col-span-2 space-y-4">
+                    <p class="text-gray-700 text-lg">
+                        Welcome to the heart of traditional South African butchery. From our roots in Montana, Pretoria, we are expanding nationally to bring you the highest quality **white-coute** meats, cut with respect and expertise. Our commitment is simple: **Family, Quality, and Tradition.**
+                    </p>
+                    <p class="text-gray-600">
+                        We are proud of our heritage and excited to share our traditional "fingers" method of cutting with the rest of the country. Explore our sections to learn about our premium products and our partnership with the FAA Wildlife sector to ensure sustainability.
+                    </p>
+                    <button onclick="navigateTo('products')" class="mt-4 px-6 py-3 btn-primary rounded-lg shadow-md transition-transform transform hover:scale-[1.02]">
+                        <span data-translate="Products">View Products & Cuts</span> 🥩
+                    </button>
+                </div>
+                <div class="hidden md:block col-span-1">
+                    <img src="https://placehold.co/400x300/1E4D2B/D4AF37?text=Montana+Family+Butchery" alt="Placeholder image of butchery" class="rounded-xl shadow-md w-full h-auto object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- --- 2. PRODUCTS SECTION --- -->
+        <section id="products" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="ProductTitle">Our Premium Cuts and Services</h2>
+            <p class="text-gray-600 mb-6" data-translate="ProductDesc">We specialize in fresh, high-quality white-coute butchery. Our traditional 'fingers' technique ensures superior texture and flavor.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">Boerewors & Sausage</h3>
+                    <p class="text-sm text-gray-500 mt-1">Traditional recipes, expertly seasoned.</p>
+                </div>
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">A-Grade Beef</h3>
+                    <p class="text-sm text-gray-500 mt-1">Fillet, Rump, and T-Bone, cut to order.</p>
+                </div>
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">Lamb & Mutton</h3>
+                    <p class="text-sm text-gray-500 mt-1">Karoo quality chops and roasts.</p>
+                </div>
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">Traditional Biltong</h3>
+                    <p class="text-sm text-gray-500 mt-1">Wet, medium, or dry. Biltong 'Fingers' available.</p>
+                </div>
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">Braai Packs</h3>
+                    <p class="text-sm text-gray-500 mt-1">Convenient, all-in-one meat selections.</p>
+                </div>
+                <div class="p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-[#1E4D2B]">Catering Services</h3>
+                    <p class="text-sm text-gray-500 mt-1">Custom orders for events and functions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- 3. TRADITION SECTION --- -->
+        <section id="tradition" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-[#A0522D] mb-4" data-translate="OldWaysTitle">Honoring the Old Ways: The 'Fingers' Cut</h2>
+            <p class="text-gray-700 mb-6 text-lg" data-translate="OldWaysDesc">This is the essence of our butchery. The 'fingers' (hand-cut portioning) method ensures minimum waste and maximum flavor, done the old-fashioned way, just like Oom and Tannie remember.</p>
+            
+            <div class="p-6 bg-yellow-50 border-l-4 border-[#D4AF37] rounded-lg">
+                <h3 class="text-xl font-semibold text-[#1E4D2B]">Why 'Fingers'?</h3>
+                <ul class="list-disc list-inside mt-3 space-y-2 text-gray-600">
+                    <li><strong class="text-[#A0522D]">Precision:</strong> Every portion is checked by eye and hand, not just by weight.</li>
+                    <li><strong class="text-[#A0522D]">Flavor:</strong> The cut follows the natural muscle fiber, preserving juiciness.</li>
+                    <li><strong class="text-[#A0522D]">Respect:</strong> It honors the traditional white-coute technique passed down through generations.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- --- 4. LOCATIONS SECTION --- -->
+        <section id="locations" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="LocationTitle">Our National Network (WildButcher.faa.zone)</h2>
+            <p class="text-gray-600 mb-6" data-translate="LocationDesc">Our naming convention uses the local town name followed by our corporate respiratory: **[Town Name].WildButcher.faa.zone**. This integrates local presence with our national brand and FAA commitment.</p>
+            
+            <div class="space-y-4">
+                <div class="p-4 bg-green-50 rounded-lg border-b-2 border-[#D4AF37]">
+                    <p class="font-bold text-xl text-[#1E4D2B]">Pretoria (HQ)</p>
+                    <p class="text-sm text-gray-600">Montana.WildButcher.faa.zone</p>
+                </div>
+                 <div class="p-4 bg-green-50 rounded-lg border-b-2 border-[#D4AF37]">
+                    <p class="font-bold text-xl text-[#1E4D2B]">Johannesburg</p>
+                    <p class="text-sm text-gray-600">Sandton.WildButcher.faa.zone</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg border-b-2 border-[#D4AF37]">
+                    <p class="font-bold text-xl text-[#1E4D2B]">Cape Town</p>
+                    <p class="text-sm text-gray-600">Clifton.WildButcher.faa.zone</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg border-b-2 border-[#D4AF37]">
+                    <p class="font-bold text-xl text-[#1E4D2B]">Durban</p>
+                    <p class="text-sm text-gray-600">Umhlanga.WildButcher.faa.zone</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- 5. ABOUT US SECTION --- -->
+        <section id="about" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="AboutTitle">Our Heritage</h2>
+            <p class="text-gray-700 mb-6 text-lg" data-translate="AboutDesc">Founded in Montana, Pretoria, our mission is to deliver traditional quality and respect across all our national outlets, maintaining the highest standards of preparation and customer service.</p>
+            
+            <div class="p-6 bg-gray-50 rounded-lg border-l-4 border-[#1E4D2B]">
+                <h3 class="text-xl font-semibold text-[#A0522D]">The Montana Promise</h3>
+                <p id="hq-desc" class="mt-3 text-gray-600">Ons Hoofkantoor is geleë in **Montana, Pretoria, Braam Pretorius**, net langs die bekende Kolletjies Kaffe. Ons verwelkom jou altyd vir 'n geselsie.</p>
+            </div>
+        </section>
+
+        <!-- --- 6. SUSTAINABILITY SECTION (FAA Data Integration) --- -->
+        <section id="sustainability" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-[#06D6A0] mb-4" data-translate="SustTitle">Sustainability & Wildlife 🦁</h2>
+            <p class="text-gray-700 mb-6 text-lg" data-translate="SustDesc">We recognize our responsibility to the environment. We partner with the **FAA Wildlife & Habitat sector** to ensure our sourcing practices are ethical and support conservation efforts.</p>
+            
+            <h3 class="text-2xl font-bold text-[#1E4D2B] mt-6 mb-4">FAA WildTrace™ Protocol Status</h3>
+            <div id="faa-metadata-container" class="border p-4 rounded-lg shadow-inner bg-green-50">
+                <script>
+                    document.getElementById('faa-metadata-container').innerHTML = generateFAAMetadata();
+                </script>
+            </div>
+            <p class="mt-6 text-sm text-gray-500">
+                This integration ensures cross-sector data interoperability and blockchain-secured data provenance related to our sourcing compliance.
+            </p>
+        </section>
+
+        <!-- --- 7. CI GUIDE SECTION --- -->
+        <section id="ci-guide" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="CITitle">Corporate Identity and Naming Guide</h2>
+            <p class="text-gray-600 mb-6" data-translate="CIDesc">Our CI is green and gold, reflecting the South African bushveld and premium quality. The domain **WildButcher.faa.zone** links us directly to the conservation sector, reinforcing our sustainability pledge.</p>
+            
+            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                <li><strong class="text-[#1E4D2B]">Primary Color:</strong> Dark Kruger Green (#1E4D2B)</li>
+                <li><strong class="text-[#1E4D2B]">Accent Color:</strong> Ochre Gold (#D4AF37)</li>
+                <li><strong class="text-[#1E4D2B]">Naming Rule:</strong> `[Local Town Name].WildButcher.faa.zone` (e.g., Soweto.WildButcher.faa.zone)</li>
+                <li><strong class="text-[#1E4D2B]">Logo:</strong> Stylized Lion Head (🦁) in gold on a green shield.</li>
+            </ul>
+        </section>
+
+        <!-- --- 8. FRANCHISE SECTION --- -->
+        <section id="franchise" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="FranchiseTitle">Join the Montana Family</h2>
+            <p class="text-gray-700 mb-6 text-lg" data-translate="FranchiseDesc">We offer complete franchise packages built on tradition, quality, and a commitment to wildlife preservation. Contact us for a full prospectus.</p>
+            
+            <button onclick="navigateTo('contact')" class="px-6 py-3 btn-primary rounded-lg shadow-md transition-transform transform hover:scale-[1.02]">
+                <span data-translate="Contact">Request Franchise Information</span> 📞
+            </button>
+        </section>
+
+        <!-- --- 9. TESTIMONIALS SECTION --- -->
+        <section id="testimonials" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="TestimonialTitle">What Our Clients Say</h2>
+            
+            <div class="space-y-6">
+                <blockquote class="p-4 bg-gray-50 border-l-4 border-[#A0522D] italic text-gray-700">
+                    "Die beste biltong en droëwors in Pretoria! Die 'vingers' snit maak 'n verskil." - Mnr. Du Plessis
+                </blockquote>
+                <blockquote class="p-4 bg-gray-50 border-l-4 border-[#A0522D] italic text-gray-700">
+                    "I appreciate the traditional greeting. It feels like walking into my grandfather's shop again." - Lindiwe M.
+                </blockquote>
+                <blockquote class="p-4 bg-gray-50 border-l-4 border-[#A0522D] italic text-gray-700">
+                    "Quality of meat is unmatched for our braai. We always go to the Midrand.WildButcher store." - Joe F.
+                </blockquote>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-[#1E4D2B] mt-8 mb-4">Gallery Snippet</h3>
+            <div class="grid grid-cols-3 gap-4">
+                <img src="https://placehold.co/150x150/A0522D/FFF?text=Cuts" class="rounded-lg shadow-md w-full h-auto object-cover">
+                <img src="https://placehold.co/150x150/A0522D/FFF?text=Shop" class="rounded-lg shadow-md w-full h-auto object-cover">
+                <img src="https://placehold.co/150x150/A0522D/FFF?text=Biltong" class="rounded-lg shadow-md w-full h-auto object-cover">
+            </div>
+        </section>
+
+        <!-- --- 10. CAREERS SECTION --- -->
+        <section id="careers" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="CareerTitle">Careers at Montana Family Butchery</h2>
+            <p class="text-gray-600 mb-6">
+                We are looking for passionate individuals who value tradition, quality, and respect. Join a growing national team with opportunities in butchery, management, and logistics.
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>Master Butcher Certification Program</li>
+                <li>Management Trainee (National Logistics)</li>
+                <li>Customer Service Ambassador (Must speak 3+ official languages)</li>
+            </ul>
+        </section>
+
+        <!-- --- 11. CONTACT US SECTION --- -->
+        <section id="contact" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="Contact">Contact Us</h2>
+            <p class="text-xl font-semibold text-[#1E4D2B] mb-6" data-translate="ContactDetails">Contact Details: +27 72 414 0117</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="showContactModal('call')" class="flex flex-col items-center justify-center p-6 rounded-lg bg-green-100 border border-green-300 hover:bg-green-200 transition-colors">
+                    <span class="text-3xl mb-2">📞</span>
+                    <span class="font-bold text-lg" data-translate="CallUs">Call Us</span>
+                </button>
+                <button onclick="showContactModal('email')" class="flex flex-col items-center justify-center p-6 rounded-lg bg-yellow-100 border border-yellow-300 hover:bg-yellow-200 transition-colors">
+                    <span class="text-3xl mb-2">📧</span>
+                    <span class="font-bold text-lg" data-translate="EmailUs">Email Us</span>
+                </button>
+                <button onclick="showContactModal('hq')" class="flex flex-col items-center justify-center p-6 rounded-lg bg-amber-100 border border-amber-300 hover:bg-amber-200 transition-colors">
+                    <span class="text-3xl mb-2">📍</span>
+                    <span class="font-bold text-lg" data-translate="FindUs">Find Our HQ</span>
+                </button>
+            </div>
+
+            <p class="text-gray-500 mt-6 text-center" data-translate="HQ">Montana, Pretoria, Braam Pretorius, next to Kolletjies Kaffe.</p>
+        </section>
+
+        <!-- --- 12. FAQS SECTION --- -->
+        <section id="faqs" class="content-section content-card p-6 md:p-8 shadow-xl hidden">
+            <p class="greeting" data-translate="Greeting">Hello Oom, Tannie, lekker dag verder.</p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-translate="FAQs">FAQs</h2>
+            <p class="text-gray-600 mb-6" data-translate="FAQSlogan">Quick Answers to Your Questions</p>
+
+            <div class="space-y-4">
+                <div class="border p-4 rounded-lg">
+                    <h3 class="font-bold text-[#1E4D2B]">Q: What is 'white coute' butchery?</h3>
+                    <p class="text-sm text-gray-700 mt-1">A: It refers to a traditional, clean, and highly skilled method of preparing meat, often associated with exceptional hygiene and precision.</p>
+                </div>
+                <div class="border p-4 rounded-lg">
+                    <h3 class="font-bold text-[#1E4D2B]">Q: What does WildButcher.faa.zone mean?</h3>
+                    <p class="text-sm text-gray-700 mt-1">A: It signifies our commitment to the FAA (Future African Agriculture) Wildlife & Habitat protocols, ensuring our chain adheres to global sustainability best practices.</p>
+                </div>
+                <div class="border p-4 rounded-lg">
+                    <h3 class="font-bold text-[#1E4D2B]">Q: Do you deliver nationally?</h3>
+                    <p class="text-sm text-gray-700 mt-1">A: We deliver within a 50km radius of each of our [Town Name].WildButcher.faa.zone stores. Check the Locations page for details.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- --- FOOTER --- -->
+        <footer class="mt-8 p-6 text-center bg-[#A0522D] rounded-xl text-white shadow-xl">
+            <p class="text-sm" data-translate="FooterText">© 2025 <span data-translate="Brand">Montana Family Butchery</span>. Proudly supporting FAA Wildlife & Habitat initiatives.</p>
+        </footer>
+    </main>
+    
+    <script>
+        // JS to show/hide the language dropdown
+        document.querySelector('.dropdown').addEventListener('click', function(event) {
+            const menu = this.querySelector('.dropdown-menu');
+            menu.classList.toggle('hidden');
+        });
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                document.querySelector('.dropdown-menu').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

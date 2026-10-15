@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Seedwave™ powered by Fruitful Global</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Firebase SDKs - Essential for loading dynamic menu data -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { getFirestore, getDocs, collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        // Global variables for Firebase (will be populated at runtime by Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        let app;
+        let db;
+        let auth;
+        let userId = 'loading'; // Default user ID state
+
+        let allSectorsData = {}; // Will store sectors data from Firestore
+
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            console.log("Firebase app initialized.");
+
+            // Listen for authentication state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("Firebase authentication successful. User ID:", userId);
+                    document.getElementById('currentUserIdDisplay').textContent = `User ID: ${userId}`;
+                    // Load public sector data once authenticated
+                    loadEcosystemData();
+                } else {
+                    console.log("No Firebase user found. Attempting anonymous sign-in or custom token...");
+                    // Sign in anonymously if no user is found
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                            console.log("Signed in with custom token.");
+                        } else {
+                            await signInAnonymously(auth);
+                            console.log("Signed in anonymously.");
+                        }
+                    } catch (error) {
+                        console.error("Firebase Anonymous Sign-in or Custom Token failed:", error);
+                        // window.showCustomModal is not defined here yet, use console
+                        console.error('Auth Error: Failed to authenticate with Firebase. Some features may not work.');
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error("Failed to initialize Firebase:", error);
+            console.error('Firebase Error: Failed to initialize Firebase. Please check your configuration.');
+        }
+
+        /**
+         * Loads ecosystem data from Firestore and sets up real-time listener.
+         */
+        async function loadEcosystemData() {
+            if (!db) {
+                console.error("Firestore not initialized for ecosystem data loading.");
+                return;
+            }
+            const publicDataPath = `artifacts/${appId}/public/data`;
+            const sectorsCollectionRef = collection(db, `${publicDataPath}/sectors`);
+            console.log(`Attempting to load data from Firestore collection: ${sectorsCollectionRef.path}`);
+
+            // Check if collection is empty and seed if necessary
+            const initialSnapshot = await getDocs(sectorsCollectionRef);
+            if (initialSnapshot.empty) {
+                console.log(`Firestore collection ${sectorsCollectionRef.path} is empty. Seeding initial data...`);
+                const defaultSectors = {
+                    "agriculture": { name: "🌱 Agriculture & Biotech", repoName: "agriculture-seedwave-admin", baseUrl: "heyns1000/agriculture.seedwave.faa.zone", brands: [] },
+                    "fsf": { name: "🥦 Food, Soil & Farming", repoName: "fsf-seedwave-admin", baseUrl: "heyns1000/fsf.seedwave.faa.zone", brands: [] },
+                    "banking": { name: "🏦 Banking & Finance", repoName: "banking-seedwave-admin", baseUrl: "heyns1000/banking.seedwave.faa.zone", brands: [] },
+                    "creative": { name: "🖋️ Creative Tech", repoName: "creative-seedwave-admin", baseUrl: "heyns1000/creative.seedwave.faa.zone", brands: [] },
+                    "logistics": { name: "📦 Logistics & Packaging", repoName: "logistics-seedwave-admin", baseUrl: "heyns1000/logistics.seedwave.faa.zone", brands: [] },
+                    "education-ip": { name: "📚 Education & IP", repoName: "education-ip-seedwave-admin", baseUrl: "heyns1000/education-ip.seedwave.faa.zone", brands: [] },
+                    "fashion": { name: "✂ Fashion & Identity", repoName: "fashion-seedwave-admin", baseUrl: "heyns1000/fashion.seedwave.faa.zone", brands: [] },
+                    "gaming": { name: "🎮 Gaming & Simulation", repoName: "gaming-seedwave-admin", baseUrl: "heyns1000/gaming.seedwave.faa.zone", brands: [] },
+                    "health": { name: "🧠 Health & Hygiene", repoName: "health-seedwave-admin", baseUrl: "heyns1000/health.seedwave.faa.zone", brands: [] },
+                    "housing": { name: "🏗️ Housing & Infrastructure", repoName: "housing-seedwave-admin", baseUrl: "heyns1000/housing.seedwave.faa.zone", brands: [] },
+                    "justice": { name: "⚖ Justice & Ethics", repoName: "justice-seedwave-admin", baseUrl: "heyns1000/justice.seedwave.faa.zone", brands: [] },
+                    "knowledge": { name: "📖 Knowledge & Archives", repoName: "knowledge-seedwave-admin", baseUrl: "heyns1000/knowledge.seedwave.faa.zone", brands: [] },
+                    "micromesh": { name: "☰ Micro-Mesh Logistics", repoName: "micromesh-seedwave-admin", baseUrl: "heyns1000/micromesh.seedwave.faa.zone", brands: [] },
+                    "media": {
+                        name: "🎬 Motion, Media & Sonic",
+                        repoName: "media-sonic-seedwave-admin",
+                        baseUrl: "heyns1000/media-sonic.seedwave.faa.zone",
+                        brands: [
+                            { name: "Sonic Grid", subnodes: ["WullVision", "Aude Drap", "Visudan", "Handere", "Mationa", "Ciprode", "Soundbeard", "Medatsce", "MelonDies"] },
+                            { name: "VisualFlow", subnodes: ["RenderEngine", "MotionPath", "ColorSync"] },
+                            { name: "AudioPulse", subnodes: ["SoundscapeGen", "VoiceID", "MixMaster"] }
+                        ]
+                    },
+                    "nutrition": { name: "✿ Nutrition & Food Chain", repoName: "nutrition-seedwave-admin", baseUrl: "heyns1000/nutrition.seedwave.faa.zone", brands: [] },
+                    "ai-logic": { name: "🧠 AI, Logic & Grid", repoName: "ai-logic-seedwave-admin", baseUrl: "heyns1000/ai-logic.seedwave.faa.zone", brands: [] },
+                    "packaging": { name: "📦 Packaging & Materials", repoName: "packaging-seedwave-admin", baseUrl: "heyns1000/packaging.seedwave.faa.zone", brands: [] },
+                    "quantum": { name: "✴️ Quantum Protocols", repoName: "quantum-seedwave-admin", baseUrl: "heyns1000/quantum.seedwave.faa.zone", brands: [] },
+                    "ritual": { name: "☯ Ritual & Culture", repoName: "ritual-seedwave-admin", baseUrl: "heyns1000/ritual.seedwave.faa.zone", brands: [] },
+                    "saas": { name: "🔑 SaaS & Licensing", repoName: "saas-seedwave-admin", baseUrl: "heyns1000/saas.seedwave.faa.zone", brands: [] },
+                    "trade": { name: "🧺 Trade Systems", repoName: "trade-seedwave-admin", baseUrl: "heyns1000/trade.seedwave.faa.zone", brands: [] },
+                    "utilities": { name: "🔋 Utilities & Energy", repoName: "utilities-seedwave-admin", baseUrl: "heyns1000/utilities.seedwave.faa.zone", brands: [] },
+                    "voice": { name: "🎙️ Voice & Audio", repoName: "voice-seedwave-admin", baseUrl: "heyns1000/voice.seedwave.faa.zone", brands: [] },
+                    "webless": { name: "📡 Webless Tech & Nodes", repoName: "webless-seedwave-admin", baseUrl: "heyns1000/webless.seedwave.faa.zone", brands: [] },
+                    "nft": { name: "🔁 NFT & Ownership", repoName: "nft-seedwave-admin", baseUrl: "heyns1000/nft.seedwave.faa.zone", brands: [] },
+                    "education-youth": { name: "🎓 Education & Youth", repoName: "education-youth-seedwave-admin", baseUrl: "heyns1000/education-youth.seedwave.faa.zone", brands: [] },
+                    "zerowaste": { name: "♻️ Zero Waste", repoName: "zerowaste-seedwave-admin", baseUrl: "heyns1000/zerowaste.seedwave.faa.zone", brands: [] },
+                    "professional": { name: "🧾 Professional Services", repoName: "professional-seedwave-admin", baseUrl: "heyns1000/professional.seedwave.faa.zone", brands: [] },
+                    "payroll-mining": { name: "🪙 Payroll Mining & Accounting", repoName: "payroll-mining-seedwave-admin", baseUrl: "heyns1000/payroll-mining.seedwave.faa.zone", brands: [] },
+                    "mining": { name: "⛏️ Mining & Resources", repoName: "mining-seedwave-admin", baseUrl: "heyns1000/mining.seedwave.faa.zone", brands: [] },
+                    "wildlife": { name: "🦁 Wildlife & Habitat", repoName: "wildlife-seedwave-admin", baseUrl: "heyns1000/wildlife.seedwave.faa.zone", brands: [] },
+                    "admin-panel": { name: "⚙️ Admin Panel", repoName: "admin-panel-seedwave-admin", baseUrl: "heyns1000/admin-panel.seedwave.faa.zone", brands: [] },
+                    // Top-level custom domains
+                    "faa.zone": { name: "FAA.Zone Portal", baseUrl: "heyns1000/faa.zone", brands: [], repoName: "faa-zone-portal" },
+                    "seedwave": { name: "Seedwave Platform", baseUrl: "heyns1000/seedwave", brands: [], repoName: "seedwave-platform" },
+                    "vaultmesh": { name: "VaultMesh", baseUrl: "heyns1000/vaultmesh", brands: [], repoName: "vaultmesh-project" },
+                    "baobab": { name: "Baobab Network", baseUrl: "heyns1000/baobab", brands: [], repoName: "baobab-network" },
+                    "fruitful": { name: "Fruitful Global", baseUrl: "heyns1000/fruitful", brands: [], repoName: "fruitful-global" },
+                    "samfox": { name: "SamFox Initiative", baseUrl: "heyns1000/samfox", brands: [], repoName: "samfox-initiative" },
+                    "tripot": { name: "Tripot Innovations", baseUrl: "heyns1000/tripot", brands: [], repoName: "tripot-innovations" },
+                    "legal": { name: "Legal & Compliance", baseUrl: "heyns1000/legal", brands: [], repoName: "legal-portal" },
+                    "omnigrid": { name: "OmniGrid System", baseUrl: "heyns1000/omnigrid", brands: [], repoName: "omnigrid-system" },
+                    "portal": { name: "Central Portal", baseUrl: "heyns1000/portal", brands: [], repoName: "central-portal" },
+                    "careers": { name: "Careers at Fruitful", baseUrl: "heyns1000/careers", brands: [], repoName: "careers-portal" },
+                    "payment": { name: "Secure Payments", baseUrl: "heyns1000/payment", brands: [], repoName: "payment-gateway" },
+                    "noodle.juice": { name: "Noodle Juice", baseUrl: "heyns1000/noodle.juice", brands: [], repoName: "noodle-juice-app" },
+                    "astrowind": { name: "AstroWind Platform", baseUrl: "heyns1000/astrowind", brands: [], repoName: "astrowind-project" },
+                    "cloudflare-docs": { name: "Cloudflare Documentation", baseUrl: "heyns1000/cloudflare-docs", brands: [], repoName: "cloudflare-docs" },
+                    "faa-vault-ui": { name: "FAA Vault UI", baseUrl: "heyns1000/faa-vault-ui", brands: [], repoName: "faa-vault-ui" },
+                    "portfolio-responsive-complete": { name: "Portfolio Hub", baseUrl: "heyns1000/portfolio-responsive-complete", brands: [], repoName: "portfolio-hub" }
+                };
+
+                for (const key in defaultSectors) {
+                    if (defaultSectors.hasOwnProperty(key)) {
+                        console.log(`Seeding document: ${key}`);
+                        await setDoc(doc(db, sectorsCollectionRef.path, key), defaultSectors[key]);
+                    }
+                }
+                console.log("Initial ecosystem data seeding complete.");
+            }
+
+            onSnapshot(sectorsCollectionRef, (snapshot) => {
+                allSectorsData = {};
+                snapshot.forEach((doc) => {
+                    allSectorsData[doc.id] = doc.data();
+                });
+                console.log("Firestore data received via onSnapshot:", allSectorsData);
+                renderMenu(); // Re-render the menu when data changes
+            }, (error) => {
+                console.error("Error listening to sectors collection:", error);
+                // Can't use showCustomModal directly here as it's defined later in main script
+            });
+        }
+
+        // Add a simplified version of callGeminiAPI for this context
+        window.callGeminiAPI = async function(prompt, statusElement, buttonElement, type) {
+            console.log(`Calling Gemini API for type: ${type}`);
+            if (!statusElement || !buttonElement) {
+                console.error("Missing status element or button element for Gemini API call.");
+                return null;
+            }
+
+            statusElement.textContent = "Generating...";
+            statusElement.classList.remove('hidden');
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="inline-block border-4 border-t-blue-500 border-gray-300 rounded-full w-4 h-4 animate-spin"></span>`; // Smaller spinner for button
+
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide the API key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                console.log("Gemini API response:", result);
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    statusElement.textContent = "Generation complete!";
+                    return text;
+                } else {
+                    statusElement.textContent = "Error: No content generated by AI.";
+                    console.error("Gemini API returned an unexpected structure or no content:", result);
+                    return null;
+                }
+            } catch (error) {
+                statusElement.textContent = "Error: API call failed.";
+                console.error("Error calling Gemini API:", error);
+                return null;
+            } finally {
+                buttonElement.disabled = false;
+                // Restore button text based on 'type'
+                let originalButtonText = '';
+                if (type === 'Generate Overview') {
+                    originalButtonText = 'Generate Overview';
+                } else if (type === 'Suggest Integration') {
+                    originalButtonText = 'Suggest Integration Steps';
+                } else if (type === 'Suggest Slogans') {
+                    originalButtonText = 'Suggest Marketing Slogans';
+                }
+                buttonElement.innerHTML = `<i class="fas fa-magic"></i> ✨ ${originalButtonText}`; // Using magic wand icon
+                setTimeout(() => statusElement.classList.add('hidden'), 3000);
+            }
+        };
+
+        // New function to handle overview generation
+        window.generateOverview = async function(key, buttonElement) {
+            const statusElementId = `overviewStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            const statusElement = document.getElementById(statusElementId);
+            const sector = allSectorsData[key];
+
+            if (!sector) {
+                window.showCustomModal('Error', 'Sector data not found.');
+                return;
+            }
+
+            const prompt = `Generate a concise (max 80 words), engaging overview for the "${sector.name}" domain/sector (URL: ${sector.baseUrl}). Highlight its primary purpose and key offerings within the heyns1000/Seedwave FAA.Zone ecosystem. Focus on its value proposition.`;
+            
+            const overviewText = await window.callGeminiAPI(prompt, statusElement, buttonElement, 'Generate Overview');
+
+            if (overviewText) {
+                window.showCustomModal(`Overview: ${sector.name}`, overviewText);
+            } else {
+                window.showCustomModal('Generation Failed', 'Could not generate overview. Please try again.');
+            }
+        };
+
+        // New function for suggesting integration steps
+        window.suggestIntegrationSteps = async function(key, buttonElement) {
+            const statusElementId = `integrationStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            const statusElement = document.getElementById(statusElementId);
+            const sector = allSectorsData[key];
+
+            if (!sector) {
+                window.showCustomModal('Error', 'Sector data not found for integration steps.');
+                return;
+            }
+
+            const prompt = `Generate a concise, step-by-step guide (max 150 words, using bullet points for steps) for a new user to integrate with or get started on the "${sector.name}" platform (URL: ${sector.baseUrl}). Include typical initial setup actions, where to find documentation, and who to contact for support. If it's a technical platform, mention API access. If it's content-focused, mention content submission/publishing. Provide only the guide.`;
+            
+            const integrationStepsText = await window.callGeminiAPI(prompt, statusElement, buttonElement, 'Suggest Integration');
+
+            if (integrationStepsText) {
+                window.showCustomModal(`Integration Steps: ${sector.name}`, integrationStepsText);
+            } else {
+                window.showCustomModal('Integration Suggestion Failed', 'Could not generate integration steps. Please try again.');
+            }
+        };
+
+        // NEW: Function for suggesting marketing slogans
+        window.suggestMarketingSlogans = async function(key, buttonElement) {
+            const statusElementId = `slogansStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            const statusElement = document.getElementById(statusElementId);
+            const sector = allSectorsData[key];
+
+            if (!sector) {
+                window.showCustomModal('Error', 'Sector data not found for slogan generation.');
+                return;
+            }
+
+            const prompt = `Generate 3-5 short, catchy marketing slogans/taglines (max 15 words each, as a bulleted list) for "${sector.name}" (URL: ${sector.baseUrl}). Focus on its unique value proposition and target audience within the heyns1000/Seedwave FAA.Zone ecosystem. Provide only the slogans.`;
+            
+            const slogansText = await window.callGeminiAPI(prompt, statusElement, buttonElement, 'Suggest Slogans');
+
+            if (slogansText) {
+                window.showCustomModal(`Marketing Slogans: ${sector.name}`, slogansText);
+            } else {
+                window.showCustomModal('Slogan Generation Failed', 'Could not generate marketing slogans. Please try again.');
+            }
+        };
+
+
+        // Global functions for custom modal and other utilities
+        window.showCustomModal = function(title, message) {
+            const modal = document.getElementById('customModal');
+            const modalMessage = document.getElementById('customModalMessage');
+            if (modal && modalMessage) {
+                modalMessage.innerHTML = `<strong>${title}</strong><br>${message}`;
+                modal.classList.remove('hidden');
+                modal.classList.add('active'); // Activate animation
+                setTimeout(() => {
+                    window.hideCustomModal();
+                }, 3000);
+            }
+        };
+
+        window.hideCustomModal = function() {
+            const modal = document.getElementById('customModal');
+            if (modal) {
+                modal.classList.remove('active'); // Deactivate animation
+                // Wait for animation to finish before hiding completely
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        };
+
+        // Utility function to toggle section visibility (for ecosystem map)
+        window.toggleSection = function(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.classList.toggle('hidden');
+                const icon = element.previousElementSibling.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                }
+            }
+        };
+
+        // Utility function to copy text to clipboard
+        window.copyToClipboard = function(buttonElement) {
+            const preElement = buttonElement.nextElementSibling; // Get the <pre> tag next to the button
+            if (preElement && preElement.tagName === 'PRE') {
+                const textToCopy = preElement.textContent.trim();
+                try {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    window.showCustomModal('Copied!', 'Text copied to clipboard.', true);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    window.showCustomModal('Copy Failed', 'Failed to copy text. Please try manually.', true);
+                }
+            }
+        };
+
+
+        // Function to render the dynamic menu
+        window.renderMenu = function() {
+            const menuContainer = document.getElementById('menuItemsContainer');
+            if (!menuContainer) return;
+
+            menuContainer.innerHTML = ''; // Clear existing menu items
+
+            // Define a more comprehensive order for display, prioritizing top-level items
+            const displayOrder = [
+                "faa.zone", "seedwave", "fruitful", "omnigrid", "portal", "legal",
+                "vaultmesh", "baobab", "samfox", "tripot", "astrowind", "cloudflare-docs", 
+                "faa-vault-ui", "portfolio-responsive-complete", "careers", "payment", "noodle.juice",
+                // Then sectors
+                "agriculture", "ai-logic", "admin-panel", "banking", "creative", "education-ip",
+                "education-youth", "fashion", "fsf", "gaming", "health", "housing",
+                "justice", "knowledge", "logistics", "media", "micromesh", "mining",
+                "nutrition", "nft", "packaging", "payroll-mining", "professional",
+                "quantum", "ritual", "saas", "trade", "utilities", "voice", "webless",
+                "wildlife", "zerowaste"
+            ];
+            
+            // Map of icon overrides for non-sector links
+            const customLinkIcons = {
+                "faa.zone": "fas fa-globe",
+                "seedwave": "fas fa-seedling",
+                "vaultmesh": "fas fa-shield-alt",
+                "baobab": "fas fa-tree", 
+                "fruitful": "fas fa-apple-alt",
+                "samfox": "fas fa-fox",
+                "tripot": "fas fa-flask",
+                "legal": "fas fa-gavel",
+                "omnigrid": "fas fa-braille",
+                "portal": "fas fa-portal-enter",
+                "careers": "fas fa-briefcase",
+                "payment": "fas fa-credit-card",
+                "noodle.juice": "fas fa-cocktail",
+                "astrowind": "fas fa-wind",
+                "cloudflare-docs": "fas fa-cloud",
+                "faa-vault-ui": "fas fa-lock",
+                "portfolio-responsive-complete": "fas fa-desktop"
+            };
+
+            const sortedMenuKeys = Object.keys(allSectorsData).sort((a,b) => {
+                const indexA = displayOrder.indexOf(a);
+                const indexB = displayOrder.indexOf(b);
+
+                // If both are in displayOrder, sort by their index
+                if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                // If only one is in displayOrder, that one comes first
+                if (indexA !== -1) return -1;
+                if (indexB !== -1) return 1;
+                // If neither is in displayOrder, sort alphabetically
+                return a.localeCompare(b);
+            });
+
+
+            if (sortedMenuKeys.length === 0) {
+                 menuContainer.innerHTML = '<p class="text-center text-gray-400 col-span-full">No menu items found. Please ensure Firebase data is seeded.</p>';
+            }
+
+            sortedMenuKeys.forEach(key => {
+                const sector = allSectorsData[key];
+                if (!sector) return; // Skip if data is somehow missing
+
+                const displayName = sector.name; // Use name from Firestore
+                let iconClass = customLinkIcons[key]; // Try custom icon first
+                if (!iconClass) { // Fallback to sector-based icons
+                    const firstWord = displayName.split(' ')[0].toLowerCase();
+                    if (firstWord.includes('motion') || firstWord.includes('media') || firstWord.includes('sonic')) iconClass = 'fas fa-video';
+                    else if (firstWord.includes('food') || firstWord.includes('farming')) iconClass = 'fas fa-utensils';
+                    else if (firstWord.includes('ai')) iconClass = 'fas fa-brain';
+                    else if (firstWord.includes('education')) iconClass = 'fas fa-graduation-cap';
+                    else if (firstWord.includes('finance')) iconClass = 'fas fa-sack-dollar';
+                    else iconClass = 'fas fa-cube'; // Generic fallback
+                }
+
+                const baseUrl = sector.baseUrl; // Use baseUrl from Firestore
+
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'border border-gray-700 rounded-lg p-4 mb-4 bg-gray-800';
+                sectionDiv.innerHTML = `
+                    <button class="toggle-section-btn flex justify-between items-center w-full text-left p-2 -mx-2 -my-2 rounded-md hover:bg-gray-700 transition-colors duration-200" onclick="window.toggleSection('sector-${key.replace(/[^a-zA-Z0-9]/g, '-')}')">
+                        <span class="text-blue-400 text-xl font-bold">${displayName} <span class="text-gray-400 text-sm">(${baseUrl})</span></span>
+                        <span><i class="fas fa-chevron-down text-gray-400"></i></span>
+                    </button>
+                    <div id="sector-${key.replace(/[^a-zA-Z0-9]/g, '-')}" class="repo-content-section hidden mt-4">
+                        ${sector.brands && sector.brands.length > 0 ? `
+                            <h4 class="text-lg font-semibold text-red-400 mb-2 mt-4">Brands & Subnodes:</h4>
+                            <div class="space-y-2">
+                                ${sector.brands.map(brand => `
+                                    <div class="border border-gray-700 rounded-md p-3 bg-gray-700">
+                                        <button class="toggle-section-btn !bg-transparent !shadow-none !text-left !px-0 !py-0 !mb-0 flex justify-between items-center w-full hover:bg-gray-600 transition-colors duration-200" onclick="window.toggleSection('brand-${key.replace(/[^a-zA-Z0-9]/g, '-')}-${brand.name.replace(/ /g, '-')}')">
+                                            <span class="text-white font-medium">${brand.name}</span> <span><i class="fas fa-chevron-down"></i></span>
+                                        </button>
+                                        <div id="brand-${key.replace(/[^a-zA-Z0-9]/g, '-')}-${brand.name.replace(/ /g, '-')}" class="repo-content-section !border-none !bg-transparent !p-0 hidden mt-2">
+                                            <div class="copy-square">
+                                                <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                                <pre class="conversation-code-block">${baseUrl}/brands/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/index</pre>
+                                            </div>
+                                            ${brand.subnodes.map(subnode => `
+                                                <div class="copy-square ml-4 mt-2">
+                                                    <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                                                    <pre class="conversation-code-block">${baseUrl}/brands/${encodeURIComponent(brand.name.toLowerCase().replace(/ /g, '-'))}/${encodeURIComponent(subnode.toLowerCase().replace(/ /g, '-'))}/index</pre>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <h4 class="text-lg font-semibold text-red-400 mb-2 mt-4">Direct Link:</h4>
+                        <div class="copy-square">
+                            <button class="copy-button" onclick="window.copyToClipboard(this)">Copy</button>
+                            <pre class="conversation-code-block">${baseUrl}</pre>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <button class="form-action-button text-xs px-2 py-1" onclick="window.generateOverview('${key}', this)">
+                                <i class="fas fa-magic"></i> ✨ Generate Overview
+                            </button>
+                            <button class="form-action-button secondary text-xs px-2 py-1" onclick="window.suggestIntegrationSteps('${key}', this)">
+                                <i class="fas fa-lightbulb"></i> ✨ Suggest Integration Steps
+                            </button>
+                            <button class="form-action-button text-xs px-2 py-1 bg-green-600 hover:bg-green-700" onclick="window.suggestMarketingSlogans('${key}', this)">
+                                <i class="fas fa-bullhorn"></i> ✨ Suggest Marketing Slogans
+                            </button>
+                        </div>
+                        <p id="overviewStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}" class="text-xs text-gray-400 mt-1 hidden"></p>
+                        <p id="integrationStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}" class="text-xs text-gray-400 mt-1 hidden"></p>
+                        <p id="slogansStatus-${key.replace(/[^a-zA-Z0-9]/g, '-')}" class="text-xs text-gray-400 mt-1 hidden"></p>
+                    </div>
+                `;
+                menuContainer.appendChild(sectionDiv);
+            });
+        };
+
+        // Initial render on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply initial theme based on localStorage or default to dark
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+            }
+
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLightMode = document.body.classList.contains('light-mode');
+                document.getElementById('themeToggle').innerHTML = isLightMode ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+            });
+
+            // Initial render of the menu (will be updated by Firebase listener)
+            renderMenu();
+        });
+
+    </script>
+    <style>
+        /* Define Fruitful Global Color Palette and Base Styles (Consistent with Dashboard) */
+        :root {
+            /* Dark Mode Defaults */
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #ff3b30; /* Vibrant Red for Sonic */
+            --text-color-light: #f5f5f7; /* Light text on dark backgrounds */
+            --text-color-dark: #1d1d1f; /* Dark text on light backgrounds - used for some components that flip colors */
+            --bg-color-dark: #1a1a1c; /* Deep black/dark grey */
+            --card-bg-dark: #2a2a2e; /* Darker grey for dark cards */
+            --border-color-dark: #3a3a3e; /* Subtle dark border */
+            --accent-gold: #B8860B; /* Corporate gold accent */
+            --status-active: #30d158; /* Green for active */
+            --status-pending: #f59e0b; /* Amber for pending */
+            --status-draft: #6e6e73; /* Gray for draft */
+            --status-error: #ef4444; /* Red for error */
+
+            /* Light Mode Variables (will override dark mode) */
+            --light-primary-color: #0071e3;
+            --light-secondary-color: #ff3b30;
+            --light-text-color-light: #1d1d1f; /* Dark text for light mode body */
+            --light-text-color-dark: #1d1d1f; /* Dark text for light mode body content */
+            --light-bg-color-dark: #ffffff; /* White background for light mode */
+            --light-card-bg-dark: #fcfcfc; /* Off-white for light cards */
+            --light-border-color-dark: #e8e8ed; /* Subtle light border */
+        }
+
+        /* Base Body Styling - Defaults to dark mode based on root variables */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light); /* Main text color based on mode */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row; /* Changed to row for sidebar layout */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+            margin: 0;
+            padding: 0; /* Remove padding here, apply to main content */
+            overflow: hidden; /* Prevent body scroll, main-content handles it */
+        }
+
+        /* Sidebar Styling (Copied from Dashboard) */
+        .sidebar {
+            width: 280px; /* Wider sidebar */
+            background-color: var(--card-bg-dark);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--border-color-dark);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto; /* Scrollable sidebar */
+            position: sticky; /* Keep sidebar visible on scroll */
+            top: 0;
+            height: 100vh; /* Make it full height */
+        }
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative; /* For theme toggle button positioning */
+        }
+        .sidebar-header .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light); /* Icon color changes with theme */
+            transition: color 0.3s ease;
+        }
+        .sidebar-header .theme-toggle:hover {
+            color: var(--primary-color);
+        }
+        .sidebar-header .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #FFFFFF; /* Fruitful part in white */
+            line-height: 1; /* Adjust line height for better alignment */
+        }
+        .sidebar-header .logo-text span {
+            color: var(--secondary-color); /* CodeNest part in red */
+            font-size: 0.8em; /* Make 'CodeNest' slightly smaller relative to 'Fruitful' */
+            letter-spacing: -0.02em; /* Tighter spacing for "CodeNest" */
+        }
+        /* Nav list simplified for menu page - just a placeholder for dashboard structure */
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1rem;
+            flex-grow: 1; /* Pushes content down */
+        }
+        .nav-list a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            color: var(--text-color-light); 
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            background-color: transparent;
+        }
+        .nav-list a:hover {
+            background-color: rgba(0, 113, 227, 0.1);
+            color: var(--primary-color);
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        /* Main Content Area (Copied from Dashboard) */
+        .main-content {
+            flex-grow: 1;
+            padding: 2.5rem; /* Padding for content inside */
+            background-color: var(--bg-color-dark); /* Background changes with theme */
+            overflow-y: auto; /* Scrollable main content */
+            height: 100vh; /* Full height to allow scrolling within */
+        }
+
+        /* General Panel Styling (Copied from Dashboard) */
+        .panel {
+            background-color: var(--card-bg-dark); 
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            border: 1px solid var(--border-color-dark); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center; /* Center content within panel */
+        }
+        .panel h1, .panel h2, .panel h3, .panel h4 {
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        .panel h1 { font-size: 2.5rem; }
+        .panel h3 { font-size: 1.8rem; }
+        .panel h4 { font-size: 1.4rem; }
+        .panel p {
+            color: var(--text-color-light); 
+            line-height: 1.6;
+        }
+
+        /* Ecosystem Map Specific Styles (Copied from Dashboard) */
+        .copy-square {
+            position: relative;
+            background-color: #3a3a3e;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-top: 0.75rem;
+            border: 1px solid var(--border-color-dark);
+        }
+        body.light-mode .copy-square {
+            background-color: var(--light-border-color-dark);
+            border-color: #d1d1d1;
+        }
+        .copy-square .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.2s ease;
+        }
+        .copy-square:hover .copy-button {
+            opacity: 1; /* Show on hover */
+        }
+        .copy-square .copy-button:hover {
+            background-color: #005bb5;
+        }
+        .copy-square pre.conversation-code-block {
+            background: none;
+            border: none;
+            color: var(--text-color-light); /* Ensure text is visible in dark mode */
+            padding: 0;
+            margin: 0;
+            font-size: 0.85rem;
+            white-space: pre-wrap; /* Preserve formatting but wrap long lines */
+            word-break: break-all; /* Break long words if necessary */
+            padding-right: 40px; /* Make space for the copy button */
+        }
+        body.light-mode .copy-square pre.conversation-code-block {
+            color: var(--text-color-dark);
+        }
+
+        .toggle-section-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color); /* Matches current active nav link or primary color */
+            transition: color 0.2s ease;
+        }
+        body.light-mode .toggle-section-btn {
+            color: var(--light-primary-color);
+        }
+        .toggle-section-btn:hover {
+            color: var(--primary-color);
+        }
+        .toggle-section-btn i {
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        .toggle-section-btn i.fa-chevron-up {
+            transform: rotate(180deg);
+        }
+        .repo-content-section {
+            padding-left: 1rem;
+            border-left: 2px solid var(--border-color-dark); /* Indent and show hierarchy */
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+        }
+        body.light-mode .repo-content-section {
+            border-color: var(--light-border-color-dark);
+        }
+        .repo-content-section .toggle-section-btn {
+            font-size: 1rem; /* Smaller for nested levels */
+            font-weight: 500;
+            color: var(--text-color-light); /* Nested sections use lighter text color */
+        }
+        body.light-mode .repo-content-section .toggle-section-btn {
+            color: var(--text-color-dark);
+        }
+
+        /* Specific menu item styling */
+        .menu-item-card {
+            background-color: #3a3a3e; /* Slightly lighter card for menu items */
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #4a4a4a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            text-align: left;
+        }
+        .menu-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            background-color: #4a4a4a;
+        }
+        .menu-item-card i {
+            margin-right: 0.75rem;
+        }
+        .menu-item-card span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f5f5f7;
+        }
+        .menu-item-card p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #c0c0c0;
+            margin-bottom: 0;
+            margin-top: 0.5rem;
+        }
+
+        /* Custom Modal for Alerts (consistent with dashboard) */
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content {
+            background-color: var(--card-bg-dark);
+            color: var(--text-color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border-color-dark);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .custom-modal-overlay.active .custom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .custom-modal-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .custom-modal-content strong {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive adjustments (Copied from Dashboard) */
+        @media (max-width: 767px) {
+            body {
+                flex-direction: column; /* Stack sidebar and main content on mobile */
+            }
+            .sidebar {
+                width: 100%;
+                height: auto; /* Allow sidebar height to adjust */
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color-dark);
+                flex-direction: row; /* Horizontal layout for mobile nav */
+                justify-content: space-around;
+                flex-wrap: wrap; /* Allow nav items to wrap */
+                position: sticky; /* Keep sidebar visible on scroll */
+                top: 0;
+                z-index: 40; /* Ensure it's above main content when scrolling */
+            }
+            .sidebar-header {
+                width: 100%;
+                margin-bottom: 1rem;
+                display: flex; /* Make it a flex container to center logo */
+                justify-content: center; /* Center logo horizontally */
+                align-items: center;
+                height: auto; /* Allow height to adjust */
+            }
+            .sidebar-header .theme-toggle {
+                position: relative; /* Adjust position for mobile, remove absolute positioning */
+                top: auto;
+                right: auto;
+                margin-left: 1rem; /* Add some spacing */
+            }
+            .sidebar-header .logo-text {
+                font-size: 1.5rem; /* Adjust font size for mobile */
+                letter-spacing: -0.01em;
+            }
+            .sidebar-header .logo-text span {
+                font-size: 0.8em; /* Keep relative size */
+            }
+            .nav-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+            .nav-list a {
+                margin: 0.2rem 0.3rem; /* Tighter spacing for mobile nav items */
+                padding: 0.5rem 0.6rem;
+                font-size: 0.75rem; /* Smaller font size */
+                gap: 0.5rem; /* Smaller gap for icon/text */
+                flex-grow: 1; /* Allow items to stretch to fill space */
+                justify-content: center; /* Center text within small buttons */
+            }
+            .nav-list a .nav-icon {
+                font-size: 0.9rem; /* Smaller icon on mobile */
+                margin-right: 0.2rem;
+            }
+
+            .main-content {
+                padding: 1rem; /* Reduced padding for main content */
+            }
+            .panel {
+                padding: 1.5rem; /* Reduced panel padding */
+                margin-bottom: 1.5rem;
+            }
+            .panel h1 { font-size: 2rem; margin-bottom: 1rem;}
+            .panel h3 { font-size: 1.5rem; margin-bottom: 1rem;}
+            .panel h4 { font-size: 1.2rem; margin-bottom: 0.8rem;}
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo-text">Fruitful™ | <span>MenuNest™</span></h2>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun"></i> </button>
+        </div>
+        <nav class="nav-list">
+            <a href="#" class="active">
+                <i class="fas fa-home nav-icon"></i> Menu Home
+            </a>
+            </nav>
+        <div class="mt-auto text-center text-xs text-gray-500 pt-4 border-t border-gray-700">
+            <span id="currentUserIdDisplay">User ID: Loading...</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="panel">
+            <h1>Welcome to <br> Menu | <span>Seedwave™</span></h1>
+            <p>This is the central hub for navigating the extensive range of applications, services, and content offered under the Seedwave™ umbrella by Fruitful Global.</p>
+            <p>Explore our diverse offerings across various sectors, designed to empower creators and innovators within the FAA.Zone ecosystem.</p>
+            
+            <h3 class="text-xl font-bold mb-4 text-red-400">Explore All Offerings:</h3>
+            <div id="menuItemsContainer" class="space-y-3 text-left">
+                <p class="text-center text-gray-400 col-span-full">Loading menu items...</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="customModal" class="custom-modal-overlay hidden">
+        <div class="custom-modal-content">
+            <p id="customModalMessage"></p>
+        </div>
+    </div>
+</body>
+</html>
+
