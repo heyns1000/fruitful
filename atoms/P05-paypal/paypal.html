@@ -1,0 +1,237 @@
+PayPal Subscription Integration Manual for FAA.ZONE™ Admin Portal
+This document serves as a comprehensive guide for integrating and managing PayPal Subscriptions within the FAA.ZONE™ Admin Portal. It covers all necessary configurations on PayPal, Vercel, and within your project files.
+
+1. PayPal API Credentials & Product Setup (Live Environment)
+Before deploying any subscription plans, you must have the necessary live PayPal API credentials and an overarching "Product" set up in your PayPal Business account.
+
+Your Live PayPal App (MyApp_Zoho) Credentials:
+
+Client ID: BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98
+
+Secret: EFSS4mbIMZ6Q3ijOGCjqA9i4b3dzHULkCEV9jKAAHO9_fbO2aP9YCGRV9ekZaHqT2zSZL6Svrn-WyhIs
+
+Your Live PayPal Product ID:
+
+Product ID: PROD-2NC51830JC183315X
+
+How it was obtained: This ID was generated manually in the PayPal Business Dashboard by creating a new Product named "Fruitful Global FAA.ZONE™ Services" with "DIGITAL" type and a relevant "SOFTWARE" category.
+
+2. Vercel Environment Variables Configuration (Production)
+Your Vercel serverless function (api/index.js) securely accesses PayPal's API using environment variables. These variables must be configured in your Vercel project settings for the Production environment.
+
+Login to your Vercel Dashboard.
+
+Navigate to your seedwave Project Settings.
+
+Go to the Environment Variables section.
+
+Ensure the following variables are set for the Production environment:
+
+PAYPAL_LIVE_CLIENT_ID:
+
+Value: BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98
+
+PAYPAL_LIVE_CLIENT_SECRET:
+
+Value: EFSS4mbIMZ6Q3ijOGCjqA9i4b3dzHULkCEV9jKAAHO9_fbO2aP9YCGRV9ekZaHqT2zSZL6Svrn-WyhIs
+
+PAYPAL_LIVE_PRODUCT_ID:
+
+Value: PROD-2NC51830JC183315X
+
+SESSION_SECRET:
+
+Value: A strong, randomly generated string (e.g., your_very_secure_session_secret_for_production). This is critical for session security.
+
+(Optional, if using Webhooks)
+
+PAYPAL_WEBHOOK_ID: (Your Live PayPal Webhook ID, obtained after setting up a webhook in PayPal).
+
+PAYPAL_WEBHOOK_SECRET: (Your Live PayPal Webhook Signing Secret).
+
+3. Project File Updates
+Ensure the following files in your local seedwave project directory are updated with the latest code, including the fixes for merge conflicts and correct PayPal IDs.
+
+3.1. admin_panel.html
+Purpose: Frontend interface for the admin portal, including PayPal button rendering and displaying plan information.
+
+Key Updates:
+
+PayPal SDK Client ID (Line ~806): The client-id in the PayPal SDK script tag is updated to your Live Client ID:
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98&currency=ZAR&vault=true&intent=subscription" onerror="document.getElementById('loading-message').textContent='Error loading PayPal SDK. Check network.'; console.error('PayPal SDK failed to load.');"></script>
+
+YOUR_PAYPAL_PRODUCT_ID (Line ~950): Set to your Live PayPal Product ID:
+
+const YOUR_PAYPAL_PRODUCT_ID = 'PROD-2NC51830JC183315X';
+
+PAYPAL_PLAN_IDS (Lines ~954-972): Contains the manually obtained Live Plan ID for Agriculture___Biotech_Starter_Package_MONTHLY. The rest are placeholders for auto-deployed plans:
+
+const PAYPAL_PLAN_IDS = {
+    "Agriculture___Biotech_Starter_Package_MONTHLY": "P-1RR589971C5386049NBI327Q", // Manually obtained Live Plan ID
+    // All other Live Plan IDs (P-) will be pasted here after automated deployment.
+    // Example: "Agriculture___Biotech_Starter_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_HERE",
+    // etc. for all tiers and sectors
+};
+
+Full code for admin_panel.html is available in the immersive document with id="admin_panel_final_updates" in our conversation history.
+
+3.2. api/index.js
+Purpose: The Vercel serverless function (backend) that handles PayPal API calls (e.g., creating plans, verifying subscriptions).
+
+Key Updates:
+
+Session Middleware: Duplicate app.use(session(...)) call removed.
+
+PayPal Credentials (Lines ~63-65): Constants referencing Vercel Environment Variables, with correct fallbacks:
+
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_LIVE_CLIENT_ID || 'BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98';
+const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_LIVE_CLIENT_SECRET || 'EFSS4mbIMZ6Q3ijOGCjqA9i4b3dzHULkCEV9jKAAHO9_fbO2aP9YCGRV9ekZaHqT2zSZL6Svrn-WyhIs';
+const YOUR_PAYPAL_PRODUCT_ID_FOR_PLANS = process.env.PAYPAL_LIVE_PRODUCT_ID || 'PROD-2NC51830JC183315X';
+
+Full code for api/index.js is available in the immersive document with id="final_api_index_js" in our conversation history.
+
+3.3. package.json
+Purpose: Defines project metadata and dependencies.
+
+Key Updates: Merge conflicts in keywords resolved.
+
+Full code for package.json is available in the immersive document with id="corrected_package_json" in our conversation history.
+
+3.4. vercel.json
+Purpose: Configures Vercel deployment, including routing and build settings.
+
+Key Updates: Merge conflicts in rewrites and builds sections resolved. Ensures /api/(.*) routes to /api/index.js and /admin routes to /public/admin-panel.html.
+
+Full code for vercel.json is available in the immersive document with id="corrected_vercel_json" in our conversation history.
+
+3.5. .env.local
+Purpose: Used for local development only (vercel dev) to keep sensitive credentials out of the public repository and separate from live credentials.
+
+Key Updates: Configured to use sandbox PayPal credentials for local testing:
+
+# IMPORTANT: These are your PayPal SANDBOX API Credentials
+PAYPAL_LIVE_CLIENT_ID=AY-WQUCahAP77PZrkYkct446AM2Z9x8q-BNBHLNJY # Your Sandbox Client ID
+PAYPAL_LIVE_CLIENT_SECRET=EIAXSeXoPY2p1-Hj0AHQJXjMcI0MLZ... # Your Sandbox Client Secret
+PAYPAL_LIVE_PRODUCT_ID=YOUR_SANDBOX_PROD-ID_HERE # Your Sandbox Product ID
+
+Full code for .env.local is available in the immersive document with id="corrected_env_local" in our conversation history.
+
+4. Git & Vercel Deployment Workflow (Manual for Staff)
+This section outlines the exact terminal commands and Vercel monitoring steps to ensure all changes are deployed.
+
+Open your Terminal (on your main Mac where you develop).
+
+Navigate to your seedwave project directory.
+
+cd /path/to/your/seedwave/directory
+# Example: cd ~/Documents/seedwave
+
+Pull the latest changes from GitHub (remote) to your local machine.
+(This ensures your local copy is up-to-date with any changes pushed directly to GitHub, e.g., through GitHub's web interface.)
+
+git pull origin main
+
+Expected Output: Git will show which files were updated and merged.
+
+Add all modified files to the staging area.
+(This prepares all local changes, including any resolved merge conflicts or new files, for the next commit.)
+
+git add .
+
+Expected Output: No output if successful, or it might list files being added.
+
+Commit the changes.
+(This saves your changes to your local Git history.)
+
+git commit -m "Synchronized all project files and prepared for Vercel deployment with live PayPal setup"
+
+Expected Output: [main <commit_hash>] Synchronized all project files... <N> files changed, <X> insertions(+), <Y> deletions(-)
+
+Push the changes to GitHub.
+(This sends your committed changes from your local repository to your remote GitHub repository. Vercel automatically detects this push and starts a new deployment.)
+
+git push origin main
+
+Expected Output: Git will show objects being enumerated, compressed, and written, confirming the push to origin/main.
+
+Monitor the Vercel Deployment.
+
+Open your web browser and go to your Vercel Dashboard.
+
+Navigate to your seedwave project.
+
+You will see a new deployment building. Wait for its status to change to "Ready". This confirms your backend (api/index.js) and frontend (admin_panel.html) are live with the latest configurations and environment variables.
+
+5. Deploying Live PayPal Subscription Plans (from Admin Portal UI)
+Once your Vercel deployment is Ready, you can use your Admin Portal to create all your Live PayPal Subscription Plans automatically.
+
+Open your deployed Admin Portal in your web browser.
+
+Go to your live URL: https://seedwave.faa.zone/admin
+
+Navigate to the "Global Index" section.
+
+Click on the "Global Index" link in the admin navigation.
+
+Initiate Plan Deployment for Each Sector:
+
+For each sector listed in the table (e.g., "Agriculture & Biotech", "Banking & Finance", "Media"), click the "Deploy Plan" button in the last column.
+
+Monitor the Console for Live Plan IDs (CRITICAL STEP):
+
+Keep your browser's Developer Console (F12) open to the "Console" tab.
+
+As each "Deploy Plan" action completes, your api/index.js serverless function will send a request to PayPal's live API to create the plans.
+
+Upon successful creation, your backend will log an object that looks like this in your browser console:
+
+Deployed Plans (LIVE): [
+    { name: "Agriculture & Biotech Starter Package (Monthly)", id: "P-NEW_LIVE_ID_1", status: "ACTIVE" },
+    { name: "Agriculture & Biotech Starter Package (Annual)", id: "P-NEW_LIVE_ID_2", status: "ACTIVE" },
+    { name: "Agriculture & Biotech Pro Package (Monthly)", id: "P-NEW_LIVE_ID_3", status: "ACTIVE" },
+    // ... and so on for all plans created for that sector
+]
+
+Immediately copy the entire createdPlans array (or at least the id for each plan and its corresponding name).
+
+Update admin_panel.html with All Live Plan IDs:
+
+Open your local admin_panel.html file in your code editor.
+
+Locate the PAYPAL_PLAN_IDS object (around lines 954-972).
+
+Manually paste the new Live P- IDs you copied from the console into this object.
+
+Carefully match each P- ID to its correct planKey string.
+
+Example format for PAYPAL_PLAN_IDS after this step:
+
+const PAYPAL_PLAN_IDS = {
+    "Agriculture___Biotech_Starter_Package_MONTHLY": "P-1RR589971C5386049NBI327Q", // (The one you manually got)
+    "Agriculture___Biotech_Starter_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_FOR_AGRI_ANNUAL",
+    "Agriculture___Biotech_Pro_Package_MONTHLY": "P-YOUR_AUTO_GENERATED_ID_FOR_AGRI_PRO_MONTHLY",
+    "Agriculture___Biotech_Pro_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_FOR_AGRI_PRO_ANNUAL",
+    "Agriculture___Biotech_Enterprise_Package_MONTHLY": "P-YOUR_AUTO_GENERATED_ID_FOR_AGRI_ENTERPRISE_MONTHLY",
+    "Agriculture___Biotech_Enterprise_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_FOR_AGRI_ENTERPRISE_ANNUAL",
+
+    "Banking___Finance_Starter_Package_MONTHLY": "P-YOUR_AUTO_GENERATED_ID_FOR_BANKING_STARTER_MONTHLY",
+    "Banking___Finance_Starter_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_FOR_BANKING_STARTER_ANNUAL",
+    // ... continue for all other sectors and their respective plans
+};
+
+6. Final Frontend Deployment (After All Plans are Created)
+After all your Live PayPal Plans have been created via the admin portal and you've updated your local admin_panel.html with all their P- IDs:
+
+Save your admin_panel.html file.
+
+Commit this final change to Git:
+
+git add public/admin-panel.html
+git commit -m "Updated PAYPAL_PLAN_IDS with all live PayPal Plan IDs"
+
+Push this final commit to GitHub:
+
+git push origin main
+
+This last push will update your live frontend. Once this final deployment is ready on Vercel, your "Subscribe Now" buttons on your live website will be fully functional, allowing customers to subscribe to your live plans.

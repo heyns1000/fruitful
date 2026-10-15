@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+
+{% block title %}PayPal Integration Status{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4">
+            <i class="fab fa-paypal text-primary me-3"></i>
+            PayPal Integration Status
+        </h1>
+        <p class="lead">Real-time monitoring of PayPal product and plan synchronization across 7,000+ products</p>
+    </div>
+</div>
+
+<!-- System Health Overview -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-heartbeat me-2"></i>System Health Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>PayPal Products</h6>
+                        <div class="progress mb-2">
+                            {% set product_total = stats.paypal_products.total or 1 %}
+                            {% set product_success_rate = (stats.paypal_products.created / product_total * 100) if product_total > 0 else 0 %}
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ product_success_rate }}%" 
+                                 aria-valuenow="{{ product_success_rate }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ "%.1f"|format(product_success_rate) }}%
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {{ stats.paypal_products.created or 0 }} of {{ stats.paypal_products.total or 0 }} products created
+                        </small>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>PayPal Plans</h6>
+                        <div class="progress mb-2">
+                            {% set plan_total = stats.paypal_plans.total or 1 %}
+                            {% set plan_success_rate = (stats.paypal_plans.created / plan_total * 100) if plan_total > 0 else 0 %}
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ plan_success_rate }}%" 
+                                 aria-valuenow="{{ plan_success_rate }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ "%.1f"|format(plan_success_rate) }}%
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {{ stats.paypal_plans.created or 0 }} of {{ stats.paypal_plans.total or 0 }} plans created
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-satellite-dish me-2"></i>Webhook Events
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">{{ stats.webhook_events.total or 0 }}</h4>
+                        <small>Total Events</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">{{ stats.webhook_events.processed or 0 }}</h4>
+                        <small>Processed</small>
+                    </div>
+                </div>
+                {% if stats.webhook_events.pending and stats.webhook_events.pending > 0 %}
+                <div class="mt-2">
+                    <span class="badge bg-warning">{{ stats.webhook_events.pending }} Pending</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bulk Jobs -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tasks me-2"></i>Recent Bulk Jobs
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_jobs %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Job Name</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                                <th>Success Rate</th>
+                                <th>Started</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in recent_jobs %}
+                            <tr>
+                                <td>{{ job.job_name }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ job.job_type }}</span>
+                                </td>
+                                <td>
+                                    {% if job.status.value == 'completed' %}
+                                        <span class="badge bg-success">{{ job.status.value|title }}</span>
+                                    {% elif job.status.value == 'failed' %}
+                                        <span class="badge bg-danger">{{ job.status.value|title }}</span>
+                                    {% elif job.status.value == 'processing' %}
+                                        <span class="badge bg-info">{{ job.status.value|title }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">{{ job.status.value|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set progress = (job.processed_items / job.total_items * 100) if job.total_items > 0 else 0 %}
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ progress }}%" 
+                                             aria-valuenow="{{ progress }}" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                            {{ job.processed_items }}/{{ job.total_items }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if job.processed_items > 0 %}
+                                        {% set success_rate = (job.successful_items / job.processed_items * 100) %}
+                                        <span class="{% if success_rate >= 95 %}text-success{% elif success_rate >= 80 %}text-warning{% else %}text-danger{% endif %}">
+                                            {{ "%.1f"|format(success_rate) }}%
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if job.started_at %}
+                                        <small>{{ job.started_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    {% else %}
+                                        <small class="text-muted">Not started</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="viewJobDetails('{{ job.id }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No bulk jobs have been executed yet.</p>
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Start Your First Job
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Analysis -->
+{% if error_products or error_plans %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Error Analysis
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if error_products %}
+                    <div class="col-md-6">
+                        <h6>Product Creation Errors</h6>
+                        <div class="list-group list-group-flush">
+                            {% for product in error_products %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ product.name }}</h6>
+                                    <small>{{ product.updated_at.strftime('%H:%M') }}</small>
+                                </div>
+                                <p class="mb-1 text-danger">{{ product.error_message or 'Unknown error' }}</p>
+                                <small>Brand: {{ product.brand.name if product.brand else 'Unknown' }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if error_plans %}
+                    <div class="col-md-6">
+                        <h6>Plan Creation Errors</h6>
+                        <div class="list-group list-group-flush">
+                            {% for plan in error_plans %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ plan.name }}</h6>
+                                    <small>{{ plan.updated_at.strftime('%H:%M') }}</small>
+                                </div>
+                                <p class="mb-1 text-danger">{{ plan.error_message or 'Unknown error' }}</p>
+                                <small>Product: {{ plan.product.name if plan.product else 'Unknown' }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- PayPal Configuration Status -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cog me-2"></i>PayPal Configuration
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Environment:</span>
+                            <span class="badge bg-{{ 'warning' if config.PAYPAL_SANDBOX else 'success' }}">
+                                {{ 'Sandbox' if config.PAYPAL_SANDBOX else 'Production' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Client ID:</span>
+                            <span class="text-muted">
+                                {{ config.PAYPAL_CLIENT_ID[:8] + '...' if config.PAYPAL_CLIENT_ID else 'Not configured' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Batch Size:</span>
+                            <span class="badge bg-info">{{ config.PAYPAL_BATCH_SIZE or 50 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Rate Limit Delay:</span>
+                            <span class="badge bg-secondary">{{ config.PAYPAL_RATE_LIMIT_DELAY or 1 }}s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-database me-2"></i>Database Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h5 class="text-primary">{{ stats.total_brands or 0 }}</h5>
+                        <small>Brands</small>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h5 class="text-success">{{ stats.total_subnodes or 0 }}</h5>
+                        <small>Subnodes</small>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h6 class="text-info">{{ stats.paypal_products.total or 0 }}</h6>
+                        <small>PayPal Products</small>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h6 class="text-warning">{{ stats.paypal_plans.total or 0 }}</h6>
+                        <small>PayPal Plans</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time Data Refresh -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-sync-alt me-2"></i>Real-time Monitoring
+                    </h5>
+                    <div>
+                        <button id="refreshBtn" class="btn btn-sm btn-outline-primary me-2">
+                            <i class="fas fa-refresh me-1"></i>Refresh Now
+                        </button>
+                        <div class="form-check form-switch d-inline-block">
+                            <input class="form-check-input" type="checkbox" id="autoRefresh" checked>
+                            <label class="form-check-label" for="autoRefresh">Auto-refresh</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="mb-1">Last updated: <span id="lastUpdated">--:--:--</span></p>
+                        <p class="mb-0 text-muted">Monitoring PayPal synchronization across all sectors and brands</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div id="connectionStatus" class="badge bg-success">
+                            <i class="fas fa-circle me-1"></i>Connected
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Job Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="jobDetailsContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let autoRefreshInterval = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh functionality
+    const autoRefreshToggle = document.getElementById('autoRefresh');
+    const refreshBtn = document.getElementById('refreshBtn');
+    
+    // Start auto-refresh by default
+    startAutoRefresh();
+    
+    autoRefreshToggle.addEventListener('change', function() {
+        if (this.checked) {
+            startAutoRefresh();
+        } else {
+            stopAutoRefresh();
+        }
+    });
+    
+    refreshBtn.addEventListener('click', function() {
+        refreshData();
+    });
+});
+
+function startAutoRefresh() {
+    stopAutoRefresh(); // Clear any existing interval
+    autoRefreshInterval = setInterval(refreshData, 30000); // Refresh every 30 seconds
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    }
+}
+
+function refreshData() {
+    const connectionStatus = document.getElementById('connectionStatus');
+    const lastUpdated = document.getElementById('lastUpdated');
+    
+    connectionStatus.className = 'badge bg-warning';
+    connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Updating...';
+    
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update timestamp
+                lastUpdated.textContent = new Date().toLocaleTimeString();
+                
+                // Update connection status
+                connectionStatus.className = 'badge bg-success';
+                connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Connected';
+                
+                // Reload page to show updated data
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error refreshing data:', error);
+            connectionStatus.className = 'badge bg-danger';
+            connectionStatus.innerHTML = '<i class="fas fa-circle me-1"></i>Error';
+        });
+}
+
+function viewJobDetails(jobId) {
+    const modal = new bootstrap.Modal(document.getElementById('jobDetailsModal'));
+    const content = document.getElementById('jobDetailsContent');
+    
+    // Show loading spinner
+    content.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    modal.show();
+    
+    // Fetch job details
+    fetch(`/api/job-status/${jobId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const job = data.job;
+                content.innerHTML = generateJobDetailsHTML(job);
+            } else {
+                content.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error loading job details: ${data.message}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            content.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Network error loading job details: ${error.message}
+                </div>
+            `;
+        });
+}
+
+function generateJobDetailsHTML(job) {
+    const progressPercentage = job.progress_percentage || 0;
+    const successRate = job.processed_items > 0 ? (job.successful_items / job.processed_items * 100) : 0;
+    
+    return `
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <h6>${job.job_name}</h6>
+                <span class="badge bg-secondary">${job.job_type}</span>
+                <span class="badge ${getStatusBadgeClass(job.status)} ms-2">${job.status}</span>
+            </div>
+            <div class="col-md-4 text-end">
+                <small class="text-muted">
+                    ${job.started_at ? 'Started: ' + new Date(job.started_at).toLocaleString() : 'Not started'}
+                </small>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h6>Overall Progress</h6>
+                <div class="progress mb-2">
+                    <div class="progress-bar ${getProgressBarClass(job.status)}" 
+                         role="progressbar" 
+                         style="width: ${progressPercentage}%" 
+                         aria-valuenow="${progressPercentage}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        ${Math.round(progressPercentage)}%
+                    </div>
+                </div>
+                <small class="text-muted">${job.processed_items} of ${job.total_items} items processed</small>
+            </div>
+            <div class="col-md-6">
+                <h6>Success Rate</h6>
+                <div class="progress mb-2">
+                    <div class="progress-bar ${successRate >= 95 ? 'bg-success' : successRate >= 80 ? 'bg-warning' : 'bg-danger'}" 
+                         role="progressbar" 
+                         style="width: ${successRate}%" 
+                         aria-valuenow="${successRate}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        ${Math.round(successRate)}%
+                    </div>
+                </div>
+                <small class="text-muted">${job.successful_items} successful, ${job.failed_items} failed</small>
+            </div>
+        </div>
+        
+        ${job.error_log && job.error_log.length > 0 ? `
+            <div class="mt-3">
+                <h6>Recent Errors</h6>
+                <div class="list-group">
+                    ${job.error_log.slice(-5).map(error => `
+                        <div class="list-group-item list-group-item-danger">
+                            <small>${error}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        ` : ''}
+        
+        ${job.result_data ? `
+            <div class="mt-3">
+                <h6>Result Summary</h6>
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-primary">${job.result_data.processed || 0}</h4>
+                        <small>Processed</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-success">${job.result_data.successful || 0}</h4>
+                        <small>Successful</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-danger">${job.result_data.failed || 0}</h4>
+                        <small>Failed</small>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <h4 class="text-info">${Math.round(job.result_data.completion_rate || 0)}%</h4>
+                        <small>Completion Rate</small>
+                    </div>
+                </div>
+            </div>
+        ` : ''}
+    `;
+}
+
+function getStatusBadgeClass(status) {
+    switch (status) {
+        case 'completed': return 'bg-success';
+        case 'failed': return 'bg-danger';
+        case 'processing': return 'bg-info';
+        case 'retrying': return 'bg-warning';
+        default: return 'bg-secondary';
+    }
+}
+
+function getProgressBarClass(status) {
+    switch (status) {
+        case 'completed': return 'bg-success';
+        case 'failed': return 'bg-danger';
+        case 'processing': return 'bg-info';
+        default: return 'bg-warning';
+    }
+}
+</script>
+{% endblock %}

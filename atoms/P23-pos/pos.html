@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful POS — Vendor Walk-In & Drop-Off</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --straw:       #C8A96E;
+            --straw-light: #F5EDD8;
+            --straw-dark:  #8B6914;
+            --ink:         #1C1310;
+            --muted:       #6B5B4B;
+            --card:        #FFFDF8;
+            --border:      #E8D9BC;
+            --bead-r:      #C0392B;
+            --bead-b:      #1A5276;
+            --bead-g:      #1E8449;
+            --bead-y:      #D4AC0D;
+            --success:     #1E8449;
+            --warn:        #D4AC0D;
+            --danger:      #C0392B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F0E8D4;
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Header ── */
+        .pos-header {
+            background: var(--ink);
+            color: var(--straw-light);
+            padding: 0 28px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid var(--straw-dark);
+        }
+        .pos-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pos-brand .dot {
+            width: 10px; height: 10px;
+            background: var(--bead-g);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:.6; transform:scale(1.3); }
+        }
+        .pos-meta { font-size: 0.78rem; color: var(--straw); display:flex; gap:20px; align-items:center; }
+        .pos-meta span { display:flex; align-items:center; gap:6px; }
+        .pos-clock { font-family: 'Playfair Display', serif; font-size:1rem; }
+
+        /* ── Layout ── */
+        .pos-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 0;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* ── Left panel ── */
+        .left-panel { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Tabs */
+        .tab-row { display:flex; gap:4px; background:var(--card); border-radius:10px; padding:4px; border:1px solid var(--border); }
+        .tab-btn {
+            flex:1; padding:9px 14px; border:none; background:transparent;
+            font-size:0.82rem; font-weight:600; color:var(--muted); cursor:pointer;
+            border-radius:8px; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:6px;
+        }
+        .tab-btn.active { background:var(--ink); color:var(--straw-light); }
+
+        /* Search / filter */
+        .search-bar {
+            background:var(--card); border:1px solid var(--border); border-radius:10px;
+            padding:11px 16px; display:flex; align-items:center; gap:10px;
+        }
+        .search-bar input {
+            border:none; background:transparent; width:100%; font-size:0.9rem; color:var(--ink); outline:none;
+        }
+        .search-bar i { color:var(--muted); }
+
+        /* Product grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
+        }
+        .product-tile {
+            background: var(--card);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 14px;
+            cursor: pointer;
+            transition: all .18s;
+            text-align: center;
+            position: relative;
+        }
+        .product-tile:hover { border-color:var(--straw-dark); box-shadow:0 4px 16px rgba(139,105,20,.15); transform:translateY(-2px); }
+        .product-tile.selected { border-color:var(--straw-dark); background:var(--straw-light); }
+        .tile-icon { font-size:2.2rem; margin-bottom:8px; }
+        .tile-name { font-size:0.8rem; font-weight:700; color:var(--ink); margin-bottom:4px; }
+        .tile-sub  { font-size:0.7rem; color:var(--muted); margin-bottom:6px; }
+        .tile-price { font-size:0.88rem; font-weight:700; color:var(--straw-dark); }
+        .tile-badge {
+            position:absolute; top:8px; right:8px;
+            font-size:0.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+            padding:2px 7px; border-radius:10px;
+        }
+        .badge-pro   { background:var(--ink); color:var(--straw-light); }
+        .badge-start { background:var(--bead-g); color:#fff; }
+        .badge-core  { background:var(--bead-b); color:#fff; }
+
+        /* Artisan search */
+        .artisan-grid { display:flex; flex-direction:column; gap:10px; }
+        .artisan-row {
+            background:var(--card); border:1.5px solid var(--border); border-radius:12px;
+            padding:14px 16px; cursor:pointer; display:flex; align-items:center; gap:14px;
+            transition:all .18s;
+        }
+        .artisan-row:hover { border-color:var(--straw-dark); background:var(--straw-light); }
+        .artisan-row.selected { border-color:var(--straw-dark); background:var(--straw-light); }
+        .artisan-av {
+            width:44px; height:44px; border-radius:50%; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+        }
+        .artisan-av.grand { background:linear-gradient(135deg,var(--straw-dark),var(--bead-r)); color:#fff; }
+        .artisan-av.elim  { background:linear-gradient(135deg,var(--bead-g),var(--bead-b)); color:#fff; }
+        .artisan-info strong { display:block; font-size:0.88rem; font-weight:700; color:var(--ink); }
+        .artisan-info small  { font-size:0.74rem; color:var(--muted); }
+
+        /* Section heading */
+        .section-heading {
+            font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--ink);
+            display:flex; align-items:center; gap:8px;
+        }
+        .section-heading::after {
+            content:''; flex:1; height:1px; background:var(--border);
+        }
+
+        /* Vendor drop-off form */
+        .dropoff-form { display:flex; flex-direction:column; gap:16px; }
+        .form-group { display:flex; flex-direction:column; gap:6px; }
+        .form-label { font-size:0.78rem; font-weight:600; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+        .form-input, .form-select, .form-textarea {
+            background:var(--card); border:1.5px solid var(--border); border-radius:9px;
+            padding:11px 14px; font-size:0.88rem; color:var(--ink); font-family:'Inter',sans-serif;
+            width:100%; outline:none; transition:border-color .2s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--straw-dark); }
+        .form-textarea { resize:vertical; min-height:80px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+        /* ── Right panel / receipt ── */
+        .right-panel {
+            background:var(--ink); color:var(--straw-light);
+            border-left:3px solid var(--straw-dark);
+            display:flex; flex-direction:column;
+            min-height:calc(100vh - 60px);
+        }
+        .receipt-header {
+            padding:22px 22px 16px;
+            border-bottom:1px solid rgba(200,169,110,.2);
+        }
+        .receipt-title {
+            font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700;
+            color:var(--straw-light); margin-bottom:4px;
+        }
+        .receipt-sub { font-size:0.75rem; color:var(--straw); }
+
+        /* Cart items */
+        .receipt-items { flex:1; overflow-y:auto; padding:0 22px; }
+        .cart-item {
+            padding:14px 0;
+            border-bottom:1px solid rgba(200,169,110,.15);
+            display:flex; gap:12px; align-items:flex-start;
+        }
+        .cart-icon { font-size:1.5rem; }
+        .cart-name { font-size:0.85rem; font-weight:600; color:var(--straw-light); }
+        .cart-artisan { font-size:0.73rem; color:var(--straw); }
+        .cart-price { margin-left:auto; font-weight:700; color:var(--straw); font-size:0.9rem; }
+        .cart-qty {
+            display:flex; align-items:center; gap:6px; margin-top:6px;
+        }
+        .qty-btn {
+            width:22px; height:22px; border-radius:50%; border:1px solid var(--straw-dark);
+            background:transparent; color:var(--straw); cursor:pointer; font-size:0.8rem;
+            display:flex; align-items:center; justify-content:center; transition:background .15s;
+        }
+        .qty-btn:hover { background:var(--straw-dark); }
+        .qty-val { font-size:0.82rem; color:var(--straw-light); min-width:20px; text-align:center; }
+
+        /* Empty cart */
+        .empty-cart {
+            padding:40px 22px; text-align:center; color:var(--muted);
+            display:flex; flex-direction:column; align-items:center; gap:12px;
+        }
+        .empty-cart i { font-size:2.5rem; color:var(--straw-dark); }
+
+        /* Totals */
+        .receipt-totals {
+            padding:18px 22px;
+            border-top:1px solid rgba(200,169,110,.2);
+        }
+        .total-row { display:flex; justify-content:space-between; padding:5px 0; font-size:0.83rem; }
+        .total-row.grand { font-size:1rem; font-weight:700; color:var(--straw-light); padding-top:10px; border-top:1px solid rgba(200,169,110,.3); margin-top:6px; }
+        .total-label { color:var(--straw); }
+        .total-val   { color:var(--straw-light); }
+
+        /* Subscription selection */
+        .sub-select {
+            padding:14px 22px;
+            border-top:1px solid rgba(200,169,110,.15);
+        }
+        .sub-select-label { font-size:0.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--straw); margin-bottom:10px; }
+        .sub-pills { display:flex; gap:8px; flex-wrap:wrap; }
+        .sub-pill {
+            padding:6px 14px; border-radius:20px; border:1.5px solid var(--straw-dark);
+            font-size:0.75rem; font-weight:600; cursor:pointer; background:transparent;
+            color:var(--straw); transition:all .15s;
+        }
+        .sub-pill.active { background:var(--straw-dark); color:var(--straw-light); border-color:var(--straw-dark); }
+
+        /* Action buttons */
+        .receipt-actions { padding:16px 22px 24px; display:flex; flex-direction:column; gap:10px; }
+        .btn-pay {
+            width:100%; padding:16px; border:none; border-radius:10px;
+            background:linear-gradient(135deg,var(--straw-dark),var(--bead-r));
+            color:#fff; font-size:0.95rem; font-weight:700; cursor:pointer;
+            letter-spacing:.04em; transition:opacity .2s, transform .1s;
+            display:flex; align-items:center; justify-content:center; gap:10px;
+        }
+        .btn-pay:hover { opacity:.9; transform:translateY(-1px); }
+        .btn-dropoff {
+            width:100%; padding:13px; border-radius:10px;
+            border:1.5px solid var(--straw-dark); background:transparent;
+            color:var(--straw); font-size:0.85rem; font-weight:600; cursor:pointer;
+            transition:background .2s;
+        }
+        .btn-dropoff:hover { background:rgba(139,105,20,.2); }
+        .btn-clear {
+            width:100%; padding:11px; border-radius:10px;
+            border:1.5px solid rgba(200,169,110,.2); background:transparent;
+            color:var(--muted); font-size:0.8rem; cursor:pointer;
+        }
+
+        /* Vault receipt overlay */
+        .vault-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(28,19,16,.85); z-index:200;
+            align-items:center; justify-content:center;
+        }
+        .vault-overlay.open { display:flex; }
+        .vault-receipt {
+            background:var(--card); border-radius:20px; padding:36px;
+            max-width:440px; width:100%; margin:20px;
+            border-top:4px solid var(--straw-dark);
+            text-align:center;
+        }
+        .vault-icon { font-size:3.5rem; margin-bottom:12px; }
+        .vault-title { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--ink); margin-bottom:6px; }
+        .vault-id {
+            font-size:0.72rem; letter-spacing:.12em; color:var(--muted); margin-bottom:20px;
+            font-family:monospace; background:#F0E8D4; padding:6px 12px; border-radius:6px; display:inline-block;
+        }
+        .vault-detail { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:0.83rem; }
+        .vault-detail:last-of-type { border:none; }
+        .vault-detail span:first-child { color:var(--muted); }
+        .vault-detail span:last-child  { color:var(--ink); font-weight:600; }
+        .vault-quote {
+            font-style:italic; font-size:0.8rem; color:var(--muted);
+            border-left:2px solid var(--straw); padding-left:10px; text-align:left;
+            margin:16px 0;
+        }
+        .btn-close-vault {
+            width:100%; padding:14px; background:var(--ink); color:var(--straw-light);
+            border:none; border-radius:10px; font-weight:700; cursor:pointer; margin-top:16px;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            background:var(--card); border:1px solid var(--border); border-radius:12px;
+            padding:14px 20px; display:flex; gap:0; overflow-x:auto;
+        }
+        .stat-item {
+            flex:1; text-align:center; padding:0 16px;
+            border-right:1px solid var(--border);
+        }
+        .stat-item:last-child { border:none; }
+        .stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--ink); }
+        .stat-lbl { font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+        /* Bead strip */
+        .bead-strip {
+            height:6px;
+            background: repeating-linear-gradient(90deg,
+                var(--bead-r) 0,6px, var(--bead-y) 6px,12px,
+                var(--bead-b) 12px,18px, var(--bead-g) 18px,24px);
+        }
+
+        /* Tab panels */
+        .tab-panel { display:none; }
+        .tab-panel.active { display:flex; flex-direction:column; gap:16px; }
+
+        /* Responsive */
+        @media(max-width:768px) {
+            .pos-grid { grid-template-columns:1fr; }
+            .right-panel { min-height:auto; border-left:none; border-top:3px solid var(--straw-dark); }
+            .form-row { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Bead strip at top -->
+<div class="bead-strip"></div>
+
+<!-- Header -->
+<header class="pos-header">
+    <div class="pos-brand">
+        <div class="dot"></div>
+        Fruitful POS &nbsp;<span style="font-size:.75rem;color:var(--straw);font-style:italic;font-weight:400;">Walk-In Vendor System</span>
+    </div>
+    <div class="pos-meta">
+        <span><i class="fas fa-map-marker-alt"></i> Mamelodi Hub, Pretoria</span>
+        <span><i class="fas fa-wifi"></i> Live</span>
+        <span class="pos-clock" id="clock">--:--</span>
+        <a href="bushportal.html" style="color:var(--straw);font-size:.78rem;text-decoration:none;">
+            <i class="fas fa-store"></i> Marketplace
+        </a>
+        <a href="index.html" style="color:var(--straw);font-size:.78rem;text-decoration:none;">
+            <i class="fas fa-home"></i> Home
+        </a>
+    </div>
+</header>
+
+<div class="pos-grid">
+
+    <!-- ══ LEFT PANEL ══ -->
+    <div class="left-panel">
+
+        <!-- Stats bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-val" id="stat-today">0</div>
+                <div class="stat-lbl">Drop-offs Today</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val" id="stat-revenue">$0</div>
+                <div class="stat-lbl">Revenue Today</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val" id="stat-artisans">2</div>
+                <div class="stat-lbl">Active Artisans</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val" id="stat-scrolls">0</div>
+                <div class="stat-lbl">ScrollClaims Issued</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-row">
+            <button class="tab-btn active" onclick="switchTab('products')" id="tab-products">
+                <i class="fas fa-boxes"></i> Products
+            </button>
+            <button class="tab-btn" onclick="switchTab('dropoff')" id="tab-dropoff">
+                <i class="fas fa-hand-holding-heart"></i> Vendor Drop-Off
+            </button>
+            <button class="tab-btn" onclick="switchTab('artisans')" id="tab-artisans">
+                <i class="fas fa-users"></i> Artisans
+            </button>
+        </div>
+
+        <!-- ── PRODUCTS TAB ── -->
+        <div class="tab-panel active" id="panel-products">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search products, artisans, categories…" id="search-input" oninput="filterProducts(this.value)">
+            </div>
+            <div class="section-heading">Catalogue</div>
+            <div class="product-grid" id="product-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ── DROP-OFF TAB ── -->
+        <div class="tab-panel" id="panel-dropoff">
+            <div class="section-heading"><i class="fas fa-hand-holding-heart" style="color:var(--bead-g)"></i> Vendor Drop-Off Record</div>
+            <p style="font-size:0.83rem;color:var(--muted);line-height:1.6;">
+                Record every item an artisan drops off. This generates a <strong>VaultLevel 7 Digital Certificate</strong> and triggers an immediate courier dispatch request.
+            </p>
+            <div class="dropoff-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Artisan Name</label>
+                        <select class="form-select" id="do-artisan">
+                            <option value="">— Select Artisan —</option>
+                            <option value="grand">Grand Sibangilizwe Maghandlela</option>
+                            <option value="elim">The Wonderful Woman of Elim</option>
+                            <option value="new">+ Register New Artisan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Drop-Off Date</label>
+                        <input class="form-input" type="date" id="do-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Item / Product</label>
+                    <select class="form-select" id="do-product">
+                        <option value="">— Select Product —</option>
+                        <option value="untshontsho">uNtshontsho Fedora (Cape Buffalo) — $295</option>
+                        <option value="ubhejane">uBhejane Fedora (Rhinoceros) — $295</option>
+                        <option value="kitchen-hat">Grand's Kitchen Hat — $295</option>
+                        <option value="kids-apron">Fruitful Kids Kitchen Apron — $20</option>
+                        <option value="luangwa-xl">Elim Luangwa XL Flower Pot — $295</option>
+                        <option value="luangwa-sm">Elim Luangwa S/M Round Pot — $120</option>
+                        <option value="mulapfa-xl">Elim Mulapfa XL Gas Pot — $295</option>
+                        <option value="mulapfa-l">Elim Mulapfa L Gas Pot — $180</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Quantity</label>
+                        <input class="form-input" type="number" min="1" max="999" value="1" id="do-qty">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Condition</label>
+                        <select class="form-select" id="do-condition">
+                            <option value="pristine">Pristine</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Artisan Notes / Description</label>
+                    <textarea class="form-textarea" id="do-notes" placeholder="Bead colours used, special techniques, batch notes…"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Artisan Payout Agreed ($)</label>
+                        <input class="form-input" type="number" id="do-payout" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Courier Reference</label>
+                        <input class="form-input" type="text" id="do-courier" placeholder="Auto-generated on save">
+                    </div>
+                </div>
+                <button class="btn-pay" onclick="recordDropoff()" style="background:linear-gradient(135deg,var(--bead-g),var(--bead-b));">
+                    <i class="fas fa-shield-alt"></i> Record Drop-Off &amp; Issue VaultCert
+                </button>
+            </div>
+        </div>
+
+        <!-- ── ARTISANS TAB ── -->
+        <div class="tab-panel" id="panel-artisans">
+            <div class="section-heading">Registered Artisans</div>
+            <div class="artisan-grid">
+                <div class="artisan-row selected" onclick="selectArtisan(this,'grand')">
+                    <div class="artisan-av grand"><i class="fas fa-user"></i></div>
+                    <div class="artisan-info">
+                        <strong>Grand Sibangilizwe Maghandlela</strong>
+                        <small><i class="fas fa-map-marker-alt"></i> Mamelodi, Pretoria &nbsp;|&nbsp; Born 28 Aug 1960</small>
+                        <br><small style="color:var(--bead-g);font-weight:600;">VaultLevel 7 · Active</small>
+                    </div>
+                    <div style="margin-left:auto;text-align:right;font-size:.75rem;color:var(--muted);">
+                        <div style="font-weight:700;color:var(--straw-dark);">Hats + Kitchen</div>
+                        <div>$295 Pro Tier</div>
+                    </div>
+                </div>
+                <div class="artisan-row" onclick="selectArtisan(this,'elim')">
+                    <div class="artisan-av elim"><i class="fas fa-hands"></i></div>
+                    <div class="artisan-info">
+                        <strong>The Wonderful Woman of Elim</strong>
+                        <small><i class="fas fa-map-marker-alt"></i> Elim, Limpopo &nbsp;|&nbsp; Ancient Heritage</small>
+                        <br><small style="color:var(--bead-g);font-weight:600;">VaultLevel 7 · Active</small>
+                    </div>
+                    <div style="margin-left:auto;text-align:right;font-size:.75rem;color:var(--muted);">
+                        <div style="font-weight:700;color:var(--straw-dark);">River Clay Pots</div>
+                        <div>$120–$295 Tiers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-heading" style="margin-top:8px;">ScrollClaim Ledger</div>
+            <div id="scroll-ledger" style="display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;">
+                <div style="text-align:center;color:var(--muted);font-size:.82rem;padding:20px;">
+                    No ScrollClaims yet today. Complete a transaction or drop-off to generate one.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ RIGHT PANEL — RECEIPT ══ -->
+    <div class="right-panel">
+        <div class="receipt-header">
+            <div class="receipt-title"><i class="fas fa-receipt" style="color:var(--straw-dark);margin-right:8px;"></i>Current Transaction</div>
+            <div class="receipt-sub" id="receipt-id">TXN-<span id="txn-num">---</span> &nbsp;·&nbsp; <span id="txn-date">--/--/----</span></div>
+        </div>
+
+        <!-- Items -->
+        <div class="receipt-items" id="receipt-items">
+            <div class="empty-cart" id="empty-msg">
+                <i class="fas fa-shopping-basket"></i>
+                <span style="font-size:.82rem;">No items yet.<br>Tap a product to add it.</span>
+            </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="receipt-totals" id="receipt-totals" style="display:none;">
+            <div class="total-row"><span class="total-label">Subtotal</span><span class="total-val" id="t-subtotal">$0</span></div>
+            <div class="total-row"><span class="total-label">Artisan Payout</span><span class="total-val" id="t-payout">$0</span></div>
+            <div class="total-row"><span class="total-label">Vaultmesh Royalty Offset</span><span class="total-val" id="t-royalty" style="color:var(--bead-g);">$0</span></div>
+            <div class="total-row grand"><span class="total-label">Total Charged</span><span class="total-val" id="t-total">$0</span></div>
+        </div>
+
+        <!-- Sub selection -->
+        <div class="sub-select">
+            <div class="sub-select-label">Subscription Renewal</div>
+            <div class="sub-pills">
+                <button class="sub-pill active" onclick="setSub(this,'starter')">Starter $20</button>
+                <button class="sub-pill" onclick="setSub(this,'core')">Core $49</button>
+                <button class="sub-pill" onclick="setSub(this,'pro')">Pro $295</button>
+                <button class="sub-pill" onclick="setSub(this,'none')">Sale Only</button>
+            </div>
+        </div>
+
+        <!-- Payment type -->
+        <div class="sub-select" style="border-top:1px solid rgba(200,169,110,.15);padding-top:12px;">
+            <div class="sub-select-label">Payment Method</div>
+            <div class="sub-pills">
+                <button class="sub-pill active" onclick="setPayment(this,'card')"><i class="fas fa-credit-card"></i> Card</button>
+                <button class="sub-pill" onclick="setPayment(this,'cash')"><i class="fas fa-money-bill"></i> Cash</button>
+                <button class="sub-pill" onclick="setPayment(this,'crypto')"><i class="fab fa-bitcoin"></i> Crypto</button>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="receipt-actions">
+            <button class="btn-pay" onclick="processPayment()">
+                <i class="fas fa-bolt"></i> Process &amp; Issue VaultCert
+            </button>
+            <button class="btn-dropoff" onclick="switchTab('dropoff')">
+                <i class="fas fa-hand-holding-heart"></i> Record Vendor Drop-Off
+            </button>
+            <button class="btn-clear" onclick="clearCart()">
+                <i class="fas fa-trash-alt"></i> Clear Transaction
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bead strip at bottom -->
+<div class="bead-strip"></div>
+
+<!-- Vault Certificate Overlay -->
+<div class="vault-overlay" id="vault-overlay">
+    <div class="vault-receipt">
+        <div class="vault-icon">🏆</div>
+        <div class="vault-title">VaultCert Issued</div>
+        <div class="vault-id" id="cert-id">VC-XXXX-XXXX</div>
+
+        <div id="cert-details" style="text-align:left;margin:0 -4px;">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="vault-quote">
+            "Art is part of creation — mine is a God-given talent."
+            <br><small style="font-style:normal;font-weight:600;">— Grand Sibangilizwe Maghandlela</small>
+        </div>
+
+        <p style="font-size:.75rem;color:var(--muted);margin-top:12px;line-height:1.6;">
+            This certificate is recorded on the VaultChain ledger. The artisan ScrollClaim has been issued and the courier dispatch has been notified.
+        </p>
+        <button class="btn-close-vault" onclick="closeVault()">
+            <i class="fas fa-check-circle"></i> &nbsp; Done — Print / Share
+        </button>
+    </div>
+</div>
+
+<script>
+// ── Clock ──
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+        now.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+}
+updateClock(); setInterval(updateClock, 1000);
+
+// Set today's date in drop-off form
+document.getElementById('do-date').value = new Date().toISOString().split('T')[0];
+
+// ── Product catalogue ──
+const PRODUCTS = [
+    { id:'untshontsho', icon:'🎩', name:'uNtshontsho', sub:'Cape Buffalo Fedora', price:295, artisan:'Grand', badge:'pro', tier:'pro' },
+    { id:'ubhejane',    icon:'🎩', name:'uBhejane',    sub:'Rhinoceros Fedora',   price:295, artisan:'Grand', badge:'pro', tier:'pro' },
+    { id:'kitchen-hat', icon:'👨‍🍳', name:'Kitchen Hat', sub:"Grand's Kitchen Series", price:295, artisan:'Grand', badge:'pro', tier:'pro' },
+    { id:'kids-apron',  icon:'👧', name:'Kids Apron',  sub:'Fruitful Kids Creative', price:20,  artisan:'Grand', badge:'start', tier:'starter' },
+    { id:'luangwa-xl',  icon:'🪴', name:'Luangwa XL',  sub:'Elim River Clay Pot',    price:295, artisan:'Elim', badge:'pro', tier:'pro' },
+    { id:'luangwa-sm',  icon:'🪴', name:'Luangwa S/M', sub:'Elim River Clay Pot',    price:120, artisan:'Elim', badge:'core', tier:'core' },
+    { id:'mulapfa-xl',  icon:'🏺', name:'Mulapfa XL',  sub:'Elim Gas Pot',           price:295, artisan:'Elim', badge:'pro', tier:'pro' },
+    { id:'mulapfa-l',   icon:'🏺', name:'Mulapfa L',   sub:'Elim Gas Pot',           price:180, artisan:'Elim', badge:'core', tier:'core' },
+];
+
+function renderProducts(list) {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = list.map(p => `
+        <div class="product-tile" onclick="addToCart('${p.id}')" id="tile-${p.id}">
+            <span class="tile-badge badge-${p.badge}">${p.badge==='pro'?'Pro':p.badge==='start'?'Starter':'Core'}</span>
+            <div class="tile-icon">${p.icon}</div>
+            <div class="tile-name">${p.name}</div>
+            <div class="tile-sub">${p.sub}</div>
+            <div class="tile-price">$${p.price}</div>
+        </div>
+    `).join('');
+}
+renderProducts(PRODUCTS);
+
+function filterProducts(q) {
+    const filtered = PRODUCTS.filter(p =>
+        p.name.toLowerCase().includes(q.toLowerCase()) ||
+        p.sub.toLowerCase().includes(q.toLowerCase()) ||
+        p.artisan.toLowerCase().includes(q.toLowerCase())
+    );
+    renderProducts(filtered);
+}
+
+// ── Cart ──
+let cart = [];
+let todayStats = { dropoffs:0, revenue:0, scrolls:0 };
+let selectedSub = 'starter';
+let selectedPayment = 'card';
+let txnCounter = Math.floor(Math.random()*9000)+1000;
+
+document.getElementById('txn-num').textContent = txnCounter;
+document.getElementById('txn-date').textContent = new Date().toLocaleDateString('en-ZA');
+
+function addToCart(id) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return;
+    const existing = cart.find(x => x.id === id);
+    if (existing) { existing.qty++; }
+    else { cart.push({...p, qty:1}); }
+    renderCart();
+}
+
+function removeFromCart(id, delta) {
+    const idx = cart.findIndex(x => x.id === id);
+    if (idx === -1) return;
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    renderCart();
+}
+
+function renderCart() {
+    const container = document.getElementById('receipt-items');
+    const emptyMsg  = document.getElementById('empty-msg');
+    const totalsBox = document.getElementById('receipt-totals');
+
+    if (cart.length === 0) {
+        emptyMsg.style.display = 'flex';
+        totalsBox.style.display = 'none';
+        container.innerHTML = '';
+        container.appendChild(emptyMsg);
+        updateTotals();
+        return;
+    }
+
+    emptyMsg.style.display = 'none';
+    totalsBox.style.display = 'block';
+
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-icon">${item.icon}</div>
+            <div style="flex:1;">
+                <div class="cart-name">${item.name}</div>
+                <div class="cart-artisan">${item.artisan} · ${item.sub}</div>
+                <div class="cart-qty">
+                    <button class="qty-btn" onclick="removeFromCart('${item.id}',-1)">−</button>
+                    <span class="qty-val">${item.qty}</span>
+                    <button class="qty-btn" onclick="removeFromCart('${item.id}',1)">+</button>
+                </div>
+            </div>
+            <div class="cart-price">$${item.price * item.qty}</div>
+        </div>
+    `).join('');
+
+    updateTotals();
+}
+
+function updateTotals() {
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const payout   = Math.round(subtotal * 0.55);
+    const royalty  = subtotal - payout;
+    document.getElementById('t-subtotal').textContent = '$' + subtotal;
+    document.getElementById('t-payout').textContent   = '$' + payout;
+    document.getElementById('t-royalty').textContent  = '+$' + royalty + ' offset';
+    document.getElementById('t-total').textContent    = '$' + subtotal;
+}
+
+function clearCart() { cart = []; renderCart(); }
+
+// ── Tabs ──
+function switchTab(name) {
+    ['products','dropoff','artisans'].forEach(t => {
+        document.getElementById('panel-'+t).classList.remove('active');
+        document.getElementById('tab-'+t).classList.remove('active');
+    });
+    document.getElementById('panel-'+name).classList.add('active');
+    document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ── Sub / Payment pills ──
+function setSub(el, val) {
+    document.querySelectorAll('.sub-select:nth-of-type(1) .sub-pill').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedSub = val;
+}
+function setPayment(el, val) {
+    document.querySelectorAll('.sub-select:nth-of-type(2) .sub-pill').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedPayment = val;
+}
+
+function selectArtisan(el, id) {
+    document.querySelectorAll('.artisan-row').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+// ── Payment processing ──
+function processPayment() {
+    if (cart.length === 0) { alert('Add at least one item first.'); return; }
+    showVaultCert('sale');
+}
+
+function recordDropoff() {
+    const artisan = document.getElementById('do-artisan').value;
+    const product = document.getElementById('do-product').value;
+    if (!artisan || !product) { alert('Please select an artisan and a product.'); return; }
+    showVaultCert('dropoff');
+}
+
+function generateId(prefix) {
+    return prefix + '-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+}
+
+function showVaultCert(type) {
+    const certId = generateId(type === 'dropoff' ? 'DO' : 'VC');
+    document.getElementById('cert-id').textContent = certId;
+
+    const now = new Date();
+    const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const artisanName = type === 'dropoff'
+        ? (document.getElementById('do-artisan').value === 'grand' ? 'Grand Sibangilizwe Maghandlela' : 'The Wonderful Woman of Elim')
+        : (cart[0]?.artisan === 'Elim' ? 'The Wonderful Woman of Elim' : 'Grand Sibangilizwe Maghandlela');
+
+    const details = [
+        ['Type', type === 'dropoff' ? 'Vendor Drop-Off' : 'Point of Sale'],
+        ['Artisan', artisanName],
+        ['Items', type === 'dropoff' ? document.getElementById('do-product').options[document.getElementById('do-product').selectedIndex]?.text?.split('—')[0]?.trim() : cart.map(i=>i.name).join(', ')],
+        ['Subscription', selectedSub.charAt(0).toUpperCase()+selectedSub.slice(1)],
+        ['Payment', selectedPayment],
+        ['Total', type === 'dropoff' ? 'Drop-off recorded' : '$'+subtotal],
+        ['Timestamp', now.toLocaleString('en-ZA')],
+        ['VaultLevel', '7'],
+        ['ScrollClaim', generateId('SC')],
+        ['Courier', generateId('CR')],
+    ];
+
+    document.getElementById('cert-details').innerHTML = details.map(([k,v]) => `
+        <div class="vault-detail"><span>${k}</span><span>${v}</span></div>
+    `).join('');
+
+    document.getElementById('vault-overlay').classList.add('open');
+
+    // Update stats
+    todayStats.dropoffs++;
+    if (type === 'sale') todayStats.revenue += subtotal;
+    todayStats.scrolls++;
+    document.getElementById('stat-today').textContent   = todayStats.dropoffs;
+    document.getElementById('stat-revenue').textContent = '$' + todayStats.revenue;
+    document.getElementById('stat-scrolls').textContent = todayStats.scrolls;
+
+    // Add to scroll ledger
+    const ledger = document.getElementById('scroll-ledger');
+    if (ledger.querySelector('div[style]')) ledger.innerHTML = '';
+    const entry = document.createElement('div');
+    entry.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:.78rem;display:flex;justify-content:space-between;align-items:center;';
+    entry.innerHTML = `<span><strong>${certId}</strong><br><span style="color:var(--muted);">${artisanName}</span></span><span style="color:var(--bead-g);font-weight:700;">Issued ✓</span>`;
+    ledger.prepend(entry);
+}
+
+function closeVault() {
+    document.getElementById('vault-overlay').classList.remove('open');
+    cart = [];
+    renderCart();
+    txnCounter++;
+    document.getElementById('txn-num').textContent = txnCounter;
+    // Reset drop-off form
+    document.getElementById('do-artisan').value = '';
+    document.getElementById('do-product').value = '';
+    document.getElementById('do-qty').value = '1';
+    document.getElementById('do-notes').value = '';
+    document.getElementById('do-payout').value = '';
+}
+</script>
+</body>
+</html>

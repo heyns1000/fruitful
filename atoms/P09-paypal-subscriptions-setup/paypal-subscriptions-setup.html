@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Subscriptions Setup - FAA.ZONE Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e293b; /* slate-900 */
+        }
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        code {
+            background-color: #e2e8f0; /* slate-200 */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-family: 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        pre {
+            background-color: #1e293b; /* slate-900 */
+            color: #f8fafc; /* slate-50 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            color: inherit;
+            font-size: 0.875rem;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        strong {
+            color: #0f172a; /* slate-900 */
+        }
+        .note {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            color: #1e40af; /* blue-800 */
+        }
+        .warning {
+            background-color: #fef2f2; /* red-50 */
+            border-left: 4px solid #ef4444; /* red-500 */
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            color: #991b1b; /* red-800 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center pb-4 border-b border-slate-200 mb-6">
+            <h1 class="text-4xl font-extrabold text-indigo-700">FAA.ZONE™ Documentation</h1>
+            <p class="text-xl text-slate-600 mt-2">PayPal Subscriptions Integration Manual</p>
+        </header>
+
+        <h2 class="text-indigo-700">Minutes of Meeting: PayPal Subscriptions Integration</h2>
+        <p><strong>Date:</strong> June 11, 2025</p>
+        <p><strong>Project:</strong> FAA™ Seedwave Admin Portal</p>
+        <p><strong>Topic:</strong> Integration of PayPal Subscription Payments</p>
+
+        <p class="mt-4">This document provides a comprehensive guide for the setup, deployment, and management of PayPal subscription payments within the FAA™ Seedwave Admin Portal and associated product pages. It serves as an installation manual for staff, detailing code, configuration, and critical steps for live activation.</p>
+
+        <h3>Key Architectural Decisions</h3>
+        <ul>
+            <li><strong>Backend:</strong> Vercel Serverless Functions (Node.js) in <code>api/paypal/index.js</code> for all PayPal API interactions.</li>
+            <li><strong>Frontend:</strong> Custom HTML/JavaScript pages (`admin-portal.html`, `products.html`) for user interface and interaction.</li>
+            <li><strong>Payment Gateway:</strong> PayPal Subscriptions API (for recurring billing) and associated Webhooks (for reliable transaction updates).</li>
+            <li><strong>Currency:</strong> All PayPal plans and transactions will be configured in **South African Rand (ZAR)**.</li>
+            <li><strong>Deployment Platform:</strong> Vercel.</li>
+        </ul>
+
+        <div class="note">
+            <h4>Important Note on Currency:</h4>
+            All PayPal plans created via this integration are assumed to be in **ZAR**. Ensure your PayPal Business Account is set up to receive ZAR payments. If you intend to use another currency (e.g., USD), you **must** update the <code>currency</code> parameter in the PayPal SDK script (`currency=ZAR`) and the <code>currencyCode</code> in your backend's <code>create-plan</code> endpoint (`currencyCode: 'ZAR'`).
+        </div>
+
+        <h3>Prerequisites for Staff</h3>
+        <p>Before proceeding with any steps, ensure the following are installed and accessible:</p>
+        <ul>
+            <li>**Node.js & npm:** Installed on your development machine.</li>
+            <li>**Vercel CLI:** Installed globally (`npm install -g vercel`).</li>
+            <li>**Git:** Installed and configured.</li>
+            <li>**PayPal Business Account (Live):** Fully set up and verified.</li>
+            <li>**PayPal Developer Account:** Access to the Live environment for API credentials and webhook setup.</li>
+            <li>**Vercel Project Access:** Permissions to manage environment variables and deploy the project.</li>
+            <li>**Project Repository Access:** Read/write access to the <code>seedwave</code> GitHub repository.</li>
+        </ul>
+
+        <h2>Installation & Setup Guide</h2>
+        <p>Follow these detailed steps to set up and deploy the PayPal subscription integration.</p>
+
+        <h3>I. Project Setup & Dependencies</h3>
+        <ol>
+            <li>**Clone the Repository (if new staff):**
+                <pre><code class="language-bash">git clone [YOUR_GITHUB_REPOSITORY_URL]
+cd seedwave</code></pre>
+            </li>
+            <li>**Navigate to Project Root:** Ensure your terminal is in the <code>seedwave</code> directory (where <code>package.json</code> resides).
+                <pre><code class="language-bash">samantha@Samanthas-iMac my_payfast_app % cd ..
+samantha@Samanthas-iMac seedwave % pwd
+# Expected output: /Users/samantha/seedwave (or similar path to your project root)</code></pre>
+            </li>
+            <li>**Install Node.js Dependencies:**
+                <pre><code class="language-bash">samantha@Samanthas-iMac seedwave % npm install node-fetch</code></pre>
+                <div class="note">
+                    <strong>Note:</strong> <code>node-fetch</code> is for Node.js versions older than 18. If using Node.js 18+ (where <code>fetch</code> is built-in), this step is optional but harmless.
+                </div>
+            </li>
+        </ol>
+
+        <h3>II. PayPal Live API Credentials & Vercel Environment Variables</h3>
+        <p><strong>Action:</strong> Obtain your **LIVE PayPal Client ID** and **LIVE PayPal Client Secret** from the PayPal Developer Dashboard.</p>
+        <ol>
+            <li>**Go to:** <a href="https://developer.paypal.com/" target="_blank" class="text-blue-600 hover:underline"><code>https://developer.paypal.com/</code></a> and log in to your <strong>Live PayPal Business Account</strong>.</li>
+            <li>**Navigate to:** "My Apps & Credentials" → "Live".</li>
+            <li>**Locate:** Your REST API app (e.g., "MyApp_Zoho" or the one you designated for live transactions).</li>
+            <li>**Copy:** The **full, untruncated Client ID** and **Secret**.</li>
+        </ol>
+        <p><strong>Action:</strong> Set these as Environment Variables in Vercel. These variables will be securely accessed by your backend functions.</p>
+        <ol>
+            <li>**Go to:** Your Vercel project dashboard.</li>
+            <li>**Navigate to:** "Settings" → "Environment Variables".</li>
+            <li>**Add New Variables:**
+                <ul>
+                    <li><strong>Name:</strong> <code>PAYPAL_LIVE_CLIENT_ID</code></li>
+                    <li><strong>Value:</strong> <code>[PASTE_YOUR_FULL_LIVE_PAYPAL_CLIENT_ID_HERE]</code></li>
+                    <li><strong>Environments:</strong> Select `Production`, `Preview`, `Development`.</li>
+                    <li><strong>Name:</strong> <code>PAYPAL_LIVE_CLIENT_SECRET</code></li>
+                    <li><strong>Value:</strong> <code>[PASTE_YOUR_FULL_LIVE_PAYPAL_CLIENT_SECRET_HERE]</code></li>
+                    <li><strong>Environments:</strong> Select `Production`, `Preview`, `Development`.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>III. Backend API Code Setup (`api/paypal/index.js`)</h3>
+        <p>This serverless function handles all secure communication with PayPal's API.</p>
+        <ol>
+            <li>**File Path:** <code>seedwave/api/paypal/index.js</code></li>
+            <li>**Content Confirmation:** Ensure this file contains the following structure and settings:
+                <pre><code class="language-javascript">// api/paypal/index.js
+
+const fetch = require('node-fetch'); // Remove if Node.js &gt;= 18
+
+async function generateAccessToken() {
+    const clientId = process.env.PAYPAL_LIVE_CLIENT_ID;
+    const clientSecret = process.env.PAYPAL_LIVE_CLIENT_SECRET;
+    const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+    const tokenUrl = 'https://api-m.paypal.com/v1/oauth2/token'; // LIVE endpoint
+    // ... (rest of function logic) ...
+}
+
+module.exports = async (req, res) => {
+    const PAYPAL_API_BASE_URL = 'https://api-m.paypal.com'; // LIVE API Base URL
+    const { action } = req.query;
+
+    if (req.method === 'POST') {
+        try {
+            const accessToken = await generateAccessToken();
+            switch (action) {
+                case 'create-product': {
+                    // ... (logic for creating product) ...
+                    // currencyCode for create-plan: Ensure this is 'ZAR'
+                }
+                case 'create-plan': {
+                    // ... (logic for creating plan) ...
+                    // Ensure currencyCode in planBody is 'ZAR'
+                }
+                case 'create-subscription': {
+                    // ... (logic for creating subscription) ...
+                }
+                case 'webhook': {
+                    // ... (logic for handling webhooks) ...
+                    // CRITICAL: Implement robust Webhook Signature Verification for LIVE!
+                }
+                // ... (default/error handling) ...
+            }
+        } catch (error) { /* ... */ }
+    } else { /* ... */ }
+};
+</code></pre>
+            </li>
+        </ol>
+
+        <h3>IV. Frontend HTML & JavaScript Integration</h3>
+        <p>These files manage the user interface and interact with your backend API.</p>
+
+        <h4>A. `public/admin-portal.html` (Admin Plan Deployment UI)</h4>
+        <p>This file allows you to programmatically create (or log the IDs of manually created) PayPal Products and Plans in your LIVE PayPal account.</p>
+        <ol>
+            <li>**File Path:** <code>seedwave/public/admin-portal.html</code></li>
+            <li>**PayPal SDK Script Tag:** Located just before the <code>&lt;/body&gt;</code> tag.
+                <pre><code class="language-html">&lt;!-- PayPal JavaScript SDK - REQUIRED FOR SUBSCRIPTIONS --&gt;
+&lt;!-- NOW USING LIVE PAYPAL CLIENT ID --&gt;
+&lt;script src="https://www.paypal.com/sdk/js?client-id=BAAThS_oBJJ22PM5R1nVJ...&currency=ZAR&vault=true&intent=subscription"&gt;&lt;/script&gt;
+&lt;!-- IMPORTANT: Replace 'BAAThS_oBJJ22PM5R1nVJ...' with the FULL, untruncated LIVE Client ID for 'MyApp_Zoho' or your primary live app. --&gt;
+&lt;!-- The 'currency' parameter MUST match the currency of your LIVE PayPal Plans (which we've set to ZAR). --&gt;
+</code></pre>
+            </li>
+            <li>**JavaScript Block:** Within the main <code>&lt;script&gt;</code> tag, ensure the following constants and functions are present:
+                <pre><code class="language-javascript">
+// IMPORTANT: Replace this placeholder with your actual LIVE PayPal Product ID.
+// This is the ID you copied after creating your product in the LIVE PayPal Developer Dashboard.
+const YOUR_PAYPAL_PRODUCT_ID = 'PROD-YOUR_LIVE_PRODUCT_ID_HERE'; // &lt;--- !!! REPLACE THIS WITH YOUR ACTUAL LIVE PRODUCT ID !!! ---&gt;
+
+async function deploySectorPlanToPayPal(sectorKey) {
+    // ... (function logic as provided in previous response) ...
+    // Note: currencyCode for create-plan call is 'ZAR'
+}
+
+async function initiateSubscription(tierName, rawAmount, sectorKey) {
+    // ... (function logic as provided in previous response) ...
+    // IMPORTANT: Plan IDs here must be your LIVE Plan IDs.
+    // Example: planId = 'P-YOUR_AGRICULTURE_MONTHLY_LIVE_PLAN_ID';
+}
+</code></pre>
+            </li>
+        </ol>
+
+        <h4>B. `public/products.html` (User Subscription UI)</h4>
+        <p>This is the main user-facing page where customers select and subscribe to SAAS plans.</p>
+        <ol>
+            <li>**File Path:** <code>seedwave/public/products.html</code></li>
+            <li>**PayPal SDK Script Tag:** Located just before the <code>&lt;/body&gt;</code> tag.
+                <pre><code class="language-html">&lt;!-- PayPal JavaScript SDK - REQUIRED FOR SUBSCRIPTIONS --&gt;
+&lt;!-- NOW USING LIVE PAYPAL CLIENT ID --&gt;
+&lt;script src="https://www.paypal.com/sdk/js?client-id=BAAThS_oBJJ22PM5R1nVJ...&currency=ZAR&vault=true&intent=subscription"&gt;&lt;/script&gt;
+&lt;!-- IMPORTANT: Replace 'BAAThS_oBJJ22PM5R1nVJ...' with the FULL, untruncated LIVE Client ID for 'MyApp_Zoho' or your primary live app. --&gt;
+&lt;!-- The 'currency' parameter MUST match the currency of your LIVE PayPal Plans (e.g., 'ZAR'). --&gt;
+</code></pre>
+            </li>
+            <li>**Product Card Buttons:** Ensure each "Subscribe Now" button has the correct <code>onclick</code> and <code>data-</code> attributes.
+                <pre><code class="language-html">
+&lt;button class="buy-now-button featured-button w-full bg-indigo-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+        data-product-name="Starter Package"
+        data-amount="199.00"
+        data-billing-cycle="MONTHLY"
+        data-plan-key="Starter Package_MONTHLY"
+        onclick="initiatePayPalSubscription(event)"&gt;
+    Subscribe Now (Monthly)
+&lt;/button&gt;
+</code></pre>
+            </li>
+            <li>**JavaScript Block:**
+                <pre><code class="language-javascript">
+// IMPORTANT: Replace this placeholder with your actual LIVE PayPal Product ID.
+const YOUR_PAYPAL_PRODUCT_ID = 'PROD-YOUR_LIVE_PRODUCT_ID_HERE'; // &lt;--- !!! REPLACE THIS WITH YOUR LIVE PRODUCT ID !!! ---&gt;
+
+// IMPORTANT: You MUST replace these placeholders with the actual LIVE PayPal Plan IDs
+// obtained after manually creating them in the LIVE PayPal Developer Dashboard.
+const PAYPAL_PLAN_IDS = {
+    "Starter Package_MONTHLY": "P-YOUR_STARTER_MONTHLY_LIVE_PLAN_ID",    // &lt;--- !!! REPLACE WITH ACTUAL LIVE ID !!! ---&gt;
+    "Starter Package_ANNUAL": "P-YOUR_STARTER_ANNUAL_LIVE_PLAN_ID",      // &lt;--- !!! REPLACE WITH ACTUAL LIVE ID !!! ---&gt;
+    // ... (add all other LIVE plan mappings here) ...
+};
+
+// Current logged-in user ID. Replace 'CURRENT_LOGGED_IN_USER_ID' with dynamic user ID from your auth system.
+const CURRENT_USER_ID = 'CURRENT_LOGGED_IN_USER_ID'; // &lt;--- !!! REPLACE THIS !!! ---&gt;
+
+// ... (Currency Converter Logic as previously provided) ...
+
+// PayPal Subscription Initiation function
+async function initiatePayPalSubscription(event) {
+    // ... (function logic as previously provided) ...
+    // Note: This call will now use LIVE backend credentials.
+}
+
+document.querySelectorAll('.buy-now-button').forEach(button => {
+    button.addEventListener('click', initiatePayPalSubscription);
+});
+</code></pre>
+            </li>
+        </ol>
+
+        <h4>C. Redirect Pages</h4>
+        <p>These static pages provide feedback to the user after completing or cancelling a PayPal flow.</p>
+        <ul>
+            <li>**<code>public/subscription-success.html</code>:** Displays a success message upon successful subscription.</li>
+            <li><strong><code>public/subscription-cancelled.html</code>:** Displays a message if the user cancels the PayPal flow.</strong></li>
+            <li><strong><code>public/subscription-failed.html</code>:** Displays a message if the subscription process encounters an error.</strong></li>
+        </ul>
+
+        <h3>V. PayPal Live Webhook Configuration (CRITICAL)</h3>
+        <p>This is absolutely essential for receiving real-time updates from PayPal about subscription status, payment completions, failures, and cancellations. Without this, your internal systems (e.g., user access, Zoho Books) will not be reliably updated.</p>
+        <ol>
+            <li>**Log into:** <a href="https://developer.paypal.com/" target="_blank" class="text-blue-600 hover:underline"><code>https://developer.paypal.com/</code></a> with your **Live PayPal Business Account**.</li>
+            <li>**Navigate to:** "My Apps & Credentials" → "Live" → Your REST API App.</li>
+            <li>**Scroll down to "WEBHOOKS"** and click "Add Webhook".</li>
+            <li>**Webhook URL:** Enter your deployed live API endpoint:
+                <pre><code class="language-text">https://seedwave.faa.zone/api/paypal?action=webhook</code></pre>
+            </li>
+            <li>**Event Types:** Select the following events (at a minimum). These cover the full subscription lifecycle:
+                <ul>
+                    <li>`BILLING.SUBSCRIPTION.ACTIVATED`</li>
+                    <li>`BILLING.SUBSCRIPTION.CANCELLED`</li>
+                    <li>`BILLING.SUBSCRIPTION.PAYMENT.COMPLETED`</li>
+                    <li>`BILLING.SUBSCRIPTION.PAYMENT.FAILED`</li>
+                    <li>`BILLING.SUBSCRIPTION.SUSPENDED`</li>
+                    <li>`BILLING.SUBSCRIPTION.UPDATED`</li>
+                    <li>`PAYMENT.CAPTURE.COMPLETED` (for initial setup fee if any)</li>
+                    <li>`CUSTOMER.DISPUTE.CREATED` (for chargebacks/disputes)</li>
+                </ul>
+            </li>
+            <li>Click **"Save"**. Note down the Webhook ID for your records (useful for debugging).</li>
+        </ol>
+
+        <h2>Final Placeholder Replacements (CRITICAL FOR LIVE!)</h2>
+        <p class="warning">
+            Before deploying, you **MUST** ensure all placeholder values below are replaced with your **ACTUAL LIVE PayPal IDs**. Failure to do so will result in failed transactions.
+        </p>
+        <ul>
+            <li>`client-id=YOUR_PAYPAL_CLIENT_ID` (in SDK script tags in <code>admin-portal.html</code> and <code>products.html</code>)</li>
+            <li>`YOUR_STATIC_PAYPAL_PRODUCT_ID_HERE` (in JS code of <code>admin-portal.html</code> and <code>products.html</code>)</li>
+            <li>`P-YOUR_..._LIVE_PLAN_ID` (in <code>PAYPAL_PLAN_IDS</code> object in JS code of <code>products.html</code> and possibly <code>admin-portal.html</code>)</li>
+            <li>`CURRENT_LOGGED_IN_USER_ID` (in JS code of <code>admin-portal.html</code> and <code>products.html</code>)</li>
+            <li>`API_KEY = ""` (in Currency Converter logic in <code>products.html</code>, replace with your ExchangeRate-API key)</li>
+        </ul>
+
+        <h2>Deployment to Vercel</h2>
+        <p>Once all code changes are committed and placeholders replaced:</p>
+        <ol>
+            <li>**Commit & Push Changes to GitHub:**
+                <pre><code class="language-bash">samantha@Samanthas-iMac seedwave % git add .
+samantha@Samanthas-iMac seedwave % git commit -m "feat: Integrated live PayPal Subscriptions and finalized setup"
+samantha@Samanthas-iMac seedwave % git push origin main # Or your main branch name</code></pre>
+            </li>
+            <li>**Deploy to Production via Vercel CLI (or through your connected Git repository):**
+                <pre><code class="language-bash">samantha@Samanthas-iMac seedwave % vercel --prod</code></pre>
+                This will deploy your application to your live domain (e.g., <code>https://seedwave.faa.zone</code>).
+            </li>
+        </ol>
+
+        <h2>Post-Deployment Testing (LIVE Environment)</h2>
+        <p class="note">
+            Perform thorough testing of the entire subscription flow in your LIVE environment. Use **real PayPal accounts and real money** for these tests.
+        </p>
+        <ol>
+            <li>**Admin Test (from deployed <code>admin-portal.html</code>):**
+                <ul>
+                    <li>Confirm the "Deploy Plan" button **does not** create duplicate plans if clicked again (PayPal API handles idempotency, but verify the output).</li>
+                    <li>Confirm the displayed Plan IDs match your manually created LIVE plans.</li>
+                </ul>
+            </li>
+            <li>**User Subscription Test (from deployed <code>products.html</code>):**
+                <ul>
+                    <li>Access your deployed <code>products.html</code> (e.g., <code>https://seedwave.faa.zone/products.html</code>).</li>
+                    <li>Test the currency converter.</li>
+                    <li>Click "Subscribe Now" for a product.</li>
+                    <li>Complete the PayPal payment flow.</li>
+                    <li>Verify successful redirection to <code>subscription-success.html</code>.</li>
+                </ul>
+            </li>
+            <li>**Backend & Webhook Monitoring:**
+                <ul>
+                    <li>Check your Vercel dashboard logs for messages from the <code>/api/paypal?action=webhook</code> endpoint. You should see `BILLING.SUBSCRIPTION.ACTIVATED` and `BILLING.SUBSCRIPTION.PAYMENT.COMPLETED` events for successful subscriptions.</li>
+                    <li>Confirm your internal systems (e.g., Zoho Books/CRM, user access management) are updated based on webhook data.</li>
+                    <li>Verify the new subscription appears in your **LIVE PayPal Business Account** under "Subscriptions".</li>
+                </ul>
+            </li>
+        </ol>
+
+        <footer class="text-center text-xs text-slate-500 mt-10 pt-6 border-t border-slate-200">
+            <p>&copy; 2025 Fruitful Holdings (Pty) Ltd. All rights reserved.</p>
+            <p>Generated by Coding Partner AI.</p>
+        </footer>
+    </div>
+</body>
+</html>

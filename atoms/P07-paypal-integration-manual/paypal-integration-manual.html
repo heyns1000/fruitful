@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA.ZONE™ PayPal Integration Manual</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Inter Font -->
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap)" rel="stylesheet">
+    <style>
+        /* Base styles for the "Interstellar" theme - Adapted from admin-panel.html */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); /* Deep space gradient */
+            color: #E0E0E0; /* Light gray for general text */
+            line-height: 1.6;
+            min-height: 100vh; /* Ensure full viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styling - Adopted from FAA™ Global Ecosystem Dashboard */
+        header {
+            background-color: rgba(30, 30, 45, 0.9); /* Slightly transparent dark header */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(5px); /* Subtle blur effect */
+            border-bottom: 1px solid rgba(70, 70, 90, 0.5); /* Subtle bottom border */
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+            padding-left: 2.5rem;
+            padding-right: 2.5rem;
+        }
+        header a {
+            transition: all 0.3s ease-in-out;
+            color: #C0C0C0; /* Lighter gray for links */
+            padding: 0.6rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        header a:hover {
+            background-color: rgba(60, 60, 90, 0.7); /* Darker hover background */
+            color: #93C5FD; /* Light blue accent on hover */
+            transform: translateY(-2px);
+        }
+        header a.text-2xl { /* Logo specific styling */
+            color: #A78BFA; /* Purple accent for logo */
+            font-weight: 800;
+        }
+
+        /* Admin specific styles (dark theme adaptation) for content cards */
+        .admin-main-header { /* Used for main title block */
+            background-color: rgba(30, 30, 45, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2.5rem;
+            border-top: 8px solid #93C5FD;
+            color: #E0E0E0;
+        }
+        .admin-main-header h1 {
+            color: #93C5FD;
+            font-weight: 900;
+        }
+        .admin-main-header p {
+            color: #B0B0B0;
+        }
+
+        .admin-panel-card { /* General card style for sections */
+            background-color: rgba(25, 25, 40, 0.9);
+            border-radius: 1rem;
+            border: 1px solid rgba(70, 70, 90, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            color: #E0E0E0;
+        }
+        .admin-panel-card h2 {
+            color: #93C5FD; /* Light blue for section titles */
+        }
+        .admin-panel-card h3 {
+            color: #A78BFA; /* Purple for sub-titles */
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .admin-panel-card p {
+            color: #C0C0C0;
+            margin-bottom: 1rem;
+        }
+        .admin-panel-card ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #C0C0C0;
+        }
+        .admin-panel-card ol {
+            list-style: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #C0C0C0;
+        }
+        .admin-panel-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Block Styling */
+        pre {
+            background-color: rgba(15, 12, 30, 0.8); /* Darker background for code */
+            color: #34D399; /* Greenish text for code */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(70, 70, 90, 0.5);
+            font-family: 'Cascadia Code', 'Fira Code', 'monospace';
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'monospace';
+            background-color: rgba(30, 30, 45, 0.7);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            color: #93C5FD; /* Lighter blue for inline code */
+        }
+        pre code {
+            color: #34D399; /* Greenish for block code */
+        }
+
+        /* Terminal Output Styling */
+        .terminal-output {
+            background-color: #0d0c1e; /* Very dark background */
+            color: #e0e0e0; /* Light gray text */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border: 1px dashed rgba(70, 70, 90, 0.5); /* Dashed border */
+            font-family: 'Fira Code', 'monospace';
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        .terminal-output strong {
+            color: #E0E0E0; /* Ensure commands stand out */
+        }
+
+        /* Warning/Error Boxes */
+        .warning-box {
+            background-color: rgba(252, 211, 77, 0.15); /* Yellow light */
+            border-left: 4px solid #FCD34D;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #FCD34D;
+        }
+        .error-box {
+            background-color: rgba(248, 113, 113, 0.15); /* Red light */
+            border-left: 4px solid #F87171;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #F87171;
+        }
+        .success-box {
+            background-color: rgba(52, 211, 153, 0.15); /* Green light */
+            border-left: 4px solid #34D399;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #6EE7B7;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: rgba(20, 20, 35, 0.9);
+            border-top: 1px solid rgba(70, 70, 90, 0.5);
+            color: #A0A0A0;
+            margin-top: auto;
+        }
+        .footer-logo-text {
+            color: #A78BFA;
+            font-weight: 800;
+        }
+        footer a {
+            color: #C0C0C0;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #93C5FD;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="py-4 px-8">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <a href="index.html" class="text-2xl font-bold">🦍 FAA.ZONE™</a>
+            <nav class="flex flex-wrap justify-center md:justify-end items-center space-x-4 md:space-x-6 text-sm">
+                <a href="/">Home</a>
+                <a href="[https://seedwave.faa.zone/admin](https://seedwave.faa.zone/admin)" target="_blank" rel="noopener noreferrer">Admin Portal ⚙️</a>
+                <a href="/pricing">Pricing & Plans 💰</a>
+                <a href="/products">Products</a>
+                <a href="/about">About Us ℹ️</a>
+                <a href="/contact">Contact Us 📧</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content p-6 md:p-12 flex-grow">
+        <header class="admin-main-header">
+            <h1 class="text-3xl font-extrabold">FAA.ZONE™ Global Deployment & Troubleshooting Manual: PayPal Subscriptions</h1>
+            <p class="text-sm mt-1">Comprehensive guide for deploying and troubleshooting PayPal Subscriptions within the FAA.ZONE™ ecosystem.</p>
+            <p class="text-xs mt-2">**Deployment URL (This Manual):** <a href="[https://faa.zone/legal/paypal](https://faa.zone/legal/paypal)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">faa.zone/legal/paypal</a> (Placeholder)</p>
+        </header>
+
+        <section class="admin-panel-card">
+            <h2>1. Introduction & Purpose</h2>
+            <p>This manual consolidates all critical configurations, terminal commands, and resolutions for challenges encountered during development and live deployment of PayPal Subscriptions for the FAA.ZONE™ Admin Portal. Our goal is to ensure a flawless, globally consistent subscription experience.</p>
+            <p>The Admin Portal uses the "Interstellar" theme for global aesthetic consistency.</p>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>2. Prerequisites</h2>
+            <p>Before you begin, ensure you have the following:</p>
+            <ul>
+                <li><strong>Git</strong>: Installed and configured on your local development machine.</li>
+                <li><strong>Node.js & npm</strong>: Latest LTS version installed.</li>
+                <li><strong>Vercel CLI</strong>: Installed globally (`npm i -g vercel`).</li>
+                <li><strong>PayPal Business Account (Live)</strong>: Access to your live PayPal Business Dashboard.</li>
+                <li><strong>PayPal Developer Account</strong>: Access to your PayPal Developer Dashboard (<a href="[https://developer.paypal.com/](https://developer.paypal.com/)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">developer.paypal.com</a>) in **Live mode**.</li>
+                <li><strong>Text Editor</strong>: VS Code or similar.</li>
+                <li><strong>Terminal/Command Line</strong>: On your local machine.</li>
+            </ul>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>3. PayPal Setup (Live Environment - Manual Dashboard Actions)</h2>
+            <p>This section details the critical manual steps required in your Live PayPal Business Dashboard.</p>
+
+            <h3>3.1. Obtain Live API Credentials (MyApp_Zoho)</h3>
+            <p>These credentials are used by your Vercel backend (<code>api/index.js</code>) to securely communicate with PayPal.</p>
+            <ul>
+                <li><strong>Client ID</strong>: <code>BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98</code></li>
+                <li><strong>Secret</strong>: <code>EFSS4mbIMZ6Q3ijOGCjqA9i4b3dzHULkCEV9jKAAHO9_fbO2aP9YCGRV9ekZaHqT2zSZL6Svrn-WyhIs</code></li>
+            </ul>
+            <div class="warning-box">
+                <strong>Warning</strong>: The Secret must **NEVER** be exposed in frontend code or publicly. It is securely stored as a Vercel Environment Variable.
+            </div>
+
+            <h3>3.2. Create the Live Product (<code>PROD-</code> ID)</h3>
+            <p>This is the overarching service (e.g., "FAA.ZONE Services") under which all your subscription plans will reside. Only one Product is usually needed for all your plans.</p>
+            <ol>
+                <li>Login to your **Live PayPal Business Account** (<a href="[https://www.paypal.com](https://www.paypal.com)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline">paypal.com</a>).</li>
+                <li>Navigate to **Pay & Get Paid** > **Subscriptions** > **Products**.</li>
+                <li>Click **"Create Product"**.</li>
+                <li>Fill in the details:
+                    <ul>
+                        <li><strong>Product name</strong>: <code>Fruitful Global FAA.ZONE™ Services</code></li>
+                        <li><strong>Product description</strong>: <code>Access to all FAA.ZONE™ ecosystem services, including core brand activations, real-time analytics, and secure data nodes for various industry sectors.</code></li>
+                        <li><strong>Product type</strong>: <code>DIGITAL</code></li>
+                        <li><strong>Industry category</strong>: <code>SOFTWARE</code> (or <code>SAAS</code>)</li>
+                        <li><strong>Product page URL</strong>: <code>[https://seedwave.faa.zone/admin-panel.html](https://seedwave.faa.zone/admin-panel.html)</code></li>
+                    </ul>
+                </li>
+                <li>Save the Product. PayPal will assign a **Product ID** that starts with <code>PROD-</code>.</li>
+            </ol>
+            <p><strong>Your Live Product ID</strong>: <code>PROD-2NC51830JC183315X</code></p>
+            <div class="success-box">
+                <strong>Confirmation</strong>: This step was successfully completed.
+            </div>
+
+            <h3>3.3. **CRITICAL: Delete Conflicting Existing Plans in PayPal Dashboard**</h3>
+            <div class="error-box">
+                <strong>Challenge Encountered</strong>: PayPal's API consistently returned the same <code>plan_id</code> for distinct plan names, showing <code>status: 'EXISTING'</code>. The PayPal UI does not provide a direct "Delete" option for "Off" plans. This issue indicates an internal data inconsistency on PayPal's side.
+            </div>
+            <p>Despite plans being "Off", PayPal's system can still prevent new plan creation. To resolve, any existing plans under your `PROD-2NC51830JC183315X` product should be removed if possible.</p>
+            <ol>
+                <li>Login to your **Live PayPal Business Account**.</li>
+                <li>Navigate to **Pay & Get Paid** > **Subscriptions** > **Plans**.</li>
+                <li>For each plan (e.g., <code>P-1RR589971C5386049NBI327Q</code>) associated with your <code>PROD-2NC51830JC183315X</code>:
+                    <ul>
+                        <li>Click on the plan. Ensure its status is "Off".</li>
+                        <li>If a "Delete" or "Remove" option is available in the "..." menu, use it. **(Your experience: this option was not available.)**</li>
+                    </ul>
+                </li>
+            </ol>
+            <div class="warning-box">
+                <strong>Note</strong>: Since direct deletion via UI is not possible, we will use a workaround in the backend (Step 5.4.3) to force new plan IDs.
+            </div>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>4. Vercel Environment Variables Configuration (Production)</h2>
+            <p>These variables are essential for security and functionality. Your <code>api/index.js</code> serverless function uses these.</p>
+            <ol>
+                <li><strong>Login to your Vercel Dashboard.</strong></li>
+                <li>Navigate to your <code>seedwave</code> <strong>Project Settings</strong>.</li>
+                <li>Go to the <strong>Environment Variables</strong> section.</li>
+                <li>Ensure the following variables are set for the <strong>Production</strong> environment:
+                    <ul>
+                        <li><code>PAYPAL_LIVE_CLIENT_ID</code>: <code>BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98</code></li>
+                        <li><code>PAYPAL_LIVE_CLIENT_SECRET</code>: <code>EFSS4mbIMZ6Q3ijOGCjqA9i4b3dzHULkCEV9jKAAHO9_fbO2aP9YCGRV9ekZaHqT2zSZL6Svrn-WyhIs</code></li>
+                        <li><code>PAYPAL_LIVE_PRODUCT_ID</code>: <code>PROD-2NC51830JC183315X</code></li>
+                        <li><code>SESSION_SECRET</code>: **A strong, randomly generated string** (e.g., <code>your_very_secure_session_secret_for_production</code>).</li>
+                        <li><code>FRONTEND_URL</code>: <code>[https://seedwave.faa.zone](https://seedwave.faa.zone)</code></li>
+                        <li>(Optional, if using Webhooks): <code>PAYPAL_WEBHOOK_ID</code>, <code>PAYPAL_WEBHOOK_SECRET</code></li>
+                    </ul>
+                </li>
+            </ol>
+            <div class="success-box">
+                <strong>Confirmation</strong>: These environment variables were successfully added/updated in Vercel.
+            </div>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>5. Project Files Setup & Updates (Local & Git Workflow)</h2>
+            <p>This section details the critical updates and Git commands to synchronize your project's local files with GitHub and deploy to Vercel.</p>
+
+            <h3>5.1. Initial Local Setup (If cloning fresh)</h3>
+            <p>If staff are setting up on a new machine, they would clone the repository:</p>
+            <pre><code><span class="text-blue-300">git clone [https://github.com/heyns1000/seedwave.git](https://github.com/heyns1000/seedwave.git)</span>
+<span class="text-blue-300">cd seedwave</span></code></pre>
+            <p class="terminal-output">samantha@Samanthas-iMac seedwave % git clone [https://github.com/heyns1000/seedwave.git](https://github.com/heyns1000/seedwave.git)<br>Cloning into 'seedwave'...<br>remote: Enumerating objects: 5200, done.<br>...<br>Resolving deltas: 100% (890/890), done.<br>samantha@Samanthas-iMac seedwave % cd seedwave</p>
+
+            <h3>5.2. <code>.env.local</code> File Setup (For Local Development ONLY - <code>vercel dev</code>)</h3>
+            <p>This file is crucial for local testing and should **never** contain live credentials. It is ignored by Git in production deployments.</p>
+            <pre><code><span class="text-gray-400"># .env.local file for local Vercel CLI development (seedwave/)</span>
+
+<span class="text-gray-400"># IMPORTANT: These are your PayPal SANDBOX API Credentials</span>
+PAYPAL_LIVE_CLIENT_ID=AY-WQUCahAP77PZrkYkct446AM2Z9x8q-BNBHLNJY <span class="text-gray-400"># Your Sandbox Client ID</span>
+PAYPAL_LIVE_CLIENT_SECRET=EIAXSeXoPY2p1-Hj0AHQJXjMcI0MLZ... <span class="text-gray-400"># Your Sandbox Client Secret (use full value)</span>
+PAYPAL_WEBHOOK_ID=YOUR_SANDBOX_WEBHOOK_ID_GOES_HERE
+PAYPAL_WEBHOOK_SECRET=YOUR_SANDBOX_WEBHOOK_SIGNING_SECRET_GOES_HERE
+
+<span class="text-gray-400"># PayPal Sandbox Product ID for your plans (e.g., "Fruitful™ Global Subscriptions" in Sandbox)</span>
+PAYPAL_LIVE_PRODUCT_ID=YOUR_SANDBOX_PROD-ID_HERE <span class="text-gray-400"># Example: PROD-ABCDEF1234567890 (a sandbox product ID)</span>
+
+<span class="text-gray-400"># Session Secret for Express.js sessions.</span>
+SESSION_SECRET=a_strong_random_secret_for_development_and_testing_ONLY_CHANGE_THIS_FOR_PROD
+
+<span class="text-gray-400"># Frontend URL for local development for return/cancel URLs in PayPal flow</span>
+FRONTEND_URL=http://localhost:3000 <span class="text-gray-400"># Or the port your local frontend is running on.</span></code></pre>
+
+            <h3>5.3. <code>admin_panel.html</code> Updates</h3>
+            <p>This file handles the frontend display and PayPal SDK loading.</p>
+            <ol>
+                <li><strong>Action</strong>: Open <code>public/admin_panel.html</code>.</li>
+                <li><strong>Key Update 1: PayPal SDK Client ID (Line ~754)</strong>:
+                    <ul>
+                        <li><strong>Find</strong>: The script tag with <code>client-id=AY-WQUCahAP77PZrkYkct446AM2Z9x8q-BNBHLNJY</code>.</li>
+                        <li><strong>Replace with</strong>:
+                            <pre><code>&lt;script src="[https://www.paypal.com/sdk/js?client-id=](https://www.paypal.com/sdk/js?client-id=)<span class="text-blue-300">BAAThS_oBJJ22PM5R1nVJpXoSl9c3si7TJ3ICJBTht_PAFcRprbXkTv4_wqrG37kkAjUcv3tKBOxnUGQ98</span>&amp;currency=ZAR&amp;vault=true&amp;intent=subscription" onerror="document.getElementById('loading-message').textContent='Error loading PayPal SDK. Check network.'; console.error('PayPal SDK failed to load.');"&gt;&lt;/script&gt;</code></pre>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Key Update 2: <code>YOUR_PAYPAL_PRODUCT_ID</code> (Line ~950)</strong>:
+                    <ul>
+                        <li><strong>Find</strong>: <code>const YOUR_PAYPAL_PRODUCT_ID = 'P-07F980334R518562XNBHLNJY';</code></li>
+                        <li><strong>Replace with</strong>: <code>const YOUR_PAYPAL_PRODUCT_ID = 'PROD-2NC51830JC183315X';</code></li>
+                    </ul>
+                </li>
+                <li><strong>Key Update 3: <code>PAYPAL_PLAN_IDS</code> (Lines ~954-972)</strong>:
+                    <ul>
+                        <li><strong>Initial Content</strong>:
+                            <pre><code>const PAYPAL_PLAN_IDS = {
+    "Agriculture___Biotech_Starter_Package_MONTHLY": "P-1RR589971C5386049NBI327Q", // Manually obtained Live Plan ID
+    // All other Live Plan IDs (P-) will be pasted here after automated deployment.
+    // Example: "Agriculture___Biotech_Starter_Package_ANNUAL": "P-YOUR_AUTO_GENERATED_ID_HERE",
+    // etc. for all tiers and sectors
+};</code></pre>
+                        </li>
+                        <li><strong>Later Action</strong>: This object will be **manually updated** after automated plan deployment (Step 7.4) to include all the unique Live <code>P-</code> IDs generated by the <code>v2.0</code> plan naming strategy.</li>
+                    </ul>
+                </li>
+                <li><strong>Action</strong>: **Save** <code>public/admin_panel.html</code>.</li>
+                <div class="success-box">
+                    <strong>Status</strong>: All <code>admin_panel.html</code> changes were successfully applied locally.
+                </div>
+            </ol>
+
+            <h3>5.4. <code>api/index.js</code> Updates</h3>
+            <p>This is your backend serverless function where the core PayPal API logic resides. This file has received several critical updates.</p>
+            <ol>
+                <li><strong>Action</strong>: Open <code>api/index.js</code>.</li>
+                <li><strong>Key Update 1: <code>node-fetch</code> Dynamic Import (Line ~5, 330, 410)</strong>:
+                    <ul>
+                        <li><strong>Find (original declaration)</strong>: <code>const fetch = require('node-fetch');</code> (Remove this line).</li>
+                        <li><strong>Implementation</strong>: <code>fetch</code> is now dynamically imported where used in async functions.
+                            <pre><code><span class="text-gray-400">// Inside generateAccessToken function (around line 50)</span>
+const { default: fetch } = await import('node-fetch');
+
+<span class="text-gray-400">// Inside callPayPalApi function (around line 100)</span>
+const { default: fetch } = await import('node-fetch');</code></pre>
+                        </li>
+                        <li><strong>Challenge Encountered</strong>: <code>ERR_REQUIRE_ESM</code> due to <code>node-fetch</code> being an ES Module. This fix resolves that.</li>
+                    </ul>
+                </li>
+                <li><strong>Key Update 2: `module.exports = app;` (Line ~490)</strong>:
+                    <ul>
+                        <li><strong>Action</strong>: Add this line at the very end of the file, just before the commented <code>/* const PORT = ... */</code> block.
+                            <pre><code><span class="text-gray-400">// ... (end of your app.post('/api', ...) route)</span>
+
+<span class="text-blue-300">module.exports = app;</span> <span class="text-gray-400">// CRITICAL: This exports your Express app for Vercel</span>
+
+<span class="text-gray-400">// For local testing, you might want to uncomment the listen block...</span></code></pre>
+                        </li>
+                        <li><strong>Challenge Encountered</strong>: "No exports found in module" error from Vercel if missing. This fix resolves that.</li>
+                    </ul>
+                </li>
+                <li><strong>Key Update 3: Plan Naming Workaround (Lines ~300-305)</strong>:
+                    <ul>
+                        <li><strong>Purpose</strong>: To force PayPal to generate *new, unique* <code>P-</code> IDs, bypassing its incorrect "EXISTING" status for similarly named plans.
+                        <li><strong>Find</strong>:
+                            <pre><code>const monthlyPlanName = `${sectorDisplayName} ${tierName} Package (Monthly)`;
+const annualPlanName = `${sectorDisplayName} ${tierName} Package (Annual)`;</code></pre>
+                        </li>
+                        <li><strong>Replace with</strong>:
+                            <pre><code>const monthlyPlanName = `${sectorDisplayName} ${tierName} Package (Monthly) v2.0`; <span class="text-gray-400">// Added v2.0 suffix</span>
+const annualPlanName = `${sectorDisplayName} ${tierName} Package (Annual) v2.0`; <span class="text-gray-400">// Added v2.0 suffix</span></code></pre>
+                        </li>
+                        <li><strong>Challenge Encountered</strong>: PayPal returning same <code>P-</code> ID for distinct plans. This <code>v2.0</code> suffix forces unique IDs.</li>
+                    </ul>
+                </li>
+                <li><strong>Action</strong>: **Save** <code>api/index.js</code>.</li>
+                <div class="success-box">
+                    <strong>Status</strong>: All <code>api/index.js</code> changes were successfully applied locally.
+                </div>
+            </ol>
+
+            <h3>5.5. <code>package.json</code> & <code>vercel.json</code></h3>
+            <p>Ensure these core configuration files are clean and correctly configured.</p>
+            <ul>
+                <li><strong><code>package.json</code></strong>: Verify it matches the <a href="[https://github.com/heyns1000/seedwave/blob/main/package.json](https://github.com/heyns1000/seedwave/blob/main/package.json)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline"><code>corrected_package_json</code></a> immersive document. Ensures dependencies and metadata are clean.</li>
+                <li><strong><code>vercel.json</code></strong>: Verify it matches the <a href="[https://github.com/heyns1000/seedwave/blob/main/main/vercel.json](https://github.com/heyns1000/seedwave/blob/main/main/vercel.json)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline"><code>corrected_vercel_json</code></a> immersive document. Ensures correct Vercel routing and build configurations.</li>
+            </ul>
+            <div class="success-box">
+                <strong>Status</strong>: <code>package.json</code> and <code>vercel.json</code> are confirmed correct.
+            </div>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>6. Git & Vercel Deployment Workflow</h2>
+            <p>This section outlines the precise terminal commands to synchronize your project with GitHub and trigger Vercel deployments. Staff should execute these from the <code>seedwave</code> project directory in Terminal.</p>
+
+            <h3>6.1. Pull Latest Remote Changes</h3>
+            <pre><code><span class="text-blue-300">git pull origin main</span></code></pre>
+            <p><strong>Purpose</strong>: Ensures your local copy is up-to-date with any changes pushed directly to GitHub (e.g., via GitHub's web interface or Vercel's automated updates), preventing push rejections.</p>
+            <div class="terminal-output">
+                samantha@Samanthas-iMac seedwave % git pull origin main<br>
+                remote: Enumerating objects: 5, done.<br>
+                ...<br>
+                Updating afb8c18..6150b0c<br>
+                README.md | 2 --<br>
+                1 file changed, 2 deletions(-)<br>
+                samantha@Samanthas-iMac seedwave %
+            </div>
+            <div class="success-box">
+                <strong>Status</strong>: Local repository successfully synchronized with remote.
+            </div>
+
+            <h3>6.2. Add All Modified Files to Staging</h3>
+            <pre><code><span class="text-blue-300">git add .</span></code></pre>
+            <p><strong>Purpose</strong>: Prepares all local changes (including code updates and content changes) for the next commit.</p>
+            <div class="terminal-output">
+                samantha@Samanthas-iMac seedwave % git add .<br>
+                samantha@Samanthas-iMac seedwave %
+            </div>
+            <div class="success-box">
+                <strong>Status</strong>: Changes successfully staged.
+            </div>
+
+            <h3>6.3. Commit the Changes</h3>
+            <pre><code><span class="text-blue-300">git commit -m "Comprehensive deployment: Frontend, Backend fixes and Plan Naming V2.0"</span></code></pre>
+            <p><strong>Purpose</strong>: Saves your current local state to your Git history.</p>
+            <div class="terminal-output">
+                samantha@Samanthas-iMac seedwave % git commit -m "Comprehensive deployment: Frontend, Backend fixes and Plan Naming V2.0"<br>
+                [main f67b176] Comprehensive deployment: Frontend, Backend fixes and Plan Naming V2.0<br>
+                1 file changed, 1 insertion(+), 1 deletion(-)<br>
+                samantha@Samanthas-iMac seedwave %
+            </div>
+            <div class="success-box">
+                <strong>Status</strong>: Changes successfully committed locally.
+            </div>
+
+            <h3>6.4. Push the Changes to GitHub (and Trigger Vercel Deployment)</h3>
+            <pre><code><span class="text-blue-300">git push origin main --force</span></code></pre>
+            <p><strong>Purpose</strong>: This is the critical step to get your code live. It pushes your local branch to GitHub, which automatically triggers a new Vercel deployment. `--force` is used to ensure the remote matches your local state, overcoming any previous sync issues.</p>
+            <div class="terminal-output">
+                samantha@Samanthas-iMac seedwave % git push origin main --force<br>
+                Enumerating objects: 5264, done.<br>
+                Counting objects: 100% (5264/5264), done.<br>
+                ...<br>
+                To [https://github.com/heyns1000/seedwave.git](https://github.com/heyns1000/seedwave.git)<br>
+                * [new branch]      main -> main<br>
+                samantha@Samanthas-iMac seedwave %
+            </div>
+            <div class="success-box">
+                <strong>Status</strong>: Code successfully pushed to GitHub. A new Vercel deployment is now triggered.
+            </div>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>7. Deploying Live PayPal Subscription Plans (from Admin Portal UI)</h2>
+            <p>Once your Vercel deployment is <strong>Ready</strong>, you can use your Admin Portal to create all your Live PayPal Subscription Plans automatically.</p>
+
+            <h3>7.1. Monitor Vercel Deployment Status</h3>
+            <p>Go to your Vercel Dashboard and navigate to your <code>seedwave</code> project. Wait for the new deployment to complete and show a status of "Ready."</p>
+            <div class="terminal-output">
+                (Example Vercel Dashboard Status)<br>
+                Status: Ready<br>
+                Source: main -> f67b176 (or your latest commit hash)<br>
+                Domains: seedwave.faa.zone, ...
+            </div>
+            <div class="success-box">
+                <strong>Status</strong>: Vercel deployment confirmed "Ready."
+            </div>
+
+            <h3>7.2. Access Deployed Admin Portal (Perform an EXTREME Hard Refresh!)</h3>
+            <p>Go to your live Admin Portal URL in your web browser: <a href="[https://seedwave.faa.zone/admin](https://seedwave.faa.zone/admin)" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:underline"><code>[https://seedwave.faa.zone/admin](https://seedwave.faa.zone/admin)</code></a></p>
+            <p>Perform a **VERY AGGRESSIVE HARD REFRESH** to ensure your browser loads the absolute latest <code>admin_panel.html</code> file and clears all cache:</p>
+            <ul>
+                <li><strong>Chrome/Firefox (Mac)</strong>: Hold <code>Cmd + Shift</code> and press <code>R</code> repeatedly.</li>
+                <li><strong>Safari (Mac)</strong>: Press <code>Cmd + Option + E</code> (to empty caches), then <code>Cmd + R</code>.</li>
+                <li><strong>General / Ultimate Method</strong>: Open Developer Tools (F12), go to the "Network" tab, then right-click the refresh button in the browser toolbar and choose "Empty Cache and Hard Reload."</li>
+                <li><strong>Recommended</strong>: Also try opening the URL in a **new Incognito/Private window** to bypass all caching.</li>
+            </ul>
+            <div class="success-box">
+                <strong>Status</strong>: Admin Portal hard refreshed.
+            </div>
+
+            <h3>7.3. Initiate Plan Deployment for Each Sector</h3>
+            <p>Navigate to the "Global Index" section within your Admin Portal. Click the "**Deploy Plan**" button for the sectors whose plans you wish to create in the live PayPal environment.</p>
+
+            <h3>7.4. Monitor Console for Live Plan IDs (CRITICAL STEP)</h3>
+            <p>Keep your browser's Developer Console (F12) open to the "Console" tab. Observe the output carefully.</p>
+            <div class="error-box">
+                <strong>Challenge Previously Encountered</strong>: PayPal API returned `id: 'P-1RR589971C5386049NBI327Q', status: 'EXISTING'` for all distinct plan names. This means PayPal was incorrectly associating multiple plan names with one `plan_id`.
+            </div>
+            <div class="success-box">
+                <strong>Expected Outcome NOW (SUCCESS!)</strong>:
+                <ul>
+                    <li>The PayPal SDK should load without `400 Bad Request` errors.</li>
+                    <li>The backend (`api/index.js`) should execute without `ERR_REQUIRE_ESM` or `SyntaxError`.</li>
+                    <li>When you click "Deploy Plan", you should finally see a log like:
+                        <pre><code>console.log("Deployed Plans (LIVE):", result.createdPlans);</code></pre>
+                        followed by an array where each object has a **unique `id` (P- ID)** for every distinct plan name (`...v2.0`). Their status should be `ACTIVE` or `CREATED`.
+                        <pre><code><span class="text-blue-300">Deployed Plans (LIVE): (6) [{…}, {…}, {…}, {…}, {…}, {…}]</span>
+<span class="text-blue-300">0: {name: '🌱 Agriculture & Biotech Starter Package (Monthly) v2.0', id: 'P-UNIQUE_ID_1', status: 'ACTIVE'}</span>
+<span class="text-blue-300">1: {name: '🌱 Agriculture & Biotech Starter Package (Annual) v2.0', id: 'P-UNIQUE_ID_2', status: 'ACTIVE'}</span>
+<span class="text-blue-300">2: {name: '🌱 Agriculture & Biotech Pro Package (Monthly) v2.0', id: 'P-UNIQUE_ID_3', status: 'ACTIVE'}</span>
+<span class="text-blue-300">3: {name: '🌱 Agriculture & Biotech Pro Package (Annual) v2.0', id: 'P-UNIQUE_ID_4', status: 'ACTIVE'}</span>
+<span class="text-blue-300">4: {name: '🌱 Agriculture & Biotech Enterprise Package (Monthly) v2.0', id: 'P-UNIQUE_ID_5', status: 'ACTIVE'}</span>
+<span class="text-blue-300">5: {name: '🌱 Agriculture & Biotech Enterprise Package (Annual) v2.0', id: 'P-UNIQUE_ID_6', status: 'ACTIVE'}</span></code></pre>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="admin-panel-card">
+            <h2>8. Final <code>admin_panel.html</code> Update & Final Deployment</h2>
+            <p>After all your Live PayPal Plans have been successfully created via the Admin Portal and you have copied their unique <code>P-</code> IDs:</p>
+
+            <h3>8.1. Copy Generated Live Plan IDs</h3>
+            <p>Copy the *entire* <code>createdPlans</code> array (the object containing all the plan names and their new <code>P-</code> IDs) that is logged in your console.</p>
+
+            <h3>8.2. Update Local <code>admin_panel.html</code></h3>
+            <p>Open your **LOCAL** <code>public/admin_panel.html</code> file in your code editor.</p>
+            <p>Locate the <code>PAYPAL_PLAN_IDS</code> object (Lines ~954-972 in your updated <code>admin_panel.html</code>). **Manually paste those new Live <code>P-</code> IDs you just copied** from the console output into this object.</p>
+            <p><strong>Carefully match each <code>P-</code> ID to its correct <code>planKey</code> string.</strong> The <code>planKey</code> will include the <code>v2.0</code> suffix (e.g., <code>"Agriculture___Biotech_Starter_Package_ANNUAL_v2.0"</code>).</p>
+            <pre><code>const PAYPAL_PLAN_IDS = {
+    "Agriculture___Biotech_Starter_Package_MONTHLY": "P-1RR589971C5386049NBI327Q", <span class="text-gray-400">// Keep the manually obtained one for consistency if it's there</span>
+    "Agriculture___Biotech_Starter_Package_ANNUAL_v2.0": "P-NEW_LIVE_AGRI_STARTER_ANNUAL_ID_FROM_CONSOLE",
+    "Agriculture___Biotech_Pro_Package_MONTHLY_v2.0": "P-NEW_LIVE_AGRI_PRO_MONTHLY_ID_FROM_CONSOLE",
+    "Agriculture___Biotech_Pro_Package_ANNUAL_v2.0": "P-NEW_LIVE_AGRI_PRO_ANNUAL_ID_FROM_CONSOLE",
+    "Agriculture___Biotech_Enterprise_Package_MONTHLY_v2.0": "P-NEW_LIVE_AGRI_ENTERPRISE_MONTHLY_ID_FROM_CONSOLE",
+    "Agriculture___Biotech_Enterprise_Package_ANNUAL_v2.0": "P-NEW_LIVE_AGRI_ENTERPRISE_ANNUAL_ID_FROM_CONSOLE",
+
+    <span class="text-gray-400">// ... add other sectors' v2.0 plan IDs here after their successful deployment ...</span>
+};</code></pre>
+            <p><strong>Action</strong>: **Save** your <code>public/admin_panel.html</code> file.</p>
+
+            <h3>8.3. Commit & Push Final Frontend Changes</h3>
+            <pre><code><span class="text-blue-300">git add public/admin-panel.html</span>
+<span class="text-blue-300">git commit -m "Updated PAYPAL_PLAN_IDS with all unique live PayPal Plan IDs"</span>
+<span class="text-blue-300">git push origin main</span></code></pre>
+            <p><strong>Purpose</strong>: This last push will update your live frontend. Once this final Vercel deployment is "Ready," your "Subscribe Now" buttons on your live website will be fully functional, allowing customers to subscribe to your live plans.</p>
+        </section>
+
+    </main>
+
+    <footer class="enhanced-footer text-center py-10 mt-16">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <div class="text-lg footer-logo-text">FAA.ZONE™</div>
+                <p class="text-sm">ScrollGrid · PulseTrade Certified · TreatyMesh Validated</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Terms</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a>
+                </div>
+            </div>
+            <p class="text-xs mt-6">© 2025 Fruitful Holdings (Pty) Ltd. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

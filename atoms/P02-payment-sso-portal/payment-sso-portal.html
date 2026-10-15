@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Global Payment & SSO Portal</title>
+    <!-- PayPal SDK script -->
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Variables for theming */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #121212;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e1e1e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Fruitful primary blue */
+            --minenest-color: #D2691E; /* Chocolate */
+            --minenest-accent-color: #E97451; /* Burnt Sienna */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+            /* PayPal colors are not needed here as SDK renders buttons directly */
+        }
+        /* Base body styles with smooth transitions for theme changes */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        /* Light mode specific styles */
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+        /* Container for content centering and padding */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        /* Header Bar Styling */
+        .top-header {
+            background-color: #1a1a1c;
+            padding: 0.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color-dark);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .light-mode .top-header {
+            background-color: #ffffff;
+            border-bottom-color: var(--border-color-light);
+        }
+        .top-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-logo a {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text-color-dark);
+            text-decoration: none;
+        }
+        .light-mode .header-logo a {
+            color: var(--text-color-light);
+        }
+        .header-logo span {
+            color: var(--primary-color); /* Fruitful branding color */
+        }
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-controls button {
+            background-color: var(--card-bg-dark); /* Ensure dark background by default */
+            border: 1px solid var(--border-color-dark);
+            color: var(--muted-text-dark); /* Ensure dark text by default */
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        /* Style for select options, ensuring they are readable */
+        .theme-controls select option {
+            background-color: #ffffff !important; /* Ensure options have white background */
+            color: #1d1d1f !important; /* Ensure options have dark text */
+        }
+        /* Only apply light-mode styles to buttons, as select is now fixed */
+        .light-mode .theme-controls button {
+             background-color: var(--card-bg-light);
+             border-color: var(--border-color-light);
+             color: var(--muted-text-light);
+        }
+        .theme-controls button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        /* Section padding and border styles */
+        .section-padding { padding: 80px 20px; border-bottom: 1px solid var(--border-color-dark); }
+        .light-mode .section-padding { border-bottom-color: var(--border-color-light); }
+        .section-padding:last-of-type { border-bottom: none; }
+        .section-title { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 50px; }
+        
+        /* Internal Portal Hero Section (Blue gradient) */
+        .internal-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005bb5 100%); /* Blue gradient for internal theme */
+            color: white;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(0, 113, 227, 0.4);
+        }
+        .internal-hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+        .internal-hero p { font-size: 1.5rem; max-width: 900px; margin: 0 auto 40px; line-height: 1.5; color: rgba(255, 255, 255, 0.9); }
+        
+        /* MineNest Hero section specific styles (Orange/Brown gradient) */
+        .minenest-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, var(--minenest-color) 0%, var(--minenest-accent-color) 100%);
+            color: white;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 10px 30px rgba(210, 105, 30, 0.4);
+        }
+        .minenest-hero h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+        .minenest-hero p { font-size: 1.5rem; max-width: 900px; margin: 0 auto 40px; line-height: 1.5; color: rgba(255, 255, 255, 0.9); }
+
+        /* Info card styles (for SSO/Payment Info) */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .info-card { background-color: var(--card-bg-dark); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color-dark); text-align: left; }
+        .light-mode .info-card { background-color: var(--card-bg-light); border-color: var(--border-color-light); }
+        .info-card .icon { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px; }
+        .info-card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+        .info-card p { font-size: 1rem; color: var(--muted-text-dark); line-height: 1.6; }
+        .light-mode .info-card p { color: var(--muted-text-light); }
+
+        /* Feature grid layout (for MineNest features) */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background-color: var(--card-bg-dark); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color-dark); text-align: left; }
+        .light-mode .feature-card { background-color: var(--card-bg-light); border-color: var(--border-color-light); }
+        .feature-card .icon { font-size: 2.5rem; color: var(--minenest-accent-color); margin-bottom: 15px; }
+        .feature-card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+        .feature-card p { font-size: 1rem; color: var(--muted-text-dark); line-height: 1.6; }
+        .light-mode .feature-card p { color: var(--muted-text-light); }
+
+        /* Pricing grid layout (for MineNest pricing) */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 50px; align-items: stretch; }
+        .pricing-card { background-color: var(--card-bg-dark); padding: 40px; border-radius: 16px; display: flex; flex-direction: column; border: 1px solid var(--border-color-dark); }
+        .light-mode .pricing-card { background-color: var(--card-bg-light); border-color: var(--border-color-light); }
+        .pricing-card h3 { font-size: 1.8rem; font-weight: 700; text-align: center; }
+        .pricing-card .price { font-size: 2.8rem; font-weight: 800; text-align: center; margin: 15px 0; }
+        .pricing-card .price-description { font-size: 1rem; text-align: center; color: var(--muted-text-dark); flex-grow: 1; margin-bottom: 20px; }
+        .light-mode .pricing-card .price-description { color: var(--muted-text-light); }
+        .pricing-card ul { list-style: none; padding: 0; margin-bottom: 30px; flex-grow: 1; }
+        .pricing-card ul li { font-size: 1rem; margin-bottom: 10px; display: flex; align-items: center; }
+        .pricing-card ul li i { margin-right: 10px; width: 20px; }
+        .paypal-button-container { margin-top: auto; }
+        
+        /* Gemini Section Styles */
+        /* Internal Gemini Section */
+        #internal-gemini-section {
+            background-color: var(--card-bg-dark);
+        }
+        .light-mode #internal-gemini-section {
+            background-color: var(--card-bg-light);
+        }
+        #internal-gemini-input {
+            background-color: #3a3a3e;
+            border-color: var(--border-color-dark);
+        }
+        .light-mode #internal-gemini-input {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+            color: var(--text-color-light);
+        }
+        #internal-gemini-button {
+            background-color: var(--primary-color); /* Blue for internal portal */
+        }
+        #internal-gemini-button:hover {
+            background-color: #005bb5; /* Darker blue on hover */
+        }
+        #internal-gemini-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #internal-gemini-result {
+            background-color: var(--bg-color-dark);
+            border: 1px dashed var(--border-color-dark);
+            min-height: 150px;
+        }
+        .light-mode #internal-gemini-result {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+        }
+
+        /* MineNest Gemini Section */
+        #minenest-gemini-section {
+            background-color: var(--card-bg-dark);
+        }
+        .light-mode #minenest-gemini-section {
+            background-color: var(--card-bg-light);
+        }
+        #minenest-gemini-input {
+            background-color: #3a3a3e;
+            border-color: var(--border-color-dark);
+        }
+        .light-mode #minenest-gemini-input {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+            color: var(--text-color-light);
+        }
+        #minenest-gemini-button {
+            background-color: var(--minenest-accent-color); /* MineNest accent color */
+        }
+        #minenest-gemini-button:hover {
+            background-color: var(--minenest-color); /* MineNest color on hover */
+        }
+        #minenest-gemini-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #minenest-gemini-result {
+            background-color: var(--bg-color-dark);
+            border: 1px dashed var(--border-color-dark);
+            min-height: 150px;
+        }
+        .light-mode #minenest-gemini-result {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+        }
+
+        /* Currency Converter Section */
+        #currency-converter-section .currency-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #currency-converter-section select,
+        #currency-converter-section input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: #3a3a3e;
+            border: 1px solid var(--border-color-dark);
+            color: var(--text-color-dark);
+            font-size: 1rem;
+        }
+        .light-mode #currency-converter-section select,
+        .light-mode #currency-converter-section input[type="number"] {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+            color: var(--text-color-light);
+        }
+
+        #currency-converter-section select option {
+            background-color: #ffffff !important;
+            color: #1d1d1f !important;
+        }
+
+        #currency-converter-section button {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+        #currency-converter-section button:hover {
+            background-color: #005bb5;
+        }
+        #currency-converter-section button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #currency-converter-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px dashed var(--border-color-dark);
+            border-radius: 0.5rem;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .light-mode #currency-converter-result {
+            background-color: #e8e8ed;
+            border-color: #d1d1d1;
+        }
+
+        @media (min-width: 640px) {
+            #currency-converter-section .currency-input-group {
+                flex-direction: row;
+                align-items: center;
+            }
+            #currency-converter-section input[type="number"],
+            #currency-converter-section select {
+                flex: 1;
+            }
+            #currency-converter-section button {
+                width: auto;
+            }
+        }
+
+        /* Toggle switch for annual/monthly pricing */
+        .toggle-switch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: var(--card-bg-dark);
+            border-radius: 20px;
+            padding: 5px;
+            border: 1px solid var(--border-color-dark);
+        }
+        .light-mode .toggle-switch-container {
+            background-color: var(--card-bg-light);
+            border-color: var(--border-color-light);
+        }
+        .toggle-switch-container button {
+            background-color: transparent;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--muted-text-dark);
+        }
+        .light-mode .toggle-switch-container button {
+            color: var(--muted-text-light);
+        }
+        .toggle-switch-container button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <header class="top-header">
+        <div class="container">
+            <div class="header-logo">
+                <a href="#">Fruitful <span>Internal Portal</span></a>
+            </div>
+            <div class="controls-container">
+                <div class="theme-controls">
+                    <button id="theme-day-btn">☀️</button>
+                    <button id="theme-night-btn">🌙</button>
+                </div>
+                <div class="language-control">
+                    <select id="languageSwitcher" class="theme-controls"></select>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <!-- Internal Portal Hero Section -->
+        <section id="internal-overview" class="internal-hero">
+            <div class="container">
+                <h1 data-lang-key="internal_page_title">Welcome to the Fruitful Global Payment & SSO Portal</h1>
+                <p data-lang-key="internal_page_description">Your central hub for secure access to company resources and streamlined payment information. This portal ensures a seamless experience for all interns, developers, and staff.</p>
+            </div>
+        </section>
+        
+        <!-- SSO Information Section -->
+        <section id="sso-info" class="section-padding">
+            <div class="container">
+                <h2 data-lang-key="sso_title" class="section-title">🔐 Single Sign-On (SSO) Explained</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-lock icon"></i>
+                        <h3 data-lang-key="sso1_title">Enhanced Security</h3>
+                        <p data-lang-key="sso1_desc">SSO reduces password fatigue and strengthens security by minimizing the number of credentials you need to manage, making it harder for unauthorized access.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-fingerprint icon"></i>
+                        <h3 data-lang-key="sso2_title">Simplified Access</h3>
+                        <p data-lang-key="sso2_desc">Access all your Fruitful applications and services with a single set of credentials, saving you time and improving your daily workflow efficiency.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-cogs icon"></i>
+                        <h3 data-lang-key="sso3_title">Streamlined Onboarding</h3>
+                        <p data-lang-key="sso3_desc">New team members can get up and running faster with simplified account setup across all necessary internal systems, reducing setup time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Information Section -->
+        <section id="payment-info" class="section-padding">
+            <div class="container">
+                <h2 data-lang-key="payment_title" class="section-title">💰 Internal Payment Information</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-money-check-alt icon"></i>
+                        <h3 data-lang-key="payment1_title">Expense Reimbursement</h3>
+                        <p data-lang-key="payment1_desc">Submit and track your business expenses for reimbursement through our integrated finance portal. Ensure all receipts are attached for quick processing.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-credit-card icon"></i>
+                        <h3 data-lang-key="payment2_title">Corporate Card Management</h3>
+                        <p data-lang-key="payment2_desc">Information on managing your corporate credit card, including policies, spending limits, and reporting procedures. Contact finance for new card requests.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-file-invoice-dollar icon"></i>
+                        <h3 data-lang-key="payment3_title">Payroll & Benefits</h3>
+                        <p data-lang-key="payment3_desc">Access your pay stubs, tax documents, and benefits information securely. Details on compensation cycles and benefit enrollment are available here.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gemini Internal Query Section -->
+        <section id="internal-gemini-section" class="section-padding">
+            <div class="container max-w-3xl mx-auto">
+                <h2 data-lang-key="internal_gemini_title" class="section-title">Ask Our AI Assistant</h2>
+                <p data-lang-key="internal_gemini_desc" class="text-center -mt-8 mb-6">Enter your query below to get instant information. For specific Fruitful internal data, please contact the relevant department.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="internal-gemini-input" class="w-full p-3 rounded-lg text-lg" data-lang-key="internal_gemini_placeholder" placeholder="e.g., How do I request time off?">
+                    <button id="internal-gemini-button" class="bg-blue-700 text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        <span data-lang-key="internal_gemini_button">✨ Get Info</span>
+                    </button>
+                </div>
+                <div id="internal-gemini-result" class="mt-6 p-6 rounded-lg">
+                    <p id="internal-gemini-result-text" class="text-lg" data-lang-key="internal_gemini_result_placeholder">Your answer will appear here...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MineNest Hero Section -->
+        <section id="minenest-overview" class="minenest-hero">
+            <div class="container">
+                <h1 data-lang-key="minenest_page_title">🚀 MineNest™ Core Protocol</h1>
+                <p data-lang-key="minenest_page_description">A powerful FAA.ZONE framework empowering the ⛏️ Mining & Resources sector with advanced automation and data management. It connects effortlessly to the PulseGrid for optimized workflow and compliance.</p>
+            </div>
+        </section>
+        <!-- MineNest Features Section -->
+        <section id="minenest-features" class="section-padding">
+            <div class="container">
+                <h2 data-lang-key="features_title" class="section-title">🎛️ MineNest™ Key Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-sitemap icon"></i>
+                        <h3 data-lang-key="feature1_title">Professional Services Mesh</h3>
+                        <p data-lang-key="feature1_desc">Direct integration with the FAA 🧾 Professional Services Mesh for seamless workflow and billing.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-sync-alt icon"></i>
+                        <h3 data-lang-key="feature2_title">Advanced Data Sync</h3>
+                        <p data-lang-key="feature2_desc">High-speed, reliable data synchronization with the <strong>NestTrack</strong> subnode for real-time asset tracking.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt icon"></i>
+                        <h3 data-lang-key="feature3_title">Real-time Compliance</h3>
+                        <p data-lang-key="feature3_desc">Continuous compliance validation via <strong>VaultLink™</strong>, specifically tailored for the mining industry's strict regulations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-expand-arrows-alt icon"></i>
+                        <h3 data-lang-key="feature4_title">Scalable Architecture</h3>
+                        <p data-lang-key="feature4_desc">Robust infrastructure designed for massive scalability, supporting up to x18 node expansion.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line icon"></i>
+                        <h3 data-lang-key="feature5_title">Predictive Analytics</h3>
+                        <p data-lang-key="feature5_desc">Leverage our advanced predictive analytics module to forecast performance and maintenance needs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-code icon"></i>
+                        <h3 data-lang-key="feature6_title">Seamless API Access</h3>
+                        <p data-lang-key="feature6_desc">Full API access ensures seamless interoperability with your existing systems and third-party tools.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- MineNest Gemini Use Case Section -->
+        <section id="minenest-gemini-section" class="section-padding">
+            <div class="container max-w-3xl mx-auto">
+                <h2 data-lang-key="gemini_title" class="section-title">Discover MineNest™ for Your Operation</h2>
+                <p data-lang-key="gemini_desc" class="text-center -mt-8 mb-6">Enter your type of mining operation below (e.g., "underground gold mine", "surface coal operation") to see a custom-generated use case of how MineNest™ can benefit you.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="minenest-gemini-input" class="w-full p-3 rounded-lg text-lg" data-lang-key="gemini_placeholder" placeholder="e.g., Open-pit copper mine">
+                    <button id="minenest-gemini-button" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        <span data-lang-key="gemini_button">✨ Generate Use Case</span>
+                    </button>
+                </div>
+                <div id="minenest-gemini-result" class="mt-6 p-6 rounded-lg">
+                    <p id="minenest-gemini-result-text" class="text-lg" data-lang-key="gemini_result_placeholder">Your personalized use case will appear here...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- MineNest Pricing Section -->
+        <section id="minenest-pricing" class="section-padding">
+            <div class="container">
+                <h2 data-lang-key="pricing_title" class="section-title">💳 MineNest™ Pricing Structure</h2>
+                <div class="toggle-switch-container">
+                    <button id="monthly-toggle" class="active" data-lang-key="monthly_option_text">Monthly</button>
+                    <button id="annual-toggle" data-lang-key="annual_option_text">Annual (15% off)</button>
+                </div>
+                <div class="currency-toggle-container flex justify-center items-center gap-4 mb-8">
+                    <label for="pricing-currency-select" class="text-lg font-medium" data-lang-key="select_currency_label">Display Prices In:</label>
+                    <select id="pricing-currency-select" class="p-2 rounded-lg text-lg"></select>
+                </div>
+                <div class="pricing-grid">
+                    <!-- Pricing cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Currency Converter Section -->
+        <section id="currency-converter-section" class="section-padding">
+            <div class="container max-w-3xl mx-auto">
+                <h2 data-lang-key="currency_converter_title" class="section-title">💱 Global Currency Converter</h2>
+                <p data-lang-key="currency_converter_desc" class="text-center -mt-8 mb-6">Convert any currency globally using real-time exchange rates. Please note, this tool is for informational purposes only and uses a third-party API.</p>
+                
+                <div class="currency-input-group">
+                    <input type="number" id="amount-input" placeholder="Amount" value="1" min="0.01" step="0.01" class="w-full p-3 rounded-lg text-lg">
+                    <select id="from-currency-select" class="w-full p-3 rounded-lg text-lg"></select>
+                    <i class="fas fa-exchange-alt text-2xl mx-4 text-gray-400"></i>
+                    <select id="to-currency-select" class="w-full p-3 rounded-lg text-lg"></select>
+                    <button id="convert-button" class="bg-blue-700 text-white font-bold py-3 px-6 rounded-lg whitespace-nowrap">
+                        <span data-lang-key="convert_button">Convert</span>
+                    </button>
+                </div>
+                <div id="currency-converter-result" class="mt-6 p-6 rounded-lg">
+                    <p id="converted-result-text" class="text-lg" data-lang-key="currency_result_placeholder">Converted amount will appear here...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Global Footer -->
+    <footer class="py-8 px-6 md:px-12 text-center bg-f5f5f7 text-gray-600 border-t border-e8e8ed dark:bg-1a1a1a dark:text-gray-400 dark:border-333">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.zone/about.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', () => {
+            // Define translations for multiple languages
+            const translations = {
+                en: {
+                    "lang_name": "English",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 MineNest™ Core Protocol",
+                    "minenest_page_description": "A powerful FAA.ZONE framework empowering the ⛏️ Mining & Resources sector with advanced automation and data management. It connects effortlessly to the PulseGrid for optimized workflow and compliance.",
+                    "features_title": "🎛️ MineNest™ Key Features",
+                    "starter_title": "⚙️ Starter Node", "monthly_tag": "/mo", "annual_tag": "/yr", "starter_desc": "Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.", "starter_f1": "Essential features", "starter_f2": "Basic data sync", "starter_f3": "Community support",
+                    "pro_title": "🚀 Pro Grid", "pro_desc": "Designed for growing firms needing advanced capabilities. Includes 7 core features and enhanced performance.", "pro_f1": "All Starter Features", "pro_f2": "Advanced features", "pro_f3": "High-volume data processing", "pro_f4": "Expanded analytics", "pro_f5": "Priority support",
+                    "enterprise_title": "🌐 Enterprise Omni-Sync", "custom_price": "Custom", "enterprise_desc": "For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.", "enterprise_f1": "All Pro Features", "enterprise_f2": "Full VaultMesh access", "enterprise_f3": "Custom integrations", "enterprise_f4": "Dedicated account management", "enterprise_f5": "24/7 Premium Support",
+                    "pricing_title": "💳 MineNest™ Pricing Structure",
+                    "feature1_title": "Professional Services Mesh", "feature1_desc": "Direct integration with the FAA 🧾 Professional Services Mesh for seamless workflow and billing.",
+                    "feature2_title": "Advanced Data Sync", "feature2_desc": "High-speed, reliable data synchronization with the <strong>NestTrack</strong> subnode for real-time asset tracking.",
+                    "feature3_title": "Real-time Compliance", "feature3_desc": "Continuous compliance validation via <strong>VaultLink™</strong>, specifically tailored for the mining industry's strict regulations.",
+                    "feature4_title": "Scalable Architecture", "feature4_desc": "Robust infrastructure designed for massive scalability, supporting up to x18 node expansion.",
+                    "feature5_title": "Predictive Analytics", "feature5_desc": "Leverage our advanced predictive analytics module to forecast performance and maintenance needs.",
+                    "feature6_title": "Seamless API Access", "feature6_desc": "Full API access ensures seamless interoperability with your existing systems and third-party tools.",
+                    "gemini_title": "Discover MineNest™ for Your Operation",
+                    "gemini_desc": "Enter your type of mining operation below (e.g., \"underground gold mine\", \"surface coal operation\") to see a custom-generated use case of how MineNest™ can benefit you.",
+                    "gemini_placeholder": "e.g., Open-pit copper mine",
+                    "gemini_button": "✨ Generate Use Case",
+                    "gemini_result_placeholder": "Your personalized use case will appear here...",
+
+                    // Internal Portal specific translations
+                    "internal_page_title": "Welcome to the Fruitful Global Payment & SSO Portal",
+                    "internal_page_description": "Your central hub for secure access to company resources and streamlined payment information. This portal ensures a seamless experience for all interns, developers, and staff.",
+                    "sso_title": "🔐 Single Sign-On (SSO) Explained",
+                    "sso1_title": "Enhanced Security",
+                    "sso1_desc": "SSO reduces password fatigue and strengthens security by minimizing the number of credentials you need to manage, making it harder for unauthorized access.",
+                    "sso2_title": "Simplified Access",
+                    "sso2_desc": "Access all your Fruitful applications and services with a single set of credentials, saving you time and improving your daily workflow efficiency.",
+                    "sso3_title": "Streamlined Onboarding",
+                    "sso3_desc": "New team members can get up and running faster with simplified account setup across all necessary internal systems, reducing setup time.",
+                    "payment_title": "💰 Internal Payment Information",
+                    "payment1_title": "Expense Reimbursement",
+                    "payment1_desc": "Submit and track your business expenses for reimbursement through our integrated finance portal. Ensure all receipts are attached for quick processing.",
+                    "payment2_title": "Corporate Card Management",
+                    "payment2_desc": "Information on managing your corporate credit card, including policies, spending limits, and reporting procedures. Contact finance for new card requests.",
+                    "payment3_title": "Payroll & Benefits",
+                    "payment3_desc": "Access your pay stubs, tax documents, and benefits information securely. Details on compensation cycles and benefit enrollment are available here.",
+                    "internal_gemini_title": "Ask Our AI Assistant",
+                    "internal_gemini_desc": "Enter your query below to get instant information. For specific Fruitful internal data, please contact the relevant department.",
+                    "internal_gemini_placeholder": "e.g., How do I request time off?",
+                    "internal_gemini_button": "✨ Get Info",
+                    "internal_gemini_result_placeholder": "Your answer will appear here...",
+
+                    // Currency Converter translations
+                    "currency_converter_title": "💱 Global Currency Converter",
+                    "currency_converter_desc": "Convert any currency globally using real-time exchange rates. Please note, this tool is for informational purposes only and uses a third-party API.",
+                    "amount_placeholder": "Amount",
+                    "convert_button": "Convert",
+                    "currency_result_placeholder": "Converted amount will appear here...",
+                    "error_fetch_currencies": "Error fetching currencies. Please try again later.",
+                    "error_conversion": "Error performing conversion. Please check your input and try again.",
+                    "invalid_amount": "Please enter a valid amount.",
+                    "currency_not_found": "Currency data not found.",
+                    "monthly_option_text": "Monthly",
+                    "annual_option_text": "Annual (15% off)",
+                    "select_currency_label": "Display Prices In:",
+                    // Global Footer Translations - English
+                    footerPrivacy: 'Privacy', footerTerms: 'Terms', footerContact: 'Contact', footerCopyrightLink: 'Copyright', footerDevelopers: 'Developers', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Fruitful', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'About', footerAccessibility: 'Accessibility', footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.', footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+                },
+                af: {
+                    "lang_name": "Afrikaans",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 MineNest™ Kernprotokol",
+                    "minenest_page_description": "'n Kragtige FAA.ZONE raamwerk vir die ⛏️ Mynbou- en Hulpbronnesektor met gevorderde outomatisering en databestuur. Dit verbind moeiteloos met die PulseGrid vir geoptimaliseerde werkvloei en nakoming.",
+                    "features_title": "🎛️ MineNest™ Sleutelkenmerke",
+                    "starter_title": "⚙️ Beginner Nodus", "monthly_tag": "/maand", "annual_tag": "/jr", "starter_desc": "Ideaal vir klein spanne en loodsprojekte. Toegang tot noodsaaklike kenmerke en veilige basiese data-sinkronisering.", "starter_f1": "Noodsaaklike kenmerke", "starter_f2": "Basiese data sinchronisasie", "starter_f3": "Gemeenskapsondersteuning",
+                    "pro_title": "🚀 Pro Rooster", "pro_desc": "Ontwerp vir groeiende firmas wat gevorderde vermoëns benodig. Sluit 7 kernkenmerke en verbeterde prestasie in.", "pro_f1": "Alle Beginner Kenmerke", "pro_f2": "Gevorderde kenmerke", "pro_f3": "Hoë-volume dataverwerking", "pro_f4": "Uitgebreide analise", "pro_f5": "Prioriteitsondersteuning",
+                    "enterprise_title": "🌐 Onderneming Omni-Sink", "custom_price": "Pasgemaak", "enterprise_desc": "Vir groot organisasies wat volle VaultMesh-toegang, pasgemaakte integrasies en toegewyde hulpbronne benodig.", "enterprise_f1": "Alle Pro Kenmerke", "enterprise_f2": "Volle VaultMesh-toegang", "enterprise_f3": "Pasgemaakte integrasies", "enterprise_f4": "Toegewyde rekeningbestuur", "enterprise_f5": "24/7 Premium Ondersteuning",
+                    "pricing_title": "💳 MineNest™ Prysstruktuur",
+                    "feature1_title": "Professionele Dienstes Netwerk", "feature1_desc": "Direkte integrasie met die FAA 🧾 Professionele Dienstes Netwerk vir naatlose werkvloei en fakturering.",
+                    "feature2_title": "Gevorderde Data-sinkronisering", "feature2_desc": "Hoëspoed, betroubare data-sinkronisering met die <strong>NestTrack</strong> subnodus vir intydse bateopsporing.",
+                    "feature3_title": "Intydse Nakoming", "feature3_desc": "Deurlopende nakomingsvalidering via <strong>VaultLink™</strong>, spesifiek aangepas vir die mynbedryf se streng regulasies.",
+                    "feature4_title": "Skaalbare Argitektuur", "feature4_desc": "Robuuste infrastruktuur ontwerp vir massiewe skaalbaarheid, wat tot x18 nodusuitbreiding ondersteun.",
+                    "feature5_title": "Voorspellende Analise", "feature5_desc": "Benut ons gevorderde voorspellende analise module om prestasie en instandhoudingsbehoeftes te voorspel.",
+                    "feature6_title": "Naatlose API-toegang", "feature6_desc": "Volledige API-toegang verseker naatlose interoperabiliteit met u bestaande stelsels en derdeparty-instrumente.",
+                    "gemini_title": "Ontdek MineNest™ vir Jou Bedryf",
+                    "gemini_desc": "Voer jou tipe mynbedryf hieronder in (bv. \"ondergrondse goudmyn\", \"oppervlakte steenkoolbedryf\") om 'n pasgemaakte gebruiksgeval te sien van hoe MineNest™ jou kan bevoordeel.",
+                    "gemini_placeholder": "bv. Oopgroef-kopermyn",
+                    "gemini_button": "✨ Genereer Gebruiksgeval",
+                    "gemini_result_placeholder": "Jou persoonlike gebruiksgeval sal hier verskyn...",
+
+                    // Internal Portal specific translations
+                    "internal_page_title": "Welkom by die Fruitful Globale Betaling & SSO Portaal",
+                    "internal_page_description": "Jou sentrale spilpunt vir veilige toegang tot maatskappyhulpbronne en vaartbelynde betalingsinligting. Hierdie portaal verseker 'n naatlose ervaring vir alle interns, ontwikkelaars en personeel.",
+                    "sso_title": "🔐 Enkel-Aanmelding (SSO) Verduidelik",
+                    "sso1_title": "Verbeterde Sekuriteit",
+                    "sso1_desc": "SSO verminder wagwoordmoegheid en versterk sekuriteit deur die aantal geloofsbriewe wat jy moet bestuur te verminder, wat dit moeiliker maak vir ongemagtigde toegang.",
+                    "sso2_title": "Vereenvoudigde Toegang",
+                    "sso2_desc": "Kry toegang tot al jou Fruitful-toepassings en -dienste met 'n enkele stel geloofsbriewe, wat jou tyd bespaar en jou daaglikse werkvloei-doeltreffendheid verbeter.",
+                    "sso3_title": "Vaartbelynde Aanboord",
+                    "sso3_desc": "Nuwe spanlede kan vinniger aan die gang kom met vereenvoudigde rekeningopstelling oor alle nodige interne stelsels, wat opstellingstyd verminder.",
+                    "payment_title": "💰 Interne Betalingsinligting",
+                    "payment1_title": "Uitgawe Terugbetaling",
+                    "payment1_desc": "Dien jou besigheidsuitgawes in en volg dit vir terugbetaling deur ons geïntegreerde finansiesportaal. Maak seker dat alle kwitansies aangeheg is vir vinnige verwerking.",
+                    "payment2_title": "Korporatiewe Kaartbestuur",
+                    "payment2_desc": "Inligting oor die bestuur van jou korporatiewe kredietkaart, insluitend beleide, bestedingslimiete en rapporteringsprosedures. Kontak finansies vir nuwe kaartversoeke.",
+                    "payment3_title": "Salaris & Voordele",
+                    "payment3_desc": "Kry veilig toegang tot jou salarisstrokies, belastingdokumente en voordele-inligting. Besonderhede oor vergoeding siklusse en voordele-inskrywing is hier beskikbaar.",
+                    "internal_gemini_title": "Vra Ons AI Assistent",
+                    "internal_gemini_desc": "Voer jou navraag hieronder in om onmiddellike inligting te kry. Vir spesifieke Fruitful interne data, kontak asseblief die relevante departement.",
+                    "internal_gemini_placeholder": "bv. Hoe vra ek verlof aan?",
+                    "internal_gemini_button": "✨ Kry Inligting",
+                    "internal_gemini_result_placeholder": "Jou antwoord sal hier verskyn...",
+
+                    // Currency Converter translations
+                    "currency_converter_title": "💱 Globale Geldomskakelaar",
+                    "currency_converter_desc": "Skakel enige geldeenheid wêreldwyd om met intydse wisselkoerse. Let wel, hierdie instrument is slegs vir inligtingsdoeleindes en gebruik 'n derdeparty API.",
+                    "amount_placeholder": "Bedrag",
+                    "convert_button": "Skakel Om",
+                    "currency_result_placeholder": "Omgeskakelde bedrag sal hier verskyn...",
+                    "error_fetch_currencies": "Fout tydens die ophaal van geldeenhede. Probeer asseblief later weer.",
+                    "error_conversion": "Fout tydens die omskakeling. Kontroleer asseblief u insette en probeer weer.",
+                    "invalid_amount": "Voer asseblief 'n geldige bedrag in.",
+                    "currency_not_found": "Geldeenheiddata nie gevind nie.",
+                    "monthly_option_text": "Maandeliks",
+                    "annual_option_text": "Jaarliks (15% afslag)",
+                    "select_currency_label": "Wys Pryse In:",
+                    // Global Footer Translations - Afrikaans
+                    footerPrivacy: 'Privaatheid', footerTerms: 'Bepalings', footerContact: 'Kontak', footerCopyrightLink: 'Kopiereg', footerDevelopers: 'Ontwikkelaars', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Vrugbaar', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Oor Ons', footerAccessibility: 'Toeganklikheid', footerCopyright: '© 2025 FAA™ Verdragstelsel™. Alle Regte Voorbehou.', footerPoweredBy: 'Aangedryf deur 🦍 gliewe + Vault API. Gesinkroniseer met Seedwave™.'
+                },
+                zu: {
+                    "lang_name": "isiZulu",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 I-MineNest™ Umgomo Oyinhloko",
+                    "minenest_page_description": "Uhlaka olunamandla lwe-FAA.ZONE olunika amandla umkhakha wezeMayini neziNsetshenziswa ngokuphathwa okuthuthukisiwe kwedatha nokuzenzakalela. Luxhumeka kalula ku-PulseGrid ukuze kube nokugeleza komsebenzi okuthuthukisiwe nokuhambisana nemithetho.",
+                    "features_title": "🎛️ MineNest™ Izici Eziyinhloko",
+                    "starter_title": "⚙️ Inodi Yokuqala", "monthly_tag": "/nyanga", "annual_tag": "/nyaka", "starter_desc": "Ilungele amaqembu amancane namaphrojekthi okuhlola. Finyelela izici ezibalulekile futhi uvikele ukuvumelanisa kwedatha okuyisisekelo.", "starter_f1": "Izici ezibalulekile", "starter_f2": "Ukuvumelanisa kwedatha okuyisisekelo", "starter_f3": "Ukusekelwa komphakathi",
+                    "pro_title": "🚀 Igridi ye-Pro", "pro_desc": "Yakhelwe amafemu akhulayo adinga amakhono athuthukisiwe. Kufaka izici eziyinhloko eziyinhloko eziyi-7 nokusebenza okuthuthukisiwe.", "pro_f1": "Zonke Izici Zokuqala", "pro_f2": "Izici ezithuthukisiwe", "pro_f3": "Ukucubungula idatha eningi", "pro_f4": "Ukuhlaziya okwandisiwe", "pro_f5": "Ukusekelwa okubalulekile",
+                    "enterprise_title": "🌐 I-Enterprise Omni-Sync", "custom_price": "Ngokwezifiso", "enterprise_desc": "Kwezinhlangano ezinkulu ezidinga ukufinyelela okugcwele ku-VaultMesh, ukuhlanganiswa okwenziwe ngokwezifiso, nezinsiza ezizinikele.", "enterprise_f1": "Zonke Izici Ze-Pro", "enterprise_f2": "Ukufinyelela okugcwele ku-VaultMesh", "enterprise_f3": "Ukuhlanganiswa okwenziwe ngokwezifiso", "enterprise_f4": "Ukuphathwa kwe-akhawunti okuzinikele", "enterprise_f5": "Ukusekelwa Kwe-Premium Okungama-24/7",
+                    "pricing_title": "💳 MineNest™ Uhlaka Lwezintengo",
+                    "feature1_title": "Isevisi Yobuchwepheshe Mesh", "feature1_desc": "Ukuhlanganiswa okuqondile ne-FAA 🧾 Isevisi Yobuchwepheshe Mesh ukuze kube nokugeleza komsebenzi okungenazihibe nokukhokha.",
+                    "feature2_title": "Ukuvumelanisa Kwedatha Okuthuthukisiwe", "feature2_desc": "Ukuvumelanisa kwedatha okunesivinini esikhulu, okuthembekile nge-<strong>NestTrack</strong> subnode ukuze kube nokulandelela kwempahla ngesikhathi sangempela.",
+                    "feature3_title": "Ukuhambisana Ngokwesikhathi Sangempela", "feature3_desc": "Ukuqinisekiswa okuqhubekayo kokuhambisana nge-<strong>VaultLink™</strong>, okwenzelwe ngokukhethekile imithetho eqinile yomkhakha wezimayini.",
+                    "feature4_title": "Ukwakheka Okukwazi Ukukhula", "feature4_desc": "Ingqalasizinda eqinile eyakhelwe ukukhula okukhulu, esekela ukukhula kwe-node okungafika ku-x18.",
+                    "feature5_title": "Ukuhlaziya Okubikezelayo", "feature5_desc": "Sebenzisa imojuli yethu ethuthukisiwe yokuhlaziya okubikezelayo ukuze ubikezele ukusebenza nezidingo zokulungisa.",
+                    "feature6_title": "Ukufinyelela Okungenazihibe Kwe-API", "feature6_desc": "Ukufinyelela okugcwele kwe-API kuqinisekisa ukusebenzisana okungenazihibe nezinhlelo zakho ezikhona namathuluzi ezinkampani zangaphandle.",
+                    "gemini_title": "Thola i-MineNest™ Yomsebenzi Wakho",
+                    "gemini_desc": "Faka uhlobo lomsebenzi wakho wezimayini ngezansi (isb. \"imayini yegolide engaphansi komhlaba\", \"umsebenzi wamalahle angaphezulu\") ukuze ubone isibonelo sokusetshenziswa esenzelwe wena sokuthi i-MineNest™ ingakuzuzisa kanjani.",
+                    "gemini_placeholder": "isb. Imayini yegolide engaphansi komhlaba",
+                    "gemini_button": "✨ Yakha Isibonelo Sokusetshenziswa",
+                    "gemini_result_placeholder": "Isibonelo sakho sokusetsheniswa sizovela lapha...",
+
+                    // Internal Portal specific translations
+                    "internal_page_title": "Siyakwamukela ku-Fruitful Global Payment & SSO Portal",
+                    "internal_page_description": "Isikhungo sakho esikhulu sokufinyelela okuphephile ezinsizeni zenkampani kanye nolwazi oluhlelekile lokukhokha. Le portal iqinisekisa isipiliyoni esingenazihibe kubo bonke abaqeqeshwayo, abathuthukisi, nabasebenzi.",
+                    "sso_title": "🔐 I-Single Sign-On (SSO) Ichaziwe",
+                    "sso1_title": "Ukuphepha Okuthuthukisiwe",
+                    "sso1_desc": "I-SSO inciphisa ukukhathala kwephasiwedi futhi iqinisa ukuphepha ngokunciphisa inani lezinto zokungena okudingeka uziphakamise, okwenza kube nzima ukufinyelela okungagunyaziwe.",
+                    "sso2_title": "Ukufinyelela Okulula",
+                    "sso2_desc": "Finyelela zonke izinhlelo zokusebenza nezinsiza zakho ze-Fruitful ngeqoqo elilodwa lezinto zokungena, okukugcinela isikhathi futhi kuthuthukise ukusebenza kahle kwakho kwansuku zonke.",
+                    "sso3_title": "Ukungena Okuhlelekile",
+                    "sso3_desc": "Amalungu amasha eqembu angaqala ukusebenza ngokushesha ngokulungiswa kwe-akhawunti okulula kuzo zonke izinhlelo zangaphakathi ezidingekayo, okunciphisa isikhathi sokulungiswa.",
+                    "payment_title": "💰 Ulwazi Lwezinkokhelo Zangaphakathi",
+                    "payment1_title": "Ukubuyiselwa Kwezindleko",
+                    "payment1_desc": "Thumela futhi ulandelele izindleko zakho zebhizinisi ukuze ubuyiselwe imali nge-portal yethu yezezimali ehlanganisiwe. Qinisekisa ukuthi wonke amarisidi afakiwe ukuze kucutshungulwe ngokushesha.",
+                    "payment2_title": "Ukuphathwa Kwamakhadi Enkampani",
+                    "payment2_desc": "Ulwazi mayelana nokuphatha ikhadi lakho lesikweletu lenkampani, okuhlanganisa izinqubomgomo, imikhawulo yokusebenzisa, nezinqubo zokubika. Xhumana nezezimali ukuze ucele amakhadi amasha.",
+                    "payment3_title": "Iholo & Izinzuzo",
+                    "payment3_desc": "Finyelela izincwadi zakho zokukhokha, amadokhumenti entela, nolwazi lwezinzuzo ngokuphephile. Imininingwane mayelana nemijikelezo yokukhokha kanye nokubhaliswa kwezinzuzo iyatholakala lapha.",
+                    "internal_gemini_title": "Buza Our AI Assistant",
+                    "internal_gemini_desc": "Faka umbuzo wakho ngezansi ukuze uthole ulwazi olusheshayo. Ukuze uthole ulwazi oluqondile lwangaphakathi lwe-Fruitful, sicela uxhumane nomnyango ofanele.",
+                    "internal_gemini_placeholder": "isb. Ngicela kanjani iholide?",
+                    "internal_gemini_button": "✨ Thola Ulwazi",
+                    "internal_gemini_result_placeholder": "Impendulo yakho izovela lapha...",
+
+                    // Currency Converter translations
+                    "currency_converter_title": "💱 Global Currency Converter",
+                    "currency_converter_desc": "Guqula noma iyiphi imali emhlabeni jikelele usebenzisa amanani okushintshanisa esikhathi sangempela. Sicela uqaphele, leli thuluzi elolwazi kuphela futhi lisebenzisa i-API yomuntu wesithathu.",
+                    "amount_placeholder": "Inani",
+                    "convert_button": "Guqula",
+                    "currency_result_placeholder": "Inani eliguquliwe lizovela lapha...",
+                    "error_fetch_currencies": "Iphutha ekutholeni izimali. Sicela uzame futhi kamuva.",
+                    "error_conversion": "Iphutha ekuguquleni. Sicela uhlole okufakile bese uzama futhi.",
+                    "invalid_amount": "Sicela ufake inani elivumelekile.",
+                    "currency_not_found": "Idatha yemali ayitholakali.",
+                    "monthly_option_text": "Nyanga zonke",
+                    "annual_option_text": "Ngonyaka (15% off)",
+                    "select_currency_label": "Bonisa Izintengo Ku:",
+                    // Global Footer Translations - isiZulu
+                    footerPrivacy: 'Ubumfihlo', footerTerms: 'Imigomo', footerContact: 'Xhumana', footerCopyrightLink: 'I-Copyright', footerDevelopers: 'Abathuthukisi', footerVaultMeshLink: 'I-VaultMesh', footerFruitfulLink: 'Okunenzuzo', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Mayelana', footerAccessibility: 'Ukufinyeleleka', footerCopyright: '© 2025 FAA™ Treaty System™. Wonke Amalungelo Agodliwe.', footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Ivunyelaniswe ne-Seedwave™.'
+                },
+                xh: {
+                    "lang_name": "isiXhosa",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 I-MineNest™ Inkqubo Eyintloko",
+                    "minenest_page_description": "Isakhelo esinamandla se-FAA.ZONE esixhobisa icandelo lezeMbali neMithombo ngolawulo oluphambili lwe-automation kunye nedatha. Idibanisa ngokulula kwi-PulseGrid yomsebenzi olungiselelweyo kunye nokuthobela.",
+                    "features_title": "🎛️ MineNest™ Iimpawu eziPhambili",
+                    "starter_title": "⚙️ I-Node yokuQala", "monthly_tag": "/nyanga", "annual_tag": "/nyaka", "starter_desc": "Ilungele amaqela amancinci kunye neeprojekthi zovavanyo. Finyelela iimpawu ezibalulekileyo kwaye ukhusele ukuvumelanisa kwedatha esisiseko.", "starter_f1": "Iimpawu ezibalulekileyo", "starter_f2": "Ukuvumelanisa kwedatha esisiseko", "starter_f3": "Inkxaso yoluntu",
+                    "pro_title": "🚀 I-Gridi ye-Pro", "pro_desc": "Yenzelwe iifemu ezikhulayo ezidinga amandla aphambili. Ibandakanya iimpawu eziyintloko ezi-7 kunye nokusebenza okuphuculweyo.", "pro_f1": "Zonke Iimpawu Zokuqala", "pro_f2": "Iimpawu eziphambili", "pro_f3": "Ukuqhubekeka kwedatha ephezulu", "pro_f4": "Ukuhlalutya okwandisiweyo", "pro_f5": "Inkxaso ephambili",
+                    "enterprise_title": "🌐 I-Enterprise Omni-Sync", "custom_price": "Ngokwezifiso", "enterprise_desc": "Kwezinhlangano ezinkulu ezidinga ukufinyelela okugcwele ku-VaultMesh, ukuhlanganiswa okwenziwe ngokwezifiso, nezinsiza ezizinikele.", "enterprise_f1": "Zonke Iimpawu Ze-Pro", "enterprise_f2": "Ukufikelela okugcwele ku-VaultMesh", "enterprise_f3": "Ukuhlanganiswa okwenziwe ngokwezifiso", "enterprise_f4": "Ukuphathwa kwe-akhawunti okuzinikele", "enterprise_f5": "Inkxaso ye-Premium ye-24/7",
+                    "pricing_title": "💳 MineNest™ Ulwakhiwo lwaMaxabiso",
+                    "feature1_title": "Inkonzo Yobungcali Mesh", "feature1_desc": "Ukudibanisa ngokuthe ngqo ne-FAA 🧾 Inkonzo Yobungcali Mesh yomsebenzi olungenazihibe kunye nokukhokhwa.",
+                    "feature2_title": "Ukuvumelanisa Kwedatha Ephambili", "feature2_desc": "Isantya esiphezulu, ukuvumelanisa kwedatha okuthembekileyo nge-<strong>NestTrack</strong> subnode yokulandelela impahla ngexesha lokwenyani.",
+                    "feature3_title": "Ukuthobela Ngexesha Lokwenyani", "feature3_desc": "Ukuqinisekiswa okuqhubekayo kokuthobela nge-<strong>VaultLink™</strong>, okwenzelwe ngokukhethekileyo imithetho engqongqo yemizi-mveliso yemigodi.",
+                    "feature4_title": "Ulwakhiwo Olukwazi Ukukhula", "feature4_desc": "Ingqalasizinda eqinile eyakhelwe ukukhula okukhulu, esekela ukukhula kwe-node okungafika ku-x18.",
+                    "feature5_title": "Ukuhlalutya Okubikezelayo", "feature5_desc": "Sebenzisa imodyuli yethu ephambili yokuhlalutya okubikezelayo ukuze ubikezele ukusebenza kunye nezidingo zokulungisa.",
+                    "feature6_title": "Ukufikelela Okungenazihibe Kwi-API", "feature6_desc": "Ukufikelela okugcwele kwi-API kuqinisekisa ukusebenzisana okungenazihibe nezinhlelo zakho ezikhona namathuluzi ezinkampani zangaphandle.",
+                    "gemini_title": "Fumana i-MineNest™ kuMsebenzi Wakho",
+                    "gemini_desc": "Ngenisa uhlobo lomsebenzi wakho wemigodi ngezantsi (umz. \"umgodi wegolide ongaphantsi komhlaba\", \"umsebenzi wamalahle angaphezulu\") ukuBona imeko yokusetyenziswa eyenzelwe wena yokuba i-MineNest™ ingakunceda njani.",
+                    "gemini_placeholder": "umz. Umgodi wegolide ongaphantsi komhlaba",
+                    "gemini_button": "✨ Yila Imeko Yokusetyetyenziswa",
+                    "gemini_result_placeholder": "Imeko yakho yokusetyetyenziswa eyenzelwe wena iya kuvela apha...",
+                    // Global Footer Translations - isiXhosa
+                    footerPrivacy: 'Ubumfihlo', footerTerms: 'Imigaqo', footerContact: 'Qhagamshelana', footerCopyrightLink: 'Ilungelo Lokushicilela', footerDevelopers: 'Abaphuhlisi', footerVaultMeshLink: 'I-VaultMesh', footerFruitfulLink: 'Eneziqhamo', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Malunga Nathi', footerAccessibility: 'Ukufikeleleka', footerCopyright: '© 2025 FAA™ Treaty System™. Onke Amalungelo Agciniwe.', footerPoweredBy: 'Inikwe amandla yi-🦍 glyphs + Vault API. Ivunyelaniswe ne-Seedwave™.'
+                },
+                sw: {
+                    "lang_name": "Kiswahili",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 Itifaki ya Msingi ya MineNest™",
+                    "minenest_page_description": "Mfumo wenye nguvu wa FAA.ZONE unaowezesha sekta ya ⛏️ Uchimbaji Madini na Rasilimali kwa otomatiki ya hali ya juu na usimamizi wa data. Inaunganisha kwa urahisi na PulseGrid kwa mtiririko wa kazi ulioboreshwa na uzingatiaji.",
+                    "features_title": "🎛️ MineNest™ Vipengele Muhimu",
+                    "starter_title": "⚙️ Nodi ya Kuanza", "monthly_tag": "/mwezi", "annual_tag": "/mwaka", "starter_desc": "Inafaa kwa timu ndogo na miradi ya majaribio. Fikia vipengele muhimu na uhakikishe ulandanishaji wa data wa msingi.", "starter_f1": "Vipengele muhimu", "starter_f2": "Ulandanishaji wa data wa msingi", "starter_f3": "Msaada wa jamii",
+                    "pro_title": "🚀 Gridi ya Pro", "pro_desc": "Iliyoundwa kwa ajili ya makampuni yanayokua yanayohitaji uwezo wa hali ya juu. Inajumuisha vipengele 7 vya msingi na utendaji ulioboreshwa.", "pro_f1": "Vipengele Vyote vya Kuanza", "pro_f2": "Vipengele vya juu", "pro_f3": "Usindikaji wa data wa kiasi kikubwa", "pro_f4": "Uchambuzi uliopanuliwa", "pro_f5": "Msaada wa kipaumbele",
+                    "enterprise_title": "🌐 Omni-Sync ya Biashara", "custom_price": "Maalum", "enterprise_desc": "Kwa mashirika makubwa yanayohitaji ufikiaji kamili wa VaultMesh, ujumuishaji maalum, na rasilimali zilizojitolea.", "enterprise_f1": "Vipengele Vyote vya Pro", "enterprise_f2": "Ufikiaji kamili wa VaultMesh", "enterprise_f3": "Ujumuishaji maalum", "enterprise_f4": "Usimamizi wa akaunti uliojitolea", "enterprise_f5": "Msaada wa Premium wa 24/7",
+                    "pricing_title": "💳 MineNest™ Muundo wa Bei",
+                    "feature1_title": "Professional Services Mesh", "feature1_desc": "Ujumuishaji wa moja kwa moja na FAA 🧾 Professional Services Mesh kwa mtiririko wa kazi usio na mshono na bili.",
+                    "feature2_title": "Ulandanishaji wa Data wa Juu", "feature2_desc": "Ulandanishaji wa data wa kasi ya juu, wa kuaminika na <strong>NestTrack</strong> subnode kwa ufuatiliaji wa mali wa wakati halisi.",
+                    "feature3_title": "Uzingatiaji wa Wakati Halisi", "feature3_desc": "Uthibitishaji endelevu wa uzingatiaji kupitia <strong>VaultLink™</strong>, iliyoundwa mahsusi kwa kanuni kali za tasnia ya madini.",
+                    "feature4_title": "Usanifu Unaoweza Kuongezeka", "feature4_desc": "Miundombinu imara iliyoundwa kwa ajili ya upanuzi mkubwa, inayounga mkono hadi upanuzi wa node x18.",
+                    "feature5_title": "Uchambuzi wa Utabiri", "feature5_desc": "Tumia moduli yetu ya hali ya juu ya uchambuzi wa utabiri kutabiri utendaji na mahitaji ya matengenezo.",
+                    "feature6_title": "Ufikiaji wa API Usio na Mshono", "feature6_desc": "Ufikiaji kamili wa API unahakikisha utangamano usio na mshono na mifumo yako iliyopo na zana za wahusika wengine.",
+                    "gemini_title": "Gundua MineNest™ kwa Uendeshaji Wako",
+                    "gemini_desc": "Ingiza aina ya operesheni yako ya uchimbaji madini hapa chini (k.m. \"mgodi wa dhahabu wa chini ya ardhi\", \"operesheni ya makaa ya mawe ya uso\") ili kuona kisa cha matumizi kilichoboreshwa cha jinsi MineNest™ inaweza kukufaidi.",
+                    "gemini_placeholder": "k.m. Mgodi wa shaba wa wazi",
+                    "gemini_button": "✨ Tengeneza Kisa cha Matumizi",
+                    "gemini_result_placeholder": "Kisa chako cha matumizi cha kibinafsi kitatokea hapa...",
+                    // Global Footer Translations - Kiswahili
+                    footerPrivacy: 'Faragha', footerTerms: 'Masharti', footerContact: 'Wasiliana', footerCopyrightLink: 'Hakimiliki', footerDevelopers: 'Waendelezaji', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Matunda', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Kuhusu', footerAccessibility: 'Ufikiaji', footerCopyright: '© 2025 FAA™ Treaty System™. Haki Zote Zimehifadhiwa.', footerPoweredBy: 'Inaendeshwa na 🦍 glyphs + Vault API. Imesawazishwa na Seedwave™.'
+                },
+                zh: {
+                    "lang_name": "中文 (简体)",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 MineNest™ 核心协议",
+                    "minenest_page_description": "一个功能强大的FAA.ZONE框架，为⛏️采矿与资源领域提供先进的自动化和数据管理支持。它可轻松连接到PulseGrid，以优化工作流程和合规性。",
+                    "features_title": "🎛️ MineNest™ 主要特点",
+                    "starter_title": "⚙️ 入门节点", "monthly_tag": "/月", "annual_tag": "/年", "starter_desc": "适用于小型团队和试点项目。访问基本功能并确保基本数据同步。", "starter_f1": "基本功能", "starter_f2": "基本数据同步", "starter_f3": "社区支持",
+                    "pro_title": "🚀 专业网格", "pro_desc": "专为需要高级功能的成长型公司设计。包括7个核心功能和增强性能。", "pro_f1": "所有入门功能", "pro_f2": "高级功能", "pro_f3": "高容量数据处理", "pro_f4": "扩展分析", "pro_f5": "优先支持",
+                    "enterprise_title": "🌐 企业全同步", "custom_price": "定制", "enterprise_desc": "适用于需要完整VaultMesh访问、自定义集成和专用资源的大型组织。", "enterprise_f1": "所有专业功能", "enterprise_f2": "完整VaultMesh访问", "enterprise_f3": "自定义集成", "enterprise_f4": "专用客户管理", "enterprise_f5": "24/7高级支持",
+                    "pricing_title": "💳 MineNest™ 定价结构",
+                    "feature1_title": "专业服务网格", "feature1_desc": "与FAA 🧾 专业服务网格直接集成，实现无缝工作流程和计费。",
+                    "feature2_title": "高级数据同步", "feature2_desc": "通过<strong>NestTrack</strong>子节点实现高速、可靠的数据同步，用于实时资产跟踪。",
+                    "feature3_title": "实时合规性", "feature3_desc": "通过<strong>VaultLink™</strong>持续进行合规性验证，专为采矿行业严格的法规量身定制。",
+                    "feature4_title": "可扩展架构", "feature4_desc": "专为大规模可扩展性设计的强大基础设施，支持多达18个节点的扩展。",
+                    "feature5_title": "预测分析", "feature5_desc": "利用我们先进的预测分析模块，预测性能和维护需求。",
+                    "feature6_title": "无缝API访问", "feature6_desc": "完整的API访问确保与您现有系统和第三方工具的无缝互操作性。",
+                    "gemini_title": "为您的运营发现 MineNest™",
+                    "gemini_desc": "在下方输入您的采矿运营类型（例如：“地下金矿”、“地表煤矿”）以查看MineNest™如何使您的运营受益的定制用例。",
+                    "gemini_placeholder": "例如：露天铜矿",
+                    "gemini_button": "✨ 生成用例",
+                    "gemini_result_placeholder": "您的个性化用例将显示在此处...",
+                    // Global Footer Translations - Chinese (Simplified)
+                    footerPrivacy: '隐私', footerTerms: '条款', footerContact: '联系', footerCopyrightLink: '版权', footerDevelopers: '开发者', footerVaultMeshLink: '金库网格', footerFruitfulLink: '丰硕', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: '关于', footerAccessibility: '无障碍', footerCopyright: '© 2025 FAA™ Treaty System™. 保留所有权利。', footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+                },
+                ts: {
+                    "lang_name": "Setswana",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 MineNest™ Molawana wa Motheo",
+                    "minenest_page_description": "Foreimi e e maatla ya FAA.ZONE e e nayang maatla lephata la ⛏️ Meepo le Metswedi ka tlhokomelo ya data le go ikemela ka nosi. E golaganya motlhofo le PulseGrid go bona tsela ya tiro e e tokafaditsweng le go obamela.",
+                    "features_title": "🎛️ MineNest™ Dikarolo tsa Konokono",
+                    "starter_title": "⚙️ Noto ya Basimolodi", "monthly_tag": "/kgwedi", "annual_tag": "/ngwaga", "starter_desc": "E siametse ditlhopha tse dinnye le diporojeke tsa teko. Go bona ditsela tsa konokono le go boloka data ya motheo.", "starter_f1": "Dikarolo tsa konokono", "starter_f2": "Go boloka data ya motheo", "starter_f3": "Tshegetso ya setšhaba",
+                    "pro_title": "🚀 Kheriti ya Pro", "pro_desc": "E dirilwe go bona dikhamphani tse di golang tse di tlhokang bokgoni jo bo kwa godimo. E akaretsa ditsela tsa konokono di le 7 le go dira sentle go go tokafaditsweng.", "pro_f1": "Dikarolo Tsotlhe tsa Basimolodi", "pro_f2": "Dikarolo tse di kwa godimo", "pro_f3": "Go tshwara data e ntsi", "pro_f4": "Go tlhatlhoba go go golo", "pro_f5": "Tshegetso ya botlhokwa",
+                    "enterprise_title": "🌐 Omni-Sync ya Dikgwebo", "custom_price": "E e Itlhophileng", "enterprise_desc": "Go bona mekgatlho e megolo e e tlhokang go bona VaultMesh ka botlalo, go golaganya go go itlhophileng, le didirisiwa tse di tlhamaletseng.", "enterprise_f1": "Dikarolo Tsotlhe tsa Pro", "enterprise_f2": "Go bona VaultMesh ka botlalo", "enterprise_f3": "Go golaganya go go itlhophileng", "enterprise_f4": "Go tlhokomela akhaonto e e tlhamaletseng", "enterprise_f5": "Tshegetso ya Premium ya 24/7",
+                    "pricing_title": "💳 MineNest™ Popego ya Ditlhwatlhwa",
+                    "feature1_title": "Professional Services Mesh", "feature1_desc": "Go golaganya ka tlhamalalo le FAA 🧾 Professional Services Mesh go bona tsela ya tiro e e se nang mathata le go duela.",
+                    "feature2_title": "Advanced Data Sync", "feature2_desc": "Go boloka data ka lebelo le le kwa godimo, ka go tshepega le <strong>NestTrack</strong> subnode go bona go latela dilo ka nako ya gompieno.",
+                    "feature3_title": "Real-time Compliance", "feature3_desc": "Go tlhatlhoba ka go tswelela go obamela ka <strong>VaultLink™</strong>, spesifiek aangepas vir die mynbedryf se streng regulasies.",
+                    "feature4_title": "Skaalbare Argitektuur", "feature4_desc": "Popego e e nonofileng e e dirilweng go bona go gola go go masisi, e e tshegetsang go gola ga node go fitlha go x18.",
+                    "feature5_title": "Voorspellende Analise", "feature5_desc": "Dirisa module ya rona ya go tlhatlhoba e e dirang dipalo go bona go dira sentle le ditlhokego tsa tlhokomelo.",
+                    "feature6_title": "Naatlose API-toegang", "feature6_desc": "Go bona API ka botlalo go netefatsa go dira mmogo go go se nang mathata le ditsamaiso tsa gago tse di leng teng le didirisiwa tsa batho ba boraro.",
+                    "gemini_title": "Ribolola MineNest™ mo Tirong ya Gago",
+                    "gemini_desc": "Tsenya mofuta wa gago wa tiro ya moepo fa tlase (sek. \"moepo wa gauta o o ka fa tlase ga lefatshe\", \"tiro ya malatlha a a kwa godimo\") go bona tiriso e e itlhophileng ya gore MineNest™ e ka go thusa jang.",
+                    "gemini_placeholder": "sek. Moepo wa kgotlopo o o bulegileng",
+                    "gemini_button": "✨ Tlhama Tiriso",
+                    "gemini_result_placeholder": "Tiriso ya gago e e itlhophileng e tla tlhaga fano...",
+                    // Global Footer Translations - Setswana
+                    footerPrivacy: 'Boiphitho', footerTerms: 'Melao', footerContact: 'Ikopanye', footerCopyrightLink: 'Tshwanelo ya Go Kopisa', footerDevelopers: 'Ba tlhami', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'E e ungwang', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Ka Ga Rona', footerAccessibility: 'Kgona go Fitlhelela', footerCopyright: '© 2025 FAA™ Treaty System™. Ditshwanelo Tsotlhe di Sireleditswe.', footerPoweredBy: 'E dirisiwa ke 🦍 diglyphs + Vault API. E tsamaelana le Seedwave™.'
+                },
+                fana: {
+                    "lang_name": "Fanagalo",
+                    // MineNest specific translations
+                    "minenest_page_title": "🚀 MineNest™ Core Protocol",
+                    "minenest_page_description": "I-powerful FAA.ZONE framework e-empower ⛏️ Mining & Resources sector with advanced automation and data management. It connects easily to PulseGrid for optimized workflow and compliance.",
+                    "features_title": "🎛️ MineNest™ Key Features",
+                    "starter_title": "⚙️ Starter Node", "monthly_tag": "/mo", "annual_tag": "/yr", "starter_desc": "Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.", "starter_f1": "Essential features", "starter_f2": "Basic data sync", "starter_f3": "Community support",
+                    "pro_title": "🚀 Pro Grid", "pro_desc": "Designed for growing firms needing advanced capabilities. Includes 7 core features and enhanced performance.", "pro_f1": "All Starter Features", "pro_f2": "Advanced features", "pro_f3": "High-volume data processing", "pro_f4": "Expanded analytics", "pro_f5": "Priority support",
+                    "enterprise_title": "🌐 Enterprise Omni-Sync", "custom_price": "Custom", "enterprise_desc": "For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.", "enterprise_f1": "All Pro Features", "enterprise_f2": "Full VaultMesh access", "enterprise_f3": "Custom integrations", "enterprise_f4": "Dedicated account management", "enterprise_f5": "24/7 Premium Support",
+                    "pricing_title": "💳 MineNest™ Pricing Structure",
+                    "feature1_title": "Professional Services Mesh", "feature1_desc": "Direct integration with FAA 🧾 Professional Services Mesh for seamless workflow and billing.",
+                    "feature2_title": "Advanced Data Sync", "feature2_desc": "High-speed, reliable data synchronization with <strong>NestTrack</strong> subnode for real-time asset tracking.",
+                    "feature3_title": "Real-time Compliance", "feature3_desc": "Continuous compliance validation via <strong>VaultLink™</strong>, specifically tailored for mining industry's strict regulations.",
+                    "feature4_title": "Scalable Architecture", "feature4_desc": "Robust infrastructure designed for massive scalability, supporting up to x18 node expansion.",
+                    "feature5_title": "Predictive Analytics", "feature5_desc": "Leverage our advanced predictive analytics module to forecast performance and maintenance needs.",
+                    "feature6_title": "Seamless API Access", "feature6_desc": "Full API access ensures seamless interoperability with your existing systems and third-party tools.",
+                    "gemini_title": "Discover MineNest™ for Your Operation",
+                    "gemini_desc": "Enter your type of mining operation below (e.g., \"underground gold mine\", \"surface coal operation\") to see a custom-generated use case of how MineNest™ can benefit you.",
+                    "gemini_placeholder": "e.g., Open-pit copper mine",
+                    "gemini_button": "✨ Generate Use Case",
+                    "gemini_result_placeholder": "Your personalized use case will appear here...",
+                    // Global Footer Translations - Fanagalo
+                    footerPrivacy: 'Pravasi', footerTerms: 'Mithetho', footerContact: 'Kontaka', footerCopyrightLink: 'Kopiraiti', footerDevelopers: 'Abathuthukisi', footerVaultMeshLink: 'VaultMesh', footerFruitfulLink: 'Fruitful', footerFAAZoneLink: 'FAA.Zone', footerAboutLink: 'Mayelana', footerAccessibility: 'Aksesibiliti', footerCopyright: '© 2025 FAA™ Treaty System™. Wonke Amalungelo Agodliwe.', footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+                }
+            };
+
+            let exchangeRates = {}; // To store fetched exchange rates
+            let selectedPricingCurrency = 'USD'; // Default pricing currency
+            let isAnnualPricing = false; // Default to monthly pricing
+
+            /**
+             * Sets the language of the page based on the provided language code.
+             * Updates all elements with `data-lang-key` and `data-i18n` attributes.
+             * @param {string} lang - The language code (e.g., 'en', 'af', 'zu').
+             */
+            const setLanguage = (lang) => {
+                // Fallback to English if the requested language is not found
+                if (!translations[lang]) lang = 'en';
+                document.documentElement.lang = lang; // Set HTML lang attribute
+                localStorage.setItem('selectedLanguage', lang); // Save language preference
+
+                // Update elements with data-lang-key attributes
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    // Check if the key exists in the current language, otherwise fallback to English
+                    const translatedText = translations[lang][key] || translations.en[key];
+                    if (translatedText) {
+                        if (el.placeholder) {
+                            el.placeholder = translatedText; // For input placeholders
+                        } else {
+                            el.innerHTML = translatedText; // For general text content
+                        }
+                    }
+                });
+
+                // Update elements with data-i18n attributes (primarily for footer)
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        el.innerHTML = translations[lang][key];
+                    } else if (translations.en[key]) { // Fallback to English if not found in current language
+                        el.innerHTML = translations.en[key];
+                    }
+                });
+
+                updatePricingDisplay(); // Re-render pricing cards to update their language and currency
+            }
+
+            /**
+             * Renders the pricing cards dynamically into the DOM based on selected currency and term.
+             * Includes logic for PayPal hosted buttons.
+             * @param {string} currentLang - The currently active language code.
+             */
+            const renderPricingCards = (currentLang) => {
+                // Target the MineNest pricing grid specifically
+                const pricingGrid = document.querySelector('#minenest-pricing .pricing-grid');
+                if (!pricingGrid) return; // Ensure pricing grid exists before trying to render
+
+                pricingGrid.innerHTML = ''; // Clear existing cards before re-rendering
+
+                // Define pricing plans with their details and PayPal Hosted Button IDs
+                // Base prices are in USD
+                const plans = [
+                    { id: 'starter-monthly', type: 'starter-card', titleKey: 'starter_title', basePriceUSD: 83, paypalId: '9KZH38XFK3TX2' },
+                    { id: 'pro-monthly', type: 'pro-card', titleKey: 'pro_title', basePriceUSD: 230, paypalId: 'FNGGP5UJ9VYHQ' },
+                    { id: 'enterprise-monthly', type: 'enterprise-card', titleKey: 'enterprise_title', basePriceUSD: null, priceKey: 'custom_price', paypalId: 'AL5VLUCCEW586' } // basePriceUSD is null for custom
+                ];
+                
+                const exchangeRate = exchangeRates[selectedPricingCurrency] || 1; // Default to 1 if rate not found (i.e., USD)
+
+                plans.forEach(plan => {
+                    const card = document.createElement('div');
+                    card.className = `pricing-card ${plan.type}`;
+                    
+                    // Calculate price based on term and currency
+                    let displayPrice = '';
+                    let priceDescriptionKey = plan.titleKey.replace('_title', '_desc'); // Always use the base description key
+                    let priceTerm = '';
+
+                    if (plan.basePriceUSD !== null) {
+                        let calculatedPrice = plan.basePriceUSD;
+                        priceTerm = translations[currentLang][isAnnualPricing ? 'annual_tag' : 'monthly_tag'] || translations.en[isAnnualPricing ? 'annual_tag' : 'monthly_tag'];
+
+                        if (isAnnualPricing) {
+                            calculatedPrice = (plan.basePriceUSD * 12) * 0.85; // 15% off annually
+                        }
+                        calculatedPrice *= exchangeRate;
+                        displayPrice = `${selectedPricingCurrency} ${calculatedPrice.toFixed(2)}`;
+                    } else {
+                        displayPrice = translations[currentLang][plan.priceKey] || translations.en[plan.priceKey];
+                        priceTerm = ''; // No term for custom price
+                    }
+
+                    // Build feature list HTML
+                    let featureList = '';
+                    // Features are hardcoded in English as they are not dynamic per plan in translations object
+                    const featuresMap = {
+                        'starter_title': ['Essential features', 'Basic data sync', 'Community support'],
+                        'pro_title': ['All Starter Features', 'Advanced features', 'High-volume data processing', 'Expanded analytics', 'Priority support'],
+                        'enterprise_title': ['All Pro Features', 'Full VaultMesh access', 'Custom integrations', 'Dedicated account management', '24/7 Premium Support']
+                    };
+                    const planFeatures = featuresMap[plan.titleKey] || [];
+                    planFeatures.forEach(featureText => {
+                        // Find the translation for the feature text, or use English directly
+                        const translatedFeature = Object.values(translations[currentLang]).find(val => val === featureText) || featureText;
+                        featureList += `<li><i class="fas fa-check-circle"></i><span>${translatedFeature}</span></li>`;
+                    });
+
+
+                    card.innerHTML = `
+                        <div>
+                            <h3>${translations[currentLang][plan.titleKey] || translations.en[currentLang][plan.titleKey]}</h3>
+                            <p class="price">${displayPrice}<span class="text-lg font-medium">${priceTerm}</span></p>
+                            <p class="price-description">${translations[currentLang][priceDescriptionKey] || translations.en[currentLang][priceDescriptionKey]}</p>
+                            <ul>${featureList}</ul>
+                        </div>
+                        <div class="paypal-button-container" id="paypal-${plan.id}"></div>
+                    `;
+                    pricingGrid.appendChild(card);
+
+                    // Only render PayPal Hosted Buttons if paypal object is defined and it's not the custom price plan
+                    if (plan.basePriceUSD !== null) { // Only for plans with a defined base price
+                        // Use a timeout to give PayPal SDK time to load and initialize
+                        setTimeout(() => {
+                            if (typeof paypal !== 'undefined' && paypal.HostedButtons) {
+                                try {
+                                    paypal.HostedButtons({ hostedButtonId: plan.paypalId }).render(`#paypal-${plan.id}`);
+                                } catch (error) {
+                                    console.error(`Error rendering PayPal button for ${plan.id}:`, error);
+                                    // Fallback to a direct link if SDK rendering fails in live environment
+                                    document.getElementById(`paypal-${plan.id}`).innerHTML = `
+                                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=${plan.paypalId}" target="_blank" rel="noopener noreferrer" class="w-full text-center bg-blue-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors block">Buy Now (Direct)</a>
+                                    `;
+                                }
+                            } else {
+                                // Fallback to a direct link if SDK not available after timeout
+                                document.getElementById(`paypal-${plan.id}`).innerHTML = `
+                                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=${plan.paypalId}" target="_blank" rel="noopener noreferrer" class="w-full text-center bg-blue-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors block">Buy Now (Direct)</a>
+                                `;
+                            }
+                        }, 1000); // Increased timeout to 1 second
+                    } else {
+                        document.getElementById(`paypal-${plan.id}`).innerHTML = `<a href="#" class="w-full text-center bg-blue-700 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors block">Contact Sales</a>`;
+                    }
+                });
+            };
+
+            // Global variables for currency API
+            const CURRENCY_API_KEY = '40015d117bc7fff9495dcf28'; // Provided API Key
+            const BASE_CURRENCY_API_URL = `https://v6.exchangerate-api.com/v6/${CURRENCY_API_KEY}`;
+
+            // Function to fetch and populate currency dropdowns and exchange rates
+            async function populateCurrenciesAndRates() {
+                try {
+                    // Fetch supported currency codes
+                    const codesResponse = await fetch(`${BASE_CURRENCY_API_URL}/codes`);
+                    const codesData = await codesResponse.json();
+
+                    if (codesData.result === 'success' && codesData.supported_codes) {
+                        const currencies = codesData.supported_codes;
+                        const fromCurrencySelect = document.getElementById('from-currency-select');
+                        const toCurrencySelect = document.getElementById('to-currency-select');
+                        const pricingCurrencySelect = document.getElementById('pricing-currency-select');
+
+                        // Clear existing options before populating
+                        fromCurrencySelect.innerHTML = '';
+                        toCurrencySelect.innerHTML = '';
+                        pricingCurrencySelect.innerHTML = '';
+
+                        currencies.forEach(currency => {
+                            const [code, name] = currency;
+                            // For general converter
+                            const optionFrom = document.createElement('option');
+                            optionFrom.value = code;
+                            optionFrom.textContent = `${code} - ${name}`;
+                            fromCurrencySelect.appendChild(optionFrom);
+
+                            const optionTo = document.createElement('option');
+                            optionTo.value = code;
+                            optionTo.textContent = `${code} - ${name}`;
+                            toCurrencySelect.appendChild(optionTo);
+
+                            // For pricing currency selector
+                            const optionPricing = document.createElement('option');
+                            optionPricing.value = code;
+                            optionPricing.textContent = `${code} - ${name}`;
+                            pricingCurrencySelect.appendChild(optionPricing);
+                        });
+
+                        // Set default selected currencies
+                        fromCurrencySelect.value = 'USD';
+                        toCurrencySelect.value = 'EUR';
+                        pricingCurrencySelect.value = 'USD'; // Default for pricing
+
+                        // Fetch latest exchange rates with USD as base
+                        const ratesResponse = await fetch(`${BASE_CURRENCY_API_URL}/latest/USD`);
+                        const ratesData = await ratesResponse.json();
+
+                        if (ratesData.result === 'success' && ratesData.conversion_rates) {
+                            exchangeRates = ratesData.conversion_rates;
+                            updatePricingDisplay(); // Initial render of pricing cards with default currency
+                        } else {
+                            console.error("Currency API Error (rates):", ratesData);
+                            // Fallback for pricing display if rates cannot be fetched
+                            updatePricingDisplay(); 
+                        }
+
+                    } else {
+                        console.error("Currency API Error (codes):", codesData);
+                    }
+                } catch (error) {
+                    console.error("Fetch Currencies and Rates Error:", error);
+                }
+            }
+
+            // Function to update pricing display based on selected currency and term
+            const updatePricingDisplay = () => {
+                const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+                renderPricingCards(currentLang);
+            };
+
+            // Initialize Language Switcher
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            Object.keys(translations).forEach(lang => {
+                const option = document.createElement('option');
+                option.value = lang;
+                option.textContent = translations[lang]['lang_name'];
+                languageSwitcher.appendChild(option);
+            });
+
+            // Apply direct styles to the select and its options to ensure readability across themes
+            languageSwitcher.style.setProperty('background-color', '#ffffff', 'important');
+            languageSwitcher.style.setProperty('border', '1px solid #e8e8ed', 'important');
+            languageSwitcher.style.setProperty('color', '#1d1d1f', 'important'); // Force dark text color
+            // Custom arrow for select to ensure visibility
+            languageSwitcher.style.setProperty('background-image', "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231d1d1f'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E\")", 'important');
+            languageSwitcher.style.setProperty('background-repeat', 'no-repeat', 'important');
+            languageSwitcher.style.setProperty('background-position', 'right 0.7rem center', 'important');
+
+
+            // Event listener for language change
+            languageSwitcher.addEventListener('change', (e) => setLanguage(e.target.value));
+
+            // Load saved language or default to English
+            const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+            languageSwitcher.value = savedLang;
+            setLanguage(savedLang); // Apply initial language settings
+
+            // Theme switcher logic
+            const themeDayBtn = document.getElementById('theme-day-btn');
+            const themeNightBtn = document.getElementById('theme-night-btn');
+
+            /**
+             * Sets the theme of the page (light or dark).
+             * Updates body classes and button active states.
+             * @param {string} theme - The theme mode ('light' or 'dark').
+             */
+            function setTheme(theme) {
+                document.body.classList.remove('light-mode', 'dark-mode');
+                themeDayBtn.classList.remove('active');
+                themeNightBtn.classList.remove('active');
+                if (theme === 'light') {
+                    document.body.classList.add('light-mode');
+                    themeDayBtn.classList.add('active');
+                } else {
+                    document.body.classList.add('dark-mode');
+                    themeNightBtn.classList.add('active');
+                }
+                localStorage.setItem('themeMode', theme); // Save theme preference
+            }
+
+            // Event listeners for theme buttons
+            themeDayBtn.addEventListener('click', () => setTheme('light'));
+            themeNightBtn.addEventListener('click', () => setTheme('dark'));
+
+            // Load saved theme or default to dark
+            const savedTheme = localStorage.getItem('themeMode') || 'dark';
+            setTheme(savedTheme); // Apply initial theme settings
+
+            // Internal Gemini API Logic
+            const internalGeminiButton = document.getElementById('internal-gemini-button');
+            const internalGeminiInput = document.getElementById('internal-gemini-input');
+            const internalGeminiResultText = document.getElementById('internal-gemini-result-text');
+
+            if (internalGeminiButton) {
+                internalGeminiButton.addEventListener('click', async () => {
+                    const userQuery = internalGeminiInput.value.trim();
+                    if (!userQuery) {
+                        internalGeminiResultText.textContent = 'Please enter your query.';
+                        return;
+                    }
+
+                    internalGeminiResultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...'; // Show loading indicator
+                    internalGeminiButton.disabled = true; // Disable button during generation
+
+                    // Construct the prompt for the Gemini API, now focused on internal Fruitful operations
+                    const prompt = `You are an internal knowledge base assistant for Fruitful Inc. Employees (interns, developers, staff) are using this portal. They might ask questions about company policies, internal processes, or general information. Answer the following query concisely and professionally, drawing on common company knowledge: "${userQuery}". If the query is unclear or requires specific Fruitful internal data you don't have, politely state that you cannot answer it and suggest contacting HR or the relevant department.`;
+
+                    try {
+                        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // API key is automatically provided by the Canvas environment
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        // Check for valid response structure from Gemini API
+                        if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                            internalGeminiResultText.textContent = result.candidates[0].content.parts[0].text;
+                        } else {
+                            internalGeminiResultText.textContent = 'Sorry, I could not generate an answer at this time. Please try again or contact IT support.';
+                            console.error("Gemini API Error: Unexpected response structure", result);
+                        }
+                    } catch (error) {
+                        internalGeminiResultText.textContent = 'An error occurred while connecting to the AI. Please check your connection and try again.';
+                        console.error("Fetch Error:", error);
+                    } finally {
+                        internalGeminiButton.disabled = false; // Re-enable button
+                    }
+                });
+            }
+
+            // MineNest Gemini API Logic
+            const minenestGeminiButton = document.getElementById('minenest-gemini-button');
+            const minenestGeminiInput = document.getElementById('minenest-gemini-input');
+            const minenestGeminiResultText = document.getElementById('minenest-gemini-result-text');
+
+            if (minenestGeminiButton) {
+                minenestGeminiButton.addEventListener('click', async () => {
+                    const userQuery = minenestGeminiInput.value.trim();
+                    if (!userQuery) {
+                        minenestGeminiResultText.textContent = 'Please enter a type of mining operation.';
+                        return;
+                    }
+
+                    minenestGeminiResultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...'; // Show loading indicator
+                    minenestGeminiButton.disabled = true; // Disable button during generation
+
+                    // Construct the prompt for the Gemini API, focused on MineNest use cases
+                    const prompt = `You are a marketing expert for a high-tech mining software called MineNest™. MineNest™ offers features like Professional Services Mesh integration, Advanced Data Sync with NestTrack, Real-time Compliance with VaultLink™, Scalable Architecture, Predictive Analytics, and Seamless API Access. A potential customer runs a "${userQuery}" operation. Generate a compelling, paragraph-long use case explaining how MineNest™ would specifically benefit their operation. Highlight 2-3 key features that would be most impactful for them. The tone should be professional and benefit-oriented.`;
+
+                    try {
+                        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // API key is automatically provided by the Canvas environment
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        // Check for valid response structure from Gemini API
+                        if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                            minenestGeminiResultText.textContent = result.candidates[0].content.parts[0].text;
+                        } else {
+                            minenestGeminiResultText.textContent = 'Sorry, we could not generate a use case at this time. Please try again.';
+                            console.error("Gemini API Error: Unexpected response structure", result);
+                        }
+                    } catch (error) {
+                        minenestGeminiResultText.textContent = 'An error occurred while connecting to the AI. Please check your connection and try again.';
+                        console.error("Fetch Error:", error);
+                    } finally {
+                        minenestGeminiButton.disabled = false; // Re-enable button
+                    }
+                });
+            }
+
+            // Currency Converter Logic (for the dedicated converter section)
+            const amountInput = document.getElementById('amount-input');
+            const fromCurrencySelect = document.getElementById('from-currency-select');
+            const toCurrencySelect = document.getElementById('to-currency-select');
+            const convertButton = document.getElementById('convert-button');
+            const convertedResultText = document.getElementById('converted-result-text');
+
+            // Function to perform currency conversion for the dedicated converter
+            async function convertCurrency() {
+                const amount = parseFloat(amountInput.value);
+                const fromCurrency = fromCurrencySelect.value;
+                const toCurrency = toCurrencySelect.value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    convertedResultText.textContent = translations[localStorage.getItem('selectedLanguage') || 'en'].invalid_amount;
+                    return;
+                }
+
+                convertedResultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+                convertButton.disabled = true;
+
+                try {
+                    const response = await fetch(`${BASE_CURRENCY_API_URL}/pair/${fromCurrency}/${toCurrency}/${amount}`);
+                    const data = await response.json();
+
+                    if (data.result === 'success' && data.conversion_result !== undefined) {
+                        convertedResultText.textContent = `${amount} ${fromCurrency} = ${data.conversion_result.toFixed(2)} ${toCurrency}`;
+                    } else {
+                        convertedResultText.textContent = translations[localStorage.getItem('selectedLanguage') || 'en'].error_conversion;
+                        console.error("Conversion API Error:", data);
+                    }
+                } catch (error) {
+                    convertedResultText.textContent = translations[localStorage.getItem('selectedLanguage') || 'en'].error_conversion;
+                    console.error("Convert Currency Fetch Error:", error);
+                } finally {
+                    convertButton.disabled = false;
+                }
+            }
+
+            // Pricing Currency Toggle Logic
+            const monthlyToggleBtn = document.getElementById('monthly-toggle');
+            const annualToggleBtn = document.getElementById('annual-toggle');
+            const pricingCurrencySelect = document.getElementById('pricing-currency-select');
+
+            monthlyToggleBtn.addEventListener('click', () => {
+                isAnnualPricing = false;
+                monthlyToggleBtn.classList.add('active');
+                annualToggleBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+
+            annualToggleBtn.addEventListener('click', () => {
+                isAnnualPricing = true;
+                annualToggleBtn.classList.add('active');
+                monthlyToggleBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+
+            pricingCurrencySelect.addEventListener('change', (e) => {
+                selectedPricingCurrency = e.target.value;
+                updatePricingDisplay();
+            });
+
+            // Initial population of currencies and rates for both converters and pricing
+            populateCurrenciesAndRates();
+
+            // Add event listener for general currency converter button
+            convertButton.addEventListener('click', convertCurrency);
+        });
+    </script>
+</body>
+</html>

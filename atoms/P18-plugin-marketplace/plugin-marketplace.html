@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA Plugin Marketplace - Global Product View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .marketplace-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .marketplace-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .marketplace-header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .ecosystem-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #808080;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff 0%, #7b2ff7 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .product-id {
+            font-size: 0.75rem;
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .product-badge {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-premium {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .badge-agency {
+            background: rgba(123, 47, 247, 0.2);
+            color: #7b2ff7;
+        }
+
+        .badge-enterprise {
+            background: rgba(255, 0, 128, 0.2);
+            color: #ff0080;
+        }
+
+        .product-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 15px 0 10px 0;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .price-term {
+            font-size: 0.9rem;
+            color: #808080;
+            font-weight: 400;
+        }
+
+        .product-features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .product-features li {
+            padding: 8px 0;
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .license-section {
+            margin-top: 50px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .license-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .license-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .license-card {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .license-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .license-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .license-term {
+            color: #808080;
+            margin-bottom: 20px;
+        }
+
+        .install-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .install-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff 0%, #7b2ff7 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-text {
+            color: #a0a0a0;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .marketplace-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .ecosystem-stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marketplace-header">
+        <h1>FAA Plugin Marketplace</h1>
+        <p>Global Ecosystem Products & Licenses</p>
+        <div class="ecosystem-stats">
+            <div class="stat-item">
+                <div class="stat-number">2,366</div>
+                <div class="stat-label">Brands</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">25</div>
+                <div class="stat-label">Sectors</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Files</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">$5M</div>
+                <div class="stat-label">Pipeline</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Products</button>
+        <button class="filter-btn" data-filter="payment">Payment</button>
+        <button class="filter-btn" data-filter="security">Security</button>
+        <button class="filter-btn" data-filter="commerce">Commerce</button>
+        <button class="filter-btn" data-filter="premium">Premium Only</button>
+    </div>
+
+    <div class="products-grid">
+        <!-- OmniDrop 8000 -->
+        <div class="product-card" data-category="payment premium">
+            <div class="product-header">
+                <div class="product-id">FAA-PAY-8000</div>
+                <div class="product-badge badge-premium">Premium</div>
+            </div>
+            <h3 class="product-name">OmniDrop 8000™ SAAS</h3>
+            <div class="product-price">
+                $4,999<span class="price-term">+ /month</span>
+            </div>
+            <ul class="product-features">
+                <li>CET Hook Architecture</li>
+                <li>Ghost Gap Protocol</li>
+                <li>Banimal Connector Integration</li>
+                <li>Multi-Gateway Orchestration</li>
+                <li>Real-time Settlement Engine</li>
+                <li>34.6M+ Strike Capacity</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('OmniDrop 8000™', 'FAA-PAY-8000')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-PAY-8000')">Download</button>
+            </div>
+        </div>
+
+        <!-- VaultKey Pro -->
+        <div class="product-card" data-category="security agency">
+            <div class="product-header">
+                <div class="product-id">FAA-SEC-002</div>
+                <div class="product-badge badge-agency">Agency</div>
+            </div>
+            <h3 class="product-name">VaultKey Pro - Agency</h3>
+            <div class="product-price">
+                $249<span class="price-term">/month</span>
+            </div>
+            <ul class="product-features">
+                <li>Infinite Ledger Technology</li>
+                <li>Multi-User Traceability</li>
+                <li>AES-256 Encryption</li>
+                <li>Audit Trail Compliance</li>
+                <li>Version Control System</li>
+                <li>API Access Included</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('VaultKey Pro', 'FAA-SEC-002')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-SEC-002')">Download</button>
+            </div>
+        </div>
+
+        <!-- TOMALL Commerce -->
+        <div class="product-card" data-category="commerce enterprise">
+            <div class="product-header">
+                <div class="product-id">FAA-ECOM-001</div>
+                <div class="product-badge badge-enterprise">Enterprise</div>
+            </div>
+            <h3 class="product-name">TOMALL™ Commerce Node</h3>
+            <div class="product-price">
+                $30,000<span class="price-term">/setup</span>
+            </div>
+            <ul class="product-features">
+                <li>Sovereign Cart System</li>
+                <li>FAA Inline Pay Integration</li>
+                <li>Custom Brand Deployment</li>
+                <li>White-label Infrastructure</li>
+                <li>Dedicated Support Team</li>
+                <li>SLA Guarantee 99.9%</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('TOMALL™ Commerce', 'FAA-ECOM-001')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-ECOM-001')">Download</button>
+            </div>
+        </div>
+
+        <!-- Seedwave Admin -->
+        <div class="product-card" data-category="commerce">
+            <div class="product-header">
+                <div class="product-id">FAA-ADM-101</div>
+            </div>
+            <h3 class="product-name">Seedwave™ Admin Toolkit</h3>
+            <div class="product-price">
+                $799<span class="price-term">/month</span>
+            </div>
+            <ul class="product-features">
+                <li>MongoDB Index Optimization</li>
+                <li>R2 Storage Integration</li>
+                <li>Sector/Brand Management</li>
+                <li>Subnode API Endpoints</li>
+                <li>VS Code Extension</li>
+                <li>Real-time Analytics</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('Seedwave Admin', 'FAA-ADM-101')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-ADM-101')">Download</button>
+            </div>
+        </div>
+
+        <!-- HotStack Worker -->
+        <div class="product-card" data-category="commerce">
+            <div class="product-header">
+                <div class="product-id">FAA-WRK-305</div>
+            </div>
+            <h3 class="product-name">HotStack™ Worker</h3>
+            <div class="product-price">
+                $399<span class="price-term">/month</span>
+            </div>
+            <ul class="product-features">
+                <li>Cloudflare Workers Edge</li>
+                <li>5,000+ File Processing</li>
+                <li>Task Queue Management</li>
+                <li>Webhook Integration</li>
+                <li>Auto-scaling Architecture</li>
+                <li>Global CDN Deploy</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('HotStack Worker', 'FAA-WRK-305')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-WRK-305')">Download</button>
+            </div>
+        </div>
+
+        <!-- Banimal Connector -->
+        <div class="product-card" data-category="payment">
+            <div class="product-header">
+                <div class="product-id">FAA-CON-450</div>
+            </div>
+            <h3 class="product-name">Banimal Ecosystem Connector</h3>
+            <div class="product-price">
+                $599<span class="price-term">/month</span>
+            </div>
+            <ul class="product-features">
+                <li>WooCommerce Integration</li>
+                <li>Geolocation Plugin</li>
+                <li>MaxMind GeoIP2 Support</li>
+                <li>Multi-Currency API</li>
+                <li>Webhook Automation</li>
+                <li>PHP 8.1+ Compatible</li>
+            </ul>
+            <div class="product-actions">
+                <button class="btn btn-primary" onclick="installProduct('Banimal Connector', 'FAA-CON-450')">Install Now</button>
+                <button class="btn btn-secondary" onclick="downloadProduct('FAA-CON-450')">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="license-section">
+        <h2>Premium Licenses</h2>
+        <div class="license-grid">
+            <div class="license-card">
+                <div class="license-name">OmniKey™</div>
+                <div class="license-price">$129,000</div>
+                <div class="license-term">12 Month License</div>
+                <button class="btn btn-primary" onclick="purchaseLicense('OmniKey')">Purchase License</button>
+            </div>
+            <div class="license-card">
+                <div class="license-name">Seadwave™</div>
+                <div class="license-price">$48,000</div>
+                <div class="license-term">12 Month License</div>
+                <button class="btn btn-primary" onclick="purchaseLicense('Seadwave')">Purchase License</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Install Modal -->
+    <div class="install-modal" id="installModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Installing Product...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="status-text" id="statusText">Initializing...</p>
+        </div>
+    </div>
+
+    <script>
+        // Product package structure definitions
+        const PRODUCT_PACKAGES = {
+            'FAA-PAY-8000': {
+                name: 'OmniDrop 8000™ SAAS',
+                price: 4999,
+                files: [
+                    'omnidrop-8000-core.js',
+                    'cet-hook-engine.js',
+                    'ghost-gap-protocol.php',
+                    'banimal-connector-v4.6.0.php',
+                    'payment-gateway-orchestrator.js',
+                    'settlement-engine.js',
+                    'config/omnidrop.config.json',
+                    'config/gateway-mappings.json',
+                    'docs/INSTALLATION.md',
+                    'docs/API_REFERENCE.md',
+                    'schemas/omnidrop-schema.sql',
+                    'migrations/001_initial_setup.sql'
+                ],
+                dependencies: ['node >= 18', 'php >= 8.1', 'mongodb >= 6.0'],
+                size: '45.8 MB'
+            },
+            'FAA-SEC-002': {
+                name: 'VaultKey Pro - Agency',
+                price: 249,
+                files: [
+                    'vaultkey-core.js',
+                    'infinite-ledger.js',
+                    'multi-user-trace.js',
+                    'encryption-layer.js',
+                    'audit-trail.js',
+                    'api/vaultkey-api.js',
+                    'config/vault.config.json',
+                    'config/user-roles.json',
+                    'docs/SECURITY_GUIDE.md',
+                    'docs/AUDIT_COMPLIANCE.md',
+                    'schemas/vault-schema.sql'
+                ],
+                dependencies: ['node >= 18', 'postgresql >= 14'],
+                size: '28.3 MB'
+            },
+            'FAA-ECOM-001': {
+                name: 'TOMALL™ Commerce Node',
+                price: 30000,
+                files: [
+                    'tomall-core.js',
+                    'sovereign-cart.js',
+                    'faa-inline-pay.php',
+                    'brand-deployer.js',
+                    'white-label-engine.js',
+                    'infrastructure/docker-compose.yml',
+                    'infrastructure/kubernetes.yaml',
+                    'config/tomall.config.json',
+                    'config/brand-templates/',
+                    'docs/DEPLOYMENT_GUIDE.md',
+                    'docs/SLA_AGREEMENT.pdf',
+                    'schemas/commerce-schema.sql',
+                    'migrations/full-setup.sql'
+                ],
+                dependencies: ['node >= 18', 'docker >= 24', 'postgresql >= 14', 'redis >= 7'],
+                size: '156.7 MB'
+            },
+            'FAA-ADM-101': {
+                name: 'Seedwave™ Admin Toolkit',
+                price: 799,
+                files: [
+                    'seedwave-admin-core.js',
+                    'mongodb-optimizer.js',
+                    'r2-storage-adapter.js',
+                    'sector-brand-manager.js',
+                    'subnode-api.js',
+                    'vscode-extension/seedwave-ext.vsix',
+                    'config/seedwave.config.json',
+                    'docs/ADMIN_GUIDE.md',
+                    'schemas/seedwave-indexes.js'
+                ],
+                dependencies: ['node >= 18', 'mongodb >= 6.0', 'vs code >= 1.80'],
+                size: '32.1 MB'
+            },
+            'FAA-WRK-305': {
+                name: 'HotStack™ Worker',
+                price: 399,
+                files: [
+                    'hotstack-worker.js',
+                    'task-queue-manager.js',
+                    'webhook-integrator.js',
+                    'file-processor.js',
+                    'cloudflare-edge-config.js',
+                    'wrangler.toml',
+                    'config/hotstack.config.json',
+                    'docs/WORKER_DEPLOYMENT.md',
+                    'schemas/task-schema.json'
+                ],
+                dependencies: ['node >= 18', 'wrangler >= 3.0', 'cloudflare account'],
+                size: '18.9 MB'
+            },
+            'FAA-CON-450': {
+                name: 'Banimal Ecosystem Connector',
+                price: 599,
+                files: [
+                    'banimal-connector.php',
+                    'woo-integration.php',
+                    'geolocation-plugin.php',
+                    'maxmind-adapter.php',
+                    'currency-api.php',
+                    'webhook-handler.php',
+                    'config/banimal.config.php',
+                    'docs/WOOCOMMERCE_SETUP.md',
+                    'schemas/banimal-tables.sql'
+                ],
+                dependencies: ['php >= 8.1', 'wordpress >= 6.0', 'woocommerce >= 8.0'],
+                size: '22.4 MB'
+            }
+        };
+
+        const BANIMAL_CHECKOUT_URL = 'https://banimal.co.za/checkout';
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const cards = document.querySelectorAll('.product-card');
+                
+                cards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const categories = card.getAttribute('data-category');
+                        card.style.display = categories.includes(filter) ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Install product - redirects to Banimal checkout
+        function installProduct(name, productId) {
+            const packageData = PRODUCT_PACKAGES[productId];
+            
+            if (!packageData) {
+                alert('Product package not found. Please contact support.');
+                return;
+            }
+
+            // Build checkout URL with product details
+            const checkoutParams = new URLSearchParams({
+                product_id: productId,
+                product_name: packageData.name,
+                price: packageData.price,
+                return_url: window.location.href,
+                action: 'purchase_install'
+            });
+
+            // Redirect to Banimal checkout
+            window.location.href = `${BANIMAL_CHECKOUT_URL}?${checkoutParams.toString()}`;
+        }
+
+        // Download product - only after successful checkout verification
+        async function downloadProduct(productId) {
+            const packageData = PRODUCT_PACKAGES[productId];
+            
+            if (!packageData) {
+                alert('Product package not found.');
+                return;
+            }
+
+            // Check if user has valid purchase token (would come from checkout callback)
+            const urlParams = new URLSearchParams(window.location.search);
+            const purchaseToken = urlParams.get('purchase_token');
+            const verifiedProduct = urlParams.get('product_id');
+
+            if (!purchaseToken || verifiedProduct !== productId) {
+                // No valid purchase - redirect to checkout
+                const checkoutParams = new URLSearchParams({
+                    product_id: productId,
+                    product_name: packageData.name,
+                    price: packageData.price,
+                    return_url: window.location.href,
+                    action: 'purchase_download'
+                });
+                
+                const proceed = confirm(
+                    `${packageData.name}\n\n` +
+                    `Price: $${packageData.price}\n` +
+                    `Size: ${packageData.size}\n\n` +
+                    `You will be redirected to checkout.\n` +
+                    `After payment, download will begin automatically.`
+                );
+
+                if (proceed) {
+                    window.location.href = `${BANIMAL_CHECKOUT_URL}?${checkoutParams.toString()}`;
+                }
+                return;
+            }
+
+            // Valid purchase token exists - proceed with download
+            initiateStructuredDownload(productId, packageData, purchaseToken);
+        }
+
+        // Structured package download with user location selection
+        async function initiateStructuredDownload(productId, packageData, purchaseToken) {
+            const modal = document.getElementById('installModal');
+            const title = document.getElementById('modalTitle');
+            const status = document.getElementById('statusText');
+            const progress = document.getElementById('progressFill');
+            
+            modal.classList.add('active');
+            title.textContent = `Preparing ${packageData.name}`;
+            status.textContent = 'Building package structure...';
+            progress.style.width = '10%';
+
+            // Step 1: Request download location from user
+            const downloadLocation = await requestDownloadLocation(packageData.name);
+            
+            if (!downloadLocation) {
+                modal.classList.remove('active');
+                return;
+            }
+
+            // Step 2: Build package manifest
+            progress.style.width = '25%';
+            status.textContent = 'Generating manifest...';
+            
+            const manifest = {
+                product_id: productId,
+                product_name: packageData.name,
+                version: '1.0.0',
+                purchase_token: purchaseToken,
+                download_date: new Date().toISOString(),
+                structure: packageData.files,
+                dependencies: packageData.dependencies,
+                size: packageData.size,
+                treaty_id: 'FAA-TREATY-OMNI-4321-A13XN',
+                scroll_ref: '§9.4.17 (9atm)'
+            };
+
+            // Step 3: Fetch package from CDN/API
+            progress.style.width = '50%';
+            status.textContent = 'Downloading package files...';
+            
+            const packageBlob = await fetchPackageBlob(productId, purchaseToken, manifest);
+
+            // Step 4: Create structured ZIP
+            progress.style.width = '75%';
+            status.textContent = 'Creating package structure...';
+            
+            const structuredZip = await createStructuredZip(packageBlob, manifest, packageData);
+
+            // Step 5: Trigger download
+            progress.style.width = '100%';
+            status.textContent = '✓ Download starting...';
+            
+            triggerFileDownload(structuredZip, `${productId}_${Date.now()}.zip`);
+
+            setTimeout(() => {
+                status.textContent = `✓ ${packageData.name} downloaded successfully to:\n${downloadLocation}`;
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    progress.style.width = '0%';
+                }, 3000);
+            }, 1000);
+        }
+
+        // Request download location (browser will use default + show picker)
+        async function requestDownloadLocation(productName) {
+            if ('showDirectoryPicker' in window) {
+                try {
+                    const dirHandle = await window.showDirectoryPicker({
+                        mode: 'readwrite',
+                        startIn: 'downloads'
+                    });
+                    return dirHandle.name;
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('Directory picker error:', err);
+                    }
+                    return null;
+                }
+            } else {
+                // Fallback: browser default downloads folder
+                return 'Downloads';
+            }
+        }
+
+        // Fetch package blob from API
+        async function fetchPackageBlob(productId, purchaseToken, manifest) {
+            // In production, this would call your API endpoint
+            // Example: await fetch(`https://api.faa.zone/download/${productId}?token=${purchaseToken}`)
+            
+            // For now, create a mock blob with manifest
+            const mockData = JSON.stringify(manifest, null, 2);
+            return new Blob([mockData], { type: 'application/json' });
+        }
+
+        // Create structured ZIP with all files and folders
+        async function createStructuredZip(packageBlob, manifest, packageData) {
+            // In production, use JSZip library to create proper structure
+            // This is a simplified version
+            
+            const zipContent = {
+                'MANIFEST.json': JSON.stringify(manifest, null, 2),
+                'README.md': generateReadme(packageData),
+                'INSTALL.sh': generateInstallScript(packageData),
+                'LICENSE.txt': generateLicense(manifest),
+                '.env.example': generateEnvTemplate(packageData)
+            };
+
+            // Create blob with structured content
+            return new Blob([JSON.stringify(zipContent, null, 2)], { 
+                type: 'application/zip' 
+            });
+        }
+
+        // Generate README for package
+        function generateReadme(packageData) {
+            return `# ${packageData.name}
+
+## Installation
+
+1. Extract this package to your desired location
+2. Review .env.example and create .env with your configuration
+3. Run: ./INSTALL.sh
+4. Follow the setup wizard
+
+## Package Contents
+
+${packageData.files.map(f => `- ${f}`).join('\n')}
+
+## Dependencies
+
+${packageData.dependencies.map(d => `- ${d}`).join('\n')}
+
+## Size
+
+${packageData.size}
+
+## Support
+
+For support, visit: https://support.faa.zone
+`;
+        }
+
+        // Generate install script
+        function generateInstallScript(packageData) {
+            return `#!/bin/bash
+echo "Installing ${packageData.name}..."
+echo "Checking dependencies..."
+# Add dependency checks here
+echo "Installation complete!"
+`;
+        }
+
+        // Generate license
+        function generateLicense(manifest) {
+            return `FAA ECOSYSTEM LICENSE
+Treaty ID: ${manifest.treaty_id}
+Scroll Ref: ${manifest.scroll_ref}
+Product: ${manifest.product_name}
+Token: ${manifest.purchase_token}
+Date: ${manifest.download_date}
+
+This software is licensed under FAA Treaty terms.
+`;
+        }
+
+        // Generate .env template
+        function generateEnvTemplate(packageData) {
+            return `# ${packageData.name} Configuration
+FAA_PRODUCT_ID=${packageData.name}
+FAA_API_KEY=your_api_key_here
+FAA_ENVIRONMENT=production
+`;
+        }
+
+        // Trigger file download
+        function triggerFileDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Purchase license
+        function purchaseLicense(licenseName) {
+            const licenseData = {
+                'OmniKey': { price: 129000, term: '12 months', id: 'LIC-OMNI-001' },
+                'Seadwave': { price: 48000, term: '12 months', id: 'LIC-SEED-002' }
+            };
+
+            const license = licenseData[licenseName];
+            
+            const checkoutParams = new URLSearchParams({
+                product_id: license.id,
+                product_name: `${licenseName} License`,
+                price: license.price,
+                license_term: license.term,
+                return_url: window.location.href,
+                action: 'purchase_license'
+            });
+
+            window.location.href = `${BANIMAL_CHECKOUT_URL}?${checkoutParams.toString()}`;
+        }
+
+        // Close modal on click outside
+        document.getElementById('installModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                document.getElementById('progressFill').style.width = '0%';
+            }
+        });
+
+        // Check for successful checkout return
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const purchaseToken = urlParams.get('purchase_token');
+            const productId = urlParams.get('product_id');
+            const status = urlParams.get('status');
+
+            if (status === 'success' && purchaseToken && productId) {
+                // Show success message and auto-trigger download
+                alert(`✓ Payment successful!\n\nYour download will begin automatically.`);
+                setTimeout(() => {
+                    downloadProduct(productId);
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
