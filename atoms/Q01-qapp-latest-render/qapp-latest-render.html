@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Global · qapp · Global Kiosk Interface v1.6+</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:ital,wght@0,400;0,700;0,900;1,900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Established: Golden Ticket CI Guide MASTER v2 */
+            --mint: #5FCBB4;
+            --mint-ink: #0E7C74;
+            --coral: #E63946;
+            --coral-deep: #C42B37;
+            --sun: #FCB915;
+            --sun-deep: #E29A00;
+            --ink: #3A2A1B;
+            --ink-muted: #6E5A45;
+            --cream: #FBF4E4;
+            --cream-soft: #FDF9EF;
+            --emerald: #10B981;
+            --sand: #F3E7CE;
+            --background: var(--cream);
+            --card: #ffffff;
+            --glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.14);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: #e8e1d0;
+            color: var(--ink);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            user-select: none;
+        }
+
+        /* Portrait Touch Terminal Frame */
+        .kiosk-frame {
+            width: 480px;
+            height: 820px;
+            background: var(--background);
+            border: 8px solid var(--ink);
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ambient-glow {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(95, 203, 180, 0.12) 0%, transparent 60%),
+                        radial-gradient(circle at 10% 80%, rgba(230, 57, 70, 0.08) 0%, transparent 50%);
+            z-index: 0; pointer-events: none;
+        }
+
+        /* HEADER */
+        header {
+            flex: none;
+            padding: 20px 24px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--background);
+            z-index: 10;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand img { width: 38px; height: 38px; border-radius: 50%; background: #fff; padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .wordmark { font-style: italic; font-weight: 900; font-size: 20px; color: var(--coral); text-transform: lowercase; }
+
+        .status {
+            background: var(--mint); color: #fff;
+            padding: 8px 18px; border-radius: 999px;
+            font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; display: flex; align-items: center; gap: 8px;
+        }
+        .dot { width: 8px; height: 8px; background: var(--sun); border-radius: 50%; box-shadow: 0 0 10px var(--sun); animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* SCREENS */
+        .main-view { flex: 1; min-height: 0; position: relative; z-index: 5; }
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 20px; }
+        .screen.active { display: flex; }
+
+        /* ATTRACTOR */
+        .attractor-content { text-align: center; justify-content: center; }
+        .attractor-circle {
+            width: 180px; height: 180px; border-radius: 50%; background: var(--mint);
+            margin: 0 auto 30px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(95, 203, 180, 0.3);
+        }
+        .attractor-circle img { width: 120px; object-fit: contain; }
+        
+        .kicker { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--coral); letter-spacing: 0.3em; margin-bottom: 12px; }
+        .mantra { font-style: italic; font-weight: 900; text-transform: uppercase; font-size: 52px; line-height: 0.92; margin-bottom: 20px; }
+        .mantra span { color: var(--coral); }
+        .subtext { font-size: 16px; color: var(--ink-muted); font-weight: 600; line-height: 1.4; max-width: 320px; margin: 0 auto 50px; }
+
+        .start-cta {
+            width: 100%; padding: 30px; border-radius: 28px; background: var(--coral); color: #fff;
+            font-style: italic; font-weight: 900; font-size: 26px; text-transform: uppercase;
+            border: none; box-shadow: 0 12px 0 var(--coral-deep); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .start-cta:active { transform: translateY(6px); box-shadow: 0 6px 0 var(--coral-deep); }
+
+        /* BROWSE */
+        .ticker { background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: 12px; margin-bottom: 15px; font-family: 'Fira Code', monospace; font-size: 11px; display: flex; align-items: center; gap: 10px; }
+        .ticker b { color: var(--sun); }
+        .ticker .alive { width: 7px; height: 7px; background: var(--emerald); border-radius: 50%; box-shadow: 0 0 0 4px rgba(16,185,129,0.2); }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; overflow-y: auto; flex: 1; padding-bottom: 110px; }
+        .section-header { grid-column: span 2; font-family: 'Fredoka', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--mint-ink); border-bottom: 2px solid var(--sand); padding-bottom: 8px; margin-top: 25px; }
+
+        .p-card { background: #fff; border: 1.5px solid var(--sand); border-radius: 24px; padding: 16px; position: relative; display: flex; flex-direction: column; gap: 10px; }
+        .p-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; border: 1px solid var(--sand); }
+        .p-name { font-size: 14px; font-weight: 800; color: var(--ink); line-height: 1.25; }
+        .p-meta { font-family: 'Fira Code', monospace; font-size: 9px; color: var(--ink-muted); }
+        .p-price { font-family: 'Fira Code', monospace; font-size: 14px; font-weight: 800; color: var(--coral); margin-top: auto; }
+        .add-btn { position: absolute; bottom: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: var(--mint); color: #fff; border: none; font-size: 22px; font-weight: 700; cursor: pointer; }
+
+        /* CART BAR */
+        .cart-bar { position: absolute; bottom: 0; left: 0; right: 0; background: var(--mint); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 50; border-top: 2px solid var(--mint-ink); }
+        .cart-info .l { font-family: 'Fira Code', monospace; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--mint-ink); opacity: 0.8; }
+        .cart-info .v { font-style: italic; font-weight: 900; font-size: 28px; color: var(--ink); }
+        .count-badge { background: var(--sun); color: var(--ink); padding: 2px 8px; border-radius: 999px; font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 800; }
+        .checkout-btn { background: #fff; color: var(--mint-ink); border: none; padding: 14px 24px; border-radius: 14px; font-size: 16px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+
+        /* CART SCREEN */
+        .cart-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .cart-line { display: flex; align-items: center; gap: 12px; padding: 15px 0; border-bottom: 1px dashed var(--sand); }
+        .line-info { flex: 1; }
+        .line-name { font-weight: 800; font-size: 15px; }
+        .line-price { font-family: 'Fira Code', monospace; font-size: 13px; color: var(--coral); font-weight: 700; }
+        .stepper { display: flex; align-items: center; border: 1.5px solid var(--sand); border-radius: 999px; }
+        .stepper button { width: 32px; height: 32px; border: none; background: transparent; font-size: 18px; font-weight: 800; cursor: pointer; }
+        .stepper span { min-width: 24px; text-align: center; font-family: 'Fira Code', monospace; font-weight: 700; }
+
+        /* SUCCESS */
+        .success-box { text-align: center; justify-content: center; }
+        .order-num { font-style: italic; font-weight: 900; font-size: 68px; color: var(--sun); line-height: 1; margin: 20px 0; }
+        .giving-pill { background: rgba(255,255,255,0.9); color: var(--ink); padding: 12px 25px; border-radius: 999px; font-weight: 800; display: inline-block; margin-top: 15px; }
+
+        .specs { position: absolute; top: 110px; right: 20px; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 10px; color: var(--sun); border: 1px solid var(--sun); z-index: 100; }
+        footer-mono { position: absolute; bottom: 15px; width: 100%; text-align: center; font-family: 'Fira Code', monospace; font-size: 10px; color: rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="kiosk-frame">
+        <div class="ambient-glow"></div>
+
+        <header>
+            <div class="brand">
+                <img src="https://sc02.alicdn.com/kf/A1cb4d676dd2840b2bcc05ab58ab7529a9.png" alt="Fruitful Logo">
+                <div class="wordmark">fruitful™</div>
+            </div>
+            <div class="status">
+                <div class="dot"></div>
+                Online
+            </div>
+        </header>
+
+        <div class="specs">
+            1.6m Inner Radius<br>
+            1.8m Shell<br>
+            2.01m² Area
+        </div>
+
+        <div class="main-view">
+            <!-- ATTRACTOR -->
+            <div id="scr-attractor" class="screen active attractor-content">
+                <div class="attractor-circle">
+                    <img src="https://sc02.alicdn.com/kf/A1cb4d676dd2840b2bcc05ab58ab7529a9.png" alt="Fruitful">
+                </div>
+                <div class="kicker">Fruitful Portal</div>
+                <h1 class="mantra">Shop local.<br>Pay fast.<br><span>Grow good.</span></h1>
+                <p class="subtext">Artisan Kidswear, SamFox prints, and one-of-one South African crafts.</p>
+                <button class="start-cta" onclick="nav('browse')">👋 Tap to start</button>
+            </div>
+
+            <!-- BROWSE -->
+            <div id="scr-browse" class="screen">
+                <div class="ticker">
+                    <div class="alive"></div>
+                    <span><b>1,247</b> children fed today — you just made it <b>1,248</b>.</span>
+                </div>
+                <div class="menu-grid">
+                    <div class="section-header">Art Subscriptions</div>
+                    <div class="p-card">
+                        <img src="https://sc02.alicdn.com/kf/A6fbf191aa7c042c182f027c5635e3842a.png" alt="The Chief">
+                        <div class="p-name">The Chief (SamFox)</div>
+                        <div class="p-meta">One-of-one · monthly</div>
+                        <div class="p-price">R 165.00</div>
+                        <button class="add-btn" onclick="add('The Chief', 165)">+</button>
+                    </div>
+                    <div class="p-card">
+                        <img src="https://sc02.alicdn.com/kf/A1cffb2ecdc0a491cac6aefb0023a0f83k.png" alt="Grand Machadlela">
+                        <div class="p-name">Grand Machadlela Original</div>
+                        <div class="p-meta">Hand-painted · monthly</div>
+                        <div class="p-price">R 245.00</div>
+                        <button class="add-btn" onclick="add('Grand Canvas', 245)">+</button>
+                    </div>
+
+                    <div class="section-header">Golden Ticket Menu</div>
+                    <div class="p-card">
+                        <div class="p-name">Artisan Coffee</div>
+                        <div class="p-meta">350ml · roasted local</div>
+                        <div class="p-price">R 40.00</div>
+                        <button class="add-btn" onclick="add('Coffee', 40)">+</button>
+                    </div>
+                    <div class="p-card">
+                        <div class="p-name">Milk Pannekoek (1)</div>
+                        <div class="p-meta">Traditional style</div>
+                        <div class="p-price">R 15.00</div>
+                        <button class="add-btn" onclick="add('Pannekoek', 15)">+</button>
+                    </div>
+                </div>
+                <div class="cart-bar" id="bar" style="display:none;">
+                    <div class="cart-info">
+                        <div class="l">Subtotal</div>
+                        <div class="v" id="total-v">R 0</div>
+                    </div>
+                    <div class="count-badge" id="count-v">0</div>
+                    <button class="checkout-btn" onclick="nav('cart')">Review</button>
+                </div>
+            </div>
+
+            <!-- CART -->
+            <div id="scr-cart" class="screen">
+                <div class="section-header" style="margin-top:0">Your Order</div>
+                <div class="cart-list" id="cart-list"></div>
+                <div style="margin-top:auto; padding-top:20px;">
+                    <div class="ticker" style="background:var(--mint); color:var(--mint-ink); border:none;">
+                        🎉 <span id="give-txt">0 items — 0 children fed</span>
+                    </div>
+                    <button class="start-cta" onclick="nav('success')">Pay R <span id="pay-v">0</span></button>
+                    <button class="checkout-btn" style="width:100%; margin-top:15px; color:var(--ink-muted);" onclick="nav('browse')">← Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- SUCCESS -->
+            <div id="scr-success" class="screen success-box">
+                <h1 class="mantra" style="font-size:42px; color:var(--mint-ink);">Thank You.</h1>
+                <p class="subtext">Your artisan purchase feeds a child today™.</p>
+                <div class="order-num" id="order-id">1248</div>
+                <div class="p-meta">FFL-8374291</div>
+                <div class="giving-pill">🎉 You just fed <span id="fed-v">0</span> children!</div>
+                <button class="start-cta" style="margin-top:40px; font-size:20px; padding:20px;" onclick="reset()">Finish</button>
+            </div>
+        </div>
+
+        <footer-mono>STABLE_REL · qapp_v1.6_latest · MISSION_BASED_COMMERCE</footer-mono>
+    </div>
+
+    <script>
+        let cart = {};
+        let total = 0;
+        let count = 0;
+
+        function nav(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('scr-' + id).classList.add('active');
+            if(id === 'cart') renderCart();
+        }
+
+        function add(name, price) {
+            if(!cart[name]) cart[name] = { price: price, qty: 0 };
+            cart[name].qty++;
+            total += price;
+            count++;
+            updateBar();
+        }
+
+        function updateBar() {
+            document.getElementById('total-v').textContent = 'R ' + total.toFixed(2);
+            document.getElementById('count-v').textContent = count;
+            document.getElementById('bar').style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            list.innerHTML = Object.keys(cart).map(name => `
+                <div class="cart-line">
+                    <div class="line-info">
+                        <div class="line-name">${name}</div>
+                        <div class="line-price">R ${cart[name].price.toFixed(2)}</div>
+                    </div>
+                    <div class="stepper">
+                        <span>${cart[name].qty}</span>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('pay-v').textContent = total.toFixed(2);
+            document.getElementById('give-txt').textContent = count + ' items — ' + count + ' children fed today™';
+            document.getElementById('fed-v').textContent = count;
+        }
+
+        function reset() {
+            cart = {}; total = 0; count = 0;
+            updateBar();
+            nav('attractor');
+        }
+
+        nav('attractor');
+    </script>
+</body>
+</html>
