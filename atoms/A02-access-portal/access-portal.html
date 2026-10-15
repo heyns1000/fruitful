@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ Seedwave™ Access Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+  .global-header-bg { background: linear-gradient(to right, #4c51bf, #6b46c1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .access-card { transition: all 0.2s ease; cursor: pointer; border: 2px solid transparent; }
+  .access-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+  .access-card.selected { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79,70,229,0.15); }
+  .glow-btn { transition: all 0.2s; }
+  .glow-btn:hover { box-shadow: 0 0 20px rgba(99,102,241,0.5); transform: translateY(-1px); }
+  .status-badge { display: inline-flex; align-items: center; gap: 4px; }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+  .tab-btn { border-bottom: 3px solid transparent; }
+  .tab-btn.active { border-bottom-color: #4f46e5; color: #4f46e5; font-weight: 700; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<header class="global-header-bg text-white py-6 mb-0 shadow-xl">
+  <div class="container mx-auto px-6 text-center">
+    <h1 class="text-3xl font-extrabold" style="text-shadow:0 2px 4px rgba(0,0,0,0.5)">FAA.ZONE™</h1>
+    <p class="text-sm opacity-80 mt-1">The Earth's Financial Allocation Architecture</p>
+  </div>
+</header>
+
+<header class="bg-indigo-700 text-white py-4 mb-8 shadow">
+  <div class="container mx-auto px-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-bold">🔐 Seedwave™ Access Portal</h2>
+      <p class="text-xs opacity-70 mt-1">Select your access tier to proceed</p>
+    </div>
+    <div class="flex gap-2">
+      <span class="status-badge text-xs bg-green-500 bg-opacity-20 text-green-200 px-3 py-1 rounded-full">
+        <span class="pulse-dot"></span> Systems Online
+      </span>
+      <a href="/public/omnigrid_admin_portal.html" class="text-xs text-indigo-200 hover:text-white underline mt-1">← Back to Admin Portal</a>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-5xl mx-auto px-6 pb-16">
+
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <h2 class="text-lg font-bold text-gray-800 mb-2">Choose Your Access Type</h2>
+    <p class="text-sm text-gray-500 mb-6">Each tier provides role-specific tools, reporting, and ecosystem access within the FAA.ZONE infrastructure.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+      <div class="access-card bg-blue-50 rounded-xl p-5 selected" onclick="selectAccess('loyalty', this)">
+        <div class="text-3xl mb-3">🪙</div>
+        <h3 class="font-bold text-blue-700 text-base mb-1">Loyalty Access</h3>
+        <p class="text-xs text-gray-500 mb-3">For loyalty network members and scroll reward holders.</p>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>✓ Scroll reward dashboard</li>
+          <li>✓ Loyalty tier status</li>
+          <li>✓ Redemption centre</li>
+          <li>✓ Partner benefits</li>
+        </ul>
+        <div class="mt-3 text-xs font-semibold text-blue-600">Tier: Community ✦</div>
+      </div>
+
+      <div class="access-card bg-gray-50 rounded-xl p-5" onclick="selectAccess('shareholder', this)">
+        <div class="text-3xl mb-3">📊</div>
+        <h3 class="font-bold text-gray-800 text-base mb-1">Shareholder Access</h3>
+        <p class="text-xs text-gray-500 mb-3">For registered shareholders and financial stakeholders.</p>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>✓ Portfolio overview</li>
+          <li>✓ Dividend reports</li>
+          <li>✓ Voting & governance</li>
+          <li>✓ Cap table access</li>
+        </ul>
+        <div class="mt-3 text-xs font-semibold text-gray-700">Tier: Investor ✦✦</div>
+      </div>
+
+      <div class="access-card bg-green-50 rounded-xl p-5" onclick="selectAccess('provider', this)">
+        <div class="text-3xl mb-3">🤝</div>
+        <h3 class="font-bold text-green-700 text-base mb-1">Service Provider</h3>
+        <p class="text-xs text-gray-500 mb-3">For licensed operators, distributors, and B2B partners.</p>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>✓ Service agreement portal</li>
+          <li>✓ SLA & compliance tools</li>
+          <li>✓ API credentials</li>
+          <li>✓ Revenue share reports</li>
+        </ul>
+        <div class="mt-3 text-xs font-semibold text-green-600">Tier: Partner ✦✦✦</div>
+      </div>
+
+      <div class="access-card bg-purple-50 rounded-xl p-5" onclick="selectAccess('family', this)">
+        <div class="text-3xl mb-3">👨‍👩‍👧‍👦</div>
+        <h3 class="font-bold text-purple-700 text-base mb-1">Family Access</h3>
+        <p class="text-xs text-gray-500 mb-3">For founding family members and trust beneficiaries.</p>
+        <ul class="text-xs text-gray-600 space-y-1">
+          <li>✓ Trust & estate view</li>
+          <li>✓ Full grid access</li>
+          <li>✓ Cross-entity reporting</li>
+          <li>✓ Strategic override</li>
+        </ul>
+        <div class="mt-3 text-xs font-semibold text-purple-600">Tier: Founding ✦✦✦✦</div>
+      </div>
+    </div>
+
+    <div id="selected-label" class="text-sm text-indigo-600 font-medium mb-4">
+      ✓ Selected: <span id="selected-name">Loyalty Access</span>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-6 mb-8">
+    <div class="flex border-b mb-6 gap-6">
+      <button class="tab-btn pb-3 text-sm active" onclick="switchTab('verify', this)">🔐 Verify Identity</button>
+      <button class="tab-btn pb-3 text-sm text-gray-500" onclick="switchTab('request', this)">📋 Request Access</button>
+      <button class="tab-btn pb-3 text-sm text-gray-500" onclick="switchTab('status', this)">📡 Check Status</button>
+    </div>
+
+    <div id="panel-verify" class="panel active">
+      <h3 class="font-bold text-gray-800 mb-4">Identity Verification</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">FAA Member ID</label>
+          <input type="text" placeholder="FAA-XXXX-XXXX" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Linked Email</label>
+          <input type="email" placeholder="member@faa.zone" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Access Code / OTP</label>
+          <input type="text" placeholder="6-digit code" maxlength="6" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Access Tier</label>
+          <input type="text" id="tier-input" value="Loyalty Access" readonly class="w-full border bg-gray-50 rounded-lg px-3 py-2 text-sm text-indigo-700 font-semibold">
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="handleVerify()" class="glow-btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2 rounded-lg text-sm shadow">🔓 Verify & Enter Portal</button>
+        <button onclick="sendCode()" class="text-sm text-indigo-600 underline hover:text-indigo-800">Send me a code</button>
+      </div>
+      <div id="verify-status" class="mt-4 hidden"></div>
+    </div>
+
+    <div id="panel-request" class="panel">
+      <h3 class="font-bold text-gray-800 mb-4">Request Access Application</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Full Legal Name</label>
+          <input type="text" placeholder="Your name" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Contact Email</label>
+          <input type="email" placeholder="you@example.com" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Organisation / Entity</label>
+          <input type="text" placeholder="Company or trust name" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Requested Access Tier</label>
+          <input type="text" id="tier-request" value="Loyalty Access" readonly class="w-full border bg-gray-50 rounded-lg px-3 py-2 text-sm text-indigo-700 font-semibold">
+        </div>
+        <div class="sm:col-span-2">
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Reason for Access</label>
+          <textarea rows="3" placeholder="Briefly explain your relationship to FAA.ZONE and why you need this access tier..." class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+        </div>
+      </div>
+      <button onclick="handleRequest()" class="glow-btn bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2 rounded-lg text-sm shadow">📤 Submit Application</button>
+      <div id="request-status" class="mt-4 hidden"></div>
+    </div>
+
+    <div id="panel-status" class="panel">
+      <h3 class="font-bold text-gray-800 mb-4">Check Application Status</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Application Reference</label>
+          <input type="text" placeholder="APP-XXXX-XXXX" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-600 block mb-1">Registered Email</label>
+          <input type="email" placeholder="you@example.com" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+      </div>
+      <button onclick="checkStatus()" class="glow-btn bg-gray-700 hover:bg-gray-800 text-white font-bold px-6 py-2 rounded-lg text-sm shadow">🔍 Check Status</button>
+      <div id="check-status" class="mt-4 hidden"></div>
+      <div class="mt-6 border rounded-lg overflow-hidden">
+        <table class="w-full text-sm">
+          <thead><tr class="bg-gray-50 text-xs text-gray-500"><th class="px-4 py-3 text-left">Reference</th><th class="px-4 py-3 text-left">Tier</th><th class="px-4 py-3 text-left">Submitted</th><th class="px-4 py-3 text-left">Status</th></tr></thead>
+          <tbody>
+            <tr class="border-t"><td class="px-4 py-3 font-mono text-xs">APP-2026-0001</td><td class="px-4 py-3">Family Access</td><td class="px-4 py-3">2026-09-01</td><td class="px-4 py-3"><span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded">Approved</span></td></tr>
+            <tr class="border-t bg-gray-50"><td class="px-4 py-3 font-mono text-xs">APP-2026-0044</td><td class="px-4 py-3">Service Provider</td><td class="px-4 py-3">2026-09-03</td><td class="px-4 py-3"><span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded">Under Review</span></td></tr>
+            <tr class="border-t"><td class="px-4 py-3 font-mono text-xs">APP-2026-0107</td><td class="px-4 py-3">Shareholder</td><td class="px-4 py-3">2026-09-04</td><td class="px-4 py-3"><span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">Pending Docs</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow p-5 text-center">
+      <div class="text-2xl font-extrabold text-indigo-700">94</div>
+      <div class="text-xs text-gray-500 mt-1">Ecosystem Repositories</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 text-center">
+      <div class="text-2xl font-extrabold text-green-600">✓ Online</div>
+      <div class="text-xs text-gray-500 mt-1">Grid Status — SIMUNYE v1</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 text-center">
+      <div class="text-2xl font-extrabold text-purple-600">4 Tiers</div>
+      <div class="text-xs text-gray-500 mt-1">Active Access Levels</div>
+    </div>
+  </div>
+
+  <footer class="text-center text-xs text-gray-400 pt-4 border-t">
+    <p>FAA.ZONE™ Seedwave™ Admin Portal · Secured by SIMUNYE v1 · GC7:FSP2021121654</p>
+    <p class="mt-1"><a href="/public/omnigrid_admin_portal.html" class="text-indigo-400 hover:text-indigo-600">← Return to Admin Portal</a> &nbsp;|&nbsp; <a href="../careers/index.html" class="text-indigo-400 hover:text-indigo-600">🌍 Careers</a></p>
+  </footer>
+</div>
+
+<script>
+const ACCESS_TYPES = {
+  loyalty:     { name: 'Loyalty Access',     color: 'blue' },
+  shareholder: { name: 'Shareholder Access', color: 'gray' },
+  provider:    { name: 'Service Provider',   color: 'green' },
+  family:      { name: 'Family Access',      color: 'purple' }
+};
+let selectedAccess = 'loyalty';
+function selectAccess(type, el) {
+  document.querySelectorAll('.access-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedAccess = type;
+  const info = ACCESS_TYPES[type];
+  document.getElementById('selected-name').textContent = info.name;
+  document.getElementById('tier-input').value = info.name;
+  document.getElementById('tier-request').value = info.name;
+}
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = 'mt-4 p-3 rounded text-sm ' + (type === 'ok' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function sendCode() { showMsg('verify-status', '📨 A verification code has been sent to your registered email.', 'ok'); }
+function handleVerify() {
+  showMsg('verify-status', '✅ Identity verified. Redirecting to your ' + ACCESS_TYPES[selectedAccess].name + ' dashboard...', 'ok');
+  setTimeout(() => { window.location.href = '/public/omnigrid_admin_portal.html'; }, 2000);
+}
+function handleRequest() {
+  const ref = 'APP-2026-' + String(Math.floor(Math.random() * 9000) + 1000);
+  showMsg('request-status', '✅ Application submitted. Reference: ' + ref + ' — You will be contacted within 48 hours.', 'ok');
+}
+function checkStatus() { showMsg('check-status', '🔍 Searching for your application...', 'ok'); }
+</script>
+</body>
+</html>

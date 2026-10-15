@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Accessibility | Fruitful Global™</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Consistent with Fruitful aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7; /* Very light gray, almost white */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes footer to the bottom */
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f7;
+        }
+        body.dark-mode header {
+            background-color: rgba(26, 26, 26, 0.9);
+            border-bottom-color: #333;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode header h1 {
+            color: #f5f5f7;
+        }
+        body.dark-mode header nav a {
+            color: #f5f5f7; /* Light text in dark mode for visibility */
+        }
+        body.dark-mode header nav a:hover {
+            color: #66b2ff; /* Lighter blue for dark mode hover */
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-mode header nav a.px-4 { /* SecureSign button in dark mode */
+            background-color: #66b2ff;
+            color: #1d1d1f;
+            box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+            border-color: #66b2ff; /* Ensure border color matches */
+        }
+        body.dark-mode header nav a.px-4:hover {
+            background-color: #7abaff;
+            box-shadow: 0 2px 5px rgba(255,255,255,0.15);
+        }
+        body.dark-mode #language-toggle, body.dark-mode #theme-toggle {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+        }
+        body.dark-mode #language-toggle:focus, body.dark-mode #theme-toggle:focus {
+            box-shadow: 0 0 0 2px rgba(102, 178, 255, 0.5); /* Blue ring for dark mode */
+        }
+
+        body.dark-mode .container {
+            background-color: #2a2a2a;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        body.dark-mode .container h1, body.dark-mode h2, body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff;
+        }
+        body.dark-mode p, body.dark-mode ul li, body.dark-mode pre {
+            color: #e0e0e0;
+        }
+        body.dark-mode a {
+            color: #66b2ff;
+        }
+        body.dark-mode a:hover {
+            color: #7abaff;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            border-top-color: #333;
+            color: #888;
+        }
+        body.dark-mode footer a {
+            color: #e0e0e0;
+        }
+        body.dark-mode footer a:hover {
+            color: #f5f5f7;
+        }
+        body.dark-mode pre {
+            background-color: #1d1d1f; /* Darker background for code in dark mode */
+            border-color: #333;
+            color: #00e393; /* Greenish code text for dark mode */
+        }
+        body.dark-mode .section-card {
+            background-color: #3a3a3a;
+            border-color: #4a4a4a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .section-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        body.dark-mode .action-button {
+            background-color: #66b2ff;
+            color: #1d1d1f;
+        }
+        body.dark-mode .action-button:hover {
+            background-color: #7abaff;
+        }
+
+
+        /* Header specific styling from faa.zone/index.html */
+        header {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid #e8e8ed; /* Subtle bottom border */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            sm:flex-direction: row; /* Adjusted for responsive header */
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+            md:padding-left: 3rem; /* md:px-12 */
+            md:padding-right: 3rem; /* md:px-12 */
+        }
+        header h1 {
+            color: #1d1d1f; /* Dark text for logo */
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem; /* mb-4 sm:mb-0 */
+            sm:margin-bottom: 0;
+        }
+        header nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            sm:justify-content: flex-end; /* sm:justify-end */
+            align-items: center;
+            gap: 0.5rem; /* space-x-2 sm:space-x-4 */
+            sm:gap: 1rem;
+        }
+        header nav a {
+            color: #1d1d1f; /* Ensure dark color for links on light header */
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+        }
+        header nav a:hover {
+            color: #0071e3; /* Apple blue on hover */
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        header nav a.px-4 { /* Sign Up button */
+            background-color: #0071e3; /* Apple blue */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #0071e3; /* Ensure border is visible and matches */
+        }
+        header nav a.px-4:hover {
+            background-color: #0077ed;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        header .flex.items-center.space-x-2.ml-4 {
+            margin-left: 1rem; /* ml-4 */
+        }
+        header select, header button {
+            padding: 0.5rem; /* p-2 */
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem; /* text-sm */
+            cursor: pointer;
+            outline: none;
+            border: none; /* remove default border */
+            background-color: #e5e7eb; /* bg-gray-100 */
+            color: #1f2937; /* text-gray-800 */
+            transition: all 0.2s ease-in-out;
+        }
+        header select:focus, header button:focus {
+            box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+        }
+
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 960px;
+            width: 100%;
+            margin: 2rem auto;
+            flex-grow: 1; /* Allows container to take available space */
+        }
+
+        /* Corrected styling for main title and headings */
+        .container h1 {
+            font-size: 2.8rem; /* Consistent with faa.zone hero h2 */
+            font-weight: 800; /* Extra bold */
+            color: #1d1d1f; /* Near black for primary text on light mode */
+            margin-bottom: 0.5rem; /* Reduced margin to bring brand text closer */
+            text-align: center;
+            letter-spacing: -0.03em;
+        }
+        body.dark-mode .container h1 {
+            color: #f5f5f7; /* White in dark mode */
+        }
+        .container .brand-logo-text {
+            font-size: 1.8rem; /* Adjusted for a strong presence within content */
+            font-weight: 700;
+            color: #0071e3; /* Fruitful blue */
+            text-align: center;
+            margin-top: 0; /* Align with h1's bottom */
+            margin-bottom: 2rem; /* Space below brand text */
+            letter-spacing: -0.02em;
+        }
+        body.dark-mode .container .brand-logo-text {
+            color: #66b2ff; /* Lighter blue in dark mode */
+        }
+
+
+        /* Enhanced H2 styling for numbered sections and main content sections */
+        h2 {
+            font-size: 2.2rem; /* Slightly larger than before, closer to main H1 */
+            font-weight: 800; /* Extra bold, like main title */
+            color: #0071e3; /* Fruitful blue for prominence */
+            margin-top: 3rem; /* More space above */
+            margin-bottom: 1.5rem; /* More space below */
+            border-bottom: 1px solid #e8e8ed;
+            padding-bottom: 0.75rem; /* More padding below border */
+            letter-spacing: -0.02em; /* Tighter spacing */
+        }
+        body.dark-mode h2 {
+            color: #66b2ff; /* Lighter blue in dark mode */
+            border-bottom-color: #333;
+        }
+
+        h3 {
+            font-size: 1.5rem; /* Consistent with faa.zone h3 */
+            font-weight: 700; /* Bold */
+            color: #1d1d1f; /* Near black */
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        body.dark-mode h3 {
+            color: #f5f5f7;
+        }
+
+        p {
+            margin-bottom: 1rem; /* Consistent spacing between paragraphs */
+            color: #424245; /* Slightly lighter gray for body text */
+        }
+        body.dark-mode p {
+            color: #e0e0e0;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #424245;
+        }
+        ul li {
+            margin-bottom: 0.5rem; /* Spacing for list items */
+        }
+        body.dark-mode ul {
+            color: #e0e0e0;
+        }
+        body.dark-mode ul li {
+            color: #e0e0e0;
+        }
+
+        /* Styling for code blocks within content */
+        pre {
+            background-color: #f0f0f0; /* Light gray background */
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+            font-size: 0.85rem;
+            color: #1d1d1f;
+            white-space: pre-wrap; /* Wrap long lines */
+            word-break: break-all; /* Break long words if necessary */
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e8e8ed;
+        }
+        body.dark-mode pre {
+            background-color: #1d1d1f; /* Darker background for code in dark mode */
+            border-color: #333;
+            color: #00e393; /* Greenish code text for dark mode */
+        }
+
+        a {
+            color: #0071e3; /* Apple Blue */
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #6e6e73;
+            margin-top: 2rem;
+            margin-bottom: 1rem; /* Ensure space below last updated */
+        }
+        body.dark-mode .last-updated {
+            color: #888;
+        }
+
+        /* Footer styles - copied directly from faa.zone/index.html */
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem; /* Horizontal spacing */
+            margin-bottom: 0.5rem; /* Vertical spacing for wrapped items */
+            white-space: nowrap; /* Prevent links from breaking individually */
+        }
+        body.dark-mode footer .footer-links a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer .footer-links a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer .footer-links a:hover {
+            color: #f5f5f7;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            header h1 {
+                font-size: 1.2rem;
+            }
+            header nav {
+                margin-top: 1rem;
+            }
+            header nav a {
+                margin: 0.25rem 0.5rem;
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            header .flex.items-center.space-x-2.ml-4 {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+            header select, header button {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .container .brand-logo-text {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            p, ul li {
+                font-size: 0.95rem;
+            }
+            footer {
+                padding: 1.5rem;
+            }
+            footer .footer-links a {
+                margin: 0 0.25rem; /* Smaller horizontal margin for mobile */
+                margin-bottom: 0.25rem; /* Smaller vertical margin for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center text-white">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="fruitfulBrand">Fruitful™</h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center space-x-2 sm:space-x-4">
+            <a href="https://faa.zone/#features" class="transition-colors duration-200" data-i18n="navFeatures">Features</a>
+            <a href="https://faa.zone/#shareprice" class="transition-colors duration-200" data-i18n="navSignal">Signal</a>
+            <a href="https://faa.zone/#vault-access" class="transition-colors duration-200" data-i18n="navVault">Vault</a>
+            <a href="https://faa.zone/#treaty" class="transition-colors duration-200" data-i18n="navTreaty">Treaty</a>
+            <a href="https://faa.zone/#vaultmesh-section" class="transition-colors duration-200" data-i18n="navVaultMesh">VaultMesh</a>
+            <a href="https://faa.zone/#about" class="transition-colors duration-200" data-i18n="navAbout">About</a>
+            <a href="https://fruitfulcratedance.com/" class="transition-colors duration-200" data-i18n="navCrateDance">Fruitful Crate Dance</a>
+            <a href="https://faa.zone/careers/hiring-homepage.html" class="transition-colors duration-200" data-i18n="navCareers">Careers</a>
+            <a href="https://faa.zone/legal/securesign.html" class="transition-colors duration-200 font-semibold px-4 py-2 rounded-full" data-i18n="navSecureSign">SecureSign</a>
+            <a href="https://faa.zone/signup.html" class="px-4 py-2 rounded-full font-semibold transition-colors duration-200" data-i18n="navSignUp">Sign Up</a>
+
+            <!-- Language and Day/Night Toggles -->
+            <div class="flex items-center space-x-2 ml-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                    ☀️
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 data-i18n="accessibilityTitle">Accessibility Statement</h1>
+        <p class="brand-logo-text" data-i18n="fruitfulGlobalBrand">Fruitful Global™</p>
+        <p class="last-updated" data-i18n="lastUpdated">Last Updated: <span id="lastUpdatedDate">July 1, 2025</span></p>
+
+        <p data-i18n="accessibilityPara1">
+            Fruitful Global™ is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.
+        </p>
+        <p data-i18n="accessibilityPara2">
+            We aim to comply with all applicable standards, including WCAG 2.1 AA accessibility guidelines. Our efforts are ongoing as we work to implement the relevant improvements to make our website as accessible as possible.
+        </p>
+
+        <h2 data-i18n="accessibilityFeaturesTitle">Accessibility Features</h2>
+        <p data-i18n="accessibilityFeaturesPara1">
+            Our website includes features designed to improve accessibility for all users:
+        </p>
+        <ul>
+            <li data-i18n="accessibilityFeaturesListItem1">**Keyboard Navigation:** All interactive elements can be navigated using a keyboard.</li>
+            <li data-i18n="accessibilityFeaturesListItem2">**Screen Reader Compatibility:** Our content is structured to be compatible with popular screen readers.</li>
+            <li data-i18n="accessibilityFeaturesListItem3">**Color Contrast:** We strive to maintain sufficient color contrast for readability.</li>
+            <li data-i18n="accessibilityFeaturesListItem4">**Resizable Text:** Users can adjust text size through browser settings.</li>
+            <li data-i18n="accessibilityFeaturesListItem5">**Descriptive Alt Text:** Images and other non-text content include descriptive alternative text.</li>
+            <li data-i18n="accessibilityFeaturesListItem6">**Consistent Layout:** A predictable and consistent layout helps users navigate the site easily.</li>
+        </ul>
+
+        <h2 data-i18n="feedbackTitle">Feedback & Support</h2>
+        <p data-i18n="feedbackPara1">
+            We are always looking for ways to improve the accessibility of our website. If you encounter any accessibility barriers or have suggestions on how we can improve, please contact us. Your feedback is valuable!
+        </p>
+        <p data-i18n="feedbackEmail">
+            Email: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>
+        </p>
+        <p data-i18n="feedbackFormLink">
+            You may also use our general <a href="https://footer.global.repo.seedwave.faa.zone/contact.html">Contact Us</a> form.
+        </p>
+
+        <h2 data-i18n="complianceTitle">Compliance Status</h2>
+        <p data-i18n="compliancePara1">
+            The <a href="https://faa.zone">faa.zone</a> website is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content do not yet fully conform to the accessibility standard. We are actively working to address these areas.
+        </p>
+
+        <h2 data-i18n="ongoingEffortsTitle">Ongoing Efforts</h2>
+        <p data-i18n="ongoingEffortsPara1">
+            Our commitment to accessibility is an ongoing process. We regularly review our website and implement updates to enhance accessibility. We also provide training to our content creators and developers to ensure accessibility best practices are followed.
+        </p>
+    </div>
+
+    <footer class="py-8 px-6 md:px-12 text-center">
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/faa.zone.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <span data-i18n="footerCopyright">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        // Set the last updated date dynamically
+        document.getElementById('lastUpdatedDate').innerText = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Language data for i18n
+        window.languageData = { // Changed to window.languageData to avoid re-declaration errors
+            en: {
+                pageTitle: 'Accessibility | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Features',
+                navSignal: 'Signal',
+                navVault: 'Vault',
+                navTreaty: 'Treaty',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'About',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Careers',
+                navSecureSign: 'SecureSign',
+                navSignUp: 'Sign Up',
+                // Accessibility Content
+                accessibilityTitle: 'Accessibility Statement',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Last Updated: ',
+                accessibilityPara1: 'Fruitful Global™ is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards.',
+                accessibilityPara2: 'We aim to comply with all applicable standards, including WCAG 2.1 AA accessibility guidelines. Our efforts are ongoing as we work to implement the relevant improvements to make our website as accessible as possible.',
+                accessibilityFeaturesTitle: 'Accessibility Features',
+                accessibilityFeaturesPara1: 'Our website includes features designed to improve accessibility for all users:',
+                accessibilityFeaturesListItem1: '**Keyboard Navigation:** All interactive elements can be navigated using a keyboard.',
+                accessibilityFeaturesListItem2: '**Screen Reader Compatibility:** Our content is structured to be compatible with popular screen readers.',
+                accessibilityFeaturesListItem3: '**Color Contrast:** We strive to maintain sufficient color contrast for readability.',
+                accessibilityFeaturesListItem4: '**Resizable Text:** Users can adjust text size through browser settings.',
+                accessibilityFeaturesListItem5: '**Descriptive Alt Text:** Images and other non-text content include descriptive alternative text.',
+                accessibilityFeaturesListItem6: '**Consistent Layout:** A predictable and consistent layout helps users navigate the site easily.',
+                feedbackTitle: 'Feedback & Support',
+                feedbackPara1: 'We are always looking for ways to improve the accessibility of our website. If you encounter any accessibility barriers or have suggestions on how we can improve, please contact us. Your feedback is valuable!',
+                feedbackEmail: 'Email: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>',
+                feedbackFormLink: 'You may also use our general <a href="https://footer.global.repo.seedwave.faa.zone/contact.html">Contact Us</a> form.',
+                complianceTitle: 'Compliance Status',
+                compliancePara1: 'The <a href="https://faa.zone">faa.zone</a> website is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content do not yet fully conform to the accessibility standard. We are actively working to address these areas.',
+                ongoingEffortsTitle: 'Ongoing Efforts',
+                ongoingEffortsPara1: 'Our commitment to accessibility is an ongoing process. We regularly review our website and implement updates to enhance accessibility. We also provide training to our content creators and developers to ensure accessibility best practices are followed.',
+                // Footer links
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Copyright',
+                footerDevelopers: 'Developers',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'About',
+                footerAccessibility: 'Accessibility',
+                footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.'
+            },
+            es: {
+                pageTitle: 'Accesibilidad | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Características',
+                navSignal: 'Señal',
+                navVault: 'Bóveda',
+                navTreaty: 'Tratado',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'Nosotros',
+                navCrateDance: 'Danza de Cestas Frutales',
+                navCareers: 'Carreras',
+                navSecureSign: 'Firma Segura',
+                navSignUp: 'Registrarse',
+                // Accessibility Content
+                accessibilityTitle: 'Declaración de Accesibilidad',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Última Actualización: ',
+                accessibilityPara1: 'Fruitful Global™ se compromete a garantizar la accesibilidad digital para personas con discapacidades. Mejoramos continuamente la experiencia del usuario para todos y aplicamos los estándares de accesibilidad relevantes.',
+                accessibilityPara2: 'Nuestro objetivo es cumplir con todos los estándares aplicables, incluidas las pautas de accesibilidad WCAG 2.1 AA. Nuestros esfuerzos son continuos a medida que trabajamos para implementar las mejoras relevantes para hacer que nuestro sitio web sea lo más accesible posible.',
+                accessibilityFeaturesTitle: 'Características de Accesibilidad',
+                accessibilityFeaturesPara1: 'Nuestro sitio web incluye características diseñadas para mejorar la accesibilidad para todos los usuarios:',
+                accessibilityFeaturesListItem1: '**Navegación por Teclado:** Todos los elementos interactivos se pueden navegar usando un teclado.',
+                accessibilityFeaturesListItem2: '**Compatibilidad con Lectores de Pantalla:** Nuestro contenido está estructurado para ser compatible con lectores de pantalla populares.',
+                accessibilityFeaturesListItem3: '**Contraste de Color:** Nos esforzamos por mantener un contraste de color suficiente para la legibilidad.',
+                accessibilityFeaturesListItem4: '**Texto Redimensionable:** Los usuarios pueden ajustar el tamaño del texto a través de la configuración del navegador.',
+                accessibilityFeaturesListItem5: '**Texto Alternativo Descriptivo:** Las imágenes y otros contenidos no textuales incluyen texto alternativo descriptivo.',
+                accessibilityFeaturesListItem6: '**Diseño Consistente:** Un diseño predecible y consistente ayuda a los usuarios a navegar por el sitio fácilmente.',
+                feedbackTitle: 'Comentarios y Soporte',
+                feedbackPara1: 'Siempre estamos buscando formas de mejorar la accesibilidad de nuestro sitio web. Si encuentra alguna barrera de accesibilidad o tiene sugerencias sobre cómo podemos mejorar, contáctenos. ¡Sus comentarios son valiosos!',
+                feedbackEmail: 'Correo electrónico: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>',
+                feedbackFormLink: 'También puede utilizar nuestro formulario general de <a href="https://footer.global.repo.seedwave.faa.zone/contact.html">Contacto</a>.',
+                complianceTitle: 'Estado de Cumplimiento',
+                compliancePara1: 'El sitio web <a href="https://faa.faa.zone">faa.zone</a> cumple parcialmente con el nivel AA de WCAG 2.1. El cumplimiento parcial significa que algunas partes del contenido aún no se ajustan completamente al estándar de accesibilidad. Estamos trabajando activamente para abordar estas áreas.',
+                ongoingEffortsTitle: 'Esfuerzos Continuos',
+                ongoingEffortsPara1: 'Nuestro compromiso con la accesibilidad es un proceso continuo. Revisamos regularmente nuestro sitio web e implementamos actualizaciones para mejorar la accesibilidad. También brindamos capacitación a nuestros creadores de contenido y desarrolladores para garantizar que se sigan las mejores prácticas de accesibilidad.',
+                // Footer links
+                footerPrivacy: 'Privacidad',
+                footerTerms: 'Términos',
+                footerContact: 'Contacto',
+                footerCopyrightLink: 'Derechos de Autor',
+                footerDevelopers: 'Desarrolladores',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'Nosotros',
+                footerAccessibility: 'Accesibilidad',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.'
+            },
+            fr: {
+                pageTitle: 'Accessibilité | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'Fonctionnalités',
+                navSignal: 'Signal',
+                navVault: 'Coffre',
+                navTreaty: 'Traité',
+                navVaultMesh: 'VaultMesh',
+                navAbout: 'À Propos',
+                navCrateDance: 'Fruitful Crate Dance',
+                navCareers: 'Carrières',
+                navSecureSign: 'Signature Sécurisée',
+                navSignUp: 'S\'inscrire',
+                // Accessibility Content
+                accessibilityTitle: 'Déclaration d\'Accessibilité',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'Dernière mise à jour : ',
+                accessibilityPara1: 'Fruitful Global™ s\'engage à assurer l\'accessibilité numérique pour les personnes handicapées. Nous améliorons continuellement l\'expérience utilisateur pour tous et appliquons les normes d\'accessibilité pertinentes.',
+                accessibilityPara2: 'Nous visons à nous conformer à toutes les normes applicables, y compris les directives d\'accessibilité WCAG 2.1 AA. Nos efforts sont continus alors que nous travaillons à mettre en œuvre les améliorations pertinentes pour rendre notre site web aussi accessible que possible.',
+                accessibilityFeaturesTitle: 'Fonctionnalités d\'Accessibilité',
+                accessibilityFeaturesPara1: 'Notre site web inclut des fonctionnalités conçues pour améliorer l\'accessibilité pour tous les utilisateurs :',
+                accessibilityFeaturesListItem1: '**Navigation au Clavier :** Tous les éléments interactifs peuvent être navigués à l\'aide d\'un clavier.',
+                accessibilityFeaturesListItem2: '**Compatibilité avec les Lecteurs d\'Écran :** Notre contenu est structuré pour être compatible avec les lecteurs d\'écran populaires.',
+                accessibilityFeaturesListItem3: '**Contraste des Couleurs :** Nous nous efforçons de maintenir un contraste de couleurs suffisant pour la lisibilité.',
+                accessibilityFeaturesListItem4: '**Texte Redimensionnable :** Les utilisateurs peuvent ajuster la taille du texte via les paramètres du navigateur.',
+                accessibilityFeaturesListItem5: '**Texte Alternatif Descriptif :** Les images et autres contenus non textuels incluent un texte alternatif descriptif.',
+                accessibilityFeaturesListItem6: '**Mise en Page Cohérente :** Une mise en page prévisible et cohérente aide les utilisateurs à naviguer facilement sur le site.',
+                feedbackTitle: 'Commentaires et Assistance',
+                feedbackPara1: 'Nous cherchons toujours des moyens d\'améliorer l\'accessibilité de notre site web. Si vous rencontrez des obstacles d\'accessibilité ou avez des suggestions sur la façon dont nous pouvons nous améliorer, veuillez nous contacter. Vos commentaires sont précieux !',
+                feedbackEmail: 'E-mail: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>',
+                feedbackFormLink: 'Vous pouvez également utiliser notre formulaire général de <a href="https://footer.global.repo.seedwave.faa.zone/contact.html">Contact</a>.',
+                complianceTitle: 'État de Conformité',
+                compliancePara1: 'Le site web <a href="https://faa.faa.zone">faa.zone</a> est partiellement conforme aux directives WCAG 2.1 niveau AA. Partiellement conforme signifie que certaines parties du contenu ne sont pas encore entièrement conformes à la norme d\'accessibilité. Nous travaillons activement à résoudre ces problèmes.',
+                ongoingEffortsTitle: 'Efforts Continus',
+                ongoingEffortsPara1: 'Notre engagement envers l\'accessibilité est un processus continu. Nous révisons régulièrement notre site web et mettons en œuvre des mises à jour pour améliorer l\'accessibilité. Nous offrons également une formation à nos créateurs de contenu et développeurs pour garantir que les meilleures pratiques d\'accessibilité sont suivies.',
+                // Footer links
+                footerPrivacy: 'Confidentialité',
+                footerTerms: 'Conditions',
+                footerContact: 'Contact',
+                footerCopyrightLink: 'Droits d\'Auteur',
+                footerDevelopers: 'Développeurs',
+                footerVaultMeshLink: 'VaultMesh',
+                footerFruitfulLink: 'Fruitful',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'À Propos',
+                footerAccessibility: 'Accessibilité',
+                footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.'
+            },
+            ar: {
+                pageTitle: 'إمكانية الوصول | Fruitful Global™',
+                fruitfulBrand: 'Fruitful™',
+                navFeatures: 'الميزات',
+                navSignal: 'الإشارة',
+                navVault: 'الخزنة',
+                navTreaty: 'المعاهدة',
+                navVaultMesh: 'شبكة الكهف',
+                navAbout: 'حول',
+                navCrateDance: 'رقصة الصندوق المثمر',
+                navCareers: 'الوظائف',
+                navSecureSign: 'توقيع آمن',
+                navSignUp: 'التسجيل',
+                // Accessibility Content
+                accessibilityTitle: 'بيان إمكانية الوصول',
+                fruitfulGlobalBrand: 'Fruitful Global™',
+                lastUpdated: 'آخر تحديث: ',
+                accessibilityPara1: 'تلتزم Fruitful Global™ بضمان إمكانية الوصول الرقمي للأشخاص ذوي الإعاقة. نحن نعمل باستمرار على تحسين تجربة المستخدم للجميع وتطبيق معايير إمكانية الوصول ذات الصلة.',
+                accessibilityPara2: 'نهدف إلى الامتثال لجميع المعايير المعمول بها، بما في ذلك إرشادات إمكانية الوصول WCAG 2.1 AA. جهودنا مستمرة حيث نعمل على تنفيذ التحسينات ذات الصلة لجعل موقعنا الإلكتروني متاحًا قدر الإمكان.',
+                accessibilityFeaturesTitle: 'ميزات إمكانية الوصول',
+                accessibilityFeaturesPara1: 'يتضمن موقعنا ميزات مصممة لتحسين إمكانية الوصول لجميع المستخدمين:',
+                accessibilityFeaturesListItem1: '**التنقل بلوحة المفاتيح:** يمكن التنقل في جميع العناصر التفاعلية باستخدام لوحة المفاتيح.',
+                accessibilityFeaturesListItem2: '**التوافق مع قارئ الشاشة:** تم تصميم محتوانا ليكون متوافقًا مع برامج قراءة الشاشة الشائعة.',
+                accessibilityFeaturesListItem3: '**تباين الألوان:** نسعى جاهدين للحفاظ على تباين ألوان كافٍ لسهولة القراءة.',
+                accessibilityFeaturesListItem4: '**نص قابل لتغيير الحجم:** يمكن للمستخدمين ضبط حجم النص من خلال إعدادات المتصفح.',
+                accessibilityFeaturesListItem5: '**نص بديل وصفي:** تتضمن الصور والمحتويات غير النصية الأخرى نصًا بديلًا وصفيًا.',
+                accessibilityFeaturesListItem6: '**تخطيط متناسق:** يساعد التخطيط المتوقع والمتناسق المستخدمين على التنقل في الموقع بسهولة.',
+                feedbackTitle: 'الملاحظات والدعم',
+                feedbackPara1: 'نحن نبحث دائمًا عن طرق لتحسين إمكانية الوصول إلى موقعنا الإلكتروني. إذا واجهت أي عوائق في إمكانية الوصول أو كانت لديك اقتراحات حول كيفية تحسيننا، يرجى الاتصال بنا. ملاحظاتك قيمة!',
+                feedbackEmail: 'البريد الإلكتروني: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>',
+                feedbackFormLink: 'يمكنك أيضًا استخدام نموذج <a href="https://footer.global.repo.seedwave.faa.zone/contact.html">اتصل بنا</a> العام.',
+                complianceTitle: 'حالة الامتثال',
+                compliancePara1: 'يتوافق موقع <a href="https://faa.faa.zone">faa.zone</a> جزئيًا مع مستوى WCAG 2.1 AA. الامتثال الجزئي يعني أن بعض أجزاء المحتوى لا تتوافق بعد بشكل كامل مع معيار إمكانية الوصول. نحن نعمل بنشاط لمعالجة هذه المجالات.',
+                ongoingEffortsTitle: 'الجهود المستمرة',
+                ongoingEfferingPara1: 'التزامنا بإمكانية الوصول هو عملية مستمرة. نقوم بمراجعة موقعنا بانتظام وننفذ التحديثات لتعزيز إمكانية الوصول. كما نقدم تدريبًا لمنشئي المحتوى والمطورين لدينا لضمان اتباع أفضل ممارسات إمكانية الوصول.',
+                // Footer links
+                footerPrivacy: 'الخصوصية',
+                footerTerms: 'الشروط',
+                footerContact: 'اتصل بنا',
+                footerCopyrightLink: 'حقوق النشر',
+                footerDevelopers: 'المطورون',
+                footerVaultMeshLink: 'شبكة الكهف',
+                footerFruitfulLink: 'مثمر',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: 'حول',
+                footerAccessibility: 'إمكانية الوصول',
+                footerCopyright: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.'
+            },
+            zh: {
+                pageTitle: '无障碍 | 丰硕全球™',
+                fruitfulBrand: '丰硕™',
+                navFeatures: '功能',
+                navSignal: '信号',
+                navVault: '金库',
+                navTreaty: '条约',
+                navVaultMesh: '金库网格',
+                navAbout: '关于',
+                navCrateDance: '丰硕板条箱之舞',
+                navCareers: '职业',
+                navSecureSign: '安全签署',
+                navSignUp: '注册',
+                // Accessibility Content
+                accessibilityTitle: '无障碍声明',
+                fruitfulGlobalBrand: '丰硕全球™',
+                lastUpdated: '最后更新: ',
+                accessibilityPara1: '丰硕全球™ 致力于确保残障人士的数字无障碍。我们不断改进每个人的用户体验，并应用相关的无障碍标准。',
+                accessibilityPara2: '我们的目标是遵守所有适用的标准，包括 WCAG 2.1 AA 级无障碍指南。我们正在积极努力实施相关改进，以使我们的网站尽可能无障碍。',
+                accessibilityFeaturesTitle: '无障碍功能',
+                accessibilityFeaturesPara1: '我们的网站包含旨在改善所有用户无障碍的功能：',
+                accessibilityFeaturesListItem1: '**键盘导航：** 所有交互元素都可以使用键盘导航。',
+                accessibilityFeaturesListItem2: '**屏幕阅读器兼容性：** 我们的内容结构与流行的屏幕阅读器兼容。',
+                accessibilityFeaturesListItem3: '**颜色对比：** 我们努力保持足够的颜色对比度以提高可读性。',
+                accessibilityFeaturesListItem4: '**可调整大小的文本：** 用户可以通过浏览器设置调整文本大小。',
+                accessibilityFeaturesListItem5: '**描述性替代文本：** 图像和其他非文本内容包含描述性替代文本。',
+                accessibilityFeaturesListItem6: '**一致的布局：** 可预测且一致的布局有助于用户轻松浏览网站。',
+                feedbackTitle: '反馈与支持',
+                feedbackPara1: '我们一直在寻找改善网站无障碍性的方法。如果您遇到任何无障碍障碍或有任何改进建议，请联系我们。您的反馈非常有价值！',
+                feedbackEmail: '电子邮件: <a href="mailto:accessibility@faa.zone">accessibility@faa.zone</a>',
+                feedbackFormLink: '您也可以使用我们的一般<a href="https://footer.global.repo.seedwave.faa.zone/contact.html">联系我们</a>表格。',
+                complianceTitle: '合规状态',
+                compliancePara1: '<a href="https://faa.faa.zone">faa.zone</a> 网站部分符合 WCAG 2.1 AA 级标准。部分符合意味着部分内容尚未完全符合无障碍标准。我们正在积极努力解决这些领域。',
+                ongoingEffortsTitle: '持续努力',
+                ongoingEffortsPara1: '我们对无障碍的承诺是一个持续的过程。我们定期审查我们的网站并实施更新以增强无障碍性。我们还为内容创建者和开发者提供培训，以确保遵循无障碍最佳实践。',
+                // Footer links
+                footerPrivacy: '隐私',
+                footerTerms: '条款',
+                footerContact: '联系',
+                footerCopyrightLink: '版权',
+                footerDevelopers: '开发者',
+                footerVaultMeshLink: '金库网格',
+                footerFruitfulLink: '丰硕',
+                footerFAAZoneLink: 'FAA.Zone',
+                footerAboutLink: '关于',
+                footerAccessibility: '无障碍',
+                footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。'
+            }
+        };
+
+        // Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerText = '🌙';
+            } else {
+                themeToggle.innerText = '☀️';
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark-mode')) {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerText = '☀️';
+                } else {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerText = '🌙';
+                }
+            });
+
+            // Language toggle event listener
+            languageToggle.addEventListener('change', (event) => {
+                const newLang = event.target.value;
+                updateLanguage(newLang);
+                localStorage.setItem('language', newLang);
+            });
+
+            // Function to update text content based on selected language
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (window.languageData[lang] && window.languageData[lang][key]) { // Use window.languageData
+                        el.innerHTML = window.languageData[lang][key];
+                    }
+                });
+                document.title = window.languageData[lang]?.pageTitle || 'Fruitful Global'; // Use window.languageData
+            }
+        });
+    </script>
+</body>
+</html>

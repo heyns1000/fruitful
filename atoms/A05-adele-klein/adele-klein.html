@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Adele Klein - Art Director</title>
+    <!-- Tailwind CSS CDN for a powerful utility-first framework -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a clean, modern feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Define Adele's Portfolio Global Color Palette (inspired by Fruitful) */
+        :root {
+            --primary-color: #8C52FF; /* A warm purple for primary actions and highlights */
+            --secondary-color: #00E4B7; /* A bright teal for secondary accents */
+            --text-color-light: #f8f8f8; /* Light text on dark backgrounds */
+            --text-color-dark: #111827; /* Dark text on light backgrounds */
+            --bg-color-dark: #0A0A0A; /* Near-black */
+            --bg-color-light: #F0F4F8; /* Soft, light gray */
+            --card-bg-dark: rgba(255, 255, 255, 0.05); /* Glassmorphism background for dark mode */
+            --card-bg-light: rgba(0, 0, 0, 0.03); /* Glassmorphism background for light mode */
+            --border-color-dark: rgba(255, 255, 255, 0.1); /* Subtle border dark mode */
+            --border-color-light: rgba(0, 0, 0, 0.1); /* Subtle border light mode */
+            --hero-text-light: #111827;
+            --hero-text-dark: #f8f8f8;
+            --quote-text-light: #4B5563; /* Darker gray for light mode quote text */
+            --quote-text-dark: #E0E7FF;
+            --sub-text-light: #4B5563; /* Darker gray for light mode sub-text */
+            --sub-text-dark: #BCC2FF;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-dark);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+        }
+        body.dark-mode header {
+            background-color: rgba(10, 10, 10, 0.9);
+            border-bottom: 1px solid var(--border-color-dark);
+        }
+        body.dark-mode .nav-actions select {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+        }
+        body.dark-mode .nav-actions button {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+        }
+        body.dark-mode .hero-section {
+            background-color: var(--bg-color-dark);
+        }
+        body.dark-mode .hero-section h2 {
+            color: var(--text-color-light);
+        }
+        body.dark-mode .hero-section p {
+            color: var(--sub-text-dark);
+        }
+        body.dark-mode .cta-button {
+            background: var(--primary-color);
+            color: var(--text-color-light);
+        }
+        body.dark-mode .cta-button:hover {
+            background: var(--secondary-color);
+            color: var(--text-color-dark);
+        }
+        body.dark-mode #about {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-light);
+        }
+        body.dark-mode #projects {
+            background-color: #1A1A1A;
+        }
+        body.dark-mode .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        body.dark-mode .glass-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        body.dark-mode .glass-card h3 {
+            color: var(--text-color-light);
+        }
+        body.dark-mode .glass-card p {
+            color: var(--sub-text-dark);
+        }
+        body.dark-mode #contact {
+            background-color: var(--bg-color-dark);
+        }
+        body.dark-mode #contact h2 {
+            color: var(--text-color-light);
+        }
+        body.dark-mode #contact p {
+            color: var(--sub-text-dark);
+        }
+        body.dark-mode footer {
+            background-color: var(--bg-color-dark);
+            color: var(--sub-text-dark);
+        }
+        body.dark-mode a {
+            color: var(--secondary-color);
+        }
+        body.dark-mode a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Header Styling */
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: background-color 0.5s, border-color 0.5s;
+        }
+        .text-gradient {
+            background-image: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: black;
+            font-weight: 700;
+        }
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            background-color: #0A0A0A; /* Always black for the canvas effect */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 0;
+            background-color: transparent;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        .cta-button {
+            background: var(--primary-color);
+            color: var(--text-color-light);
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background: var(--secondary-color);
+            color: var(--text-color-dark);
+        }
+
+        /* Spotify Player Styling */
+        .spotify-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .spotify-container h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="py-4 px-6 md:px-12 flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-4 sm:mb-0" data-i18n="adelleTitle">
+            <span class="text-gradient">Adele Klein</span>
+        </h1>
+        <nav class="flex flex-wrap justify-center sm:justify-end items-center space-x-2 sm:space-x-4">
+            <a href="#about" class="transition-colors duration-200 hover:text-purple-500 font-semibold" data-i18n="navAbout">About</a>
+            <a href="#projects" class="transition-colors duration-200 hover:text-purple-500 font-semibold" data-i18n="navProjects">Projects</a>
+            <a href="#contact" class="transition-colors duration-200 hover:text-purple-500 font-semibold" data-i18n="navContact">Contact</a>
+            
+            <!-- Language and Day/Night Toggles -->
+            <div class="flex items-center space-x-2 ml-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100">
+                    <option value="en">English</option>
+                    <option value="af">Afrikaans</option>
+                    <option value="st">Sotho</option>
+                    <option value="zu">Zulu</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100">
+                    ☀️
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Noodle Juice Flow -->
+    <section class="hero-section text-center p-8">
+        <canvas id="noodleJuiceCanvas" class="hero-canvas"></canvas>
+        <div class="hero-content text-white">
+            <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 text-white" data-i18n="heroHeadline">
+                Art Direction & Creative Strategy
+            </h2>
+            <p class="text-xl md:text-2xl font-light italic text-gray-300 mb-8" data-i18n="heroDescription">
+                A journey of healing and hope, expressed through compelling visuals.
+            </p>
+            <a href="#projects" class="cta-button py-3 px-8 rounded-full font-semibold text-lg hover:ring-2 hover:ring-offset-2 hover:ring-purple-500 transition-all duration-300" data-i18n="ctaButton">
+                Explore Creative Works ✨
+            </a>
+        </div>
+        <div class="absolute bottom-8 left-8 z-20">
+            <label for="pulseDesign" class="text-xs text-gray-400">Pulse Design:</label>
+            <select id="pulseDesign" class="px-2 py-1 rounded-md text-sm bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <optgroup label="Noodle Inspired">
+                    <option value="Calm Ripple">Calm Ripple</option>
+                    <option value="Gentle Flow">Gentle Flow</option>
+                    <option value="Subtle Waves">Subtle Waves</option>
+                    <option value="Vibrant Flow">Vibrant Flow</option>
+                    <option value="Energetic Pulse">Energetic Pulse</option>
+                    <option value="Noodle Juice Pulse" selected>Noodle Juice Pulse</option>
+                    <option value="Gorilla Comb Pulse">Gorilla Comb Pulse</option>
+                </optgroup>
+            </select>
+        </div>
+    </section>
+
+    <!-- Spotify Player Section -->
+    <section id="spotify-player" class="py-16 md:py-24 px-6 md:px-12 bg-gray-100 dark:bg-gray-900">
+        <div class="spotify-container">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-8 text-gradient">
+                Sounds of Creativity 🎧
+            </h2>
+            <div class="w-full">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/4NtQwxR7o3ixPVKLyOTS66?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 md:py-24 px-6 md:px-12 text-center bg-white dark:bg-gray-900">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gradient" data-i18n="aboutTitle">
+                About the Journey
+            </h2>
+            <p class="text-lg leading-relaxed mb-6 text-gray-700 dark:text-gray-300" data-i18n="aboutPara1">
+                Adele's story is one of profound courage. From a place of darkness, she has found the strength to stand tall, embracing her creative gifts and professional expertise to build a new life. This portfolio is a monument to that hope, a showcase of a mind that finds beauty and narrative in every challenge.
+            </p>
+            <blockquote class="text-2xl italic font-semibold border-l-4 border-purple-500 dark:border-teal-400 pl-6 text-gray-600 dark:text-gray-400">
+                "<span data-i18n="quote">Where others see an ending, I see the opportunity for a new beginning, beautifully designed.</span>"
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 md:py-24 px-6 md:px-12 bg-gray-100 dark:bg-gray-800">
+        <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-gradient" data-i18n="projectsTitle">
+            Creative Output
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Project Card 1 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">🌿</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project1Title">The Seedwave Campaign</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project1Text">A communications strategy focused on organic growth, using a nature-inspired brand identity to connect with eco-conscious consumers.</p>
+            </div>
+            <!-- Project Card 2 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">🌌</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project2Title">The Celestial Collection</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project2Text">Art direction for a luxury brand's new line, translating complex themes of space and discovery into a stunning, minimalist visual language.</p>
+            </div>
+            <!-- Project Card 3 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">📜</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project3Title">The Treaty Scroll</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project3Text">Conceptual design for a digital legal document, creating a visual metaphor that communicates trust, permanence, and a shared agreement.</p>
+            </div>
+            <!-- Project Card 4 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">✨</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project4Title">The Foundry Initiative</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project4Text">A brand identity project for a startup incubator, focusing on glyphs that represent raw potential, transformation, and innovation.</p>
+            </div>
+            <!-- Project Card 5 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">🏙️</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project5Title">Urban Canvas Project</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project5Text">Visual identity for a community art project, blending urban elements with organic forms to represent the city's connection to nature and creativity.</p>
+            </div>
+            <!-- Project Card 6 -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">🎧</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project6Title">Sonic Bloom Festival</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project6Text">Art direction and promotional materials for a music and arts festival, using vibrant, fluid imagery to convey the energy of sound and growth.</p>
+            </div>
+            <!-- Project Card 7: Noodle Juice Project -->
+            <div class="glass-card p-6 rounded-xl shadow-lg">
+                <div class="flex items-center space-x-4 mb-4">
+                    <span class="text-3xl">🍜</span>
+                    <h3 class="text-2xl font-semibold" data-i18n="project7Title">The Noodle Juice Flow</h3>
+                </div>
+                <p class="text-md text-gray-700 dark:text-gray-300" data-i18n="project7Text">A communications strategy for a lifestyle brand, utilizing the "Gorilla Comb Pulse" technology to connect with customers through innovative, vibrant energy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 px-6 md:px-12 text-center bg-white dark:bg-gray-900">
+        <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gradient" data-i18n="contactTitle">
+            Connect
+        </h2>
+        <p class="text-lg leading-relaxed mb-8 max-w-2xl mx-auto text-gray-700 dark:text-gray-300" data-i18n="contactText">
+            Adele welcomes new opportunities and a chance to collaborate on projects that matter.
+        </p>
+        <div class="space-y-4 font-semibold text-lg mb-8">
+            <p><span data-i18n="email-label">Email:</span> <a href="mailto:hello@adele.faa.zone" class="text-blue-500 hover:underline dark:text-blue-400">hello@adele.faa.zone</a></p>
+            <p><span data-i18n="phone-label">Phone:</span> <a href="tel:+27815551234" class="text-blue-500 hover:underline dark:text-blue-400">+27 81 555 1234</a></p>
+        </div>
+        <a href="#" class="cta-button py-3 px-8 rounded-full font-semibold text-lg" data-i18n="downloadCV">
+            Download CV
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 md:px-12 text-center text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-900">
+        <p data-i18n="footerText">&copy; 2025 Adele Klein. A story of creativity, beautifully told.</p>
+    </footer>
+
+    <script>
+        // Noodle Juice Canvas Animation Logic
+        const canvas = document.getElementById('noodleJuiceCanvas');
+        const ctx = canvas.getContext('2d');
+        let time = 0;
+        let animationFrameId;
+        let currentTemplate;
+
+        // Define a variety of noodle pulse templates
+        const noodleTemplates = {
+            "Noodle Juice Pulse": {
+                numLines: 180,
+                lineFrequency: 0.018,
+                lineSpeed: 0.0025,
+                lineAmplitudeFactor: 0.45,
+                baseHueOffset: 220,
+                hueRange: 60
+            },
+            "Calm Ripple": {
+                numLines: 60,
+                lineFrequency: 0.004,
+                lineSpeed: 0.0005,
+                lineAmplitudeFactor: 0.2,
+                baseHueOffset: 180,
+                hueRange: 30
+            },
+            "Gentle Flow": {
+                numLines: 70,
+                lineFrequency: 0.005,
+                lineSpeed: 0.0008,
+                lineAmplitudeFactor: 0.25,
+                baseHueOffset: 200,
+                hueRange: 40
+            },
+            "Gorilla Comb Pulse": {
+                numLines: 200,
+                lineFrequency: 0.01,
+                lineSpeed: 0.001,
+                lineAmplitudeFactor: 0.48,
+                baseHueOffset: 150,
+                hueRange: 30
+            },
+            "Energetic Pulse": {
+                numLines: 150,
+                lineFrequency: 0.01,
+                lineSpeed: 0.003,
+                lineAmplitudeFactor: 0.5,
+                baseHueOffset: 240,
+                hueRange: 80
+            },
+            "Vibrant Flow": {
+                numLines: 120,
+                lineFrequency: 0.006,
+                lineSpeed: 0.002,
+                lineAmplitudeFactor: 0.4,
+                baseHueOffset: 0,
+                hueRange: 360
+            }
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function drawNoodlePulse() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (!currentTemplate) return;
+
+            const { numLines, lineFrequency, lineSpeed, lineAmplitudeFactor, baseHueOffset, hueRange } = currentTemplate;
+
+            const centerX = canvas.width / 2;
+            const noodleTargetWidthRatio = 0.6;
+            const noodleWidth = canvas.width * noodleTargetWidthRatio;
+            const noodleStartX = centerX - (noodleWidth / 2);
+            const noodleEndX = centerX + (noodleWidth / 2);
+            const lineAmplitude = canvas.height * lineAmplitudeFactor;
+
+            for (let i = 0; i < numLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numLines) * 2;
+                
+                let colorHue = (baseHueOffset + (Math.sin(time * 0.1 + i * 0.01) * 0.5 + 0.5) * hueRange) % 360;
+                
+                const saturation = 90;
+                const lightness = 60 + Math.cos(time * 0.1 + i * 0.01) * 10;
+                const opacity = 1.0;
+                ctx.strokeStyle = `hsla(${colorHue}, ${saturation}%, ${lightness}%, ${opacity})`;
+                ctx.lineWidth = 2.0;
+
+                for (let x = 0; x < canvas.width; x += 5) {
+                    let effectiveAmplitudeScale = 0;
+                    if (x >= noodleStartX && x <= noodleEndX) {
+                        const normalizedNoodleX = (x - noodleStartX) / noodleWidth;
+                        effectiveAmplitudeScale = Math.pow(Math.cos((normalizedNoodleX - 0.5) * Math.PI), 2.0);
+                    }
+
+                    const y = Math.sin(x * lineFrequency + time + offset) * (lineAmplitude * (0.9 + Math.sin(time * 0.03 + i * 0.015) * 0.1) * effectiveAmplitudeScale)
+                             + Math.sin(x * (lineFrequency * 2.5) + time * 0.8 + offset * 0.7) * (lineAmplitude * 0.15 * effectiveAmplitudeScale)
+                             + Math.cos(x * (lineFrequency * 1.2) + time * 0.6 + offset * 1.3) * (lineAmplitude * 0.1 * effectiveAmplitudeScale)
+                             + Math.sin(x * (lineFrequency * 3.0) + time * 1.0 + offset * 0.4) * (lineAmplitude * 0.08 * effectiveAmplitudeScale)
+                             + canvas.height / 2;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+
+        function animateHeroCanvas() {
+            if (!currentTemplate) return;
+            time += currentTemplate.lineSpeed;
+            drawNoodlePulse();
+            animationFrameId = requestAnimationFrame(animateHeroCanvas);
+        }
+
+        function setPulseDesign(templateName) {
+            currentTemplate = noodleTemplates[templateName] || noodleTemplates["Noodle Juice Pulse"];
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            resizeCanvas();
+            animateHeroCanvas();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const pulseDesignSelect = document.getElementById('pulseDesign');
+            for (const key in noodleTemplates) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                pulseDesignSelect.appendChild(option);
+            }
+
+            pulseDesignSelect.addEventListener('change', (e) => {
+                setPulseDesign(e.target.value);
+            });
+            
+            // Set the initial design
+            setPulseDesign(pulseDesignSelect.value);
+
+            // Day/Night Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark-mode') {
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '🌙';
+            } else {
+                themeToggle.innerHTML = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark-mode');
+                    themeToggle.innerHTML = '🌙';
+                } else {
+                    localStorage.setItem('theme', 'light-mode');
+                    themeToggle.innerHTML = '☀️';
+                }
+            });
+
+            // Language Translation
+            const translations = {
+                en: {
+                    pageTitle: "Adele Klein - Portfolio",
+                    adelleTitle: "Adele Klein",
+                    navAbout: "About",
+                    navProjects: "Projects",
+                    navContact: "Contact",
+                    heroHeadline: "Art Direction & Creative Strategy",
+                    heroDescription: "A journey of healing and hope, expressed through compelling visuals.",
+                    ctaButton: "Explore Creative Works ✨",
+                    aboutTitle: "About the Journey",
+                    aboutPara1: "Adele's story is one of profound courage. From a place of darkness, she has found the strength to stand tall, embracing her creative gifts and professional expertise to build a new life. This portfolio is a monument to that hope, a showcase of a mind that finds beauty and narrative in every challenge.",
+                    quote: "Where others see an ending, I see the opportunity for a new beginning, beautifully designed.",
+                    projectsTitle: "Creative Output",
+                    project1Title: "The Seedwave Campaign",
+                    project1Text: "A communications strategy focused on organic growth, using a nature-inspired brand identity to connect with eco-conscious consumers.",
+                    project2Title: "The Celestial Collection",
+                    project2Text: "Art direction for a luxury brand's new line, translating complex themes of space and discovery into a stunning, minimalist visual language.",
+                    project3Title: "The Treaty Scroll",
+                    project3Text: "Conceptual design for a digital legal document, creating a visual metaphor that communicates trust, permanence, and a shared agreement.",
+                    project4Title: "The Foundry Initiative",
+                    project4Text: "A brand identity project for a startup incubator, focusing on glyphs that represent raw potential, transformation, and innovation.",
+                    project5Title: "Urban Canvas Project",
+                    project5Text: "Visual identity for a community art project, blending urban elements with organic forms to represent the city's connection to nature and creativity.",
+                    project6Title: "Sonic Bloom Festival",
+                    project6Text: "Art direction and promotional materials for a music and arts festival, using vibrant, fluid imagery to convey the energy of sound and growth.",
+                    project7Title: "The Noodle Juice Flow",
+                    project7Text: "A communications strategy for a lifestyle brand, utilizing the 'Gorilla Comb Pulse' technology to connect with customers through innovative, vibrant energy.",
+                    contactTitle: "Connect",
+                    contactText: "Adele welcomes new opportunities and a chance to collaborate on projects that matter.",
+                    "email-label": "Email:",
+                    "phone-label": "Phone:",
+                    downloadCV: "Download CV",
+                    footerText: "&copy; 2025 Adele Klein. A story of creativity, beautifully told.",
+                },
+                af: {
+                    pageTitle: "Adele Klein - Portefeulje",
+                    adelleTitle: "Adele Klein",
+                    navAbout: "Oor",
+                    navProjects: "Projekte",
+                    navContact: "Kontak",
+                    heroHeadline: "Kunsrigting & Kreatiewe Strategie",
+                    heroDescription: "'n Reis van genesing en hoop, uitgedruk deur boeiende visuele beelde.",
+                    ctaButton: "Verken Kreatiewe Werke ✨",
+                    aboutTitle: "Oor die Reis",
+                    aboutPara1: "Adele se verhaal is een van diepgaande moed. Vanuit 'n plek van duisternis het sy die krag gevind om regop te staan, en haar kreatiewe gawes en professionele kundigheid te omhels om 'n nuwe lewe te bou. Hierdie portefeulje is 'n monument vir daardie hoop, 'n vertoonvenster van 'n gees wat skoonheid en narratief in elke uitdaging vind.",
+                    quote: "Waar ander 'n einde sien, sien ek die geleentheid vir 'n nuwe begin, pragtig ontwerp.",
+                    projectsTitle: "Kreatiewe Uitset",
+                    project1Title: "Die Seedwave-veldtog",
+                    project1Text: "'n Kommunikasiestrategie wat fokus op organiese groei, deur 'n natuur-geïnspireerde handelsmerkidentiteit te gebruik om met eko-bewuste verbruikers te skakel.",
+                    project2Title: "Die Hemelse Versameling",
+                    project2Text: "Kunsrigting vir 'n luukse handelsmerk se nuwe lyn, wat komplekse temas van ruimte en ontdekking vertaal in 'n pragtige, minimalistiese visuele taal.",
+                    project3Title: "Die Verdragrol",
+                    project3Text: "Konseptuele ontwerp vir 'n digitale regsdokument, wat 'n visuele metafoor skep wat vertroue, permanensie en 'n gedeelde ooreenkoms kommunikeer.",
+                    project4Title: "Die Foundry-inisiatief",
+                    project4Text: "'n Handelsmerkidentiteitsprojek vir 'n opstart-inkubator, wat fokus op gliewe wat rou potensiaal, transformasie en innovasie verteenwoordig.",
+                    project5Title: "Stedelike Doekprojek",
+                    project5Text: "Visuele identiteit vir 'n gemeenskapskunsprojek, wat stedelike elemente met organiese vorms vermeng om die stad se verbintenis met die natuur en kreatiwiteit te verteenwoordig.",
+                    project6Title: "Sonic Bloom-fees",
+                    project6Text: "Kunsrigting en promosiemateriaal vir 'n musiek- en kunsfees, wat lewendige, vloeibare beelde gebruik om die energie van klank en groei oor te dra.",
+                    project7Title: "Die Noodle Juice Vloei",
+                    project7Text: "'n Kommunikasiestrategie vir 'n leefstyl-handelsmerk, wat die 'Gorilla Comb Pulse'-tegnologie benut om met kliënte te skakel deur innoverende, lewendige energie.",
+                    contactTitle: "Kontak",
+                    contactText: "Adele verwelkom nuwe geleenthede en 'n kans om saam te werk aan projekte wat saak maak.",
+                    "email-label": "E-pos:",
+                    "phone-label": "Foon:",
+                    downloadCV: "Laai CV af",
+                    footerText: "&copy; 2025 Adele Klein. 'n Storie van kreatiwiteit, pragtig vertel.",
+                },
+                st: {
+                    pageTitle: "Adele Klein - Portfolio",
+                    adelleTitle: "Adele Klein",
+                    navAbout: "Mabapi le",
+                    navProjects: "Diprojeke",
+                    navContact: "Iteanye le",
+                    heroHeadline: "Tataiso ya Bonono & Leano la Boqapi",
+                    heroDescription: "Leeto la phodiso le tshepo, le hlaloswa ka ditshwantsho tse hlollang.",
+                    ctaButton: "Lekola Mesebetsi ya Boqapi ✨",
+                    aboutTitle: "Mabapi le Leeto",
+                    aboutPara1: "Pale ya Adele ke ya sebete se seholo. Ho tloha sebakeng sa lefifi, o fumane matla a ho ema, a amohela dimpho tsa hae tsa boqapi le boitsebelo ba profeshenale ho aha bophelo bo botjha. Sena ha se portfolio feela; ke ketekelo ya leeto la hae le sebete le motheo wa bokamoso ba hae.",
+                    quote: "Ha ba bang ba bona pheletso, nna ke bona monyetla wa qalo e ntjha, e qapilweng ka bokgabane.",
+                    projectsTitle: "Pōpo ea Boqapi",
+                    project1Title: "Letsholo la Seedwave",
+                    project1Text: "Leano la puisano le shebaneng le kgolo ya tlhaho, le sebedisa boitsebiso ba mofuta bo bululetsweng ke tlhaho ho hokahana le bareki ba tsotellang tikoloho.",
+                    project2Title: "Pokello ya Mahodimo",
+                    project2Text: "Tataiso ya bonono bakeng sa mohala o motjha wa mofuta wa mabothobotho, ho fetolela ditaba tse rarahaneng tsa sebaka le ho fumana ntho e sa tlwaelehang hore e be puo e makatsang, e nyane ya pono.",
+                    project3Title: "Lengolo la Tumellano",
+                    project3Text: "Moralo wa kgopolo ya tokomane ya molao ya dijithale, ho theha tshwantshiso ya pono e buang ka tshepo, botsitso, le tumellano e arolelwanang.",
+                    project4Title: "Kgopolo ya Foundry",
+                    project4Text: "Projeke ya boitsebiso ba mofuta bakeng sa sebaka sa ho behela batho ba nang le dikgopolo tse ntjha, e shebaneng le diphallo tse emelang bokhoni bo tala, phetoho, le boqapi.",
+                    project5Title: "Projeke ya 'Urban Canvas'",
+                    project5Text: "Boitsebiso ba pono bakeng sa projeke ya bonono ya setjhaba, ho kopanya dikarolo tsa ditoropo le mefuta ya tlhaho ho emela kgokahano ya motse le tlhaho le boqapi.",
+                    project6Title: "Mokete wa Sonic Bloom",
+                    project6Text: "Tataiso ya bonono le thepa ya papatso bakeng sa mokete wa mmino le bonono, ho sebedisa ditshwantsho tse matla, tse boreledi ho fetisa matla a modumo le kgolo.",
+                    project7Title: "Phallo ya Noodle Juice",
+                    project7Text: "'n Kommunikasiestrategie vir 'n leefstyl-handelsmerk, wat die 'Gorilla Comb Pulse'-tegnologie benut om met kliënte te skakel deur innoverende, lewendige energie.",
+                    contactTitle: "Kopana",
+                    contactText: "Adele o amohela menyetla e metjha le monyetla wa ho sebedisana le yena diprojekeng tse nang le bohlokwa.",
+                    "email-label": "I-imeile:",
+                    "phone-label": "Nomoro ya mohala:",
+                    downloadCV: "Tlatla CV",
+                    footerText: "&copy; 2025 Adele Klein. Pale ya boqapi, e boletsweng ka bokgabane.",
+                },
+                zu: {
+                    pageTitle: "Adele Klein - I-Portfolio",
+                    adelleTitle: "Adele Klein",
+                    navAbout: "Nge",
+                    navProjects: "Amaphrojekthi",
+                    navContact: "Xhumana",
+                    heroHeadline: "Isiqondiso Sobuciko & Isu Lokudala",
+                    heroDescription: "Uhambo lokwelapha nethemba, olukhonjiswa ngezithombe ezihehayo.",
+                    ctaButton: "Hlola Imisebenzi Yokudala ✨",
+                    aboutTitle: "Mayelana Nohambo",
+                    aboutPara1: "Indaba ka-Adele ingeyesiqiniseko esikhulu. Kusukela endaweni yobumnyama, uthole amandla okuqina, wamukela izipho zakhe zokudala kanye nobuchwepheshe bakhe ukuze akhe impilo entsha. Le portfolio iyisikhumbuzo salelo themba, isiboniso somqondo othola ubuhle nendaba kuwo wonke inselelo.",
+                    quote: "Lapho abanye bebona ukuphela, mina ngibona ithuba lokuqala okusha, okwakhiwe ngobuhle.",
+                    projectsTitle: "Okudaliwe",
+                    project1Title: "Umkhankaso we-Seedwave",
+                    project1Text: "Isu lokuxhumana eligxile ekukhuleni kwemvelo, lisebenzisa ubunikazi bomkhiqizo obukhuthazwe imvelo ukuze kuxhunywe abathengi abaqaphela imvelo.",
+                    project2Title: "Iqoqo Lezulu",
+                    project2Text: "Isiqondiso sobuciko somkhiqizo kanokusho, lihumusha izindikimba eziyinkimbinkimbi zesikhala nokutholakele ngolimi oluhle, oluncane lokubukeka.",
+                    project3Title: "I-Scroll Yesivumelwano",
+                    project3Text: "Idizayini yomqondo yedokhumenti yedijithali yomthetho, edala isifaniso esibonakalayo esikhuluma ngethemba, ukuhlala njalo, nesivumelwano esabiwe.",
+                    project4Title: "Uhlelo lwe-Foundry",
+                    project4Text: "Iphrojekthi yobunikazi bomkhiqizo wesikhungo sokuqala, egxile kumaglyph amele amandla aluhlaza, ukuguqulwa, kanye nokuqamba okusha.",
+                    project5Title: "Iphrojekthi ye-Urban Canvas",
+                    project5Text: "Ubunikazi bokubukeka bephrojekthi yobuciko bomphakathi, okuhlanganisa izakhi zasemadolobheni ngezimo eziphilayo ukuze kumele ukuxhumana kwedolobha nemvelo nobuciko.",
+                    project6Title: "I-Sonic Bloom Festival",
+                    project6Text: "Isiqondiso sobuciko kanye nezinto zokukhangisa zomkhosi womculo nobuciko, kusebenzisa izithombe ezigqamile, ezibushelelezi ukudlulisa amandla omsindo nokukhula.",
+                    project7Title: "I-Noodle Juice Flow",
+                    project7Text: "A communications strategy for a lifestyle brand, utilizing the 'Gorilla Comb Pulse' technology to connect with customers through innovative, vibrant energy.",
+                    contactTitle: "Xhumana",
+                    contactText: "U-Adele wamukela amathuba amasha kanye nethuba lokusebenzisana emaphrojekthini abalulekile.",
+                    "email-label": "I-imeyili:",
+                    "phone-label": "Ucingo:",
+                    downloadCV: "Landa i-CV",
+                    footerText: "&copy; 2025 Adele Klein. Indaba yokudala, eshiwo ngobuhle.",
+                }
+            };
+
+            const languageToggle = document.getElementById('language-toggle');
+            const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+            
+            const translatePage = (lang) => {
+                elementsToTranslate.forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        element.innerHTML = translations[lang][key];
+                    }
+                });
+            };
+
+            languageToggle.addEventListener('change', (e) => {
+                const selectedLang = e.target.value;
+                localStorage.setItem('language', selectedLang);
+                translatePage(selectedLang);
+            });
+            
+            const initialLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = initialLang;
+            translatePage(initialLang);
+
+            // Scroll-based animations
+            const sections = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => { observer.observe(section); });
+        });
+    </script>
+</body>
+</html>

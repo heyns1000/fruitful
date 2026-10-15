@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+
+{% block title %}PayPal Integration Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4">
+            <i class="fab fa-paypal text-primary me-3"></i>
+            PayPal Integration Dashboard
+        </h1>
+        <p class="lead">Manage 7,000+ products across all sectors with enterprise-scale PayPal integration</p>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-rocket me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button id="syncDataBtn" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-sync me-2"></i>Sync Admin Data
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="createProductsBtn" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-plus me-2"></i>Create PayPal Products
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="createPlansBtn" class="btn btn-info w-100 mb-2">
+                            <i class="fas fa-layer-group me-2"></i>Create PayPal Plans
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="/paypal-status" class="btn btn-secondary w-100 mb-2">
+                            <i class="fas fa-chart-bar me-2"></i>View Status
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Sectors</h6>
+                        <h3 class="mb-0">{{ stats.total_sectors or 0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-layer-group fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total Brands</h6>
+                        <h3 class="mb-0">{{ stats.total_brands or 0 }}</h3>
+                    </div>
+                    <div>
+                        <i class="fas fa-building fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">PayPal Products</h6>
+                        <h3 class="mb-0">{{ stats.paypal_products.total or 0 }}</h3>
+                        <small>{{ stats.paypal_products.created or 0 }} Active</small>
+                    </div>
+                    <div>
+                        <i class="fab fa-paypal fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">PayPal Plans</h6>
+                        <h3 class="mb-0">{{ stats.paypal_plans.total or 0 }}</h3>
+                        <small>{{ stats.paypal_plans.created or 0 }} Active</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-credit-card fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PayPal Integration Status -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fab fa-paypal me-2"></i>PayPal Products Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex justify-content-between">
+                            <span>Active:</span>
+                            <span class="badge bg-success">{{ stats.paypal_products.created or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex justify-content-between">
+                            <span>Pending:</span>
+                            <span class="badge bg-warning">{{ stats.paypal_products.pending or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Errors:</span>
+                            <span class="badge bg-danger">{{ stats.paypal_products.error or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Total:</span>
+                            <span class="badge bg-secondary">{{ stats.paypal_products.total or 0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-credit-card me-2"></i>PayPal Plans Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex justify-content-between">
+                            <span>Active:</span>
+                            <span class="badge bg-success">{{ stats.paypal_plans.created or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex justify-content-between">
+                            <span>Pending:</span>
+                            <span class="badge bg-warning">{{ stats.paypal_plans.pending or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Errors:</span>
+                            <span class="badge bg-danger">{{ stats.paypal_plans.error or 0 }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6 mt-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Total:</span>
+                            <span class="badge bg-secondary">{{ stats.paypal_plans.total or 0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Jobs Status -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tasks me-2"></i>Bulk Processing Jobs
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-secondary">{{ stats.bulk_jobs.total or 0 }}</h4>
+                            <small>Total Jobs</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-warning">{{ stats.bulk_jobs.pending or 0 }}</h4>
+                            <small>Pending</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="text-center">
+                            <h4 class="text-info">{{ stats.bulk_jobs.processing or 0 }}</h4>
+                            <small>Processing</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-success">{{ stats.bulk_jobs.completed or 0 }}</h4>
+                            <small>Completed</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h4 class="text-danger">{{ stats.bulk_jobs.failed or 0 }}</h4>
+                            <small>Failed</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Progress Modal -->
+<div class="modal fade" id="jobProgressModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Job Progress</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="jobProgressContent">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Initializing job...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Brand Modal -->
+<div class="modal fade" id="addBrandModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Brand</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addBrandForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="sectorSelect" class="form-label">Sector</label>
+                        <select class="form-select" id="sectorSelect" name="sector_id" required>
+                            <option value="">Select a sector...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brandName" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control" id="brandName" name="name" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="monthlyFee" class="form-label">Monthly Fee ($)</label>
+                                <input type="number" step="0.01" class="form-control" id="monthlyFee" name="monthly_fee">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="annualFee" class="form-label">Annual Fee ($)</label>
+                                <input type="number" step="0.01" class="form-control" id="annualFee" name="annual_fee">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subnodes" class="form-label">Subnodes (comma-separated)</label>
+                        <input type="text" class="form-control" id="subnodes" name="subnodes" placeholder="VaultDrop, QRClaim, StreamSync">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Brand</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load sectors for the add brand modal
+document.addEventListener('DOMContentLoaded', function() {
+    loadSectors();
+});
+
+function loadSectors() {
+    fetch('/api/sectors')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const select = document.getElementById('sectorSelect');
+                select.innerHTML = '<option value="">Select a sector...</option>';
+                
+                data.sectors.forEach(sector => {
+                    const option = document.createElement('option');
+                    option.value = sector.id;
+                    option.textContent = `${sector.glyph} ${sector.name}`;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => console.error('Error loading sectors:', error));
+}
+
+// Job progress tracking
+let currentJobId = null;
+let progressInterval = null;
+
+function trackJob(jobId, taskId) {
+    currentJobId = jobId;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('jobProgressModal'));
+    modal.show();
+    
+    // Start polling for progress
+    progressInterval = setInterval(() => {
+        updateJobProgress(jobId);
+    }, 2000);
+    
+    // Stop polling when modal is closed
+    document.getElementById('jobProgressModal').addEventListener('hidden.bs.modal', function() {
+        if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+        }
+    });
+}
+
+function updateJobProgress(jobId) {
+    fetch(`/api/job-status/${jobId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const job = data.job;
+                const content = document.getElementById('jobProgressContent');
+                
+                content.innerHTML = `
+                    <h6>${job.job_name}</h6>
+                    <div class="progress mb-3">
+                        <div class="progress-bar ${getProgressBarClass(job.status)}" 
+                             role="progressbar" 
+                             style="width: ${job.progress_percentage}%" 
+                             aria-valuenow="${job.progress_percentage}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            ${Math.round(job.progress_percentage)}%
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <strong>${job.processed_items}</strong><br>
+                            <small>Processed</small>
+                        </div>
+                        <div class="col-3">
+                            <strong class="text-success">${job.successful_items}</strong><br>
+                            <small>Successful</small>
+                        </div>
+                        <div class="col-3">
+                            <strong class="text-danger">${job.failed_items}</strong><br>
+                            <small>Failed</small>
+                        </div>
+                        <div class="col-3">
+                            <strong>${job.total_items}</strong><br>
+                            <small>Total</small>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <strong>Status:</strong> 
+                        <span class="badge ${getStatusBadgeClass(job.status)}">${job.status}</span>
+                    </div>
+                    ${job.error_log && job.error_log.length > 0 ? `
+                        <div class="mt-3">
+                            <h6>Recent Errors:</h6>
+                            <ul class="list-group list-group-flush">
+                                ${job.error_log.slice(-3).map(error => `<li class="list-group-item">${error}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+                
+                // Stop polling if job is complete
+                if (['completed', 'failed'].includes(job.status)) {
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                    
+                    // Refresh page stats
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error updating job progress:', error);
+        });
+}
+
+function getProgressBarClass(status) {
+    switch (status) {
+        case 'completed': return 'bg-success';
+        case 'failed': return 'bg-danger';
+        case 'processing': return 'bg-info';
+        default: return 'bg-warning';
+    }
+}
+
+function getStatusBadgeClass(status) {
+    switch (status) {
+        case 'completed': return 'bg-success';
+        case 'failed': return 'bg-danger';
+        case 'processing': return 'bg-info';
+        default: return 'bg-warning';
+    }
+}
+</script>
+{% endblock %}

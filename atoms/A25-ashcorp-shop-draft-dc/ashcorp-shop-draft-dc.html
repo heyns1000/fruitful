@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&amp;family=Archivo:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body{margin:0;background:#eef1ee;font-family:'Archivo',sans-serif;color:#243b53;}
+  .mono{font-family:'DM Mono',monospace;}
+  a{color:#1f7a4d;} a:hover{color:#243b53;}
+  .tier-head{font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;color:#fff;background:#243b53;padding:14px 22px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
+  .card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(36,59,83,0.08);display:flex;flex-direction:column;}
+  .imgwrap{background:#f2b134;height:150px;overflow:hidden;position:relative;}
+  .imgwrap img{position:absolute;top:0;left:0;width:100%;object-fit:cover;object-position:top center;}
+  .imgwrap img.crop{height:147%;}
+  .imgwrap img.nocrop{height:100%;}
+  input[type=number]{width:56px;text-align:center;border:1px solid rgba(36,59,83,0.2);border-radius:6px;padding:6px 4px;font-family:'Archivo',sans-serif;}
+</style>
+</helmet>
+
+<div style="max-width:1280px;margin:0 auto;padding:28px 20px 100px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;">
+
+  <div style="grid-column:1/-1;display:flex;align-items:center;gap:14px;margin-bottom:4px;">
+    <img src="./assets/ashcorp-logo.png" alt="Ashcorp South Africa" style="height:48px;">
+    <div>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;">Ashcorp South Africa — Order Portal</div>
+      <div class="mono" style="font-size:11px;color:rgba(36,59,83,0.55);">EPS Cornice Range · Factory &amp; Client Ordering · MOQ: full box per profile</div>
+      <div class="mono" style="font-size:10px;color:#1f7a4d;font-weight:700;margin-top:2px;">Block Box™ Licensed Manufacturing &amp; Integration Partner</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:28px;">
+    <sc-for list="{{ tiers }}" as="tier" hint-placeholder-count="4">
+      <section>
+        <div class="tier-head">
+          <span>{{ tier.label }}</span>
+          <span class="mono" style="font-size:12px;font-weight:500;color:#f2b134;">R{{ tier.price }} excl VAT /2m piece</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:14px;">
+          <sc-for list="{{ tier.products }}" as="p" hint-placeholder-count="4">
+            <div class="card">
+              <div class="imgwrap">
+                <sc-if value="{{ p.hasImage }}" hint-placeholder-val="{{ true }}">
+                  <img src="{{ p.image }}" alt="{{ p.name }}" class="{{ p.cropClass }}">
+                </sc-if>
+                <sc-if value="{{ p.noImage }}" hint-placeholder-val="{{ false }}">
+                  <image-slot id="{{ p.slotId }}" placeholder="{{ p.name }} — end elevation photo" style="width:100%;height:100%;"></image-slot>
+                </sc-if>
+              </div>
+              <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px;flex:1;">
+                <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">{{ p.name }}</div>
+                <div class="mono" style="font-size:11px;color:rgba(36,59,83,0.55);">{{ p.dims }} · 2m lengths</div>
+                <div class="mono" style="font-size:10.5px;color:rgba(36,59,83,0.5);line-height:1.6;margin-top:2px;">{{ tier.boxPieces }} pcs/box · {{ tier.boxPacks }}×5-packs<br>Carton 210×39.2×29.2cm · 5kg</div>
+                <div style="margin-top:auto;padding-top:10px;border-top:1px solid rgba(36,59,83,0.08);display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="mono" style="font-size:10px;color:rgba(36,59,83,0.5);">Boxes</span>
+                    <input type="number" min="0" value="{{ p.qty }}" onChange="{{ p.onQtyChange }}">
+                  </div>
+                  <button onClick="{{ p.addToCart }}" style="padding:8px 14px;background:#1f7a4d;color:#fff;border:none;border-radius:7px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:11.5px;cursor:pointer;white-space:nowrap;">Add</button>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+  </div>
+
+  <div style="position:sticky;top:20px;display:flex;flex-direction:column;gap:16px;">
+    <div style="background:#243b53;color:#fff;border-radius:14px;padding:20px;">
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px;">Order Summary</div>
+      <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);">No boxes added yet.</div>
+      </sc-if>
+      <sc-for list="{{ cartLines }}" as="line" hint-placeholder-count="0">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <span>{{ line.name }} × {{ line.boxes }} box</span>
+          <span class="mono">R{{ line.lineTotal }}</span>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);font-weight:700;">
+        <span>Total (excl VAT)</span><span class="mono" style="color:#f2b134;">R{{ cartTotal }}</span>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 14px rgba(36,59,83,0.08);">
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;margin-bottom:10px;">Delivery &amp; Contact Details</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <input placeholder="Full name / Company" value="{{ f.name }}" onChange="{{ f.setName }}" style="padding:9px 10px;border:1px solid rgba(36,59,83,0.2);border-radius:7px;font-size:12.5px;">
+        <input placeholder="Phone / WhatsApp" value="{{ f.phone }}" onChange="{{ f.setPhone }}" style="padding:9px 10px;border:1px solid rgba(36,59,83,0.2);border-radius:7px;font-size:12.5px;">
+        <input placeholder="Email" value="{{ f.email }}" onChange="{{ f.setEmail }}" style="padding:9px 10px;border:1px solid rgba(36,59,83,0.2);border-radius:7px;font-size:12.5px;">
+        <textarea placeholder="Delivery address" value="{{ f.address }}" onChange="{{ f.setAddress }}" style="padding:9px 10px;border:1px solid rgba(36,59,83,0.2);border-radius:7px;font-size:12.5px;font-family:'Archivo',sans-serif;min-height:56px;resize:vertical;"></textarea>
+
+        <div style="font-size:11.5px;font-weight:700;margin-top:6px;color:rgba(36,59,83,0.7);">Payment method</div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><input type="radio" name="pay" value="account" checked="{{ f.isAccount }}" onChange="{{ f.setPayAccount }}"> Account Purchase</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12.5px;"><input type="radio" name="pay" value="cod" checked="{{ f.isCod }}" onChange="{{ f.setPayCod }}"> Cash on Delivery (admin use)</label>
+
+        <button onClick="{{ submitOrder }}" style="margin-top:10px;padding:12px;background:#243b53;color:#fff;border:none;border-radius:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Submit Order</button>
+        <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px;color:#1f7a4d;text-align:center;">✓ Order captured — ready for BOBGo handoff.</div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div class="mono" style="font-size:10px;color:rgba(36,59,83,0.5);text-align:center;line-height:1.6;">
+      Ashcorp General Supplies (Pty) Ltd · Reg. 2013/148608/07<br>Block Box™ products manufactured under license
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+const CARTON = { pieces: {85:120,110:90,140:70,170:55}, packs: {85:24,110:18,140:14,170:11} };
+
+const TIERS = [
+  { key:'85', label: '85mm Range', dims: '85×55×55mm', price: 11,
+    products: [
+      { id:'cove', sku:'BB-15M-085-COVE', name:'Blockbox Cove 85mm', image:'./assets/cornice/cove.png' },
+      { id:'sante', sku:'BB-15M-085-SANTE', name:'Blockbox Sante 85mm', image:'./assets/cornice/sante.png' }
+    ]},
+  { key:'110', label: '110mm Range', dims: '110×80×80mm', price: 15,
+    products: [
+      { id:'peroni', sku:'BB-15M-110-PERONI', name:'Blockbox Peroni 110mm', image:'./assets/cornice/peroni.png' },
+      { id:'gone', sku:'BB-15M-110-GONE', name:'Blockbox G-One 110mm', image:'./assets/cornice/gone.png' },
+      { id:'alina110', sku:'BB-15M-110-ALINA110', name:'Blockbox Alina 110mm', image:'./assets/cornice/alina.png' },
+      { id:'magic', sku:'BB-15M-110-MAGIC', name:'Blockbox Magic 110mm', image:'./assets/cornice/biance.png' },
+      { id:'gloria110', sku:'BB-15M-110-GLORIA110', name:'Blockbox Gloria 110mm', image:'./assets/cornice/gloria.png' }
+    ]},
+  { key:'140', label: '140mm Range', dims: '140×100×100mm', price: 19,
+    products: [
+      { id:'alina', sku:'BB-15M-140-ALINA', name:'Blockbox Alina 140mm', image:'./assets/cornice/alina.png' },
+      { id:'biance', sku:'BB-15M-140-BIANCE', name:'Blockbox Biance 140mm', image:'./assets/cornice/biance.png' },
+      { id:'p40', sku:'BB-15M-140-P40EVE', name:'Blockbox P40/Eve 140mm', image:'./assets/cornice/p40.png' },
+      { id:'tamara', sku:'BB-15M-140-TAMARA', name:'Blockbox Tamara 140mm', image:'./assets/cornice/tamara.png' },
+      { id:'troi', sku:'BB-15M-140-TROI', name:'Blockbox Troi 140mm', image:'./assets/cornice/troi.png' }
+    ]},
+  { key:'170', label: '170mm / 185mm Range', dims: 'see below', price: 22,
+    products: [
+      { id:'lisa', sku:'BB-15M-170-LISA', name:'Blockbox Lisa 170mm', image:'./assets/cornice/lisa.png' },
+      { id:'gloria185', sku:'BB-15M-185-GLORIA', name:'Blockbox Gloria 185mm', image:'./assets/cornice/gloria.png', noCrop:true }
+    ]}
+];
+
+class Component extends DCLogic {
+  state = {
+    qty: {}, cart: {},
+    name:'', phone:'', email:'', address:'',
+    payMethod: 'account', submitted: false
+  };
+
+  setQty(id, val) {
+    const n = Math.max(0, parseInt(val) || 0);
+    this.setState(s => ({ qty: { ...s.qty, [id]: n } }));
+  }
+
+  addToCart(id) {
+    const n = this.state.qty[id] || 0;
+    if (n <= 0) return;
+    this.setState(s => ({ cart: { ...s.cart, [id]: (s.cart[id] || 0) + n } }));
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    const tiers = TIERS.map(tier => ({
+      label: tier.label,
+      price: tier.price,
+      boxPieces: CARTON.pieces[tier.key],
+      boxPacks: CARTON.packs[tier.key],
+      products: tier.products.map(p => {
+        let dims = tier.dims;
+        if (tier.key === '170') dims = p.id === 'lisa' ? '170×130×130mm' : '185×135×135mm';
+        return {
+          name: p.name,
+          dims,
+          image: p.image,
+          cropClass: p.noCrop ? 'nocrop' : 'crop',
+          hasImage: p.image.length > 0,
+          noImage: p.image.length === 0,
+          slotId: 'slot-' + p.id,
+          qty: s.qty[p.id] || 0,
+          onQtyChange: e => this.setQty(p.id, e.target.value),
+          addToCart: () => this.addToCart(p.id)
+        };
+      })
+    }));
+
+    const allProducts = TIERS.flatMap(t => t.products.map(p => ({ ...p, tierKey: t.key, price: t.price })));
+    const cartLines = Object.entries(s.cart).filter(([,boxes]) => boxes > 0).map(([id, boxes]) => {
+      const prod = allProducts.find(p => p.id === id);
+      const pieces = CARTON.pieces[prod.tierKey] * boxes;
+      const lineTotal = (pieces * prod.price).toFixed(2);
+      return { name: prod.name, boxes, lineTotal };
+    });
+    const cartTotal = cartLines.reduce((sum, l) => sum + parseFloat(l.lineTotal), 0).toFixed(2);
+
+    return {
+      tiers,
+      cartLines,
+      cartEmpty: cartLines.length === 0,
+      cartTotal,
+      f: {
+        name: s.name, phone: s.phone, email: s.email, address: s.address,
+        isAccount: s.payMethod === 'account', isCod: s.payMethod === 'cod',
+        setName: e => this.setState({ name: e.target.value }),
+        setPhone: e => this.setState({ phone: e.target.value }),
+        setEmail: e => this.setState({ email: e.target.value }),
+        setAddress: e => this.setState({ address: e.target.value }),
+        setPayAccount: () => this.setState({ payMethod: 'account' }),
+        setPayCod: () => this.setState({ payMethod: 'cod' })
+      },
+      submitted: s.submitted,
+      submitOrder: () => this.setState({ submitted: true })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
