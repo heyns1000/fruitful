@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noodle Juice Rhino Strikes v.11 - Seedwave™</title>
+    <link rel="icon" href="/favicon.ico">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for the new pulse graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.js"></script>
+    <style>
+        /* Base Styles - More dynamic and modern for Seedwave */
+        :root {
+            --dark-bg: #0a0a0d; /* Very dark almost black */
+            --light-text: #e0e0e0;
+            --primary-glow: #00e393; /* Greenish glow, Tesla-inspired */
+            --secondary-glow: #007bff; /* Blue glow, Google/Apple-inspired */
+            --accent-red: #ff4d4d;
+            --card-bg-dark: #1c1c21;
+            --border-dark: #3a3a42;
+            --font-inter: 'Inter', sans-serif;
+
+            /* Fruitful branding colors */
+            --fruitful-primary: #0071e3; /* Apple Blue */
+            --fruitful-text-light: #1d1d1f; /* Dark text for light mode */
+            --fruitful-muted-text-light: #6e6e73; /* Muted text for light mode */
+
+            /* New: Seedwave Green Glow for header text */
+            --seedwave-green-glow-text: #00e393;
+        }
+
+        body {
+            font-family: var(--font-inter);
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(10, 10, 13, 0.8); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid var(--border-dark);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .header-content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light-text);
+            transition: color 0.3s ease;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .logo-fruitful {
+            color: var(--fruitful-primary);
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo-separator {
+            color: var(--fruitful-muted-text-light); /* Adjusted for dark background readability */
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .logo-seedwave {
+            color: var(--seedwave-green-glow-text); /* Now using the specific lime green glow */
+            font-size: 1.6rem;
+            font-weight: 800; /* Ensure bold as requested */
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.6); /* More prominent glow */
+        }
+
+        /* New: Stock Exchange Pulse Canvas in Header */
+        #header-pulse-canvas {
+            flex-grow: 1; /* Take up available space */
+            height: 40px; /* Fixed height for the pulse */
+            background-color: transparent;
+            margin: 0 20px; /* Space between logo and right edge */
+            max-width: 600px; /* Limit width to keep it narrow */
+        }
+
+        /* Removed nav styling as navigation links are removed */
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            height: 90vh; /* Taller hero section */
+            display: flex;
+            flex-direction: column; /* Stack button and grid */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(0, 227, 147, 0.05) 0%, transparent 60%);
+            padding: 2rem; /* Add padding for breathing room */
+        }
+
+        .hero-pulse-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            grid-template-rows: repeat(2, 1fr); /* 2 rows */
+            gap: 1rem; /* Space between canvas blocks */
+            width: 100%;
+            height: 100%; /* Fill hero section */
+            max-width: 1200px; /* Limit overall grid size */
+            max-height: 80vh; /* Adjust max height to leave space for button */
+            margin-top: 2rem; /* Space below the button */
+        }
+
+        .pulse-container {
+            position: relative;
+            background-color: var(--card-bg-dark); /* Dark background for each pulse block */
+            border-radius: 0.75rem; /* Rounded corners */
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: transparent; /* Ensure canvas background is transparent */
+            z-index: 1;
+        }
+
+        /* Removed .pulse-label styling as labels are removed */
+
+        .hero-cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(45deg, #007bff, #0056b3); /* Blue gradient */
+            color: white;
+            text-decoration: none;
+            border-radius: 9999px; /* Fully rounded */
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+            transition: all 0.3s ease-in-out;
+            opacity: 1; /* Always visible now */
+            animation: none; /* Remove initial animations as text is gone */
+            border: 1px solid rgba(0, 123, 255, 0.5);
+            margin-bottom: 2rem; /* Space between button and grid */
+            position: relative; /* Ensure it's above the grid but below header */
+            z-index: 20; /* Higher than grid but lower than header */
+        }
+        .hero-cta-button:hover {
+            background: linear-gradient(45deg, #0056b3, #007bff); /* Inverted gradient */
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.6);
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(0, 123, 255, 0.8);
+        }
+
+        /* General Section Styling */
+        section {
+            padding: 6rem 2rem;
+            background-color: var(--dark-bg);
+            border-top: 1px solid var(--border-dark);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--light-text);
+            margin-bottom: 3rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Key Metrics / Info Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg-dark);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 227, 147, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-card-icon {
+            font-size: 3.5rem;
+            color: var(--primary-glow);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5);
+        }
+
+        .metric-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .metric-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 227, 147, 0.5);
+            margin-top: 1rem;
+            display: block;
+        }
+
+        /* CTA Section (removed) */
+        /* Footer */
+        footer {
+            background-color: #050508; /* Even darker footer */
+            border-top: 1px solid #2a2a30;
+            padding: 2.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--primary-glow);
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) { /* Adjust grid for tablets */
+            .hero-pulse-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+                grid-template-rows: repeat(3, 1fr); /* 3 rows on tablet */
+            }
+        }
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .logo-group .logo-fruitful, .logo-group .logo-seedwave { font-size: 1.4rem; }
+            .logo-separator { font-size: 1.2rem; }
+
+            #header-pulse-canvas {
+                display: none; /* Hide header pulse on mobile to save space */
+            }
+
+            .hero-pulse-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                grid-template-rows: repeat(6, 1fr); /* 6 rows on mobile */
+                max-height: none; /* Allow grid to stretch */
+            }
+            .hero-cta-button { padding: 0.8rem 2rem; font-size: 1rem; }
+            h2 { font-size: 2.2rem; }
+            section { padding: 4rem 1rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .metric-card-icon { font-size: 3rem; }
+            .metric-card h3 { font-size: 1.5rem; }
+            .metric-value { font-size: 2.2rem; }
+            footer { padding: 1.5rem; }
+        }
+
+        /* New styles for Noodle Soup & Ant Hut sections */
+        .whimsical-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .whimsical-card {
+            background-color: var(--card-bg-dark);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-dark);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .whimsical-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .whimsical-icon {
+            font-size: 4rem; /* Larger icon/emoji */
+            margin-bottom: 1rem;
+            line-height: 1; /* Adjust line height for emojis */
+            text-shadow: 0 0 15px rgba(0, 227, 147, 0.5); /* Primary glow */
+        }
+        .whimsical-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--light-text);
+            margin-bottom: 0.75rem;
+        }
+        .whimsical-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            flex-grow: 1; /* Allow paragraph to take space */
+        }
+
+        /* Spotify Integration Section Styles */
+        .spotify-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .spotify-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: none;
+            text-decoration: none; /* Ensure it looks like a button */
+        }
+
+        .spotify-btn-primary {
+            background: linear-gradient(45deg, #1DB954, #128A3C); /* Spotify Green */
+            color: white;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+        }
+        .spotify-btn-primary:hover {
+            background: linear-gradient(45deg, #128A3C, #1DB954);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .spotify-btn-secondary {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .spotify-btn-secondary:hover {
+            background-color: #555;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+
+        #top-tracks-list, #playlist-message, #audio-players, #spotify-album-embed {
+            background-color: var(--card-bg-dark);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+
+        #top-tracks-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #top-tracks-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8);
+        }
+        #top-tracks-list li:last-child {
+            border-bottom: none;
+        }
+        #top-tracks-list li strong {
+            color: var(--primary-glow);
+        }
+
+        #playlist-message {
+            color: var(--light-text);
+            font-weight: 500;
+        }
+
+        #audio-players {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        #audio-players iframe {
+            width: 100%;
+            height: 80px; /* Compact player height */
+            border-radius: 12px; /* Rounded corners for iframe */
+            border: none;
+        }
+
+        #spotify-album-embed iframe {
+            width: 100%;
+            border-radius: 12px;
+            border: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content-wrapper">
+            <div class="logo-group">
+                <a href="#" class="logo-fruitful">Fruitful™</a>
+                <span class="logo-separator">|</span>
+                <span class="logo-seedwave">Seedwave™</span>
+            </div>
+            <!-- New: Stock Exchange Pulse Canvas in Header -->
+            <canvas id="header-pulse-canvas"></canvas>
+            <!-- Right nav bar removed -->
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" id="pulse">
+            <!-- Text content removed -->
+            <a href="#whimsical-ventures" class="hero-cta-button">
+                Explore Whimsical Ventures <i class="fas fa-arrow-down"></i>
+            </a>
+            <div class="hero-pulse-grid">
+                <div class="pulse-container">
+                    <canvas id="canvas-rhythmic"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-concentric"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-shooting"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-particles"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-radial-bursts"></canvas>
+                </div>
+                <div class="pulse-container">
+                    <canvas id="canvas-hyperspace"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="metrics">
+            <h2 class="mb-12">Our Interstellar Impact</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-globe"></i></div>
+                        <h3>Global Node Reach</h3>
+                        <p>Expanding our network across all digital frontiers.</p>
+                        <span class="metric-value">92%</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-rocket"></i></div>
+                        <h3>Launch Velocity</h3>
+                        <p>Accelerating brands into new market orbits.</p>
+                        <span class="metric-value">x10.5</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-card-content">
+                        <div class="metric-card-icon"><i class="fas fa-seedling"></i></div>
+                        <h3>Seed Planted</h3>
+                        <p>New projects cultivated and thriving within the ecosystem.</p>
+                        <span class="metric-value">7000+</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Existing Master License Brands Section -->
+        <section id="master-brands" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8">Seedwave™ Global Master License Brands</h2>
+            <div class="max-w-4xl mx-auto text-lg text-gray-400 leading-relaxed space-y-4">
+                <p>
+                    Seedwave™ is the nexus for a diverse portfolio of Master License Brands, spanning both established digital enterprises and groundbreaking non-digital ventures. Our platform cultivates growth for innovative brands that define tomorrow's industries.
+                </p>
+                <p>
+                    From high-velocity tech deployments infiltrating global repos to unique, tangible brands expanding their physical presence, we power the pulse of expansion across all frontiers. Explore the dynamic ecosystem where every brand is a node in our network, driving collective impact.
+                </p>
+            </div>
+            <!-- Placeholder for future brand listings/details -->
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 text-left">
+                    <h3 class="text-2xl font-bold text-primary-glow mb-4">Digital Innovators</h3>
+                    <p class="text-gray-400">
+                        Showcasing leading digital brands, their Node.js integrations, rapid deployments, and extensive array counts contributing to the global data fabric.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-500 mt-4 text-sm">
+                        <li>Node.js Package Infiltrations</li>
+                        <li>Repo Deployment Metrics</li>
+                        <li>Scalable Array Counts</li>
+                        <li>Real-time Data Streams</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-lg shadow-xl border border-gray-700 text-left">
+                    <h3 class="text-2xl font-bold text-secondary-glow mb-4">Non-Digital Trailblazers</h3>
+                    <p class="text-gray-400">
+                        Highlighting groundbreaking non-digital brands leveraging Seedwave's infrastructure for supply chain optimization, physical asset tracking, and global market penetration.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-500 mt-4 text-sm">
+                        <li>Tangible Asset Integration</li>
+                        <li>Supply Chain Optimization</li>
+                        <li>Physical Network Expansion</li>
+                        <li>Real-world Impact Metrics</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- New: Whimsical Ventures Section (Noodle Soup & Job Ant Huts) -->
+        <section id="whimsical-ventures" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8">Whimsical Ventures: Noodle Soup & Job Ant Huts</h2>
+            <div class="max-w-4xl mx-auto text-lg text-gray-400 leading-relaxed space-y-4">
+                <p>
+                    At Seedwave™, we believe in fostering innovation that spans the practical and the playfully imaginative. Our latest ventures explore the untapped potential of 'Noodle Soup Innovations' and the intricate logistics of 'Job Ant Huts', bringing delightful efficiency to unexpected places.
+                </p>
+                <p>
+                    From optimizing the perfect noodle-to-broth ratio using quantum algorithms to managing bustling ant-colony logistics with distributed ledger technology, we're building the future, one whimsical step at a time.
+                </p>
+            </div>
+            <div class="mt-12 whimsical-card-grid">
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">🍜</span>
+                    <h3>Noodle Soup Innovations</h3>
+                    <p>
+                        Crafting culinary excellence with data-driven ingredient sourcing, predictive broth temperature, and hyper-efficient noodle hydration. Experience the future of gourmet.
+                    </p>
+                </div>
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">🐜🏡</span>
+                    <h3>Job Ant Huts Management</h3>
+                    <p>
+                        Revolutionizing ant colony productivity with real-time task assignment, resource allocation, and miniature infrastructure development. Tiny workers, massive impact.
+                    </p>
+                </p>
+                </div>
+                <div class="whimsical-card">
+                    <span class="whimsical-icon">💡✨</span>
+                    <h3>Rhino Strike Protocols</h3>
+                    <p>
+                        Implementing advanced behavioral algorithms for simulated rhino interactions, ensuring optimal engagement and unexpected delightful outcomes in virtual environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spotify Integration Section -->
+        <section id="spotify-integration" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8">Spotify Music Pulse</h2>
+            <div class="max-w-4xl mx-auto">
+                <p class="text-lg text-gray-400 mb-6">
+                    Connect to your Spotify account to discover your top tracks, create a new playlist, and listen to the pulse of your music.
+                </p>
+
+                <div class="spotify-controls">
+                    <button id="getTopTracksBtn" class="spotify-btn spotify-btn-primary">
+                        <i class="fab fa-spotify"></i> Get My Top 5 Tracks
+                    </button>
+                    <button id="createPlaylistBtn" class="spotify-btn spotify-btn-secondary">
+                        <i class="fas fa-save"></i> Save to Playlist
+                    </button>
+                    <button id="playTracksBtn" class="spotify-btn spotify-btn-secondary">
+                        <i class="fas fa-play-circle"></i> Listen Now
+                    </button>
+                </div>
+
+                <div id="top-tracks-list" class="hidden">
+                    <h3 class="text-2xl font-semibold mb-4">Your Top Tracks:</h3>
+                    <ul></ul>
+                </div>
+
+                <div id="playlist-message" class="hidden mt-6 p-4 bg-green-800 bg-opacity-30 rounded-lg border border-green-700">
+                    <!-- Messages about playlist creation will appear here -->
+                </div>
+
+                <div id="audio-players" class="mt-6">
+                    <!-- Spotify embedded players will appear here -->
+                </div>
+
+                <!-- New: Spotify Album Embed -->
+                <div id="spotify-album-embed" class="mt-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-left">Featured Album:</h3>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/6fi2uM0hYrLOTK7jIhuAUr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Node.js Infiltration Pulse Graph Section -->
+        <section id="node-pulse-graph" class="py-16 px-6 text-center">
+            <h2 class="text-4xl font-bold mb-8">Node.js Infiltration Pulse</h2>
+            <div class="w-full max-w-5xl mx-auto bg-gray-900 p-6 rounded-xl shadow-lg border border-gray-700">
+                <canvas id="nodePulseChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 max-w-2xl mx-auto">
+                Real-time visualization of Node.js package infiltration, repo deployments, and array count growth across sectors.
+            </p>
+        </section>
+
+    </main>
+
+    <footer id="contact">
+        <p>&copy; 2025 Seedwave™. All rights reserved.</p>
+        <p>A proud partner of <a href="https://faa.zone/" target="_blank">FAA.zone™ Treaty System™</a></p>
+    </footer>
+
+    <script>
+        // Store canvas elements and their contexts
+        const canvases = {
+            rhythmic: { canvas: document.getElementById('canvas-rhythmic'), ctx: null, time: 0, animationId: null },
+            concentric: { canvas: document.getElementById('canvas-concentric'), ctx: null, time: 0, animationId: null },
+            shooting: { canvas: document.getElementById('canvas-shooting'), ctx: null, time: 0, animationId: null, pulses: [] },
+            particles: { canvas: document.getElementById('canvas-particles'), ctx: null, time: 0, animationId: null, particles: [] },
+            radialBursts: { canvas: document.getElementById('canvas-radial-bursts'), ctx: null, time: 0, animationId: null, bursts: [] },
+            hyperspace: { canvas: document.getElementById('canvas-hyperspace'), ctx: null, time: 0, animationId: null }
+        };
+
+        // New: Header Pulse Canvas object
+        const headerPulse = {
+            canvas: document.getElementById('header-pulse-canvas'),
+            ctx: null,
+            time: 0,
+            animationId: null,
+            data: [], // Stores data points for the graph
+            maxDataPoints: 50, // Number of points visible
+            valueRange: 100, // Max value for fluctuations
+            speed: 0.8 // Speed of the graph scroll
+        };
+
+
+        // Initialize contexts and start animation loops for each canvas
+        function initCanvases() {
+            // Initialize header pulse canvas first
+            if (headerPulse.canvas) {
+                headerPulse.ctx = headerPulse.canvas.getContext('2d');
+                resizeHeaderPulseCanvas();
+                startHeaderPulseAnimation();
+            }
+
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    canvases[key].ctx = canvases[key].canvas.getContext('2d');
+                    resizeCanvas(canvases[key].canvas); // Initial resize
+                    startAnimation(key);
+                }
+            }
+        }
+
+        // Resize individual canvas elements
+        function resizeCanvas(canvas) {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        // Resize header pulse canvas
+        function resizeHeaderPulseCanvas() {
+            if (headerPulse.canvas) {
+                headerPulse.canvas.width = headerPulse.canvas.offsetWidth;
+                headerPulse.canvas.height = headerPulse.canvas.offsetHeight;
+            }
+        }
+
+        // Handle window resize for all canvases
+        window.addEventListener('resize', () => {
+            resizeHeaderPulseCanvas(); // Resize header pulse
+            for (const key in canvases) {
+                if (canvases[key].canvas) {
+                    resizeCanvas(canvases[key].canvas);
+                }
+            }
+        });
+
+        // --- Header "Stock Exchange Pulse" Animation ---
+        function drawHeaderPulse() {
+            const { canvas, ctx, data, maxDataPoints, valueRange, speed } = headerPulse;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.05)'; // Subtle trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add new data point (random walk for stock-like feel)
+            const lastValue = data.length > 0 ? data[data.length - 1] : valueRange / 2;
+            let newValue = lastValue + (Math.random() - 0.5) * 10; // Fluctuation
+            newValue = Math.max(5, Math.min(valueRange - 5, newValue)); // Keep within bounds
+            data.push(newValue);
+
+            // Keep only maxDataPoints
+            if (data.length > maxDataPoints) {
+                data.shift();
+            }
+
+            // Draw the pulse line
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 227, 147, 0.9)'; // Lime green glow
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(0, 227, 147, 0.7)';
+
+            const pointWidth = canvas.width / (maxDataPoints - 1);
+            for (let i = 0; i < data.length; i++) {
+                const x = i * pointWidth;
+                const y = canvas.height - (data[i] / valueRange) * canvas.height; // Invert Y for graph
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+
+            ctx.shadowBlur = 0; // Reset shadow
+
+            headerPulse.animationId = requestAnimationFrame(drawHeaderPulse);
+        }
+
+        function startHeaderPulseAnimation() {
+            // Initialize data with some random values
+            for(let i = 0; i < headerPulse.maxDataPoints; i++) {
+                headerPulse.data.push(Math.random() * headerPulse.valueRange);
+            }
+            drawHeaderPulse();
+        }
+
+
+        // --- Pulse Animation Classes & Functions (for Hero Grid) ---
+
+        // Rhythmic Pulse (from fruitful.faa.zone/index.html, v5.0/v6.0)
+        function drawRhythmicPulse(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            // Intensify: Clear with less transparency for more visible trails
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Further intensify trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const numRhythmicLines = 40; // Intensify: Even denser waves
+            const rhythmicLineAmplitude = canvas.height / 2.5; // Intensify: Even higher amplitude
+            const rhythmicLineFrequency = 0.1; // Intensify: Even higher frequency for tighter waves
+            const rhythmicLineSpeed = 0.015; // Intensify: Faster movement
+
+            canvasObj.time += rhythmicLineSpeed;
+
+            for (let i = 0; i < numRhythmicLines; i++) {
+                ctx.beginPath();
+                const offset = i * (Math.PI * 2 / numRhythmicLines);
+                const colorHue = (canvasObj.time * 200 + i * 15) % 360; // Intensify: Faster color shift
+                ctx.strokeStyle = `hsla(${colorHue}, 95%, 75%, 0.9)`; // Intensify: Brighter, more saturated, less transparent
+                ctx.lineWidth = 2.5; // Intensify: Thicker lines
+
+                for (let x = 0; x < canvas.width; x += 2) { // Intensify: Smaller step for smoother lines
+                    const y = Math.sin(x * rhythmicLineFrequency + canvasObj.time + offset) * (rhythmicLineAmplitude * (Math.sin(canvasObj.time * 0.3 + i * 0.15) * 0.5 + 0.5)) + canvas.height / 2;
+                    if (x === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRhythmicPulse(canvasObj));
+        }
+
+        // Concentric Waves (from v3.0)
+        function drawConcentricWaves(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const numWaves = 20; // Intensify: More waves
+            const waveSpeed = 0.02; // Intensify: Faster expansion
+            const waveThickness = 4; // Intensify: Thicker waves
+            const waveSpacing = 12; // Intensify: Closer spacing
+
+            canvasObj.time += waveSpeed;
+
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                const radius = (canvasObj.time * waveSpacing + i * waveSpacing) % (Math.max(canvas.width, canvas.height) / 1.2) + 5; // Intensify: Expand larger, start smaller
+                const hue = (i * 20 + canvasObj.time * 100) % 360; // Intensify: Faster color shift
+                ctx.strokeStyle = `hsla(${hue}, 95%, 80%, ${0.95 - (radius / (Math.max(canvas.width, canvas.height) / 1.2))})`; // Intensify: Brighter, less fade
+                ctx.lineWidth = waveThickness;
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (i < 7) { // Intensify: More glowing inner circles
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius * 0.25, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${hue + 70}, 100%, 85%, ${0.6 - (radius / (Math.max(canvas.width, canvas.height) / 1.2)) * 0.6})`;
+                    ctx.fill();
+                }
+            }
+
+            const coreRadius = 20 + Math.sin(canvasObj.time * 10) * 8; // Intensify: Larger, more aggressive core pulse
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 227, 147, ${0.95 + Math.sin(canvasObj.time * 10) * 0.05})`; // Intensify: Brighter core, subtle pulse
+            ctx.shadowBlur = 30; // Intensify: Stronger shadow
+            ctx.shadowColor = 'rgba(0, 227, 147, 1.0)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            canvasObj.animationId = requestAnimationFrame(() => drawConcentricWaves(canvasObj));
+        }
+
+        // Shooting Pulses (from v4.0/v6.0)
+        class ShootingPulse {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.initialRadius = 1;
+                this.currentRadius = this.initialRadius;
+                this.maxRadius = Math.random() * 150 + 80; // Intensify: Even larger pulses
+                this.speed = Math.random() * 4 + 2; // Intensify: Even faster expansion
+                this.alpha = 1;
+                this.decayRate = Math.random() * 0.012 + 0.006; // Intensify: Slightly slower decay for more visibility
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`; // Intensify: Even brighter, more saturated
+                this.numRings = Math.floor(Math.random() * 6) + 5; // Intensify: More rings for depth
+                this.glowStrength = Math.random() * 25 + 15; // Intensify: Stronger glow
+            }
+            update() {
+                this.currentRadius += this.speed;
+                this.alpha -= this.decayRate;
+                return this.alpha > 0 && this.currentRadius < this.maxRadius;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2.5; // Intensify: Thicker lines
+                for (let i = 0; i < this.numRings; i++) {
+                    const ringRadius = this.currentRadius - (i * (this.currentRadius / this.numRings));
+                    if (ringRadius > this.initialRadius) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, ringRadius, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.initialRadius * 3, 0, Math.PI * 2); // Larger central point
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.glowStrength;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+        }
+
+        function drawShootingPulses(canvasObj) {
+            const { canvas, ctx, pulses } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const shootingPulseSpawnRate = 0.3; // Intensify: Even higher spawn rate
+            const maxShootingPulses = 50; // Intensify: More active pulses
+
+            if (Math.random() < shootingPulseSpawnRate && pulses.length < maxShootingPulses) {
+                pulses.push(new ShootingPulse(canvas)); // Pass canvas to constructor
+            }
+
+            for (let i = pulses.length - 1; i >= 0; i--) {
+                const pulse = pulses[i];
+                if (pulse.update()) {
+                    pulse.draw(ctx);
+                } else {
+                    pulses.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawShootingPulses(canvasObj));
+        }
+
+        // Particle Grid (from v2.0)
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * 2.5 + 1.5; // Intensify: Larger particles
+                this.speedX = (Math.random() * 2 - 1); // Intensify: Faster movement
+                this.speedY = (Math.random() * 2 - 1);
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`; // Intensify: Brighter particles
+                this.alpha = 1;
+                this.decay = 0.002; // Intensify: Even slower decay for longer trails
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                // Check bounds using this.canvas
+                if (this.alpha < 0 || this.x < -20 || this.x > this.canvas.width + 20 || this.y < -20 || this.y > this.canvas.height + 20) { // Larger outside bounds
+                    this.alpha = 1;
+                    this.x = Math.random() * this.canvas.width;
+                    this.y = Math.random() * this.canvas.height;
+                    this.speedX = (Math.random() * 2 - 1);
+                    this.speedY = (Math.random() * 2 - 1);
+                }
+            }
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawParticlesWithConnections(canvasObj) {
+            const { canvas, ctx, particles } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (particles.length === 0) {
+                for (let i = 0; i < 150; i++) { // Intensify: More particles
+                    particles.push(new Particle(canvas)); // Pass canvas to constructor
+                }
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(ctx);
+
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) { // Intensify: Longer connection distance
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 123, 255, ${particles[i].alpha * particles[j].alpha * (1 - (distance / 120)) * 1.0})`; // Intensify: Even brighter connections
+                        ctx.lineWidth = 0.8; // Intensify: Thicker lines
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            ctx.globalAlpha = 1; // Reset alpha
+            canvasObj.animationId = requestAnimationFrame(() => drawParticlesWithConnections(canvasObj));
+        }
+
+        // Radial Bursts (New)
+        class RadialBurst {
+            constructor(canvas) {
+                this.canvas = canvas; // Store canvas reference
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.radius = 0;
+                this.maxRadius = Math.random() * 200 + 100; // Intensify: Even larger bursts
+                this.speed = Math.random() * 5 + 3; // Intensify: Even faster expansion
+                this.alpha = 1;
+                this.decay = Math.random() * 0.01 + 0.005; // Intensify: Slower decay for more visibility
+                this.numLines = Math.floor(Math.random() * 20) + 15; // Intensify: More lines
+                this.color = `hsl(${Math.random() * 360}, 100%, 80%)`; // Intensify: Brighter, more saturated
+            }
+
+            update() {
+                this.radius += this.speed;
+                this.alpha -= this.decay;
+                return this.alpha > 0;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2; // Intensify: Thicker lines
+
+                for (let i = 0; i < this.numLines; i++) {
+                    const angle = (Math.PI * 2 / this.numLines) * i;
+                    const startX = this.x + Math.cos(angle) * this.radius * 0.1;
+                    const startY = this.y + Math.sin(angle) * this.radius * 0.1;
+                    const endX = this.x + Math.cos(angle) * this.radius;
+                    const endY = this.y + Math.sin(angle) * this.radius;
+
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+
+        function drawRadialBursts(canvasObj) {
+            const { canvas, ctx, bursts } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.15)'; // Intensify: More visible trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const burstSpawnRate = 0.12; // Intensify: Even higher spawn rate
+            const maxBursts = 20; // Intensify: More active bursts
+
+            if (Math.random() < burstSpawnRate && bursts.length < maxBursts) {
+                bursts.push(new RadialBurst(canvas)); // Pass canvas to constructor
+            }
+
+            for (let i = bursts.length - 1; i >= 0; i--) {
+                const burst = bursts[i];
+                if (burst.update()) {
+                    burst.draw(ctx);
+                } else {
+                    bursts.splice(i, 1);
+                }
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawRadialBursts(canvasObj));
+        }
+
+        // Hyperspace Warp (New)
+        function drawHyperspaceWarp(canvasObj) {
+            const { canvas, ctx } = canvasObj;
+            if (!ctx) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.18)'; // Intensify: More prominent trails
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            canvasObj.time += 0.06; // Intensify: Even faster warp speed
+
+            const gridSpacing = 25; // Intensify: Even tighter grid
+            const lineCountX = Math.ceil(canvas.width / gridSpacing);
+            const lineCountY = Math.ceil(canvas.height / gridSpacing);
+
+            // Dynamically change line color for intensity
+            const colorProgress = (Math.sin(canvasObj.time * 0.8) + 1) / 2; // Intensify: Faster color shift
+            const r = Math.floor(0 + colorProgress * (0 - 0));
+            const g = Math.floor(123 + colorProgress * (227 - 123));
+            const b = Math.floor(255 + colorProgress * (147 - 255));
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.7 + colorProgress * 0.3})`; // Intensify: Brighter, more intense color shifting
+            ctx.lineWidth = 1.5; // Intensify: Thicker lines
+
+            // Draw horizontal lines
+            for (let i = 0; i <= lineCountY; i++) {
+                const y = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(0, y + Math.sin(canvasObj.time + y * 0.03) * 20); // Intensify: More wave effect
+                ctx.lineTo(canvas.width, y + Math.sin(canvasObj.time + y * 0.03) * 20);
+                ctx.stroke();
+            }
+
+            // Draw vertical lines
+            for (let i = 0; i <= lineCountX; i++) {
+                const x = i * gridSpacing;
+                ctx.beginPath();
+                ctx.moveTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, 0); // Intensify: More wave effect
+                ctx.lineTo(x + Math.cos(canvasObj.time + x * 0.03) * 20, canvas.height);
+                ctx.stroke();
+            }
+            canvasObj.animationId = requestAnimationFrame(() => drawHyperspaceWarp(canvasObj));
+        }
+
+
+        // Function to start the animation for a specific canvas (hero grid)
+        function startAnimation(key) {
+            const canvasObj = canvases[key];
+            if (!canvasObj.ctx) return;
+
+            // Cancel any existing animation frame to prevent duplicates
+            if (canvasObj.animationId) {
+                cancelAnimationFrame(canvasObj.animationId);
+            }
+
+            // Call the appropriate draw function for the canvas
+            switch (key) {
+                case 'rhythmic':
+                    drawRhythmicPulse(canvasObj);
+                    break;
+                case 'concentric':
+                    drawConcentricWaves(canvasObj);
+                    break;
+                case 'shooting':
+                    drawShootingPulses(canvasObj);
+                    break;
+                case 'particles':
+                    if (canvasObj.particles.length === 0) { // Initialize particles only once
+                        for (let i = 0; i < 150; i++) { // Initial count increased to match draw logic
+                            canvasObj.particles.push(new Particle(canvasObj.canvas));
+                        }
+                    }
+                    drawParticlesWithConnections(canvasObj);
+                    break;
+                case 'radialBursts':
+                    drawRadialBursts(canvasObj);
+                    break;
+                case 'hyperspace':
+                    drawHyperspaceWarp(canvasObj);
+                    break;
+            }
+        }
+
+        // New Chart for Node Pulse Graph
+        let nodePulseChartInstance = null;
+        function renderNodePulseChart() {
+            const ctx = document.getElementById('nodePulseChart')?.getContext('2d');
+            if (!ctx) return;
+
+            if (nodePulseChartInstance) {
+                nodePulseChartInstance.destroy(); // Destroy existing instance if any
+            }
+
+            const dataPoints = 50;
+            const labels = Array.from({length: dataPoints}, (_, i) => `Tick ${i+1}`);
+            // More dynamic data generation for better visual
+            const coreNodeData = Array.from({length: dataPoints}, (v, i) => {
+                const base = 50 + (i * 1.5);
+                const fluctuation = (Math.random() - 0.5) * 40;
+                return Math.floor(Math.max(0, base + fluctuation));
+            });
+            const arrayCountData = Array.from({length: dataPoints}, (v, i) => {
+                const base = 100 + (i * 2);
+                const fluctuation = (Math.random() - 0.5) * 60;
+                return Math.floor(Math.max(0, base + fluctuation));
+            });
+            const repoInfiltrationData = Array.from({length: dataPoints}, (v, i) => {
+                const base = 10 + (i * 0.8);
+                const fluctuation = (Math.random() - 0.5) * 20;
+                return Math.floor(Math.max(0, base + fluctuation));
+            });
+
+            nodePulseChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Core Nodes (Thousands)',
+                            data: coreNodeData,
+                            borderColor: 'rgba(0, 227, 147, 0.9)', /* Primary Glow */
+                            backgroundColor: 'rgba(0, 227, 147, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0, // No points for a smooth pulse
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Array Counts (Hundreds)',
+                            data: arrayCountData,
+                            borderColor: 'rgba(0, 123, 255, 0.9)', /* Secondary Glow */
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Repo Infiltrations',
+                            data: repoInfiltrationData,
+                            borderColor: 'rgba(255, 77, 77, 0.9)', /* Accent Red */
+                            backgroundColor: 'rgba(255, 77, 77, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 0 // Disable Chart.js default animation for continuous update
+                    },
+                    scales: {
+                        x: {
+                            display: false // Hide X-axis labels
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)' // White ticks for dark background
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)' // Subtle grid lines
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.9)' // White legend labels
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update chart data periodically to simulate live pulse
+            setInterval(() => {
+                const lastCore = nodePulseChartInstance.data.datasets[0].data[nodePulseChartInstance.data.datasets[0].data.length - 1];
+                const lastArray = nodePulseChartInstance.data.datasets[1].data[nodePulseChartInstance.data.datasets[1].data.length - 1];
+                const lastRepo = nodePulseChartInstance.data.datasets[2].data[nodePulseChartInstance.data.datasets[2].data.length - 1];
+
+                const newDataPointCore = Math.floor(Math.max(0, lastCore + (Math.random() - 0.5) * 20)); // More dynamic change
+                const newDataPointArray = Math.floor(Math.max(0, lastArray + (Math.random() - 0.5) * 30));
+                const newDataPointRepo = Math.floor(Math.max(0, lastRepo + (Math.random() - 0.5) * 10));
+
+
+                nodePulseChartInstance.data.labels.push(`Tick ${nodePulseChartInstance.data.labels.length + 1}`);
+                nodePulseChartInstance.data.datasets[0].data.push(newDataPointCore);
+                nodePulseChartInstance.data.datasets[1].data.push(newDataPointArray);
+                nodePulseChartInstance.data.datasets[2].data.push(newDataPointRepo);
+
+                // Remove old data points to maintain maxDataPoints
+                if (nodePulseChartInstance.data.labels.length > dataPoints) {
+                    nodePulseChartInstance.data.labels.shift();
+                    nodePulseChartInstance.data.datasets[0].data.shift();
+                    nodePulseChartInstance.data.datasets[1].data.shift();
+                    nodePulseChartInstance.data.datasets[2].data.shift();
+                }
+
+                nodePulseChartInstance.update();
+            }, 1000); // Update every 1 second
+        }
+
+
+        // Global variable to store top tracks for playlist creation and playback
+        let globalTopTracks = [];
+        let userId = null; // Will be fetched from Spotify
+
+        // --- Spotify API Integration ---
+        // IMPORTANT: In a real application, never hardcode your Spotify token like this.
+        // You would implement an OAuth 2.0 flow to securely obtain and refresh tokens.
+        // This token is for demonstration purposes only.
+        const token = 'BQBDSZ232IQmSLV1BROkxqdwNMoGhtitKOJBjDzE-Lu9YKsSK1RKVwXNfYfncP2wf6Fj6xcYlnGD75baEqOmd3XtxhUhB-X6koPd92H9S0rQBqZ0HSKpsb04HiAme_FtqVLket7_s07gH9y1nxuPhbRyxp0r59oXtovV-uw0lCt2B7Mh5OmN3untEAGhfg6a6AZsaWLsv02dh6zKOQ_6DXHvCHZWxcYVmoggu4eLA2NrqAf8rFRSNOw6HQpaN-VZkJWblznWQ0pT7ynzjpKOPlM_70N7vOLIZF8XnRmN1Oe784V-XfYNV-j1x1kdXGEpzlx1'; // <-- Use your valid token here if refreshing
+
+        async function fetchWebApi(endpoint, method, body) {
+            try {
+                const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json' // Important for POST/PUT requests
+                    },
+                    method,
+                    body: body ? JSON.stringify(body) : null
+                });
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    console.error('Spotify API Error:', errorData);
+                    displayMessage(`Error: ${errorData.error.message || 'Something went wrong with Spotify API.'}`, 'red');
+                    return null;
+                }
+                return await res.json();
+            } catch (error) {
+                console.error('Network or other error:', error);
+                displayMessage(`Network error: ${error.message}`, 'red');
+                return null;
+            }
+        }
+
+        // Function to get the user's profile to retrieve their ID
+        async function getUserProfile() {
+            return await fetchWebApi('v1/me', 'GET');
+        }
+
+        // 1. Get your top 5 tracks
+        async function getTopTracks() {
+            displayMessage('Fetching your top tracks...', 'gray');
+            const topTracksListElement = document.getElementById('top-tracks-list');
+            const topTracksUl = topTracksListElement.querySelector('ul');
+            topTracksUl.innerHTML = ''; // Clear previous tracks
+            topTracksListElement.classList.remove('hidden');
+            document.getElementById('audio-players').innerHTML = ''; // Clear players
+
+            try {
+                const response = (await fetchWebApi(
+                    'v1/me/top/tracks?time_range=long_term&limit=5', 'GET'
+                ));
+
+                if (response && response.items && response.items.length > 0) {
+                    globalTopTracks = response.items; // Store tracks globally
+                    globalTopTracks.forEach(track => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${track.name}</strong> by ${track.artists.map(artist => artist.name).join(', ')}`;
+                        topTracksUl.appendChild(li);
+                    });
+                    displayMessage('Top 5 tracks fetched successfully!', 'green');
+                } else {
+                    topTracksUl.innerHTML = '<li>No top tracks found or an error occurred.</li>';
+                    displayMessage('Could not retrieve top tracks. Please check your token and try again.', 'red');
+                    globalTopTracks = []; // Clear in case of error
+                }
+            } catch (error) {
+                console.error('Error getting top tracks:', error);
+                displayMessage('Failed to fetch top tracks.', 'red');
+                globalTopTracks = [];
+            }
+        }
+
+        // 2. Save the 5 songs in a playlist
+        async function createPlaylistAndSaveSongs() {
+            if (globalTopTracks.length === 0) {
+                displayMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+
+            displayMessage('Creating playlist and adding songs...', 'gray');
+
+            try {
+                // Get user ID
+                const userProfile = await getUserProfile();
+                if (!userProfile || !userProfile.id) {
+                    displayMessage('Could not retrieve user profile to create playlist. Is your token valid?', 'red');
+                    return;
+                }
+                userId = userProfile.id;
+
+                // Create playlist
+                const playlistName = `My Seedwave Top Tracks - ${new Date().toLocaleDateString()}`;
+                const playlistDescription = "Top 5 tracks generated by Seedwave's Noodle Juice Rhino Strikes v.11!";
+                const createPlaylistResponse = await fetchWebApi(
+                    `v1/users/${userId}/playlists`, 'POST', {
+                        name: playlistName,
+                        public: false, // Make it private by default
+                        description: playlistDescription
+                    }
+                );
+
+                if (!createPlaylistResponse || !createPlaylistResponse.id) {
+                    displayMessage('Failed to create playlist.', 'red');
+                    return;
+                }
+                const playlistId = createPlaylistResponse.id;
+
+                // Add items to playlist
+                const trackUris = globalTopTracks.map(track => track.uri);
+                const addItemsResponse = await fetchWebApi(
+                    `v1/playlists/${playlistId}/tracks`, 'POST', {
+                        uris: trackUris
+                    }
+                );
+
+                if (addItemsResponse && addItemsResponse.snapshot_id) {
+                    displayMessage(`Playlist "${playlistName}" created and tracks added successfully!`, 'green');
+                } else {
+                    displayMessage('Failed to add tracks to playlist.', 'red');
+                }
+
+            } catch (error) {
+                console.error('Error creating/saving playlist:', error);
+                displayMessage('Failed to create or save playlist.', 'red');
+            }
+        }
+
+        // 3. Listen to the songs right here right now
+        async function playTopTracks() {
+            if (globalTopTracks.length === 0) {
+                displayMessage('Please fetch your top tracks first!', 'orange');
+                return;
+            }
+
+            displayMessage('Loading audio players...', 'gray');
+            const audioPlayersDiv = document.getElementById('audio-players');
+            audioPlayersDiv.innerHTML = ''; // Clear previous players
+
+            globalTopTracks.forEach(track => {
+                // Spotify Embed Widget URL: https://developer.spotify.com/documentation/embed-sdk/guides/using-the-iframe-api/
+                // Example: <iframe src="https://open.spotify.com/embed/track/TRackID?utm_source=generator" width="100%" height="80" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                const trackId = track.id;
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`; // theme=0 for dark
+                iframe.width = "100%";
+                iframe.height = "80";
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allowfullscreen', '');
+                iframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                audioPlayersDiv.appendChild(iframe);
+            });
+            displayMessage('Audio players loaded!', 'green');
+        }
+
+        // Helper function to display messages to the user
+        function displayMessage(message, type = 'gray') {
+            const msgBox = document.getElementById('playlist-message');
+            msgBox.textContent = message;
+            msgBox.className = 'mt-6 p-4 rounded-lg border'; // Reset classes
+            msgBox.classList.remove('hidden');
+
+            if (type === 'green') {
+                msgBox.classList.add('bg-green-800', 'bg-opacity-30', 'border-green-700');
+            } else if (type === 'red') {
+                msgBox.classList.add('bg-red-800', 'bg-opacity-30', 'border-red-700');
+            } else if (type === 'orange') {
+                msgBox.classList.add('bg-orange-800', 'bg-opacity-30', 'border-orange-700');
+            } else { // default gray
+                msgBox.classList.add('bg-gray-800', 'bg-opacity-30', 'border-gray-700');
+            }
+        }
+
+
+        // Initialize all canvases and start their animations on window load
+        window.onload = function() {
+            initCanvases();
+            renderNodePulseChart(); // Render the new Chart.js graph
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add event listeners for Spotify buttons
+            document.getElementById('getTopTracksBtn').addEventListener('click', getTopTracks);
+            document.getElementById('createPlaylistBtn').addEventListener('click', createPlaylistAndSaveSongs);
+            document.getElementById('playTracksBtn').addEventListener('click', playTopTracks);
+        };
+    </script>
+</body>
+</html>
+

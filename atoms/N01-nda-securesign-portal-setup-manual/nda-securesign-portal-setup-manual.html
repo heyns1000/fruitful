@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDA SecureSign Portal Setup Manual</title>
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a clean, professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #e2e8f0; /* Tailwind gray-200 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            line-height: 1.5;
+            color: #2d3748; /* Tailwind gray-800 */
+        }
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+        }
+        h2, h3, h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        ol li, ul li {
+            margin-bottom: 0.5rem;
+        }
+        .section-header {
+            border-bottom: 2px solid #a78bfa; /* purple-400 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-6 md:p-10">
+
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Minutes of Meeting: NDA SecureSign</h1>
+            <p class="text-xl text-gray-600">Comprehensive Setup Manual & Reference Guide</p>
+            <p class="text-sm text-gray-500 mt-2">Generated on: June 6, 2025</p>
+        </header>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-purple-700 section-header">1. Introduction</h2>
+            <p>This document serves as a detailed manual and step-by-step guide for setting up the FAA SecureSign™ NDA Portal. It covers all actions taken, files created, code logic, and terminal commands executed during our development process. This manual is designed to be a comprehensive reference for understanding and replicating the setup.</p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-purple-700 section-header">2. Project Overview: FAA SecureSign™ NDA Portal</h2>
+            <p>The FAA SecureSign™ NDA Portal is a web application designed to securely collect Non-Disclosure Agreement (NDA) applications. Key features include:</p>
+            <ul class="list-disc list-inside ml-4">
+                <li>Comprehensive form with personal, identification, contact, employment, metrics, and references details.</li>
+                <li>Multiple file uploads for supporting legal documentation (e.g., signed NDA, CIPRO docs).</li>
+                <li>Mandatory sector selection with a limit of 5 choices.</li>
+                <li>Dynamic "drag-and-drop" visual cues for file uploads.</li>
+                <li>Automated email confirmation to the applicant upon successful submission (via Zoho Mail).</li>
+                <li>Downloadable Fruitful Holdings NDA document (which includes Annexure A).</li>
+                <li>Client-side modal (popup) for success/error notifications.</li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-purple-700 section-header">3. Local Development Environment Setup</h2>
+            <p>This section details the steps to set up the project on a local machine.</p>
+
+            <h3 class="text-xl font-semibold text-gray-900">3.1. Prerequisites</h3>
+            <ul class="list-disc list-inside ml-4">
+                <li><strong>Node.js and npm:</strong> Ensure you have Node.js (v22.15.0 or compatible) and npm installed.</li>
+                <li><strong>Terminal Access:</strong> Command-line interface access on your system (e.g., macOS Terminal, WSL on Windows).</li>
+                <li><strong>Text Editor:</strong> `nano` was used in this guide, but any code editor will work.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold text-gray-900">3.2. Project Structure</h3>
+            <p>The core project structure, with `server.js` handling backend logic and static assets served from the `legal` subdirectory:</p>
+            <pre><code>/Users/samantha/Documents/Restart/faa.zone/scripts/
+├── node_modules/         (installed by npm)
+├── uploads/              (created by Multer for uploaded files)
+├── package.json          (npm project configuration)
+├── server.js             (Node.js backend logic)
+└── legal/
+    ├── securesign.html   (the main HTML form)
+    └── fruitful_holdings_nda.pdf (the downloadable NDA document)
+    </code></pre>
+
+            <h3 class="text-xl font-semibold text-gray-900">3.3. Initial Project Setup & Dependencies</h3>
+            <p>Performed in the terminal, starting from the <code>scripts</code> directory (<code>/Users/samantha/Documents/Restart/faa.zone/scripts/</code>).</p>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Clean up existing files (if any) and initialize a new Node.js project:**
+                    <pre><code>rm -rf node_modules package-lock.json server.js package.json
+npm init -y</code></pre>
+                    <p><em>Logic:</em> This removes old installations to prevent conflicts and creates a basic `package.json` file for the project.</p>
+                </li>
+                <li>
+                    **Install required Node.js packages:**
+                    <pre><code>npm install express body-parser multer nodemailer</code></pre>
+                    <p><em>Logic:</em>
+                    <ul class="list-disc list-inside ml-4 text-sm">
+                        <li><code>express</code>: Web framework for Node.js, used for routing and handling HTTP requests.</li>
+                        <li><code>body-parser</code>: Middleware to parse incoming request bodies (form data).</li>
+                        <li><code>multer</code>: Middleware for handling <code>multipart/form-data</code>, primarily used for file uploads.</li>
+                        <li><code>nodemailer</code>: Library to send emails from Node.js applications.</li>
+                    </ul></p>
+                </li>
+                <li>
+                    **Update <code>package.json</code> with correct dependencies:**
+                    <p>The `package.json` ensures that all necessary dependencies are listed with compatible versions. This was critical to resolve earlier `EJSONPARSE` errors.</p>
+                    <pre><code class="language-json">{
+  "name": "scripts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.13"
+  }
+}
+</code></pre>
+                </li>
+            </ol>
+
+            <h3 class="text-xl font-semibold text-gray-900">3.4. Create & Configure Core Files</h3>
+
+            <h4 class="text-lg font-medium text-gray-800">3.4.1. `securesign.html` (Frontend HTML)</h4>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Create the `legal` subdirectory and `securesign.html`:**
+                    <pre><code>mkdir -p legal
+cd legal
+nano securesign.html</code></pre>
+                    <p><em>Logic:</em> Organizes web assets in a `legal` folder. The `nano` command opens the file for editing.</p>
+                </li>
+                <li>
+                    **Paste the HTML code:** Copy the entire code from the "FAA SecureSign™ NDA Portal (Single NDA Download)" immersive artifact (from our conversation history) into `securesign.html`.
+                    <p><em>Key Logic & Features:</em>
+                    <ul class="list-disc list-inside ml-4 text-sm">
+                        <li><strong>Structure:</strong> Comprehensive form fields (personal, identification, contact, employment, metrics, references).</li>
+                        <li><strong>Styling:</strong> Uses Tailwind CSS for responsive and modern aesthetics (<code>rounded-xl</code>, <code>shadow-lg</code>, responsive classes like <code>md:</code>).</li>
+                        <li><strong>File Uploads:</strong> Individual "drag-and-drop" styled areas for each document type, using <code>&lt;input type="file"&gt;</code>.</li>
+                        <li><strong>Sector Selection:</strong> A `select` element with multiple selection enabled, dynamically populated by JavaScript from a predefined `sectorList`. A JavaScript listener limits selections to 5.</li>
+                        <li><strong>Modals:</strong> Custom JavaScript-driven success/error popups (`showModal`, `closeModal`) instead of browser alerts.</li>
+                        <li><strong>Form Submission:</strong> Uses <code>fetch</code> API for asynchronous submission, preventing page reloads.</li>
+                        <li><strong>NDA Download:</strong> A button linking directly to <code>/legal/fruitful_holdings_nda.pdf</code>.</li>
+                    </ul></p>
+                    <p><em>Action:</em> Save and exit `nano` (`Ctrl + X`, then `Y`, then `Enter`).</p>
+                </li>
+            </ol>
+
+            <h4 class="text-lg font-medium text-gray-800">3.4.2. `server.js` (Backend Node.js)</h4>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Navigate back to the `scripts` directory:**
+                    <pre><code>cd ..</code></pre>
+                    <p><em>Logic:</em> Ensures you are in the correct directory to create/edit `server.js`.</p>
+                </li>
+                <li>
+                    **Open `server.js` with `nano`:**
+                    <pre><code>nano server.js</code></pre>
+                </li>
+                <li>
+                    **Paste the JavaScript code:** Copy the entire code from the "server.js: Node.js Express Backend for FAA SecureSign" immersive artifact (the latest, corrected version in our conversation history) into `server.js`.
+                    <p><em>Key Logic & Features:</em>
+                    <ul class="list-disc list-inside ml-4 text-sm">
+                        <li><strong>Express Server:</strong> Initializes the web server and listens on port 3000.</li>
+                        <li><strong>Static File Serving:</strong> <code>app.use(express.static(path.join(__dirname)))</code> allows serving HTML, CSS, JS files directly from the `scripts` directory and its subdirectories (like `legal`).</li>
+                        <li><strong>Routing:</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li><code>GET /legal/securesign.html</code>: Serves the NDA application form.</li>
+                                <li><code>GET /legal/fruitful_holdings_nda.pdf</code>: Serves the combined NDA document for download.</li>
+                                <li><code>POST /submit-nda</code>: Handles the form submission.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Body Parsing:</strong> Uses `body-parser` for `urlencoded` and `json` data.</li>
+                        <li><strong>File Uploads (Multer):</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>Configures disk storage for uploads in an `uploads/` directory.</li>
+                                <li>Uses `multer().fields([...])` to handle multiple named file inputs from the form.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Email Sending (Nodemailer):</strong>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>Configured for Zoho Mail SMTP (<code>smtp.zoho.com</code>, port 465, secure SSL).</li>
+                                <li>Sends a confirmation email to the applicant's provided email address upon successful form submission.</li>
+                                <li>Includes a summary of submitted text data and uploaded file names in the email body.</li>
+                                <li><strong>CRITICAL:</strong> Requires you to replace a placeholder with your actual Zoho Mail password/app key for `securesign@faa.zone`.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Data Handling:</strong> Parses the JSON string for selected sectors back into an array. Logs all form fields and uploaded file information to the console.</li>
+                    </ul></p>
+                    <p><em>Action:</em> Save and exit `nano` (`Ctrl + X`, then `Y`, then `Enter`).</p>
+                </li>
+            </ol>
+
+            <h4 class="text-lg font-medium text-gray-800">3.4.3. `fruitful_holdings_nda.pdf` (Combined NDA Document)</h4>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Create the PDF:** Combine your original "Fruitful Holdings NDA" content with the "Annexure A" content (provided as Markdown in a previous response) into a single PDF document.
+                </li>
+                <li>
+                    **Save the PDF:** Name this combined PDF file **`fruitful_holdings_nda.pdf`** (all lowercase, underscores instead of spaces).
+                </li>
+                <li>
+                    **Local Placement:** Place this `fruitful_holdings_nda.pdf` file into your local `legal` directory: <pre><code>/Users/samantha/Documents/Restart/faa.zone/scripts/legal/fruitful_holdings_nda.pdf</code></pre>
+                    <p><em>Logic:</em> This file is served by the `server.js` when the "Request Fruitful Holdings NDA" button is clicked.</p>
+                </li>
+            </ol>
+
+            <h3 class="text-xl font-semibold text-gray-900">3.5. Running the Local Server</h3>
+            <p>After all files are in place, start your server from the <code>scripts</code> directory.</p>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Start the server:**
+                    <pre><code>node server.js</code></pre>
+                    <p><em>Expected Output:</em></p>
+                    <pre><code>Server is running on http://localhost:3000
+Waiting for NDA submissions...
+Uploaded files will be saved locally in: /Users/samantha/Documents/Restart/faa.zone/scripts/uploads</code></pre>
+                    <p><em>Logic:</em> This command executes your Node.js server. The output confirms it's listening for requests.</p>
+                </li>
+                <li>
+                    **Access the portal in your browser:**
+                    <pre><code>http://localhost:3000/legal/securesign.html</code></pre>
+                    <p><em>Logic:</em> This URL directs your browser to the `securesign.html` page served by your local Node.js server.</p>
+                </li>
+            </ol>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-purple-700 section-header">4. GitHub & Deployment Considerations</h2>
+            <p>For deploying your application (e.g., using Vercel), your GitHub repository should reflect a specific structure, separating frontend static assets from backend serverless functions.</p>
+
+            <h3 class="text-xl font-semibold text-gray-900">4.1. GitHub Repository Structure</h3>
+            <p>Ensure your GitHub repository root has the following structure:</p>
+            <pre><code>your-repo-name/
+├── public/                 (For static assets served by Vercel)
+│   └── legal/
+│       └── securesign.html
+│       └── fruitful_holdings_nda.pdf
+└── scripts/                (Your Node.js backend code, deployed as serverless functions)
+    ├── server.js
+    ├── package.json
+    ├── node_modules/       (will be built by Vercel during deployment)
+    └── uploads/            (for local dev, not typically committed to Git if temporary)
+    </code></pre>
+
+            <h3 class="text-xl font-semibold text-gray-900">4.2. Uploading Files to GitHub</h3>
+            <p>You can use <code>git push</code> if you're comfortable with Git, or directly upload via the GitHub website.</p>
+            <ol class="list-decimal list-inside ml-4">
+                <li>
+                    **Upload `fruitful_holdings_nda.pdf` (and `securesign.html` if not already there):**
+                    <ul class="list-disc list-inside ml-6">
+                        <li>Go to your GitHub repository in your web browser.</li>
+                        <li>Navigate to the `public/legal/` path within your repository.</li>
+                        <li>Click "Add file" -> "Upload files".</li>
+                        <li>Drag and drop `fruitful_holdings_nda.pdf` (and `securesign.html`) into the upload area.</li>
+                        <li>Add a commit message and click "Commit changes".</li>
+                    </ul>
+                    <p><em>Logic:</em> This makes the files available to your deployment platform (e.g., Vercel) at the public-facing URL.</p>
+                </li>
+            </ol>
+            <p>When deployed, the HTML will be at <code>https://faa.zone/legal/securesign.html</code> and the PDF at <code>https://faa.zone/legal/fruitful_holdings_nda.pdf</code>.</p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-purple-700 section-header">5. Troubleshooting Common Issues (from our chat)</h2>
+            <ul class="list-disc list-inside ml-4">
+                <li>
+                    **<code>Error: Cannot find module 'express'</code> or other modules:**
+                    <p><em>Cause:</em> Node.js cannot find the installed packages. Usually due to `node_modules` being missing or corrupted, or `npm install` not running successfully in the correct directory.</p>
+                    <p><em>Fix:</em> Navigate to your `scripts` directory and run: <code>rm -rf node_modules package-lock.json && npm install</code></p>
+                </li>
+                <li>
+                    **<code>Cannot GET /</code>:**
+                    <p><em>Cause:</em> The server doesn't have a route defined for the root URL, or you're accessing the wrong path.</p>
+                    <p><em>Fix:</em> Ensure your `server.js` has a route for the specific path you're trying to access (e.g., `/legal/securesign.html`). Access the portal using the full path: <code>http://localhost:3000/legal/securesign.html</code>.</p>
+                </li>
+                <li>
+                    **<code>SyntaxError: Unexpected token ')'</code> or other syntax errors in `server.js`:**
+                    <p><em>Cause:</em> Usually a copy-paste error or a malformed comment/code snippet.</p>
+                    <p><em>Fix:</em> Re-copy the entire `server.js` code from the latest Canvas and paste it into your `server.js` file, ensuring no extra characters or incomplete lines.</p>
+                </li>
+                <li>
+                    **<code>npm error code EJSONPARSE</code> in `package.json`:**
+                    <p><em>Cause:</em> JSON files (like `package.json`) do not allow JavaScript-style comments (`//`).</p>
+                    <p><em>Fix:</em> Remove all comments from your `package.json` file.</p>
+                </li>
+                <li>
+                    **Emails not sending via Nodemailer:**
+                    <p><em>Cause:</em> Incorrect SMTP host/port/secure settings, wrong email username/password, or firewall/security blocking.</p>
+                    <p><em>Fix:</em> Double-check `host`, `port`, `secure`, `user`, and `pass` in `transporter` config in `server.js`. Ensure you're using the correct password or app-specific password for your Zoho Mail account. Check your email provider's settings (e.g., allow less secure apps for Gmail, or generate an app password).</p>
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-bold text-purple-700 section-header">6. Conclusion</h2>
+            <p>This manual documents the entire process of setting up the FAA SecureSign™ NDA Portal, from initial environment configuration to deployment considerations. By following these steps, you should have a fully functional NDA submission system.</p>
+            <p class="mt-4 text-center text-sm text-gray-600">For any further assistance, please refer back to this guide or provide specific details of the issue.</p>
+        </section>
+
+    </div>
+</body>
+</html>
