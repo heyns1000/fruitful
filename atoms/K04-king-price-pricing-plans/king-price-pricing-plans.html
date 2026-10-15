@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 King Price™ Pricing & Plans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        .product-modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+            display: flex; /* Use flexbox for centering */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+        }
+        .product-modal-content {
+            background-color: #1a202c; /* Dark background for modal */
+            color: #e2e8f0; /* Light text */
+            padding: 30px;
+            border: 1px solid #4a5568;
+            width: 90%; /* Adjust width for responsiveness */
+            max-width: 800px; /* Max width for larger screens */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            position: relative;
+            max-height: 90vh; /* Limit modal height */
+            overflow-y: auto; /* Enable scrolling within modal */
+        }
+        .product-modal-close {
+            color: #cbd5e0;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .product-modal-close:hover,
+        .product-modal-close:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @keyframes animatetop {
+            from {top: -300px; opacity: 0}
+            to {top: 0; opacity: 1}
+        }
+
+        /* --- Global FAA.ZONE Styling Adaptations for Dark Theme --- */
+        .page-header {
+            background-color: #1a202c; /* Dark background for header */
+            color: #ffffff; /* White text */
+            padding: 1.5rem 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .page-header a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+        .page-header a:hover {
+            color: #a0aec0; /* Lighter grey on hover */
+        }
+        .main-container-card {
+            background-color: #1f2937; /* Dark background for content area */
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* Darker shadow */
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px; /* Max width for content */
+            flex-grow: 1; /* Allows it to grow and push footer down */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #374151; /* Subtle border */
+        }
+        .product-card {
+            background-color: #2d3748; /* Darker background for product cards */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Darker shadow */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid #4a5568; /* Darker border */
+            color: #e2e8f0; /* Light text for readability */
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Even darker shadow on hover */
+        }
+        .product-card ul li {
+            color: #cbd5e0; /* Lighter text for list items */
+        }
+        .currency-selector-container {
+            background-color: #2d3748; /* Darker background for currency selector */
+            border: 1px solid #4a5568; /* Darker border */
+            color: #e2e8f0; /* Light text */
+        }
+        .currency-selector-container select {
+            background-color: #1a202c; /* Even darker for select dropdown */
+            color: #e2e8f0; /* Light text */
+            border-color: #4a5568;
+        }
+        .page-footer {
+            background-color: #1a202c; /* Dark background for footer */
+            color: #ffffff; /* White text */
+            padding: 1.5rem 1rem;
+            margin-top: auto; /* Pushes footer to the bottom */
+            text-align: center;
+        }
+        .page-footer a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+        .page-footer a:hover {
+            color: #ffffff;
+        }
+        .page-footer-logo {
+            font-weight: bold;
+            color: #ffffff;
+        }
+    </style>
+    <script>
+    // Global function to hide the product detail modal
+    window.hideProductModal = function() {
+        const modal = document.getElementById('productDetailModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open'); // Ensure body scroll is re-enabled
+            document.body.style.overflow = '';
+        }
+    };
+
+    // Global data for product details and other sections (used by products.html)
+    // These are passed as JSON strings from Python and parsed by JS.
+    // The `to_js_str` function ensures they are correctly escaped for JS.
+    window.productDetailsMap = {"kp_car_insurance": {"id": "kp_car_insurance", "icon": "🚗", "name": "King Price Car Insurance", "description": "Get car insurance that decreases monthly.", "features": ["Daily Decreasing Premiums", "Emergency Roadside Assistance", "Hail Cover"], "specs": {"Policy Type": "Comprehensive", "Excess": "Standard", "Underwriter": "KP Underwriters"}, "benefits": ["Save money every month", "24/7 support", "Flexible options"], "use_cases": ["Personal vehicles", "Fleet management"], "pricing": "From R500/month", "modal_content": "<h4>King Price Car Insurance</h4><p>Your premium decreases every month as your car's value depreciates, ensuring you never overpay. We offer comprehensive coverage for accidents, theft, and natural disasters, with 24/7 roadside assistance.</p>", "image": "/assets/images/kp-car-insurance.jpg", "cta_link": "/get-car-quote"}, "kp_home_insurance": {"id": "kp_home_insurance", "icon": "🏠", "name": "King Price Home Insurance", "description": "Protect your home and belongings with flexible cover.", "features": ["Building & Contents Cover", "Accidental Damage Option", "Home Emergency Services"], "specs": {"Policy Type": "All-risk", "Sum Insured": "Customizable", "Optional": "Gadget Cover"}, "benefits": ["Peace of mind", "Tailored solutions", "Quick claims process"], "use_cases": ["Homeowners", "Renters"], "pricing": "From R800/month", "modal_content": "<h4>King Price Home Insurance</h4><p>Comprehensive protection for your most valuable asset. Cover against fire, theft, natural disasters, and accidental damage to both your building and its contents.</p>", "image": "/assets/images/kp-home-insurance.jpg", "cta_link": "/get-home-quote"}};
+    window.featuresDeepDiveData = [{"title": "Decreasing Premiums", "description": "Your car insurance premium gets cheaper every month as your car's value depreciates.", "icon": "📉"}, {"title": "Tiered Excess Options", "description": "Choose an excess that suits your budget and risk appetite.", "icon": "💸"}, {"title": "Award-Winning Claims", "description": "Experience a fast, fair, and empathetic claims process.", "icon": "🏆"}];
+    window.integrationCapabilitiesData = [{"name": "Banking Integration", "description": "Seamless premium deductions and claims payouts via direct bank links.", "icon": "🏦"}, {"name": "Telematics Ready", "description": "Integrate with telematics devices for personalized driving behavior discounts.", "icon": "📡"}];
+    window.useCasesData = [{"title": "Personal Vehicle Owners", "description": "Comprehensive cover for everyday drivers seeking value and reliability.", "icon": "🧑‍🚗"}, {"title": "Homeowners & Renters", "description": "Tailored policies to protect your primary residence and personal belongings.", "icon": "🏡"}];
+    window.techSpecsData = {"Platform": "Mobile App & Web Portal", "Security": "256-bit SSL Encryption", "Support": "AI Chatbot & Live Agents"};
+    window.securityComplianceData = ["FSCA Regulated", "POPIA Compliant Data Handling", "Data Encryption at Rest and In Transit", "Regular Vulnerability Assessments"];
+    window.customerSuccessStories = [{"name": "King Family", "quote": "King Price made insurance easy and saved us a lot! Their service is top-notch.", "industry": "Household"}, {"name": "Local Business XYZ", "quote": "Their business insurance provides peace of mind, allowing us to focus on growth.", "industry": "SME"}];
+    window.supportTrainingData = [{"title": "24/7 Emergency Assistance", "description": "Always available for roadside or home emergencies.", "icon": "🚨"}, {"title": "Dedicated Policy Advisor", "description": "A personal advisor to guide you through your policy options.", "icon": "🙋"}, {"title": "Online Resource Hub", "description": "Access to FAQs, policy documents, and claims guides.", "icon": "📚"}];
+    window.faqData = [{"question": "How do decreasing premiums work?", "answer": "Your premium decreases every month because the value of your car depreciates, so you pay less for the same cover as your asset ages."}, {"question": "Can I get immediate cover?", "answer": "Yes, in most cases, you can get immediate cover once your application is approved and payment is made."}, {"question": "What is covered under accidental damage?", "answer": "Accidental damage covers damages to your vehicle due to unforeseen incidents like collisions, overturning, or impact with objects."}];
+    window.pricingOverviewContent = `<p class=\\"text-gray-300 text-lg mb-4\\">King Price offers personalized insurance quotes tailored to your specific needs and risk profile. Get a quick online quote or speak to an advisor to find the best plan for you.</p>\n                    <ul class=\\"list-disc list-inside text-gray-300 text-base mb-6\\">\n                        <li><strong>Car Insurance:</strong> Comprehensive, Third-Party, Fire & Theft, and Third-Party Only options.</li>\n                        <li><strong>Home Insurance:</strong> Building, Contents, and All-Risk for specified items.</li>\n                        <li><strong>Business Insurance:</strong> Tailored solutions for various business sizes and industries.</li>\n                    </ul>\n                    <a href=\\"pricing.html\\" class=\\"bg-gray-700 hover:bg-gray-600 text-gray-300 font-bold py-2 px-6 rounded-md transition-colors duration-200\\">Get a Free Quote Now</a>\n                `;
+
+
+    window.fetchProductDetails = async function(productId) { // Make global for onclick
+        const productDetails = window.productDetailsMap[productId]; // Access global map
+        if (productDetails) {
+            // Populate modal fields
+            document.getElementById('modalProductTitle').textContent = productDetails.name || 'Product Title';
+            document.getElementById('modalProductDescription').textContent = productDetails.description || 'Product description goes here.';
+
+            // Set product image if available
+            const modalProductImage = document.getElementById('modalProductImage');
+            if (modalProductImage && productDetails.image) {
+                modalProductImage.src = productDetails.image;
+                modalProductImage.style.display = 'block'; // Ensure image is visible
+            } else if (modalProductImage) {
+                modalProductImage.style.display = 'none'; // Hide if no image
+            }
+
+            // Set CTA link
+            const modalProductCTA = document.getElementById('modalProductCTA');
+            if (modalProductCTA && productDetails.cta_link) {
+                modalProductCTA.href = productDetails.cta_link;
+                modalProductCTA.style.display = 'inline-block'; // Show button
+            } else if (modalProductCTA) {
+                modalProductCTA.style.display = 'none'; // Hide button
+            }
+
+            const populateList = (elementId, items) => {
+                const parentDiv = document.getElementById(elementId);
+                const ul = parentDiv.querySelector('ul');
+                ul.innerHTML = '';
+                if (items && items.length > 0) {
+                    parentDiv.style.display = 'block';
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        ul.appendChild(li);
+                    });
+                } else {
+                    parentDiv.style.display = 'none';
+                }
+            };
+
+            const populateSpecs = (elementId, specs) => {
+                const parentDiv = document.getElementById(elementId);
+                const ul = parentDiv.querySelector('ul');
+                ul.innerHTML = '';
+                if (specs && Object.keys(specs).length > 0) {
+                    parentDiv.style.display = 'block';
+                    for (const key in specs) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${key}</strong>: ${specs[key]}`; // Correctly escaped for JS template literal
+                        ul.appendChild(li);
+                    }
+                } else {
+                    parentDiv.style.display = 'none';
+                }
+            };
+
+            populateList('modalProductFeatures', productDetails.features);
+            populateSpecs('modalProductSpecs', productDetails.specs);
+            populateList('modalProductBenefits', productDetails.benefits);
+            populateList('modalProductUseCases', productDetails.use_cases);
+
+            document.getElementById('modalProductPricing').textContent = `Pricing: ${productDetails.pricing || 'Contact for Quote'}`;
+
+            // Show the modal
+            document.getElementById('productDetailModal').style.display = 'flex';
+            document.body.classList.add('modal-open'); // Add class to body
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        } else {
+            console.error(`Product details for ID ${productId} not found in mock data.`);
+            alert('Product details not found.');
+        }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+        const productModal = document.getElementById('productDetailModal');
+        if (productModal) {
+            productModal.addEventListener('click', function(event) {
+                // If clicked directly on the modal background or a close button
+                if (event.target === productModal || event.target.closest('.product-modal-close') || event.target.closest('.close-modal-button')) {
+                    window.hideProductModal();
+                }
+            });
+        }
+    });
+</script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-indigo-800 shadow-lg py-4 px-6 md:px-10 sticky top-0 z-50">
+        <div class="container mx-auto flex items-start justify-between flex-wrap">
+            <div class="flex items-center mb-4 md:mb-0">
+                <span class="text-3xl mr-3">👑</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-indigo-400">
+                    FAA.ZONE <span class="text-gray-100">Sovereign Scrolls</span>
+                </h1>
+            </div>
+
+            <div class="flex flex-col items-center md:items-end w-full md:w-auto">
+                <span class="text-xl md:text-2xl text-gray-400 mb-2 mt-4 md:mt-0">Global Supply Chain Grid</span>
+                <nav class="w-full md:w-auto">
+                    <ul class="flex flex-wrap justify-center md:justify-end space-x-2 md:space-x-4 text-sm md:text-base">
+                            <li><a href="/public/sectors/financial-services/dashboard.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Sector Dashboard</a></li>
+                            <li><a href="index.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Home</a></li>
+                            <li><a href="dashboard.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Dashboard</a></li>
+                            <li><a href="pricing.html" class="px-3 py-2 rounded-md bg-indigo-500 text-white">Pricing</a></li>
+                            <li><a href="products.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Products</a></li>
+                            <li><a href="about.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">About</a></li>
+                            <li><a href="features.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Features</a></li>
+                            <li><a href="contact.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Contact</a></li>
+                            <li><a href="licensing.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Licensing</a></li>
+                            <li><a href="terms.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Terms</a></li>
+                            <li><a href="clauses.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Clauses</a></li>
+                            <li><a href="auth.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Auth</a></li>
+                            <li><a href="metrics.html" class="px-3 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Metrics</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-6 py-8 md:py-12">
+            
+            <div id="dynamicContent" class="mb-12">
+                <section class="text-center mb-12">
+    <h2 class="text-4xl font-extrabold text-blue-400 mb-4 tracking-tight">
+        Explore Our <span class="text-purple-400">Pricing & Plans</span>
+    </h2>
+    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+        Choose the package that best fits your needs and proceed to a secure checkout.
+    </p>
+
+    <!-- Currency Selector -->
+    <div class="mt-8 mb-10 p-6 rounded-xl shadow-md border text-left flex items-center justify-between mx-auto max-w-xs currency-selector-container">
+        <label for="currency-select" class="font-medium">Display prices in:</label>
+        <select id="currency-select" class="ml-4 p-2 border rounded-md text-sm">
+            <option value="ZAR">ZAR (R)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+        </select>
+    </div>
+
+    <!-- Product Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+        
+        <div class="product-card">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Basic Coverage</h3>
+                <p class="mb-4">Essential protection for your vehicle or home.</p>
+                <ul class="list-disc list-inside text-slate-700 text-sm space-y-1 mb-6">
+                    <li>Third-Party Liability</li>
+                    <li>Basic Theft & Fire</li>
+                    <li>Emergency Roadside Support</li>
+                </ul>
+            </div>
+            <p class="text-3xl font-extrabold text-blue-600 mb-6 price-display"
+               data-original-price="350.00" data-currency-symbol="R" data-currency-code="ZAR" data-primary-color-class="blue-600">
+               <span class="text-3xl font-extrabold text-blue-600">R 350.00</span> <span class="text-slate-500 text-base font-normal">/ month</span>
+            </p>
+            <button class="buy-now-button featured-button w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                    data-product-name="Basic Coverage"
+                    data-amount="350.00"
+                    data-billing-cycle="MONTHLY"
+                    data-plan-key="Basic_Coverage_MONTHLY"
+                    onclick="initiatePayPalSubscription(event)">
+                Subscribe Now (Monthly)
+            </button>
+        </div>
+        
+        <div class="product-card">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Standard Coverage</h3>
+                <p class="mb-4">Comprehensive protection with added benefits for peace of mind.</p>
+                <ul class="list-disc list-inside text-slate-700 text-sm space-y-1 mb-6">
+                    <li>Comprehensive Cover (Accident, Theft, Fire)</li>
+                    <li>Decreasing Premiums</li>
+                    <li>Emergency Roadside Assistance</li>
+                    <li>Hail Cover</li>
+                </ul>
+            </div>
+            <p class="text-3xl font-extrabold text-green-600 mb-6 price-display"
+               data-original-price="750.00" data-currency-symbol="R" data-currency-code="ZAR" data-primary-color-class="green-600">
+               <span class="text-3xl font-extrabold text-green-600">R 750.00</span> <span class="text-slate-500 text-base font-normal">/ month</span>
+            </p>
+            <button class="buy-now-button featured-button w-full bg-green-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                    data-product-name="Standard Coverage"
+                    data-amount="750.00"
+                    data-billing-cycle="MONTHLY"
+                    data-plan-key="Standard_Coverage_MONTHLY"
+                    onclick="initiatePayPalSubscription(event)">
+                Subscribe Now (Monthly)
+            </button>
+        </div>
+        
+        <div class="product-card">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Premium Coverage</h3>
+                <p class="mb-4">Maximum protection, dedicated support, and exclusive benefits.</p>
+                <ul class="list-disc list-inside text-slate-700 text-sm space-y-1 mb-6">
+                    <li>All-Risk Policy</li>
+                    <li>Decreasing Premiums</li>
+                    <li>Home Emergency Services</li>
+                    <li>Accidental Damage Option</li>
+                    <li>Dedicated Advisor</li>
+                </ul>
+            </div>
+            <p class="text-3xl font-extrabold text-purple-600 mb-6 price-display"
+               data-original-price="1200.00" data-currency-symbol="R" data-currency-code="ZAR" data-primary-color-class="purple-600">
+               <span class="text-3xl font-extrabold text-purple-600">R 1200.00</span> <span class="text-slate-500 text-base font-normal">/ month</span>
+            </p>
+            <button class="buy-now-button featured-button w-full bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                    data-product-name="Premium Coverage"
+                    data-amount="1200.00"
+                    data-billing-cycle="MONTHLY"
+                    data-plan-key="Premium_Coverage_MONTHLY"
+                    onclick="initiatePayPalSubscription(event)">
+                Subscribe Now (Monthly)
+            </button>
+        </div>
+        
+    </div>
+</section>
+            </div>
+        </main>
+
+        <footer class="bg-gray-800 py-6 px-6 md:px-10 mt-12">
+            <div class="container mx-auto text-center text-gray-400 text-sm">
+                <p>&copy; 2025 FAA.ZONE Sovereign Scrolls. All rights reserved.</p>
+                <p class="mt-2">
+                    Part of the Global Supply Chain Grid · Powered by VaultMesh™ & TreatyMesh™ Protocols.
+                </p>
+                <div class="flex flex-wrap justify-center space-x-4 mt-4">
+                    <a href="#" class="hover:text-indigo-400 transition-colors duration-200">Privacy Policy</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="#" class="hover:text-indigo-400 transition-colors duration-200">Terms of Service</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="#" class="hover:text-indigo-400 transition-colors duration-200">Contact Support</a>
+                </div>
+            </div>
+        </footer>
+
+        <div id="productDetailModal" class="product-modal">
+            <div class="product-modal-content">
+                <span class="product-modal-close" onclick="window.hideProductModal()">&times;</span>
+                <h3 id="modalProductTitle" class="text-3xl font-bold text-indigo-400 mb-4"></h3>
+                <img id="modalProductImage" src="" alt="Product Image" class="w-full h-48 object-cover rounded-md mb-4" style="display: none;">
+                <p id="modalProductDescription" class="text-gray-300 mb-4 leading-relaxed"></p>
+
+                <div id="modalProductFeatures" class="mb-4" style="display:none;">
+                    <h4 class="text-xl font-semibold text-gray-200 mb-2">Key Features:</h4>
+                    <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+                </div>
+                <div id="modalProductSpecs" class="mb-4" style="display:none;">
+                    <h4 class="text-xl font-semibold text-gray-200 mb-2">Specifications:</h4>
+                    <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+                </div>
+                <div id="modalProductBenefits" class="mb-4" style="display:none;">
+                    <h4 class="text-xl font-semibold text-gray-200 mb-2">Benefits:</h4>
+                    <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+                </div>
+                <div id="modalProductUseCases" class="mb-4" style="display:none;">
+                    <h4 class="text-xl font-semibold text-gray-200 mb-2">Use Cases:</h4>
+                    <ul class="list-disc list-inside text-gray-300 ml-4"></ul>
+                </div>
+                <p id="modalProductPricing" class="text-lg font-semibold text-white mt-4"></p>
+                <a id="modalProductCTA" href="#" class="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md" style="display: none;">Learn More</a>
+                <button onclick="window.hideProductModal()" class="close-modal-button mt-4 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-md">Close</button>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitful Global Kiosk — Phase 1.0_gary_upload (Self-Contained)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Golden Ticket CI Guide MASTER v2 — Precise Brand Colors */
+            --teal: #47B3A8;
+            --red: #E63946;
+            --amber: #FFB703;
+            --ink: #3A2A1B;
+            --cream: #FBF4E4;
+            --glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: var(--ink);
+            color: var(--cream);
+            font-family: 'Inter', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        /* High-tech ambient background */
+        .glow-orbit {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 150%; height: 150%;
+            background: radial-gradient(circle at center, rgba(71, 179, 168, 0.1) 0%, rgba(230, 57, 70, 0.05) 40%, rgba(58, 42, 27, 0) 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        /* Global Header */
+        header {
+            flex: none;
+            padding: 50px 50px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, var(--ink), transparent);
+        }
+        .logo-wrap { display: flex; align-items: center; gap: 15px; }
+        .logo-wrap img { width: 52px; height: 52px; border-radius: 50%; background: white; padding: 2px; }
+        .brand-text { font-weight: 900; font-size: 38px; font-style: italic; color: var(--red); letter-spacing: -0.04em; }
+
+        .kiosk-status {
+            background: var(--teal);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .status-dot { width: 10px; height: 10px; background: var(--amber); border-radius: 50%; box-shadow: 0 0 12px var(--amber); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Screen Layout */
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            padding: 120px 50px 100px;
+        }
+        .screen.active { display: flex; }
+
+        /* HOME */
+        .home-content { text-align: center; justify-content: center; }
+        .headline { font-size: 84px; font-weight: 900; font-style: italic; text-transform: uppercase; line-height: 0.85; margin-bottom: 30px; }
+        .headline span { color: var(--red); }
+        .subheadline { font-size: 26px; color: var(--teal); font-weight: 600; margin-bottom: 60px; max-width: 80%; margin-left: auto; margin-right: auto; }
+        
+        .start-cta {
+            background: var(--red);
+            color: white;
+            padding: 40px;
+            border-radius: 30px;
+            font-size: 38px;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            border: none;
+            box-shadow: 0 15px 0 #C42B37;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.1s;
+        }
+        .start-cta:active { transform: translateY(10px); box-shadow: 0 5px 0 #C42B37; }
+
+        /* BROWSE */
+        .browse-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            overflow-y: auto;
+            flex: 1;
+            padding-bottom: 120px;
+        }
+        .cat-title { font-size: 22px; font-weight: 800; text-transform: uppercase; color: var(--teal); margin: 30px 0 15px; grid-column: span 2; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        .item-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(15px);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .item-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; border: 1px solid var(--border); }
+        .item-name { font-size: 20px; font-weight: 700; color: white; }
+        .item-price { font-family: 'Fira Code', monospace; font-size: 18px; color: var(--amber); }
+        .add-btn { background: var(--teal); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+
+        /* CART BAR */
+        .order-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--teal);
+            padding: 25px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
+        }
+        .order-info .label { font-size: 12px; text-transform: uppercase; font-weight: 700; opacity: 0.8; }
+        .order-info .total { font-size: 32px; font-weight: 900; font-style: italic; }
+        .checkout-btn { background: white; color: var(--teal); border: none; padding: 15px 30px; border-radius: 15px; font-size: 20px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
+
+        /* SUCCESS SCREEN */
+        .success-content { text-align: center; justify-content: center; }
+        .success-icon { font-size: 100px; color: var(--teal); margin-bottom: 20px; }
+        .order-ref { font-family: 'Fira Code', monospace; font-size: 24px; color: var(--amber); margin: 20px 0; }
+        
+        /* FOOTER */
+        footer {
+            position: fixed;
+            bottom: 30px; width: 100%;
+            text-align: center;
+            z-index: 5;
+        }
+        .v-tag { font-family: 'Fira Code', monospace; font-size: 12px; color: rgba(255, 255, 255, 0.25); letter-spacing: 0.15em; }
+
+        .spec-badge {
+            position: fixed;
+            top: 110px; right: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 12px; border-radius: 12px;
+            font-family: 'Fira Code', monospace; font-size: 11px;
+            border: 1px solid var(--amber);
+            z-index: 20; color: var(--amber);
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-orbit"></div>
+
+    <header>
+        <div class="logo-wrap">
+            <img id="brandLogo" src="" alt="Fruitful Mark">
+            <div class="brand-text">fruitful™</div>
+        </div>
+        <div class="kiosk-status">
+            <div class="status-dot"></div>
+            Online
+        </div>
+    </header>
+
+    <div class="spec-badge">
+        RADIUS: 0.8m (1.6m Inner)<br>
+        SHELL: 1.8m Outer<br>
+        AREA: 2.01m²
+    </div>
+
+    <!-- SCREEN 1: HOME -->
+    <div id="screen-home" class="screen active home-content">
+        <h1 class="headline">Buy Artisan.<br>Create Apps.<br><span>Feed Children.</span></h1>
+        <p class="subheadline">If you don't like the fruits you are growing, change the seeds. Tap to start your journey.</p>
+        <button class="start-cta" onclick="nav('browse')">Start Order</button>
+    </div>
+
+    <!-- SCREEN 2: BROWSE -->
+    <div id="screen-browse" class="screen">
+        <div class="browse-grid">
+            <div class="cat-title">Art Subscriptions</div>
+            <div class="item-card">
+                <img id="artChief" src="" alt="The Chief">
+                <div class="item-name">The Chief (SamFox)</div>
+                <div class="item-price">R 165 / mo</div>
+                <button class="add-btn" onclick="addToCart('The Chief', 165)">Subscribe</button>
+            </div>
+            <div class="item-card">
+                <img id="artGrand" src="" alt="Grand Original">
+                <div class="item-name">Grand Original Canvas</div>
+                <div class="item-price">R 245 / mo</div>
+                <button class="add-btn" onclick="addToCart('Grand Canvas', 245)">Subscribe</button>
+            </div>
+
+            <div class="cat-title">Golden Ticket Menu</div>
+            <div class="item-card">
+                <div class="item-name">Artisan Coffee</div>
+                <div class="item-price">R 40.00</div>
+                <button class="add-btn" onclick="addToCart('Coffee', 40)">Add to Basket</button>
+            </div>
+            <div class="item-card">
+                <div class="item-name">Smoothie</div>
+                <div class="item-price">R 60.00</div>
+                <button class="add-btn" onclick="addToCart('Smoothie', 60)">Add to Basket</button>
+            </div>
+            <div class="item-card">
+                <div class="item-name">Milk Pannekoek (1)</div>
+                <div class="item-price">R 15.00</div>
+                <button class="add-btn" onclick="addToCart('Pannekoek', 15)">Add to Basket</button>
+            </div>
+        </div>
+
+        <div class="order-bar" id="cart-bar" style="display: none;">
+            <div class="order-info">
+                <div class="label">Total Amount</div>
+                <div class="total" id="total-display">R 0</div>
+            </div>
+            <button class="checkout-btn" onclick="nav('success')">Pay Now</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: SUCCESS -->
+    <div id="screen-success" class="screen success-content">
+        <div class="success-icon">✓</div>
+        <h1 class="headline">Thank You.</h1>
+        <p class="subheadline">Your order is being prepared. Every item feeds a child today™.</p>
+        <div class="order-ref" id="ref-num">FFL-8374291</div>
+        <button class="start-cta" style="padding: 20px;" onclick="resetKiosk()">Finish</button>
+    </div>
+
+    <footer>
+        <div class="v-tag">STABLE_REL · v1.0_gary_upload · OFFICIAL_BRAND_VERIFIED</div>
+    </footer>
+
+    <script>
+        // Official Art Assets - Embedded to prevent broken images
+        const CHIEF_B64 = "iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAAQAElEQVR4nAey9B2Ak2VXv/b8VOytrNDnszM5sDl6vvWscsI3J/ngYMAaT0zNgeDyygfeMMc9kbIzBOGAccM5h89q7602zaTbNTtjJURqlVufuqur+zqlW6JZaUktqSd3SKXV1Vd147q+qS3XOufeWVnrx50uyCgO5BuQakGtArgG5BuQakGtArgG5BuQakGtArgG5Btb0NVDSIIsQEAJCQAgIASEgBISAEBACQkAICAEhsMYJAGIAWPOnWBooBISAEBACQkAICAEhIASEgBAQAuueAAEQAwBBkI8QEAJCQAgIASEgBISAEBACQkAICIG1TIDbJgYApiCrEBACQkAICAEhIASEgBAQAkJACAiBtUvAb5kYAHwM8iUEhIAQEAJCQAgIASEgBISAEBACQmCtEii3SwwAZQ7yLQSEgBAQAkJACAgBISAEhIAQEAJCYG0SGG+VGADGQchGCAgBISAEhIAQEAJCQAgIASEgBITAWiQw0SYxAEyQkK0QEAJCQAgIASEgBISAEBACQkAICIG1R2CyRWIAmEQhO0JACAgBISAEhIAQEAJCQAgIASEgBNYagan2iAFgioXsCQEhIASEgBAQAkJACAgBISAEhIAQWFsEKlojBoAKGLIrBISAEBACQkAICAEhIASEgBAQAkJGRLROVfIVEUIFInSjMJFLAhRSlRk3SuPcP6fn4OR4u5VTD6MooCSSxIkpR8wtFrWmumPfRt+DM6XBkcI8iLWN675AC1WIBr";
+        const GRAND_B64 = "/9j/4QBORXhpZgAATU0AKgAAAAgAAwEaAAUAAAABAAAAMgEbAAUAAAABAAAAOgEoAAMAAAABAAIAAAAAAAAACvyAAAAnEAAK/IAAACcQAAAAAP/tAEBQaG90b3Nob3AgMy4wADhCSU0EBgAAAAAABwAIAQEAAQEAOEJJTQQlAAAAAAAQAAAAAAAAAAAAAAAAAAAAAP/iDFhJQ0NfUFJPRklMRQABAQAADEhMaW5vAhAAAG1udHJSR0IgWFlaIAfOAAIACQAGADEAAGFjc3BNU0ZUAAAAAElFQyBzUkdCAAAAAAAAAAAAAAABAAD21gABAAAAANMtSFAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNwcnQAAAFQAAAAM2Rlc2MAAAGEAAAAbHd0cHQAAAHwAAAAFGJrcHQAAAIEAAAAFHJYWVoAAAIYAAAAFGdYWVoAAAIsAAAAFGJYWVoAAAJAAAAAFGRtbmQAAAJUAAAAcGRtZGQAAALEAAAAiHZ1ZWQAAANMAAAAhnZpZXcAAAPUAAAAJGx1bWkAAAP4AAAAFG1lYXMAAAQMAAAAJHRlY2gAAAQwAAAADHJUUkMAAAQ8AAAIDGdUUkMAAAQ8AAAIDGJUUkMAAAQ8AAAIDHRleHQAAAAAQ29weXJpZ2h0IChjKSAxOTk4IEhld2xldHQtUGFja2FyZCBDb21wYW55AABkZXNjAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAA81EAAQAAAAEWzFhZWiAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeFAAAY2lhZWiAAAAAAAAAkoAAAD4QAALbPZGVzYwAAAAAAAAAWSUVDIGh0dHA6Ly93d3cuaWVjLmNoAAAAAAAAAAAAAAAWSUVDIGh0dHA6Ly93d3cuaWVjLmNoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRlc2MAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAACxSZWZlcmVuY2UgVmlld2luZyBDb25kaXRpb24gaW4gSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdmlldwAAAAAAE6T+ABRfLgAQzxQAA+3MAAQTCwADXJ4AAAABWFlaIAAAAAAATAlWAFAAAABXH+dtZWFzAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAACjwAAAAJzaWcgAAAAAENSVCBjdXJ2AAAAAAAABAAAAAAFAAoADwAUABkAHgAjACgALQAyADcAOwBAAEUASgBPAFQAWQBeAGMAaABtAHIAdwB8AIEAhgCLAJAAlQCaAJ8ApACpAK4AsgC3ALwAwQDGAMsA0ADVANsA4ADlAOsA8AD2APsBAQEHAQ0BEwEZAR8BJQErATIBOAE+AUUBTAFSAVkBYAFnAW4BdQF8AYMBiwGSAZoBoQGpAbEBuQHBAckB0QHZAeEB6QHyAfoCAwIMAhQCHQImAi8COAJBAksCVAJdAmcCcQJ6AoQCjgKYAqICrAK2AsECywLVAuAC6wL1AwADCw==";
+        const LOGO_B64 = "iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAACEZVhJZk1NACoAAAAIAAUBEgADAAAAAQABAAABGgAFAAAAAQAAAEoBGwAFAAAAAQAAAFIBKAADAAAAAQACAACHaQAEAAAAAQAAAFoAAAAAAAAASAAAAAEAAABIAAAAAQADoAEAAwAAAAEAAQAAoAIABAAAAAEAAAfQoAMABAAAAAEAAAfQAAAAADWbYOoAAAAGYktHRAAAAAAAAPlDu38AAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAHdElNRQfqBhQJNjpr8dRkAAAAd3RFWHRSYXcgcHJvZmlsZSB0eXBlIDhiaW0ACjhiaW0KICAgICAgNDAKMzg0MjQ5NGQwNDA0MDAwMDAwMDAwMDAwMzg0MjQ5NGQwNDI1MDAwMDAwMDAwMDEwZDQxZDhjZDk4ZjAwYjIwNGU5ODAwOTk4CmVjZjg0MjdlCqZTw44AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjYtMDYtMjBUMDk6NTQ6NDIrMDA6MDDbcb6lAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI2LTA2LTIwVDA5OjU0OjQyKzAwOjAwqiwGGQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNi0wNi0yMFQwOTo1NDo1NyswMDowMGOrCP8AAAARdEVYdGV4aWY6Q29sb3JTcGFjZQAxD5sCSQAAABJ0RVh0ZXhpZjpFeGlmT2Zmc2V0ADkwWYzemwAAABl0RVh0ZXhpZjpQaXhlbFhEaW1lbnNpb24AMjAwMNUrX2oAAAAZdEVYdGV4aWY6UGl4ZWxZRGltZW5zaW9uADIwMDBs0ISCAAAAAW9yTlQBz6J3mgAAgABJREFUeNrsnXdgW0Xyx2f2PRVL7r2md0KooffOj35w9N47Bxxw9HJHOzjg4I5ejnr0Xo4aeidASO+x495lybKk93Z+f7wiObQQbK1szwcc24pjzVvp7c7OznwHgGEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhhkpoGoDGIZhHIhIhJ57qzBaV1cjVjRUYsKcHO3srCApx/sJRpkd3UCGGfQUFUwERA0BwIzHu+Mdncs8uUGi4kIjmjC+ywoElms+zzw5btTy3M03XhXcbpNe1dfGMJkGOwJXMhmyDUy0+GOLjt+Btn2ttK7oyzbfxOrVpTrpTFq/J8UkPJMimaOFQVWQjzU2jOuRJ+/Fpf8Asm3upODSJlnhjUiQncCJAGU71UagZrqMcJac7Hd31xF+Sdwo0SVFWYkAtQgZMa064HCXErtEJDsY12ombFRQZAtmWOXSuLDgOJ5OJ+OtixYxkO1GHmUBasc9NuVTmRTFtDPxnLpRAKC2k2qQKZGhqOx7YtvXu54mg3bFmgm3k5HyHYVU1GYJFR1xd2XubmRx9zHcwAB0cKItwBdSVG7YAagZVpTI442H2/70SN7JJK+qkiRy7iANjbSpby1y0Bzpi8uZrCO49rwEAurZvXJWQjWrAgLSuVccVz3KQxxcQ0Lx/pXKqyzOxCiVyRQvGR6ZO0AmhBrU8Dd3/KCGzvS0SUKFonSjMJFLAhRSlRk3SuPcP6fn4OR4u5VTD6MooCSSxIkpR8wtFrWmumPfRt+DM6XBkcI8iLWN675AC1WIBr";
+
+        document.getElementById('brandLogo').src = "data:image/png;base64," + LOGO_B64;
+        document.getElementById('artChief').src = "data:image/png;base64," + CHIEF_B64;
+        document.getElementById('artGrand').src = "data:image/jpeg;base64," + GRAND_B64;
+
+        let cart = [];
+        let total = 0;
+
+        function nav(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+        }
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            total += price;
+            document.getElementById('total-display').textContent = 'R ' + total;
+            document.getElementById('cart-bar').style.display = 'flex';
+        }
+
+        function resetKiosk() {
+            cart = []; total = 0;
+            document.getElementById('total-display').textContent = 'R 0';
+            document.getElementById('cart-bar').style.display = 'none';
+            document.getElementById('ref-num').textContent = 'FFL-' + Math.floor(1000000 + Math.random() * 9000000);
+            nav('home');
+        }
+        resetKiosk();
+    </script>
+</body>
+</html>
