@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BushPortal — Fruitful Hat Collection</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --straw:       #C8A96E;
+            --straw-light: #F5EDD8;
+            --straw-dark:  #8B6914;
+            --ink:         #1C1310;
+            --muted:       #6B5B4B;
+            --card:        #FFFDF8;
+            --border:      #E8D9BC;
+            --bg:          #F0E8D4;
+            --bead-r:      #C0392B;
+            --bead-b:      #1A5276;
+            --bead-g:      #1E8449;
+            --bead-y:      #D4AC0D;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Bead strip ── */
+        .bead-strip {
+            height: 6px;
+            background: repeating-linear-gradient(90deg,
+                var(--bead-r) 0,6px, var(--bead-y) 6px,12px,
+                var(--bead-b) 12px,18px, var(--bead-g) 18px,24px,
+                #fff 24px,30px);
+        }
+
+        /* ── Nav ── */
+        nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 12px rgba(139,105,20,.08);
+        }
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--ink);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-brand span { color: var(--straw-dark); }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a {
+            font-size: .82rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+        .nav-right { display: flex; align-items: center; gap: 14px; }
+        .nav-cart {
+            background: var(--ink);
+            color: var(--straw-light);
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity .2s;
+        }
+        .nav-cart:hover { opacity: .85; }
+        .cart-count {
+            background: var(--bead-r);
+            color: #fff;
+            font-size: .65rem;
+            font-weight: 700;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Hero banner ── */
+        .hero {
+            background: var(--ink);
+            color: var(--straw-light);
+            padding: 72px 40px 80px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-conic-gradient(
+                rgba(200,169,110,.05) 0% 25%, transparent 0% 50%
+            ) 0 0 / 44px 44px;
+            pointer-events: none;
+        }
+        .hero-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--straw-dark);
+            margin-bottom: 16px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .hero h1 em { font-style: italic; color: var(--straw); }
+        .hero-sub {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: rgba(245,237,216,.72);
+            max-width: 520px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+        .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .btn-hero {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: .88rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all .2s;
+            letter-spacing: .03em;
+        }
+        .btn-hero.solid { background: var(--straw-dark); color: #fff; }
+        .btn-hero.solid:hover { background: #a07a1a; }
+        .btn-hero.outline { border: 1.5px solid var(--straw-dark); color: var(--straw-light); }
+        .btn-hero.outline:hover { background: rgba(139,105,20,.2); }
+
+        /* Floating hat decoration */
+        .hero-hat {
+            position: absolute;
+            font-size: 9rem;
+            opacity: .06;
+            pointer-events: none;
+        }
+        .hero-hat.left  { top: -20px; left: -20px; transform: rotate(-18deg); }
+        .hero-hat.right { bottom: -20px; right: -20px; transform: rotate(14deg); }
+
+        /* ── Collection toolbar ── */
+        .toolbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            height: 56px;
+            position: sticky;
+            top: 66px;
+            z-index: 90;
+        }
+        .filter-pills { display: flex; gap: 6px; }
+        .fpill {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all .18s;
+            white-space: nowrap;
+        }
+        .fpill.on { background: var(--ink); color: var(--straw-light); border-color: var(--ink); }
+        .fpill:hover:not(.on) { border-color: var(--straw-dark); color: var(--ink); }
+        .toolbar-right { display: flex; align-items: center; gap: 12px; }
+        .sort-select {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            outline: none;
+        }
+        .view-toggle { display: flex; gap: 4px; }
+        .view-btn {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .85rem;
+            transition: all .15s;
+        }
+        .view-btn.on { background: var(--ink); color: var(--straw-light); border-color: var(--ink); }
+
+        /* ── Main layout ── */
+        .main-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 36px 24px 80px;
+        }
+
+        /* ── Product grid ── */
+        .hat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .hat-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        /* ── Hat card ── */
+        .hat-card {
+            background: var(--card);
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all .22s;
+            position: relative;
+        }
+        .hat-card:hover {
+            box-shadow: 0 12px 40px rgba(139,105,20,.2);
+            transform: translateY(-5px);
+            border-color: var(--straw);
+        }
+        .hat-card.list-view {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            border-radius: 16px;
+        }
+        .hat-card.list-view:hover { transform: translateY(-2px); }
+
+        /* image zone */
+        .hat-img {
+            background: linear-gradient(135deg, #F5EDD8 0%, #E0CB90 100%);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hat-img img.hat-photo {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease;
+        }
+        .hat-card:hover .hat-photo { transform: scale(1.06); }
+        .hat-card.list-view .hat-img { aspect-ratio: unset; height: 100%; border-radius: 0; }
+        .hat-emoji { font-size: 5.5rem; transition: transform .3s; position: relative; z-index: 1; }
+        .hat-card:hover .hat-emoji { transform: rotate(-6deg) scale(1.08); }
+
+        /* Lekker Local badge */
+        .lekker-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 48px;
+            height: 48px;
+            z-index: 5;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,.25));
+        }
+
+        /* tier badge */
+        .tier-badge {
+            position: absolute;
+            top: 12px; left: 12px;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+        .tier-pro     { background: var(--ink);    color: var(--straw-light); }
+        .tier-starter { background: var(--bead-g); color: #fff; }
+        .tier-core    { background: var(--bead-b); color: #fff; }
+
+        /* wishlist */
+        .wishlist-btn {
+            position: absolute;
+            top: 12px; right: 12px;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(255,253,248,.88);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            color: var(--muted);
+            transition: all .2s;
+        }
+        .wishlist-btn:hover { color: var(--bead-r); background: #fff; }
+        .wishlist-btn.liked { color: var(--bead-r); }
+
+        /* bead strip on card */
+        .card-bead {
+            height: 5px;
+            background: repeating-linear-gradient(90deg,
+                var(--bead-r) 0,5px, var(--bead-y) 5px,10px,
+                var(--bead-b) 10px,15px, var(--bead-g) 15px,20px);
+        }
+
+        /* card body */
+        .hat-body { padding: 18px 20px 20px; }
+        .hat-artisan { font-size: .72rem; color: var(--muted); margin-bottom: 3px; }
+        .hat-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .hat-meaning {
+            font-style: italic;
+            font-size: .78rem;
+            color: var(--straw-dark);
+            margin-bottom: 10px;
+        }
+        .hat-desc { font-size: .8rem; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
+        .hat-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+        .hat-tag {
+            font-size: .65rem;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 8px;
+            background: #F0E8D4;
+            color: var(--straw-dark);
+            border: 1px solid var(--border);
+        }
+        .hat-footer { display: flex; align-items: center; justify-content: space-between; }
+        .hat-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .hat-price small {
+            font-family: 'Inter', sans-serif;
+            font-size: .72rem;
+            color: var(--muted);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+        .btn-view {
+            background: var(--ink);
+            color: var(--straw-light);
+            border: none;
+            border-radius: 9px;
+            padding: 9px 18px;
+            font-size: .8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .2s;
+        }
+        .btn-view:hover { opacity: .82; }
+
+        /* list view extras */
+        .hat-card.list-view .hat-body {
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hat-card.list-view .hat-name { font-size: 1.4rem; }
+
+        /* ── Artisan banner ── */
+        .artisan-banner {
+            background: var(--ink);
+            border-radius: 20px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            margin: 48px 0 0;
+        }
+        .artisan-content { padding: 44px 48px; }
+        .artisan-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--straw-dark);
+            margin-bottom: 10px;
+        }
+        .artisan-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--straw-light);
+            margin-bottom: 6px;
+        }
+        .artisan-meta { font-size: .8rem; color: var(--straw); margin-bottom: 16px; }
+        .artisan-quote {
+            font-style: italic;
+            font-size: .92rem;
+            color: rgba(245,237,216,.8);
+            line-height: 1.7;
+            border-left: 2px solid var(--straw-dark);
+            padding-left: 14px;
+            margin-bottom: 20px;
+        }
+        .artisan-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+        .artisan-pill {
+            font-size: .7rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 10px;
+            background: rgba(200,169,110,.15);
+            color: var(--straw);
+            border: 1px solid rgba(200,169,110,.25);
+        }
+        .artisan-visual {
+            background: linear-gradient(135deg, #3D2E20, var(--straw-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7rem;
+            position: relative;
+        }
+        .artisan-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-conic-gradient(
+                rgba(200,169,110,.07) 0% 25%, transparent 0% 50%
+            ) 0 0 / 28px 28px;
+        }
+
+        /* ── Process strip ── */
+        .process-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 48px 0 0;
+        }
+        .process-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+        }
+        .process-icon { font-size: 2rem; margin-bottom: 10px; }
+        .process-step {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--straw-dark);
+            margin-bottom: 4px;
+        }
+        .process-title { font-weight: 700; font-size: .88rem; color: var(--ink); margin-bottom: 6px; }
+        .process-desc  { font-size: .77rem; color: var(--muted); line-height: 1.55; }
+
+        /* ── Sub banner ── */
+        .sub-banner {
+            background: linear-gradient(135deg, var(--straw-dark), #5C4A0A);
+            border-radius: 20px;
+            padding: 48px;
+            color: var(--straw-light);
+            text-align: center;
+            margin: 48px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .sub-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-conic-gradient(
+                rgba(255,255,255,.04) 0% 25%, transparent 0% 50%
+            ) 0 0 / 32px 32px;
+        }
+        .sub-banner h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .sub-banner p { font-size: .9rem; opacity: .8; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; position: relative; line-height: 1.7; }
+        .sub-tiers { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .sub-tier-pill {
+            background: rgba(255,253,248,.12);
+            border: 1.5px solid rgba(255,253,248,.25);
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 140px;
+            cursor: pointer;
+            transition: background .2s;
+            text-decoration: none;
+        }
+        .sub-tier-pill:hover { background: rgba(255,253,248,.2); }
+        .sub-tier-pill.highlight { background: rgba(255,253,248,.22); border-color: rgba(255,253,248,.5); }
+        .stp-name { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(245,237,216,.7); margin-bottom: 4px; }
+        .stp-price { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--straw-light); }
+        .stp-renew { font-size: .68rem; color: rgba(245,237,216,.6); margin-top: 3px; }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--ink);
+            color: var(--straw-light);
+            padding: 44px 40px 28px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid rgba(200,169,110,.2);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .footer-brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .footer-brand-sub { font-size: .78rem; color: var(--straw); max-width: 220px; line-height: 1.6; }
+        .footer-links-group h4 {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--straw-dark);
+            margin-bottom: 12px;
+        }
+        .footer-links-group a {
+            display: block;
+            font-size: .8rem;
+            color: var(--straw);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: color .18s;
+        }
+        .footer-links-group a:hover { color: var(--straw-light); }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .74rem;
+            color: var(--muted);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .footer-quote { font-style: italic; color: var(--straw); }
+
+        /* ── Cart sidebar ── */
+        .cart-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(28,19,16,.6);
+            z-index: 200;
+        }
+        .cart-overlay.open { display: block; }
+        .cart-drawer {
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            width: 380px;
+            background: var(--card);
+            box-shadow: -8px 0 40px rgba(28,19,16,.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 201;
+            transform: translateX(100%);
+            transition: transform .28s ease;
+        }
+        .cart-drawer.open { transform: translateX(0); }
+        .cart-header {
+            padding: 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .close-cart {
+            background: none; border: none; font-size: 1.1rem;
+            color: var(--muted); cursor: pointer;
+        }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px 22px; }
+        .cart-item-row {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+        .ci-emoji { font-size: 2.2rem; }
+        .ci-name { font-weight: 700; font-size: .88rem; color: var(--ink); }
+        .ci-sub  { font-size: .73rem; color: var(--muted); }
+        .ci-price { margin-left: auto; font-weight: 700; color: var(--straw-dark); }
+        .ci-remove { background: none; border: none; color: var(--muted); cursor: pointer; margin-left: 6px; }
+        .cart-empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--muted);
+        }
+        .cart-empty i { font-size: 2.5rem; color: var(--border); margin-bottom: 10px; display: block; }
+        .cart-footer {
+            padding: 20px 22px;
+            border-top: 1px solid var(--border);
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 14px;
+        }
+        .btn-checkout {
+            width: 100%;
+            padding: 15px;
+            background: var(--ink);
+            color: var(--straw-light);
+            border: none;
+            border-radius: 10px;
+            font-size: .92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .btn-checkout:hover { opacity: .85; }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 28px; right: 28px;
+            z-index: 300;
+            background: var(--ink);
+            color: var(--straw-light);
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: .84rem;
+            font-weight: 600;
+            border-left: 4px solid var(--bead-g);
+            transform: translateX(120%);
+            transition: transform .3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show { transform: translateX(0); }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .toolbar { padding: 0 16px; top: 66px; overflow-x: auto; }
+            .main-wrap { padding: 24px 16px 60px; }
+            .hero { padding: 48px 20px 56px; }
+            .artisan-banner { grid-template-columns: 1fr; }
+            .artisan-visual { height: 180px; }
+            .process-strip { grid-template-columns: 1fr 1fr; }
+            .sub-banner { padding: 32px 20px; }
+            footer { padding: 32px 20px 24px; }
+            .cart-drawer { width: 100%; }
+        }
+        @media (max-width: 560px) {
+            .hat-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+            .process-strip { grid-template-columns: 1fr; }
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity .5s ease, transform .5s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="bead-strip"></div>
+
+<!-- ── NAV ── -->
+<nav>
+    <a class="nav-brand" href="index.html">
+        <img src="img/fruitful-logo.png" alt="Fruitful" style="height:30px;width:auto;" onerror="this.style.display='none'">
+        Fruitful <span>Artisan Hat Co.</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#collection" class="active">Collection</a></li>
+        <li><a href="#artisan">Artisan</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="untshontsho.html">uNtshontsho</a></li>
+        <li><a href="pos.html">POS</a></li>
+    </ul>
+    <div class="nav-right">
+        <i class="fas fa-search" style="color:var(--muted);cursor:pointer;font-size:.95rem;"></i>
+        <a class="nav-cart" href="#" onclick="openCart(event)">
+            <i class="fas fa-shopping-bag"></i>
+            Cart
+            <span class="cart-count" id="cart-count">0</span>
+        </a>
+    </div>
+</nav>
+
+<!-- ── TOOLBAR ── -->
+<div class="toolbar">
+    <div class="filter-pills">
+        <button class="fpill on" onclick="filter(this,'all')">All Hats</button>
+        <button class="fpill" onclick="filter(this,'fedora')">Fedoras</button>
+        <button class="fpill" onclick="filter(this,'kitchen')">Kitchen</button>
+        <button class="fpill" onclick="filter(this,'kids')">Kids</button>
+        <button class="fpill" onclick="filter(this,'pro')">Pro $295</button>
+    </div>
+    <div class="toolbar-right">
+        <select class="sort-select" onchange="sortProducts(this.value)">
+            <option value="default">Sort: Featured</option>
+            <option value="price-asc">Price: Low–High</option>
+            <option value="price-desc">Price: High–Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <div class="view-toggle">
+            <button class="view-btn on" onclick="setView(this,'grid')" title="Grid view"><i class="fas fa-th"></i></button>
+            <button class="view-btn" onclick="setView(this,'list')" title="List view"><i class="fas fa-list"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+    <div class="hero-hat left">🎩</div>
+    <div class="hero-hat right">🎩</div>
+    <div class="hero-label">Mamelodi · Pretoria · South Africa</div>
+    <h1>The <em>BushPortal</em><br>Hat Collection</h1>
+    <p class="hero-sub">Handcrafted fedoras rooted in Xhosa and Zulu tradition. Each hat is a living work of art — and a renewable Pro Subscription key.</p>
+    <div class="hero-actions">
+        <a class="btn-hero solid" href="#collection"><i class="fas fa-hat-cowboy"></i> Shop Now</a>
+        <a class="btn-hero outline" href="untshontsho.html"><i class="fas fa-star"></i> uNtshontsho — $295</a>
+        <a class="btn-hero outline" href="pos.html"><i class="fas fa-cash-register"></i> Vendor POS</a>
+    </div>
+</section>
+
+<!-- ── MAIN ── -->
+<div class="main-wrap" id="collection">
+
+    <!-- Product grid -->
+    <div class="hat-grid reveal" id="hat-grid">
+        <!-- Populated by JS -->
+    </div>
+
+    <!-- ── Artisan banner ── -->
+    <div class="artisan-banner reveal" id="artisan">
+        <div class="artisan-content">
+            <div class="artisan-label">The Maker · Artisan Spotlight</div>
+            <div class="artisan-name">Grand Sibangilizwe Maghandlela</div>
+            <div class="artisan-meta">
+                <i class="fas fa-map-marker-alt"></i> Mamelodi, Pretoria &nbsp;·&nbsp;
+                <i class="fas fa-birthday-cake"></i> Born 28 August 1960 &nbsp;·&nbsp;
+                <span style="color:var(--bead-g);font-weight:700;">VaultLevel 7</span>
+            </div>
+            <div class="artisan-quote">
+                "I am an artist — my soul message is art is part of creation. Mine is a God-given talent."
+            </div>
+            <div class="artisan-pills">
+                <span class="artisan-pill">Xhosa Beadwork</span>
+                <span class="artisan-pill">Zulu Patterns</span>
+                <span class="artisan-pill">Natural Straw</span>
+                <span class="artisan-pill">Kitchen Series</span>
+                <span class="artisan-pill">ScrollClaim Holder</span>
+            </div>
+        </div>
+        <div class="artisan-visual">🎩</div>
+    </div>
+
+    <!-- ── Process ── -->
+    <div class="process-strip reveal" id="process">
+        <div class="process-card">
+            <div class="process-icon">🌾</div>
+            <div class="process-step">Step 01</div>
+            <div class="process-title">Source</div>
+            <div class="process-desc">Premium natural straw sourced and shaped by hand in Mamelodi.</div>
+        </div>
+        <div class="process-card">
+            <div class="process-icon">🔴</div>
+            <div class="process-step">Step 02</div>
+            <div class="process-title">Beadwork</div>
+            <div class="process-desc">Authentic Xhosa & Zulu-inspired geometric patterns applied bead by bead.</div>
+        </div>
+        <div class="process-card">
+            <div class="process-icon">🖌️</div>
+            <div class="process-step">Step 03</div>
+            <div class="process-title">Logo</div>
+            <div class="process-desc">The Fruitful emblem hand-painted on the crown — no two are identical.</div>
+        </div>
+        <div class="process-card">
+            <div class="process-icon">🏆</div>
+            <div class="process-step">Step 04</div>
+            <div class="process-title">Certified</div>
+            <div class="process-desc">VaultLevel 7 certificate issued. Your purchase renews your Pro Subscription.</div>
+        </div>
+    </div>
+
+    <!-- ── Subscription banner ── -->
+    <div class="sub-banner reveal">
+        <h2>Renew by Buying Craft</h2>
+        <p>No automated billing. No cards on file. Your subscription stays active by purchasing a physical hat from Grand — a direct investment in South African artistry.</p>
+        <div class="sub-tiers">
+            <a class="sub-tier-pill" href="pos.html">
+                <div class="stp-name">Starter</div>
+                <div class="stp-price">$20</div>
+                <div class="stp-renew">Kids Apron</div>
+            </a>
+            <a class="sub-tier-pill" href="pos.html">
+                <div class="stp-name">Core Brand</div>
+                <div class="stp-price">$49</div>
+                <div class="stp-renew">Any item</div>
+            </a>
+            <a class="sub-tier-pill highlight" href="untshontsho.html">
+                <div class="stp-name">Pro</div>
+                <div class="stp-price">$295</div>
+                <div class="stp-renew">Any Pro hat</div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="bead-strip"></div>
+<footer>
+    <div class="footer-inner">
+        <div class="footer-top">
+            <div>
+                <div class="footer-brand-name">🎩 Fruitful Global</div>
+                <div class="footer-brand-sub">Sovereign South African craft marketplace. Linking ancient artistry to global commerce.</div>
+            </div>
+            <div class="footer-links-group">
+                <h4>Collection</h4>
+                <a href="untshontsho.html">uNtshontsho — Cape Buffalo</a>
+                <a href="#">uBhejane — Rhinoceros</a>
+                <a href="#">Kitchen Series</a>
+                <a href="#">Kids Aprons</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Platform</h4>
+                <a href="pos.html">POS — Walk-In</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="checkout.html">Checkout</a>
+                <a href="index.html">Home</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Governance</h4>
+                <a href="#">VaultChain Ledger</a>
+                <a href="#">ScrollClaims</a>
+                <a href="#">Vaultmesh Royalties</a>
+                <a href="#">PoHC Protocol</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2025 Fruitful Global · Mamelodi, Pretoria, South Africa</span>
+            <span class="footer-quote">"Art is part of creation — mine is a God-given talent."</span>
+        </div>
+    </div>
+</footer>
+
+<!-- ── CART DRAWER ── -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+        <h3>Your Bag <span style="font-size:.8rem;color:var(--muted);font-family:Inter,sans-serif;font-weight:400;">Proof-of-Human-Craft</span></h3>
+        <button class="close-cart" onclick="closeCart()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items" id="cart-items">
+        <div class="cart-empty">
+            <i class="fas fa-shopping-bag"></i>
+            Your bag is empty.<br>Add a hat to begin.
+        </div>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display:none;">
+        <div class="cart-total">
+            <span>Total</span>
+            <span id="cart-total-val">$0</span>
+        </div>
+        <button class="btn-checkout" onclick="window.location.href='checkout.html'">
+            <i class="fas fa-lock"></i> &nbsp; Secure Checkout
+        </button>
+        <p style="font-size:.7rem;color:var(--muted);text-align:center;margin-top:10px;">
+            <i class="fas fa-shield-alt" style="color:var(--bead-g);"></i>
+            Purchase renews your Pro Subscription. VaultCert issued automatically.
+        </p>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle" style="color:var(--bead-g);"></i> <span id="toast-msg"></span></div>
+
+<script>
+// ── Data ──
+const HATS = [
+    {
+        id: 'untshontsho', emoji: '🎩', img: 'img/hat-ingonyama.png', tier: 'pro',
+        name: 'uNtshontsho', meaning: 'The Cape Buffalo',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'Natural straw fedora with vibrant checkered geometric beadwork and the signature Fruitful emblem on the crown.',
+        tags: ['Cape Buffalo', 'Xhosa Beadwork', 'Natural Straw', 'Pro $295'],
+        price: 295, cat: 'fedora', link: 'untshontsho.html'
+    },
+    {
+        id: 'ubhejane', emoji: '🎩', img: 'img/fedora.png', tier: 'pro',
+        name: 'uBhejane', meaning: 'The Rhinoceros',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'White straw fedora with traditional Xhosa and Zulu beadwork along the brim and a patterned band.',
+        tags: ['Rhinoceros', 'Zulu Beadwork', 'White Straw', 'Pro $295'],
+        price: 295, cat: 'fedora', link: '#'
+    },
+    {
+        id: 'ingwe', emoji: '🎩', img: 'img/hat-panama.png', tier: 'pro',
+        name: 'iNgwe', meaning: 'The Leopard',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'Bold spotted-pattern beadwork on natural straw — the leopard\'s stealth and grace woven into every bead.',
+        tags: ['Leopard', 'Spotted Beadwork', 'Natural Straw', 'Pro $295'],
+        price: 295, cat: 'fedora', link: '#'
+    },
+    {
+        id: 'indlovu', emoji: '🎩', img: 'img/hat-indlovu.jpg', tier: 'pro',
+        name: 'iNdlovu', meaning: 'The Elephant',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'Wide-brimmed straw fedora with rich earth-tone beadwork symbolising wisdom and long memory.',
+        tags: ['Elephant', 'Earth Tones', 'Wide Brim', 'Pro $295'],
+        price: 295, cat: 'fedora', link: '#'
+    },
+    {
+        id: 'kitchen-hat', emoji: '👨‍🍳', img: 'img/kitchen.png', tier: 'pro',
+        name: "Grand's Kitchen Hat", meaning: 'The Artisan Chef',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'Artisan-crafted kitchen headwear with Fruitful branding — the pro tier for culinary creatives.',
+        tags: ['Kitchen Series', 'Chef Hat', 'Artisan', 'Pro $295'],
+        price: 295, cat: 'kitchen', link: '#'
+    },
+    {
+        id: 'kids-apron', emoji: '👧', img: 'img/fruitful-kids.png', tier: 'starter',
+        name: 'Kids Kitchen Apron', meaning: 'Fruitful Kids',
+        artisan: 'Grand Sibangilizwe Maghandlela',
+        desc: 'Colourful handcrafted apron for young creatives — the Starter subscription renewal piece.',
+        tags: ['Kids', 'Apron', 'Starter $20', 'Empowerment'],
+        price: 20, cat: 'kids', link: '#'
+    },
+];
+
+let cart = [];
+let currentView = 'grid';
+
+// ── Render ──
+function renderGrid(list) {
+    const isListView = currentView === 'list';
+    const grid = document.getElementById('hat-grid');
+    grid.className = 'hat-grid reveal visible' + (isListView ? ' list-view' : '');
+    grid.innerHTML = list.map(h => `
+        <div class="hat-card${isListView ? ' list-view' : ''}" onclick="window.location.href='${h.link}'">
+            <div class="hat-img">
+                ${h.img ? `<img class="hat-photo" src="${h.img}" alt="${h.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
+                <span class="hat-emoji" style="${h.img ? 'opacity:0;' : ''}">${h.emoji}</span>
+                <span class="tier-badge tier-${h.tier}">${h.tier === 'pro' ? 'Pro' : h.tier === 'starter' ? 'Starter' : 'Core'}</span>
+                <img class="lekker-badge" src="img/lekker-locals.png" alt="Lekker Local" onerror="this.style.display='none'">
+                <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(this)" title="Save">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            <div class="card-bead"></div>
+            <div class="hat-body">
+                <div class="hat-artisan">${h.artisan}</div>
+                <div class="hat-name">${h.name}</div>
+                <div class="hat-meaning">${h.meaning}</div>
+                <div class="hat-desc">${h.desc}</div>
+                <div class="hat-tags">${h.tags.map(t => `<span class="hat-tag">${t}</span>`).join('')}</div>
+                <div class="hat-footer">
+                    <div class="hat-price">$${h.price}<small>/ renewal</small></div>
+                    <button class="btn-view" onclick="event.stopPropagation();addToCart('${h.id}')">
+                        <i class="fas fa-bag-shopping"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+renderGrid(HATS);
+
+// ── Filter ──
+function filter(el, cat) {
+    document.querySelectorAll('.fpill').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    const filtered = cat === 'all'   ? HATS
+                   : cat === 'pro'   ? HATS.filter(h => h.tier === 'pro')
+                   : HATS.filter(h => h.cat === cat);
+    renderGrid(filtered);
+}
+
+// ── Sort ──
+function sortProducts(val) {
+    const list = [...HATS];
+    if (val === 'price-asc')  list.sort((a,b) => a.price - b.price);
+    if (val === 'price-desc') list.sort((a,b) => b.price - a.price);
+    if (val === 'name')       list.sort((a,b) => a.name.localeCompare(b.name));
+    renderGrid(list);
+}
+
+// ── View toggle ──
+function setView(el, view) {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    currentView = view;
+    renderGrid(HATS);
+}
+
+// ── Wishlist ──
+function toggleWish(btn) {
+    btn.classList.toggle('liked');
+    btn.querySelector('i').className = btn.classList.contains('liked') ? 'fas fa-heart' : 'far fa-heart';
+}
+
+// ── Cart ──
+function addToCart(id) {
+    const hat = HATS.find(h => h.id === id);
+    if (!hat) return;
+    const ex = cart.find(c => c.id === id);
+    if (ex) ex.qty++;
+    else cart.push({...hat, qty: 1});
+    updateCartUI();
+    toast(`${hat.name} added to bag`);
+    openCartDrawer();
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(c => c.id !== id);
+    updateCartUI();
+}
+
+function updateCartUI() {
+    const count = cart.reduce((s,c) => s + c.qty, 0);
+    const total = cart.reduce((s,c) => s + c.price * c.qty, 0);
+    document.getElementById('cart-count').textContent = count;
+    document.getElementById('cart-total-val').textContent = '$' + total;
+
+    const items = document.getElementById('cart-items');
+    const footer = document.getElementById('cart-footer');
+    if (cart.length === 0) {
+        items.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-bag"></i>Your bag is empty.<br>Add a hat to begin.</div>`;
+        footer.style.display = 'none';
+    } else {
+        footer.style.display = 'block';
+        items.innerHTML = cart.map(c => `
+            <div class="cart-item-row">
+                <span class="ci-emoji">${c.emoji}</span>
+                <div>
+                    <div class="ci-name">${c.name} ×${c.qty}</div>
+                    <div class="ci-sub">${c.meaning}</div>
+                </div>
+                <span class="ci-price">$${c.price * c.qty}</span>
+                <button class="ci-remove" onclick="removeFromCart('${c.id}')"><i class="fas fa-times"></i></button>
+            </div>
+        `).join('');
+    }
+}
+
+function openCart(e) { e.preventDefault(); openCartDrawer(); }
+function openCartDrawer() {
+    document.getElementById('cart-overlay').classList.add('open');
+    document.getElementById('cart-drawer').classList.add('open');
+}
+function closeCart() {
+    document.getElementById('cart-overlay').classList.remove('open');
+    document.getElementById('cart-drawer').classList.remove('open');
+}
+
+// ── Toast ──
+function toast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Scroll reveal ──
+const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

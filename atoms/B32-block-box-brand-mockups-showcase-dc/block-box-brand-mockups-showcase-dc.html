@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&amp;family=Archivo:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:rgba(238,230,214,0.1);font-family:'Archivo',sans-serif;}
+  .mono{font-family:'DM Mono',monospace;}
+  .bbm-btn{cursor:pointer;border:none;width:100%;text-align:left;}
+</style>
+</helmet>
+
+<section style="padding:64px 24px;background:rgba(238,230,214,0.1);border-bottom:1px solid rgba(14,33,72,0.1);">
+  <div style="max-width:1280px;margin:0 auto;">
+
+    <div style="text-align:center;max-width:680px;margin:0 auto 48px;">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(232,98,44,0.1);color:#e8622c;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:16px;">✦ Interactive Identity Showcase</div>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:32px;color:#0e2148;">Corporate Identity &amp; Mockups</div>
+      <div style="margin-top:12px;font-size:15px;color:rgba(14,33,72,0.7);line-height:1.6;">High-fidelity renders of the Block Box identity system, aligned with the released brand specifications.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:32px;align-items:stretch;">
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <span class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Mockup Specification Selector</span>
+        <button class="bbm-btn" onClick="{{ selectCard }}" style="{{ styleCard }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgCard }}">💳</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Business Card</div><div class="mono" style="font-size:9px;{{ codeColorCard }}">DOC-03</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+        <button class="bbm-btn" onClick="{{ selectFlyer }}" style="{{ styleFlyer }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgFlyer }}">📄</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">A5 Flyer</div><div class="mono" style="font-size:9px;{{ codeColorFlyer }}">BB-FLY-01</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+        <button class="bbm-btn" onClick="{{ selectSignature }}" style="{{ styleSignature }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgSignature }}">✉️</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Email Signature</div><div class="mono" style="font-size:9px;{{ codeColorSignature }}">BB-SIG-01</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+        <button class="bbm-btn" onClick="{{ selectPanel }}" style="{{ stylePanel }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgPanel }}">📦</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Unit Front Panel</div><div class="mono" style="font-size:9px;{{ codeColorPanel }}">BB-PKG-UNIT-01</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+        <button class="bbm-btn" onClick="{{ selectDatasheet }}" style="{{ styleDatasheet }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgDatasheet }}">📋</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Technical Datasheet</div><div class="mono" style="font-size:9px;{{ codeColorDatasheet }}">DOC-05</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+        <button class="bbm-btn" onClick="{{ selectStrip }}" style="{{ styleStrip }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="{{ iconBgStrip }}">🏷️</span><div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Shelf Strip</div><div class="mono" style="font-size:9px;{{ codeColorStrip }}">BB-POS-STRIP-01</div></div></div>
+            <span style="opacity:0.5;font-size:11px;">→</span>
+          </div>
+        </button>
+      </div>
+
+      <div style="background:#fff;border-radius:24px;padding:48px;border:1px solid rgba(14,33,72,0.06);box-shadow:inset 0 2px 8px rgba(0,0,0,0.03);display:flex;align-items:center;justify-content:center;min-height:460px;">
+
+        <sc-if value="{{ isCard }}">
+          <div style="width:336px;height:192px;background:#eee6d6;border-radius:16px;box-shadow:0 20px 45px rgba(14,33,72,0.2);padding:24px;box-sizing:border-box;border:1px solid rgba(14,33,72,0.1);display:flex;flex-direction:column;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#0e2148;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 100 100" width="20" height="20"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#f5c518" stroke-width="10" stroke-linecap="round" fill="none"/></svg></div>
+              <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:#0e2148;">Block Box</span>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:16px;color:#0e2148;">Thandiwe Nkosi</div>
+              <div style="font-size:10px;color:rgba(14,33,72,0.6);">Licensing Manager, Block Box Depot</div>
+              <div class="mono" style="font-size:9px;color:#e8622c;font-weight:700;margin-top:10px;">+27 82 000 0000 · blockbox.store</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isFlyer }}">
+          <div style="width:310px;height:440px;background:#0e2148;color:#fff;border-radius:16px;box-shadow:0 20px 45px rgba(14,33,72,0.3);padding:24px;box-sizing:border-box;border:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;justify-content:space-between;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <svg width="50" height="25" viewBox="0 0 270 90"><rect x="0" y="5" width="80" height="80" rx="18" fill="#f5c518"/><path d="M14 45 Q22 34 30 45 T46 45 T62 45" stroke="#0e2148" stroke-width="6" stroke-linecap="round" fill="none"/></svg>
+              <span class="mono" style="font-size:8px;background:rgba(255,255,255,0.1);padding:3px 8px;border-radius:999px;text-transform:uppercase;">BB-FLY-01</span>
+            </div>
+            <div style="margin:24px 0;">
+              <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;line-height:1.2;">One block.<br>Every profile.<br>No waste.</div>
+              <div style="margin-top:16px;padding:16px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:9px;text-align:center;color:rgba(238,230,214,0.6);" class="mono">[ tear-away block action illustration ]</div>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#f5c518;">93% less packaging cost</div>
+              <div style="font-size:9px;color:rgba(238,230,214,0.6);margin-top:4px;">blockbox.store · Patent Pending</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isSignature }}">
+          <div style="width:100%;max-width:480px;background:#fff;border-radius:14px;box-shadow:0 20px 45px rgba(14,33,72,0.15);padding:20px;border:1px solid rgba(14,33,72,0.12);display:flex;align-items:center;gap:16px;">
+            <svg width="44" height="44" viewBox="0 0 100 100" style="flex:none;"><rect x="4" y="4" width="92" height="92" rx="20" fill="#0e2148"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#f5c518" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+            <div style="width:1px;height:40px;background:rgba(14,33,72,0.15);flex:none;"></div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#0e2148;">Thandiwe Nkosi</div>
+              <div style="font-size:12px;color:rgba(14,33,72,0.7);">Licensing Manager, Block Box Depot</div>
+              <div class="mono" style="font-size:10px;color:#e8622c;font-weight:700;margin-top:4px;">+27 82 000 0000 · thandiwe@blockbox.store</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isPanel }}">
+          <div style="width:320px;height:240px;background:#f5c518;border-radius:16px;box-shadow:0 20px 45px rgba(14,33,72,0.2);overflow:hidden;border:1px solid rgba(14,33,72,0.1);display:flex;flex-direction:column;">
+            <div style="background:#0e2148;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;color:#fff;">
+              <div style="display:flex;align-items:center;gap:8px;"><div style="width:22px;height:22px;border-radius:5px;background:#f5c518;color:#0e2148;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:9px;">BB</div><span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;">Block Box</span></div>
+              <span class="mono" style="font-size:8px;background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:6px;">BB-PKG-UNIT-01</span>
+            </div>
+            <div style="padding:18px;flex:1;display:flex;flex-direction:column;justify-content:space-between;color:#0e2148;">
+              <div>
+                <div style="font-weight:800;font-size:13px;text-transform:uppercase;">NT108 · 110mm profile</div>
+                <div style="font-size:11px;font-weight:500;margin-top:4px;opacity:0.8;">One block. Every profile. No waste.</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(14,33,72,0.15);padding-top:12px;">
+                <span class="mono" style="font-size:9px;font-weight:700;opacity:0.6;text-transform:uppercase;">QTY: 140 · PATENT PENDING</span>
+                <div style="background:#0e2148;color:#f5c518;font-size:8px;font-weight:800;padding:6px 10px;border-radius:8px;letter-spacing:0.06em;">VALUE GUARANTEE</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDatasheet }}">
+          <div style="width:280px;height:370px;background:#eee6d6;border-radius:16px;box-shadow:0 20px 45px rgba(14,33,72,0.2);padding:24px;box-sizing:border-box;border:1px solid rgba(14,33,72,0.1);display:flex;flex-direction:column;justify-content:space-between;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="width:32px;height:32px;border-radius:8px;background:#0e2148;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 100 100" width="20" height="20"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#f5c518" stroke-width="10" stroke-linecap="round" fill="none"/></svg></div>
+              <span class="mono" style="font-size:8px;color:rgba(14,33,72,0.5);">DOC-05</span>
+            </div>
+            <div style="margin:16px 0;">
+              <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;line-height:1.2;color:#0e2148;">Technical<br>Datasheet</div>
+              <div style="font-size:12px;color:#e8622c;font-weight:700;margin-top:8px;">NT108 · 110mm profile</div>
+            </div>
+            <div style="flex:1;background:rgba(14,33,72,0.05);border-radius:12px;border:1px solid rgba(14,33,72,0.05);display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;font-size:9px;color:rgba(14,33,72,0.4);" class="mono">[ engineering cross-section diagram ]</div>
+            <div class="mono" style="font-size:8px;color:rgba(14,33,72,0.5);margin-top:16px;text-align:center;">Block Box Depot Standard Specification</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isStrip }}">
+          <div style="width:100%;max-width:500px;height:70px;background:#f5c518;border-radius:12px;box-shadow:0 20px 45px rgba(14,33,72,0.2);padding:12px;box-sizing:border-box;border:1px solid rgba(14,33,72,0.12);display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:8px;background:#0e2148;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 100 100" width="24" height="24"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#f5c518" stroke-width="10" stroke-linecap="round" fill="none"/></svg></div>
+              <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;color:#0e2148;">Block Box</span>
+            </div>
+            <span style="background:#0e2148;color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:6px;text-transform:uppercase;" class="mono">NT108 · 110mm</span>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  state = { selectedId: 'flyer' };
+
+  select(id) { this.setState({ selectedId: id }); }
+
+  renderVals() {
+    const s = this.state;
+    const isSel = id => s.selectedId === id;
+    const style = id => `padding:16px;border-radius:16px;border:1px solid ${isSel(id) ? '#0e2148' : 'rgba(14,33,72,0.1)'};background:${isSel(id) ? '#0e2148' : '#fff'};color:${isSel(id) ? '#fff' : 'rgba(14,33,72,0.8)'};box-sizing:border-box;transition:all 0.2s;`;
+    const iconBg = id => `padding:8px;border-radius:8px;background:${isSel(id) ? '#f5c518' : 'rgba(14,33,72,0.05)'};display:inline-flex;`;
+    const codeColor = id => `color:${isSel(id) ? '#f5c518' : 'rgba(14,33,72,0.5)'};`;
+
+    return {
+      selectCard: () => this.select('card'), selectFlyer: () => this.select('flyer'),
+      selectSignature: () => this.select('signature'), selectPanel: () => this.select('panel'),
+      selectDatasheet: () => this.select('datasheet'), selectStrip: () => this.select('strip'),
+      styleCard: style('card'), styleFlyer: style('flyer'), styleSignature: style('signature'),
+      stylePanel: style('panel'), styleDatasheet: style('datasheet'), styleStrip: style('strip'),
+      iconBgCard: iconBg('card'), iconBgFlyer: iconBg('flyer'), iconBgSignature: iconBg('signature'),
+      iconBgPanel: iconBg('panel'), iconBgDatasheet: iconBg('datasheet'), iconBgStrip: iconBg('strip'),
+      codeColorCard: codeColor('card'), codeColorFlyer: codeColor('flyer'), codeColorSignature: codeColor('signature'),
+      codeColorPanel: codeColor('panel'), codeColorDatasheet: codeColor('datasheet'), codeColorStrip: codeColor('strip'),
+      isCard: isSel('card'), isFlyer: isSel('flyer'), isSignature: isSel('signature'),
+      isPanel: isSel('panel'), isDatasheet: isSel('datasheet'), isStrip: isSel('strip')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

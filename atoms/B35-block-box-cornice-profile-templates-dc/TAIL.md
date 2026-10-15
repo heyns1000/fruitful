@@ -1,0 +1,7 @@
+# B35 Block Box Cornice Profile Templates.Dc: the tail
+
+**Tail = FGP--BlockBox `Block Box Cornice Profile Templates.dc.html` (2026-09-04, blob `b50a1dca`)**: highest score of 1 versions (functions ×2 + labels + buttons + link health ×25 + size). 0 functions, 20 labels.
+
+## What other versions have that the tail lacks
+
+Nothing: every other version is a subset of the tail.

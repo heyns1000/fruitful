@@ -1,0 +1,499 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Block Box Product Card Template</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Fredoka:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0E2148;--yellow:#F5C518;--orange:#E8622C;--paper:#EEE6D6;--eps:#F2EFE8}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact}
+body{background:var(--paper);font-family:'Archivo',sans-serif;color:var(--navy)}
+.mono{font-family:'DM Mono',monospace}.fredoka{font-family:'Fredoka',sans-serif}
+.format-bar{background:var(--navy);padding:10px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fmt-btn{background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:5px;cursor:pointer}
+.fmt-btn.active,.fmt-btn:hover{background:var(--yellow);color:var(--navy);border-color:var(--yellow)}
+.lang-sel{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,0.25);color:#fff;font-family:'DM Mono',monospace;font-size:10px;padding:5px 8px;border-radius:5px;cursor:pointer}
+.card-view{display:none}.card-view.active{display:block}
+
+/* POSTER */
+#view-poster{max-width:390px;margin:0 auto}
+.pw{background:var(--navy);padding:24px 20px;min-height:100vh}
+.logo-row{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.logo-text{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;color:#fff}
+.intro{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:3px;font-style:italic}
+.tagline{font-family:'Fredoka',sans-serif;font-weight:800;font-size:30px;color:#fff;margin-bottom:6px;line-height:1.1}
+.pname{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:6px}
+.price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:20px}
+.price{font-family:'Fredoka',sans-serif;font-weight:800;font-size:34px;color:var(--yellow)}
+.price-lbl{font-size:11px;color:rgba(255,255,255,0.6)}
+.render-box{background:rgba(10,30,70,0.5);border-radius:14px;padding:16px;position:relative;overflow:hidden;margin-bottom:0}
+.render-ph{width:100%;aspect-ratio:1.2;background:rgba(255,255,255,0.04);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.18);font-size:11px;font-family:'DM Mono',monospace;text-align:center;padding:12px}
+.new-badge{position:absolute;top:12px;right:12px;background:var(--yellow);border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Fredoka',sans-serif;font-weight:700;font-size:10px;color:var(--navy);line-height:1.2}
+.banner{background:var(--yellow);padding:12px 20px;margin:0 -20px}
+.banner-title{font-family:'Fredoka',sans-serif;font-weight:800;font-size:12px;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:5px}
+.bullets li{font-size:12px;color:var(--navy)}
+.spec-box{background:rgba(255,255,255,0.06);border-radius:10px;padding:12px 14px;margin-top:14px}
+.spec-box-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px}
+.sp-pair{display:flex;flex-direction:column}
+.sp-lbl{font-size:9px;color:rgba(255,255,255,0.4);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.sp-val{font-size:11px;color:#fff;font-weight:600}
+.eco-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.eco-chip{background:rgba(47,158,92,0.14);border:1px solid rgba(47,158,92,0.28);border-radius:18px;padding:3px 9px;font-size:9px;color:#5fd98e}
+.poster-foot{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.25);text-align:center;padding:12px 0 6px;letter-spacing:.05em}
+
+/* SPEC */
+#view-spec{max-width:780px;margin:0 auto;padding:24px}
+.spec-hdr{background:var(--navy);border-radius:14px;padding:28px;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+.spec-hdr-left{flex:1;min-width:180px}
+.spec-hdr-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--yellow)}
+.spec-hdr-name{font-family:'Fredoka',sans-serif;font-weight:800;font-size:38px;color:#fff}
+.spec-hdr-tag{font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);margin:3px 0 10px}
+.spec-hdr-desc{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;max-width:380px}
+.spec-hdr-img{width:180px;height:120px;background:rgba(255,255,255,0.05);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,0.25);font-family:'DM Mono',monospace;text-align:center;padding:8px;flex-shrink:0}
+.spec-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:580px){.spec-2col{grid-template-columns:1fr}}
+.sc{background:#fff;border-radius:10px;padding:18px}
+.sc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.st{width:100%;border-collapse:collapse}
+.st tr{border-bottom:1px solid rgba(14,33,72,0.05)}
+.st tr:last-child{border:none}
+.st td{padding:6px 0;font-size:12px}
+.st td:first-child{color:rgba(14,33,72,0.45);font-family:'DM Mono',monospace;font-size:11px;width:44%}
+.st td:last-child{font-weight:600;color:var(--navy)}
+.pt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pt{background:var(--paper);border-radius:7px;padding:10px;text-align:center}
+.pt-lbl{font-size:9px;color:rgba(14,33,72,0.5);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:3px}
+.pt-val{font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;color:var(--navy)}
+.pt-sub{font-size:9px;color:rgba(14,33,72,0.4);margin-top:2px}
+.pt.hl{background:var(--yellow)}
+.sku-g{display:flex;flex-direction:column;gap:4px}
+.sku-r{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--paper);border-radius:5px;font-size:11px;gap:8px}
+.sku-c{font-family:'DM Mono',monospace;color:var(--navy);font-size:10px;font-weight:600;flex-shrink:0}
+.sku-d{color:rgba(14,33,72,0.5);flex:1;font-size:10px}
+.sku-p{font-family:'DM Mono',monospace;font-weight:700;color:var(--orange);font-size:11px;white-space:nowrap}
+.sku-sec{font-size:9px;color:rgba(14,33,72,0.4);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 5px 3px}
+
+/* SHELF */
+#view-shelf{max-width:300px;margin:0 auto;padding:20px}
+.shelf{background:#fff;border:1px solid rgba(14,33,72,0.1);border-radius:9px;overflow:hidden}
+.shelf-top{background:var(--navy);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.shelf-logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;color:#fff}
+.shelf-code{font-family:'DM Mono',monospace;font-size:9px;color:var(--yellow)}
+.shelf-body{padding:12px 14px}
+.shelf-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;color:var(--navy)}
+.shelf-profile{font-size:10px;color:rgba(14,33,72,0.45);font-family:'DM Mono',monospace;margin-bottom:8px}
+.shelf-price{font-family:'Fredoka',sans-serif;font-weight:800;font-size:30px;color:var(--orange)}
+.shelf-price-lbl{font-size:9px;color:rgba(14,33,72,0.5);margin-bottom:10px}
+.shelf-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{background:var(--paper);border-radius:16px;padding:3px 8px;font-size:9px;color:var(--navy);font-family:'DM Mono',monospace}
+.chip.g{background:#E9F7EE;color:#1a5c33}
+.shelf-bc{border-top:1px solid rgba(14,33,72,0.07);padding-top:8px;display:flex;justify-content:space-between;align-items:center}
+.shelf-bc-info{font-family:'DM Mono',monospace;font-size:8px;color:rgba(14,33,72,0.4)}
+.shelf-pack-price{font-family:'Fredoka',sans-serif;font-weight:700;font-size:14px;color:var(--navy);text-align:right}
+.shelf-pack-lbl{font-size:8px;color:rgba(14,33,72,0.4)}
+
+/* WHOLESALE */
+#view-wholesale{max-width:660px;margin:0 auto;padding:20px}
+.wh{background:var(--navy);border-radius:14px;overflow:hidden}
+.wh-hdr{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.wh-title{font-family:'Fredoka',sans-serif;font-weight:800;font-size:24px;color:#fff}
+.wh-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--yellow);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.wh-table{width:100%;border-collapse:collapse}
+.wh-table th{background:rgba(255,255,255,0.05);font-size:9px;font-family:'DM Mono',monospace;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:.07em;padding:8px 24px;text-align:left}
+.wh-table td{padding:11px 24px;font-size:13px;color:#fff;border-top:1px solid rgba(255,255,255,0.03)}
+.wh-table td.pc{color:var(--yellow);font-family:'DM Mono',monospace;font-weight:700;font-size:15px}
+.wh-table tr.hl td{background:rgba(245,197,24,0.08)}
+.wh-table tr.hl td.pc{font-size:19px}
+.wh-foot{padding:14px 24px;background:rgba(0,0,0,0.18);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.wh-foot-note{font-size:10px;color:rgba(255,255,255,0.35);font-family:'DM Mono',monospace}
+
+/* INFOGRAPHIC */
+#view-info{max-width:760px;margin:0 auto;padding:20px}
+.info-sec{margin-bottom:20px}
+.info-sec-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;color:var(--navy);margin-bottom:12px;border-left:4px solid var(--yellow);padding-left:10px}
+.ip{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px}
+.size-bars{display:flex;flex-direction:column;gap:10px}
+.sbr{display:flex;align-items:center;gap:12px}
+.sb-lbl{font-family:'DM Mono',monospace;font-size:11px;color:var(--navy);width:70px;flex-shrink:0}
+.sb-track{flex:1;height:26px;background:var(--paper);border-radius:5px;overflow:hidden}
+.sb-fill{height:100%;background:var(--navy);border-radius:5px;display:flex;align-items:center;padding:0 8px}
+.sb-fill.g2{background:rgba(14,33,72,0.7)}.sb-fill.g3{background:rgba(14,33,72,0.82)}.sb-fill.g4{background:var(--navy)}
+.sb-names{font-size:9px;color:#fff;font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-eps{font-family:'DM Mono',monospace;font-size:10px;color:rgba(14,33,72,0.5);width:70px;text-align:right;flex-shrink:0}
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.adv-grid{grid-template-columns:1fr}}
+.adv-chip{background:var(--paper);border-radius:9px;padding:14px;display:flex;gap:10px}
+.adv-icon{font-size:22px;flex-shrink:0}
+.adv-lbl{font-weight:700;color:var(--navy);font-size:13px;margin-bottom:2px}
+.adv-det{font-size:11px;color:rgba(14,33,72,0.55)}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmp-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;margin-bottom:8px}
+.cmp-title.bb{color:var(--orange)}.cmp-title.trad{color:rgba(14,33,72,0.4)}
+.cmp-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.cmp-list li{font-size:12px;padding:5px 9px;border-radius:5px;display:flex;gap:7px}
+.cmp-list.bb li{background:#E9F7EE;color:#1a5c33}.cmp-list.bb li::before{content:"✓";font-weight:700;flex-shrink:0}
+.cmp-list.trad li{background:rgba(14,33,72,0.04);color:rgba(14,33,72,0.5)}.cmp-list.trad li::before{content:"×";flex-shrink:0}
+.eco-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:480px){.eco-grid{grid-template-columns:1fr 1fr}}
+.eco-chip{text-align:center;background:var(--paper);border-radius:9px;padding:14px 8px}
+.eco-icon{font-size:24px;margin-bottom:6px}
+.eco-text{font-weight:700;color:var(--navy);font-size:11px;margin-bottom:3px}
+.eco-det{font-size:9px;color:rgba(14,33,72,0.5)}
+
+/* BOBGO */
+#view-bobgo{max-width:660px;margin:0 auto;padding:20px}
+.bg-hdr{background:var(--orange);border-radius:12px 12px 0 0;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.bg-title{font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;color:#fff}
+.bg-route{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,0.8)}
+.bg-items{background:#fff;border:1px solid rgba(14,33,72,0.08);border-radius:0 0 12px 12px}
+.bg-sec-hdr{background:var(--paper);padding:7px 18px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(14,33,72,0.45);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(14,33,72,0.05)}
+.bg-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:6px;padding:9px 18px;border-bottom:1px solid rgba(14,33,72,0.03);font-size:11px;align-items:center}
+.bg-row:last-child{border:none}
+.bg-sku{font-family:'DM Mono',monospace;font-size:9px;color:var(--navy);font-weight:600}
+.bg-desc{font-size:10px;color:rgba(14,33,72,0.5)}
+.bg-dim{font-family:'DM Mono',monospace;font-size:9px;color:rgba(14,33,72,0.4);text-align:right}
+.bg-wt{font-family:'DM Mono',monospace;font-size:10px;color:var(--navy);font-weight:700;text-align:right}
+</style>
+</head>
+<body>
+<div class="format-bar">
+  <button class="fmt-btn active" onclick="sv('poster',this)">📱 Poster</button>
+  <button class="fmt-btn" onclick="sv('spec',this)">📋 Spec Sheet</button>
+  <button class="fmt-btn" onclick="sv('shelf',this)">🏷 Shelf Label</button>
+  <button class="fmt-btn" onclick="sv('wholesale',this)">💼 Wholesale</button>
+  <button class="fmt-btn" onclick="sv('info',this)">📊 Infographics</button>
+  <button class="fmt-btn" onclick="sv('bobgo',this)">🚚 Bob Go</button>
+  <select class="lang-sel mono" onchange="setLang(this.value)">
+    <option value="EN">EN — English</option><option value="AF">AF — Afrikaans</option>
+    <option value="ZU">ZU — Zulu</option><option value="FR">FR — Français</option>
+    <option value="PT">PT — Português</option><option value="DE">DE — Deutsch</option>
+    <option value="ZH">ZH — 中文</option><option value="AR">AR — العربية</option>
+  </select>
+</div>
+
+<div id="view-poster" class="card-view active">
+<div class="pw">
+  <div class="logo-row">
+    <svg width="30" height="30" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#F5C518"/><path d="M6 16Q9 11 12 16T18 16T24 16" stroke="#0E2148" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+    <span class="logo-text">Block Box™</span>
+    <span class="mono" style="font-size:8px;color:rgba(255,255,255,0.25);margin-left:auto">Patent Pending</span>
+  </div>
+  <div class="intro">Introducing the</div>
+  <div class="tagline" id="p-tagline">—</div>
+  <div class="pname" id="p-name">—</div>
+  <div class="price-row"><div class="price" id="p-price">R—</div><div class="price-lbl">excl per unit</div></div>
+  <div class="render-box">
+    <div class="render-ph" id="p-render">[3D Render]</div>
+    <div class="new-badge">New<br>Packaging</div>
+  </div>
+  <div class="banner">
+    <div class="banner-title">Cost Effective Bulk Packaging!</div>
+    <ul class="bullets">
+      <li><b>1.5 m</b> Length EPS Cornices</li>
+      <li>Neatly Packaged &amp; Ready to Ship</li>
+      <li><b id="p-units">—</b> units per BlockBox</li>
+    </ul>
+  </div>
+  <div class="spec-box">
+    <div class="spec-box-title">Product Specification</div>
+    <div class="spec-grid">
+      <div class="sp-pair"><span class="sp-lbl">EPS Code</span><span class="sp-val mono" id="p-code">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">SKU Base</span><span class="sp-val mono" id="p-sku" style="font-size:9px">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Profile</span><span class="sp-val" id="p-profile">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Length</span><span class="sp-val">1.5 m</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Material</span><span class="sp-val">EPS 20DV</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Group</span><span class="sp-val mono" id="p-group">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Pack Qty</span><span class="sp-val" id="p-ppp">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Carton</span><span class="sp-val" id="p-epc">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Pack BC</span><span class="sp-val mono" id="p-bcp" style="font-size:8px">—</span></div>
+      <div class="sp-pair"><span class="sp-lbl">Box BC</span><span class="sp-val mono" id="p-bcb" style="font-size:8px">—</span></div>
+    </div>
+  </div>
+  <div style="background:rgba(255,255,255,0.05);border-radius:9px;padding:10px 12px;margin-top:10px">
+    <div style="font-size:8px;color:var(--yellow);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px">Install Tip</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.75)" id="p-tip">—</div>
+  </div>
+  <div class="eco-row">
+    <span class="eco-chip">♻️ 100% Recyclable</span><span class="eco-chip">📦 Mono-material</span>
+    <span class="eco-chip">🚗 Fits car boot</span><span class="eco-chip">👤 1-person install</span>
+  </div>
+  <div class="poster-foot">Block Box™ · Patent Pending CIPC 2026 · blockbox.store · CornexConnect Pretoria SA</div>
+</div>
+</div>
+
+<div id="view-spec" class="card-view">
+<div id="view-spec-inner" style="max-width:780px;margin:0 auto;padding:24px">
+  <div class="spec-hdr">
+    <div class="spec-hdr-left">
+      <div class="spec-hdr-code mono" id="s-code">—</div>
+      <div class="spec-hdr-name fredoka" id="s-name">—</div>
+      <div class="spec-hdr-tag" id="s-tag">—</div>
+      <div class="spec-hdr-desc" id="s-desc">—</div>
+    </div>
+    <div class="spec-hdr-img" id="s-img">—</div>
+  </div>
+  <div class="spec-2col">
+    <div class="sc"><div class="sc-title">Base Specification</div>
+      <table class="st">
+        <tr><td>EPS Code</td><td class="mono" id="ss-code">—</td></tr>
+        <tr><td>SKU Base</td><td class="mono" id="ss-sku">—</td></tr>
+        <tr><td>Profile</td><td id="ss-profile">—</td></tr>
+        <tr><td>Length</td><td>1.5 m</td></tr>
+        <tr><td>Material</td><td>EPS 20DV</td></tr>
+        <tr><td>Color</td><td>White (paintable)</td></tr>
+        <tr><td>CNC File</td><td class="mono" id="ss-cnc">—</td></tr>
+        <tr><td>Group</td><td class="mono" id="ss-group">—</td></tr>
+        <tr><td>Carton Dims</td><td>151×40×30 cm</td></tr>
+        <tr><td>Carton Weight</td><td id="ss-cw">—</td></tr>
+      </table>
+    </div>
+    <div class="sc"><div class="sc-title">Packaging & Yields</div>
+      <table class="st">
+        <tr><td>Pcs/Pack</td><td id="ss-ppp">—</td></tr>
+        <tr><td>Packs/Carton</td><td id="ss-pkc">—</td></tr>
+        <tr><td>Pcs/Carton</td><td id="ss-epc">—</td></tr>
+        <tr><td>Block Yield</td><td id="ss-blk">—</td></tr>
+        <tr><td>Block Price</td><td>R511.38 excl VAT</td></tr>
+        <tr><td>Pack BC</td><td class="mono" id="ss-bcp">—</td></tr>
+        <tr><td>Box BC</td><td class="mono" id="ss-bcb">—</td></tr>
+        <tr><td>Recyclable</td><td>100% EPS single stream</td></tr>
+        <tr><td>Patent</td><td>Pending CIPC 2026</td></tr>
+        <tr><td>Trademark</td><td>Block Box™</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="sc" style="margin-bottom:14px"><div class="sc-title">Pricing Matrix (ZAR excl VAT)</div>
+    <div class="pt-grid">
+      <div class="pt"><div class="pt-lbl">Tier A — Loose</div><div class="pt-val" id="pt-a">—</div><div class="pt-sub">per unit (base)</div></div>
+      <div class="pt hl"><div class="pt-lbl">Tier B — Carton</div><div class="pt-val" id="pt-b">—</div><div class="pt-sub">per unit (working)</div></div>
+      <div class="pt"><div class="pt-lbl">Tier C — 6-Pack</div><div class="pt-val" id="pt-c">—</div><div class="pt-sub">per pack of 6</div></div>
+      <div class="pt"><div class="pt-lbl">Tier D — Carton</div><div class="pt-val" id="pt-d">—</div><div class="pt-sub">per carton</div></div>
+      <div class="pt"><div class="pt-lbl">Tier E — Pcs</div><div class="pt-val" id="pt-e">—</div><div class="pt-sub">pieces per carton</div></div>
+      <div class="pt"><div class="pt-lbl">Tier F — BlockBox</div><div class="pt-val" id="pt-f">—</div><div class="pt-sub">per block</div></div>
+    </div>
+  </div>
+  <div class="sc"><div class="sc-title">23 SKU Variants</div>
+    <div class="sku-sec">Units of Measure (6)</div><div class="sku-g" id="sku-uom"></div>
+    <div class="sku-sec">Array Items (9)</div><div class="sku-g" id="sku-arr"></div>
+    <div class="sku-sec">Container Logistics (8)</div><div class="sku-g" id="sku-ctn"></div>
+  </div>
+</div>
+</div>
+
+<div id="view-shelf" class="card-view">
+<div style="max-width:300px;margin:0 auto;padding:20px">
+  <div class="shelf">
+    <div class="shelf-top">
+      <span class="shelf-logo">Block Box™</span>
+      <span class="shelf-code" id="sl-code">—</span>
+    </div>
+    <div class="shelf-body">
+      <div class="shelf-name" id="sl-name">—</div>
+      <div class="shelf-profile mono" id="sl-profile">—</div>
+      <div class="shelf-price" id="sl-price">R—</div>
+      <div class="shelf-price-lbl">per unit excl VAT · R<span id="sl-ctp">—</span> per carton of <span id="sl-epc2">—</span></div>
+      <div class="shelf-chips">
+        <span class="chip" id="sl-ppp2">—</span>
+        <span class="chip" id="sl-blk2">—</span>
+        <span class="chip g">♻ 100% Recyclable</span>
+        <span class="chip g">1-person install</span>
+        <span class="chip">Patent Pending</span>
+      </div>
+      <div class="shelf-bc">
+        <div class="shelf-bc-info">Pack: <span id="sl-bcp2" class="mono">—</span><br>Box: &nbsp;<span id="sl-bcb2" class="mono">—</span></div>
+        <div style="text-align:right"><div class="shelf-pack-lbl">Per pack</div><div class="shelf-pack-price" id="sl-pp">R—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="view-wholesale" class="card-view">
+<div style="max-width:660px;margin:0 auto;padding:20px">
+  <div class="wh">
+    <div class="wh-hdr">
+      <div class="wh-title" id="wh-title">—</div>
+      <div class="wh-sub" id="wh-sub">—</div>
+    </div>
+    <table class="wh-table">
+      <thead><tr><th>Unit</th><th>Qty</th><th>Price excl VAT</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Single unit (Tier B)</td><td>1 pc</td><td class="pc" id="wh-b">—</td><td>Working rate</td></tr>
+        <tr><td>6-Pack (Tier C)</td><td>6 pcs</td><td class="pc" id="wh-c">—</td><td>Consumer pack</td></tr>
+        <tr class="hl"><td>Trade Carton (Tier D)</td><td id="wh-epc">—</td><td class="pc" id="wh-d">—</td><td>Primary trade unit</td></tr>
+        <tr><td>BlockBox (Tier F)</td><td id="wh-blk">—</td><td class="pc" id="wh-f">—</td><td>Bulk raw block</td></tr>
+        <tr><td>Pallet (6 cartons)</td><td id="wh-pl">—</td><td class="pc" id="wh-pv">—</td><td>Full pallet</td></tr>
+        <tr><td>BlockBox Pallet (6 blocks)</td><td id="wh-bpl">—</td><td class="pc" id="wh-bpv">—</td><td>Bulk pallet</td></tr>
+      </tbody>
+    </table>
+    <div class="wh-foot">
+      <span class="wh-foot-note">All prices ZAR excl VAT 15% · Block Box™ Patent Pending · blockbox.store</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.5)">CornexConnect · Pretoria, SA</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="view-info" class="card-view">
+<div style="max-width:760px;margin:0 auto;padding:20px">
+  <div class="info-sec"><div class="info-sec-title">Profile Size Guide</div>
+    <div class="ip"><div class="size-bars">
+      <div class="sbr"><div class="sb-lbl">85mm</div><div class="sb-track"><div class="sb-fill" style="width:46%"><span class="sb-names">Cove · Sante</span></div></div><div class="sb-eps">EPS01–02</div></div>
+      <div class="sbr"><div class="sb-lbl">110mm</div><div class="sb-track"><div class="sb-fill g2" style="width:60%"><span class="sb-names">Peroni · Gone · Magic · Colonial</span></div></div><div class="sb-eps">EPS03–06</div></div>
+      <div class="sbr"><div class="sb-lbl">140mm</div><div class="sb-track"><div class="sb-fill g3" style="width:76%"><span class="sb-names">Alina · Bianca · P40 · Tamara</span></div></div><div class="sb-eps">EPS07–10</div></div>
+      <div class="sbr"><div class="sb-lbl">170–185mm</div><div class="sb-track"><div class="sb-fill g4" style="width:100%"><span class="sb-names">Lisa (170mm) · Gloria (185mm)</span></div></div><div class="sb-eps">EPS11–12</div></div>
+    </div></div>
+  </div>
+  <div class="info-sec"><div class="info-sec-title">1.5m Installation Advantage</div>
+    <div class="ip"><div class="adv-grid">
+      <div class="adv-chip"><div class="adv-icon">👤</div><div><div class="adv-lbl">Single-person install</div><div class="adv-det">1.5m won't sag while adhesive cures. No second pair of hands.</div></div></div>
+      <div class="adv-chip"><div class="adv-icon">🚗</div><div><div class="adv-lbl">Fits in car boot</div><div class="adv-det">No delivery vehicle needed. Homeowners take it home today.</div></div></div>
+      <div class="adv-chip"><div class="adv-icon">⚡</div><div><div class="adv-lbl">40% faster install</div><div class="adv-det">One worker vs two. More metres per day, less fatigue.</div></div></div>
+      <div class="adv-chip"><div class="adv-icon">💰</div><div><div class="adv-lbl">25% lower material cost</div><div class="adv-det">1.5m block uses 25% less EPS. Same piece count, lower block price.</div></div></div>
+    </div></div>
+  </div>
+  <div class="info-sec"><div class="info-sec-title">BlockBox vs Traditional Box</div>
+    <div class="ip"><div class="cmp-grid">
+      <div><div class="cmp-title bb">Block Box™</div>
+        <ul class="cmp-list bb">
+          <li>Product IS the packaging — integrated EPS</li><li>Zero cardboard waste</li>
+          <li>100% mono-material recyclable</li><li>Tear-away bridges — tool free</li>
+          <li>Organised neat stacking</li><li>Patent-protected design</li>
+        </ul>
+      </div>
+      <div><div class="cmp-title trad">Traditional Box</div>
+        <ul class="cmp-list trad">
+          <li>Separate cardboard box — extra cost</li><li>Mixed material waste stream</li>
+          <li>Cardboard + EPS — two streams</li><li>Cut-open packaging — tool required</li>
+          <li>Random loose pieces in transit</li><li>Commodity, unprotected</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="info-sec"><div class="info-sec-title">Sustainability Claims</div>
+    <div class="ip"><div class="eco-grid">
+      <div class="eco-chip"><div class="eco-icon">♻️</div><div class="eco-text">100% Recyclable</div><div class="eco-det">Single EPS stream</div></div>
+      <div class="eco-chip"><div class="eco-icon">📦</div><div class="eco-text">94% Less Packaging Waste</div><div class="eco-det">vs traditional boxes</div></div>
+      <div class="eco-chip"><div class="eco-icon">🏭</div><div class="eco-text">Mono-material</div><div class="eco-det">EPS only</div></div>
+      <div class="eco-chip"><div class="eco-icon">🌿</div><div class="eco-text">Zero Cardboard</div><div class="eco-det">Packaging IS product</div></div>
+    </div></div>
+  </div>
+</div>
+</div>
+
+<div id="view-bobgo" class="card-view">
+<div style="max-width:660px;margin:0 auto;padding:20px">
+  <div class="bg-hdr">
+    <div class="bg-title">Bob Go Shipment — <span id="bg-name">—</span></div>
+    <div class="bg-route">From: 480 Cuckoo Crescent, Willow Acres Estate, 0081</div>
+  </div>
+  <div class="bg-items">
+    <div class="bg-sec-hdr">Units of Measure (6)</div><div id="bg-uom"></div>
+    <div class="bg-sec-hdr">Array Items (9)</div><div id="bg-arr"></div>
+    <div class="bg-sec-hdr">Container Logistics (8)</div><div id="bg-ctn"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const B=511.38,VATRATE=0.15;
+const PROFILES=[
+  {c:'EPS01',n:'Cove',tl:'The Classic Cove',sk:'FCX-EPS01-COVE',g:'G85',pm:'85×55×55',cf:'Cove85.tap',hi:'assets/cove85-hero.png',cd:'Smooth concave cove — uniform arc from wall to ceiling.',g_:{by:168,ppp:6,pkc:20,epc:120,a:3.04,b:3.41,c:20.46,d:409.20,cw:1.35},bc:{p:'073718671 1634',b:'073718671 2043'},it:'1.5m — one-person installation. No sagging.'},
+  {c:'EPS02',n:'Sante',tl:'The Smart Saver',sk:'FCX-EPS02-SANTE',g:'G85',pm:'85×55×55',cf:'Sante85.tap',hi:'assets/sante85-hero.png',cd:'Intricate double-arc pattern. Two flanking motifs bracket a central smooth arc.',g_:{by:168,ppp:6,pkc:20,epc:120,a:3.04,b:3.41,c:20.46,d:409.20,cw:1.35},bc:{p:'073718671 1645',b:'073718671 2474'},it:'Lightweight 85mm — ideal for low ceilings.'},
+  {c:'EPS03',n:'Peroni',tl:'The Wave Classic',sk:'FCX-EPS03-PERONI',g:'G110',pm:'110×80×80',cf:'Peroni_110.tap',hi:'assets/peroni-render.png',cd:'Continuous wavy scallop. Both faces carry the same cut offset by constant 10mm.',g_:{by:140,ppp:6,pkc:15,epc:90,a:3.65,b:3.93,c:23.58,d:353.70,cw:1.0125},bc:{p:'073718671 1672',b:'073718671 5463'},it:'Best-selling 110mm. Two-room coverage per carton.'},
+  {c:'EPS04',n:'Gone',tl:'The Triple Peak',sk:'FCX-EPS04-GONE',g:'G110',pm:'110×80×80',cf:'Gone110.tap',hi:'assets/gone-hero.png',cd:'Three zigzag teeth flanking one deep central smooth dip. High visual rhythm.',g_:{by:140,ppp:6,pkc:15,epc:90,a:3.65,b:3.93,c:23.58,d:353.70,cw:1.0125},bc:{p:'073718671 1658',b:'073718671 5488'},it:'Bold triple-peak shadow line — ideal for side-lit rooms.'},
+  {c:'EPS05',n:'Magic',tl:'The Sharp Zigzag',sk:'FCX-EPS05-MAGIC',g:'G110',pm:'110×80×80',cf:'Magic110.tap',hi:'assets/gone-hero.png',cd:'Sharp zigzag peaks bracketing two smooth wave arcs. Angular/curved contrast.',g_:{by:140,ppp:6,pkc:15,epc:90,a:3.65,b:3.93,c:23.58,d:353.70,cw:1.0125},bc:{p:'073159715 6879',b:'073718671 5373'},it:'Angular zigzag — high-impact shadow definition in any light.'},
+  {c:'EPS06',n:'Colonial',tl:'The Heritage Line',sk:'FCX-EPS06-COLONIAL',g:'G110',pm:'110×80×80',cf:'Colonial110.tap',hi:'assets/colonial-hero.png',cd:'Symmetric: two fine zigzag teeth flanking one deep central dip. Heritage aesthetic.',g_:{by:140,ppp:6,pkc:15,epc:90,a:3.65,b:3.93,c:23.58,d:353.70,cw:1.0125},bc:{p:'073718671 1665',b:'073718671 1311'},it:'Symmetric — no left/right orientation required.'},
+  {c:'EPS07',n:'Alina',tl:'The Broad Statement',sk:'FCX-EPS07-ALINA',g:'G140',pm:'140×100×100',cf:'Alina140.tap',hi:'assets/alina140-hero.png',cd:'Wide-span smooth wave at centre flanked by fine detail teeth. Dominant presence.',g_:{by:112,ppp:6,pkc:12,epc:72,a:4.57,b:4.73,c:28.38,d:340.56,cw:0.81},bc:{p:'073718671 1894',b:'073718706 5152'},it:'140mm — covers gap up to 12mm. Ideal for older constructions.'},
+  {c:'EPS08',n:'Bianca',tl:'The Asymmetric Wave',sk:'FCX-EPS08-BIANCA',g:'G140',pm:'140×100×100',cf:'Bianca140.tap',hi:'assets/biance140-hero.png',cd:'Two sharp zigzag peaks, one wide smooth wave — asymmetric rhythm creates directional flow.',g_:{by:112,ppp:6,pkc:12,epc:72,a:4.57,b:4.73,c:28.38,d:340.56,cw:0.81},bc:{p:'073718671 1876',b:'073718706 5282'},it:'Directional — mark start at door frame for consistent flow.'},
+  {c:'EPS09',n:'P40',tl:'The Symmetry',sk:'FCX-EPS09-P40',g:'G140',pm:'140×100×100',cf:'P40-140.tap',hi:'assets/p40140-hero.png',cd:'Perfectly symmetric wide arc with flanking fine-detail edge work. Maximum width at 140mm.',g_:{by:112,ppp:6,pkc:12,epc:72,a:4.57,b:4.73,c:28.38,d:340.56,cw:0.81},bc:{p:'073718671 1689',b:'073718671 5955'},it:'Symmetric — no orientation required.'},
+  {c:'EPS10',n:'Tamara',tl:'The Diamond Chevron',sk:'FCX-EPS10-TAMARA',g:'G140',pm:'140×100×100',cf:'Tamara140.tap',hi:'assets/tamara140-hero.png',cd:'Repeating sharp chevron/diamond pattern — five full peaks across 140mm. Bold geometric.',g_:{by:112,ppp:6,pkc:12,epc:72,a:4.57,b:4.73,c:28.38,d:340.56,cw:0.81},bc:{p:'073718671 1924',b:'073718671 5086'},it:'Geometric — align peaks at corners for precision.'},
+  {c:'EPS11',n:'Lisa',tl:'The Grand Arch',sk:'FCX-EPS11-LISA',g:'G170_185',pm:'170×130×130',cf:'Lisa170.tap',hi:'assets/lisa170-hero.png',cd:'Grand sweeping arc with multi-layer edge detail. Three-zone cut. Premium specification grade.',g_:{by:81,ppp:6,pkc:10,epc:60,a:6.31,b:6.82,c:40.92,d:409.20,cw:0.675},bc:{p:'073718671 1762',b:'073718671 5627'},it:'170mm — use construction-grade contact adhesive.'},
+  {c:'EPS12',n:'Gloria',tl:'The Crown Statement',sk:'FCX-EPS12-GLORIA',g:'G170_185',pm:'185×135×135',cf:'Gloria185.tap',hi:'assets/gloria185-hero.png',cd:'Widest profile at 185mm. Multi-arc complex pattern with three distinct wave zones.',g_:{by:81,ppp:6,pkc:10,epc:60,a:6.31,b:6.82,c:40.92,d:409.20,cw:0.675},bc:{p:'073718671 1719',b:'073718670 5590'},it:'Widest in range — most dramatic ceiling transformation.'}
+];
+let CP=PROFILES[1];
+const R=(n)=>'R'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const N=(n)=>n.toLocaleString();
+function T(id,v){const el=document.getElementById(id);if(el)el.textContent=v||'—'}
+function H(id,v){const el=document.getElementById(id);if(el)el.innerHTML=v||''}
+
+function setProduct(p){
+  CP=p;const g=p.g_;const by=g.by,epc=g.epc,pkc=g.pkc,ppp=g.ppp;
+  const pl=6*epc,bpl=6*by,pv=6*g.d,bpv=6*B;
+  const csk='C'+epc,bsk='BLK'+by;
+  // Poster
+  T('p-tagline',p.tl);T('p-name','EPS '+p.n+' '+p.pm.split('×')[0]+'mm');
+  T('p-price',R(g.b));T('p-units',by);T('p-code',p.c);T('p-sku',p.sk);
+  T('p-profile',p.pm+' mm');T('p-group',p.g);T('p-ppp',ppp+' pcs');T('p-epc',epc+' pcs');
+  T('p-bcp',p.bc.p);T('p-bcb',p.bc.b);T('p-tip',p.it);T('p-render','[3D Render: '+p.hi+']');
+  // Spec
+  T('s-code',p.c+' · '+p.sk+' · '+p.g);T('s-name',p.n);T('s-tag',p.tl);T('s-desc',p.cd);T('s-img',p.hi);
+  T('ss-code',p.c);T('ss-sku',p.sk);T('ss-profile',p.pm+' mm');T('ss-cnc',p.cf);T('ss-group',p.g);
+  T('ss-cw',g.cw+' kg');T('ss-ppp',ppp);T('ss-pkc',pkc);T('ss-epc',epc);T('ss-blk',by+' pcs/block');
+  T('ss-bcp',p.bc.p);T('ss-bcb',p.bc.b);
+  T('pt-a',R(g.a));T('pt-b',R(g.b));T('pt-c',R(g.c));T('pt-d',R(g.d)+' ('+epc+' pcs)');T('pt-e',epc);T('pt-f',R(B)+' ('+by+' units)');
+  const mr=([c,d,pr])=>`<div class="sku-r"><span class="sku-c">${c}</span><span class="sku-d">${d}</span><span class="sku-p">${pr}</span></div>`;
+  H('sku-uom',[
+    [p.sk+'-U','Single unit 1.5m',R(g.b)],[p.sk+'-P6','Pack of '+ppp+' units',R(g.c)],
+    [p.sk+'-'+csk,'Carton '+epc+' ('+pkc+' packs)',R(g.d)],[p.sk+'-PL'+pl,'Pallet '+N(pl)+' (6 cartons)',R(pv)],
+    [p.sk+'-'+bsk,'BlockBox '+by+' equiv',R(B)],[p.sk+'-PLBLK','BlockBox pallet 6 blocks ('+N(bpl)+')',R(bpv)]
+  ].map(mr).join(''));
+  H('sku-arr',[
+    [p.c+'-A-L1.5','Single loose unit Tier A',R(g.a)],[p.c+'-B-L1.5','Single in carton Tier B',R(g.b)],
+    [p.c+'-P6-U','6-pack loose',R(g.c)],[p.c+'-'+csk+'-U','Single carton '+epc,R(g.d)],
+    [p.c+'-'+csk+'-P6','Carton as packs '+pkc+'×'+ppp,R(g.d)],[p.c+'-F-'+bsk+'-U','BlockBox single '+by,R(B)],
+    [p.c+'-'+csk+'-PL6','Pallet 6 cartons '+N(pl),R(pv)],[p.c+'-P6-PL6','Pallet packs '+N(pl),R(pv)],
+    [p.c+'-F-'+bsk+'-PL6','BlockBox pallet 6×'+by+' ('+N(bpl)+')',R(bpv)]
+  ].map(mr).join(''));
+  H('sku-ctn',[
+    [p.c+'-'+csk+'-20HQ-U','20ft 120 cartons '+N(120*epc)+' lengths',R(120*g.d)],
+    [p.c+'-'+csk+'-40HQ-U','40ft 280 cartons '+N(280*epc)+' lengths',R(280*g.d)],
+    [p.c+'-P6-20HQ-U','20ft packs '+N(120*pkc),R(120*g.d)],[p.c+'-P6-40HQ-U','40ft packs '+N(280*pkc),R(280*g.d)],
+    [p.c+'-F-'+bsk+'-20HQ-U','20ft BlockBox 120 blocks '+N(120*by)+'eq','—'],
+    [p.c+'-F-'+bsk+'-40HQ-U','40ft BlockBox 280 blocks '+N(280*by)+'eq','—'],
+    [p.c+'-F-'+bsk+'-20HQ-PL','20ft BlockBox pallets','—'],[p.c+'-F-'+bsk+'-40HQ-PL','40ft BlockBox pallets','—']
+  ].map(mr).join(''));
+  // Shelf
+  T('sl-code',p.c);T('sl-name',p.n);T('sl-profile',p.pm+' mm · 1.5 m · EPS 20DV');T('sl-price',R(g.b));
+  T('sl-ctp',g.d.toFixed(2));T('sl-epc2',epc);T('sl-ppp2',ppp+' pcs/pack');T('sl-blk2',by+' units/BlockBox');
+  T('sl-bcp2',p.bc.p);T('sl-bcb2',p.bc.b);T('sl-pp',R(g.c));
+  // Wholesale
+  T('wh-title',p.n+' · '+p.c);T('wh-sub',p.sk+' · '+p.g+' · '+p.pm+'mm · 1.5m');
+  T('wh-b',R(g.b));T('wh-c',R(g.c));T('wh-epc',epc+' pcs');T('wh-d',R(g.d));
+  T('wh-blk',by+' pcs equiv');T('wh-f',R(B));T('wh-pl',N(pl)+' pcs');T('wh-pv',R(pv));
+  T('wh-bpl',N(bpl)+' pcs equiv');T('wh-bpv',R(bpv));
+  // BobGo
+  T('bg-name',p.c+' '+p.n);
+  const br=([code,desc,wt])=>`<div class="bg-row"><div><div class="bg-sku">${code}</div><div class="bg-desc">${desc}</div></div><div class="bg-dim">151×40×30</div><div class="bg-dim">—</div><div class="bg-wt">${wt}kg</div></div>`;
+  H('bg-uom',[
+    [p.sk+'-U','Single unit 1.5m','0.04'],[p.sk+'-P6','Pack of '+ppp,'0.24'],
+    [p.sk+'-'+csk,'Carton '+epc+' ('+pkc+' packs)',g.cw],[p.sk+'-PL'+pl,'Pallet '+N(pl)+' (6 cartons)',(6*g.cw+25).toFixed(2)],
+    [p.sk+'-'+bsk,'BlockBox '+by+' equiv','5.8'],[p.sk+'-PLBLK','BlockBox pallet 6 blocks','59.8']
+  ].map(br).join(''));
+  H('bg-arr',[
+    [p.c+'-A-L1.5','Single loose Tier A','0.04'],[p.c+'-B-L1.5','Single in carton Tier B','0.04'],
+    [p.c+'-P6-U','6-pack loose','0.24'],[p.c+'-'+csk+'-U','Single carton '+epc,g.cw],
+    [p.c+'-'+csk+'-P6','Carton as packs',g.cw],[p.c+'-F-'+bsk+'-U','BlockBox single '+by,'5.8'],
+    [p.c+'-'+csk+'-PL6','Pallet 6 cartons '+N(pl),(6*g.cw+25).toFixed(2)],
+    [p.c+'-P6-PL6','Pallet packs '+N(pl),(6*g.cw+25).toFixed(2)],[p.c+'-F-'+bsk+'-PL6','BlockBox pallet 6×'+by,'59.8']
+  ].map(br).join(''));
+  H('bg-ctn',[
+    [p.c+'-'+csk+'-20HQ-U','20ft 120 cartons '+N(120*epc)+' lengths',(120*g.cw).toFixed(2)],
+    [p.c+'-'+csk+'-40HQ-U','40ft 280 cartons '+N(280*epc)+' lengths',(280*g.cw).toFixed(2)],
+    [p.c+'-P6-20HQ-U','20ft packs '+N(120*pkc),(120*g.cw).toFixed(2)],
+    [p.c+'-P6-40HQ-U','40ft packs '+N(280*pkc),(280*g.cw).toFixed(2)],
+    [p.c+'-F-'+bsk+'-20HQ-U','20ft BlockBox 120 blocks '+N(120*by)+' eq',(120*5.8).toFixed(0)],
+    [p.c+'-F-'+bsk+'-40HQ-U','40ft BlockBox 280 blocks '+N(280*by)+' eq',(280*5.8).toFixed(0)],
+    [p.c+'-F-'+bsk+'-20HQ-PL','20ft BlockBox pallets',(696+(120/6)*25).toFixed(0)],
+    [p.c+'-F-'+bsk+'-40HQ-PL','40ft BlockBox pallets',(1624+(280/6)*25).toFixed(1)]
+  ].map(br).join(''));
+}
+function sv(name,el){
+  document.querySelectorAll('.card-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  el.classList.add('active');
+}
+function setLang(lang){console.log('Lang:',lang)}
+setProduct(PROFILES[1]);
+window.setProduct=setProduct;window.PROFILES=PROFILES;
+</script>
+</body></html>

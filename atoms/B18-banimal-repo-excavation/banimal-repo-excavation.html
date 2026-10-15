@@ -1,0 +1,359 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Banimal Repo Excavation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#1C1B18; --paper:#F4EFE6; --panel:#FFFFFF; --panel-2:#EDE6D6;
+    --rule:#DCD3BE; --rule-strong:#B9AC8C; --muted:#6B6252;
+    --copper:#B5652B; --copper-soft:#F1E1D2; --copper-ink:#8A4A1C;
+    --teal:#2E6E62; --teal-soft:#DCEAE5;
+    --rust:#A23B2E; --rust-soft:#F5DFDA;
+    --gold:#8A6D1F; --gold-soft:#EFE4C4;
+    --shadow: 0 1px 2px rgba(28,27,24,.06), 0 8px 20px rgba(28,27,24,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:#EDE7DA; --paper:#17140F; --panel:#211D16; --panel-2:#28231A;
+      --rule:#3A3325; --rule-strong:#584E37; --muted:#B0A68D;
+      --copper:#E08A4C; --copper-soft:#3A2A1B; --copper-ink:#F0A468;
+      --teal:#7CBCAC; --teal-soft:#1E2E28;
+      --rust:#E08376; --rust-soft:#3A211D;
+      --gold:#D8BC66; --gold-soft:#332B14;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 24px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink:#EDE7DA; --paper:#17140F; --panel:#211D16; --panel-2:#28231A;
+    --rule:#3A3325; --rule-strong:#584E37; --muted:#B0A68D;
+    --copper:#E08A4C; --copper-soft:#3A2A1B; --copper-ink:#F0A468;
+    --teal:#7CBCAC; --teal-soft:#1E2E28;
+    --rust:#E08376; --rust-soft:#3A211D;
+    --gold:#D8BC66; --gold-soft:#332B14;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 24px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--copper); color: var(--paper); }
+  .mono { font-family: 'IBM Plex Mono', Menlo, Consolas, monospace; }
+  a { color: var(--copper-ink); }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: .92em; background: var(--panel-2); padding: 1px 6px; border-radius: 4px; }
+  h1, h2, h3 { font-family: 'IBM Plex Mono', monospace; text-wrap: balance; letter-spacing: -.01em; margin: 0; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 50; background: var(--paper);
+    border-bottom: 1px solid var(--rule); backdrop-filter: blur(6px);
+  }
+  .topbar .inner {
+    max-width: 1240px; margin: 0 auto; padding: 12px 28px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .topbar .crumb { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+  .topbar .crumb b { color: var(--ink); }
+  .topbar .stamp {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--copper-ink); background: var(--copper-soft); border: 1px solid var(--rule-strong);
+    border-radius: 100px; padding: 3px 11px;
+  }
+
+  .shell { display: grid; grid-template-columns: 232px 1fr; gap: 0; max-width: 1240px; margin: 0 auto; }
+  .toc {
+    position: sticky; top: 53px; align-self: start; height: calc(100vh - 53px); overflow-y: auto;
+    padding: 30px 18px 60px 28px; border-right: 1px solid var(--rule);
+  }
+  .toc .label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 22px 0 8px; }
+  .toc .label:first-child { margin-top: 0; }
+  .toc a {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink); text-decoration: none;
+    padding: 4px 0 4px 10px; border-left: 2px solid transparent; margin-left: -1px;
+  }
+  .toc a:hover { border-left-color: var(--copper); color: var(--copper-ink); }
+  @media (max-width: 900px) { .toc { display: none; } .shell { grid-template-columns: 1fr; } }
+
+  main { min-width: 0; padding: 44px 40px 120px; max-width: 900px; }
+  @media (max-width: 640px) { main { padding: 32px 20px 90px; } }
+
+  .hero { margin-bottom: 12px; }
+  .hero .kicker { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--copper-ink); margin-bottom: 14px; }
+  .hero h1 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); font-weight: 600; }
+  .hero .sub { font-size: 15.5px; color: var(--muted); max-width: 62ch; margin: 14px 0 0; }
+  .hero .figures { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+  .figure { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; min-width: 108px; }
+  .figure .n { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; color: var(--copper-ink); font-variant-numeric: tabular-nums; }
+  .figure .l { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  section { padding: 46px 0; border-top: 1px solid var(--rule); scroll-margin-top: 70px; }
+  section:first-of-type { border-top: none; padding-top: 30px; }
+  .s-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  h2 { font-size: clamp(1.25rem, 2.4vw, 1.55rem); font-weight: 600; margin-bottom: 6px; }
+  .s-dek { color: var(--muted); font-size: 14.5px; max-width: 68ch; margin: 8px 0 22px; }
+  p { max-width: 70ch; font-size: 15px; }
+  ul, ol { max-width: 68ch; font-size: 15px; padding-left: 20px; }
+  li { margin: 5px 0; }
+
+  .layer {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 14px;
+    padding: 20px 22px; margin: 16px 0; box-shadow: var(--shadow);
+  }
+  .layer .lh { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .layer .lh h3 { font-size: 16px; }
+  .layer .tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; white-space: nowrap; }
+  .tag.real { background: var(--teal-soft); color: var(--teal); }
+  .tag.mock { background: var(--gold-soft); color: var(--gold); }
+  .tag.dead { background: var(--rust-soft); color: var(--rust); }
+  .layer p { margin: 6px 0; font-size: 14px; color: var(--ink); }
+  .layer .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 22px; font-size: 13.5px; }
+  th { text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule-strong); padding: 7px 12px 7px 0; }
+  td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td.mono, th.mono { font-family: 'IBM Plex Mono', monospace; }
+  .tablewrap { overflow-x: auto; }
+  .num { font-variant-numeric: tabular-nums; text-align: right; }
+
+  .finding {
+    display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--rule);
+  }
+  .finding:first-child { border-top: none; }
+  .finding .sev {
+    flex: none; width: 74px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .05em;
+    text-transform: uppercase; padding: 3px 0; text-align: center; border-radius: 100px; height: fit-content;
+  }
+  .sev.high { background: var(--rust-soft); color: var(--rust); }
+  .sev.med { background: var(--gold-soft); color: var(--gold); }
+  .sev.low { background: var(--teal-soft); color: var(--teal); }
+  .finding .body b { display: block; font-size: 14.5px; margin-bottom: 3px; }
+  .finding .body p { margin: 0; font-size: 13.5px; color: var(--muted); }
+  .finding .body code { font-size: 12px; }
+
+  .callout {
+    background: var(--copper-soft); border-left: 3px solid var(--copper); border-radius: 0 12px 12px 0;
+    padding: 14px 18px; font-size: 14px; margin: 20px 0; max-width: 68ch;
+  }
+  .callout b { color: var(--copper-ink); }
+
+  .sectormap { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 18px 0; }
+  .sector { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; }
+  .sector .n { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--copper-ink); }
+  .sector .t { font-size: 13.5px; font-weight: 600; margin-top: 3px; }
+  .sector .d { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  footer { margin-top: 20px; padding: 30px 0 4px; border-top: 1px solid var(--rule); }
+  footer p { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+
+  @media (max-width: 680px) {
+    .shell { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="inner">
+    <span class="crumb"><b>heyns1000/banimal</b> · full-repo read, 191 tracked files</span>
+    <span class="stamp">excavation · 2026-08-30</span>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="toc">
+    <div class="label">Orientation</div>
+    <a href="#overview">Overview</a>
+    <a href="#layers">The four layers</a>
+    <div class="label">Infrastructure</div>
+    <a href="#infra">Config &amp; deploy</a>
+    <a href="#schema">D1 schema</a>
+    <a href="#api">API surface</a>
+    <div class="label">What's actually wrong</div>
+    <a href="#findings">Inconsistencies</a>
+    <a href="#loose-ends">Loose ends</a>
+    <div class="label">Forward</div>
+    <a href="#sectors">A sector map</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="kicker">Prep note — banimal.git, read cold</div>
+      <h1>What's actually in this repository</h1>
+      <p class="sub">Every tracked file opened, not sampled. Four unrelated layers are stacked in one Worker: a babygrow storefront, a 13,700-brand governance vault, a WordPress↔Worker bridge, and a scattering of one-off business documents that never should have shipped with the code. This is the map before the dispatch, not a fix list — most of what's below is flagged, not touched.</p>
+      <div class="figures">
+        <div class="figure"><div class="n">191</div><div class="l">tracked files</div></div>
+        <div class="figure"><div class="n">14</div><div class="l">worker routes</div></div>
+        <div class="figure"><div class="n">22</div><div class="l">dashboard pages</div></div>
+        <div class="figure"><div class="n">13</div><div class="l">D1 migrations</div></div>
+        <div class="figure"><div class="n">13,713</div><div class="l">seeded brand rows</div></div>
+      </div>
+    </div>
+
+    <section id="overview">
+      <div class="s-eyebrow">Method</div>
+      <h2>How this was read</h2>
+      <p class="s-dek">No sampling, no trusting a README's description of itself.</p>
+      <p><code>git ls-files</code> for the full tracked list (191 files — the working tree shows 452MB but almost all of that is <code>.git</code> history and the <code>dist/</code> build output's image assets), then every config file, every migration, every worker route, the WordPress plugin's core classes, and the loose top-level documents read in full. <code>package-lock.json</code> and the built <code>dist/assets/*.js</code> bundles were treated as generated noise and skipped; everything with actual authored content was opened.</p>
+      <p>One live finding came out of this pass rather than staying a note: <code>Vito_Stroller.html</code> (repo root) was an unrelated stroller-import cost model with real supplier links, sitting in the servable path and referenced by a top-level <code>assets</code> manifest — archived to <code>archive/Vito_Stroller.html.archived</code> and HTML-escaped inert as part of this session. Everything else below is reported, not changed.</p>
+    </section>
+
+    <section id="layers">
+      <div class="s-eyebrow">Orientation</div>
+      <h2>Four layers, one Worker</h2>
+      <p class="s-dek">Nothing in the repo names these as separate systems — this is what the code actually does, read layer by layer.</p>
+
+      <div class="layer">
+        <div class="lh"><h3>1 · The Banimal storefront</h3><span class="tag real">real, deployed</span></div>
+        <p>100% organic cotton babygrows and bibs, South Africa. Real product catalog in <code>dist/sitemap.xml</code> (babygrows in 4 colors × 3 age ranges, 8 bib designs), real checkout intent via Paystack (<code>orders.ts</code>), real BobGo v2 shipping integration with a live sandbox/production switch (<code>delivery.ts</code>), a giving model that donates <b>15.01%</b> of every pre-tax sale (<code>giving.ts</code>, tiers <code>GIVE-BIB</code> → <code>GIVE-LAYETTE</code>).</p>
+        <p class="meta">src/worker/routes/{orders,delivery,giving,email,coupons,analytics}.ts · migrations 0002, 6, 7</p>
+      </div>
+
+      <div class="layer">
+        <div class="lh"><h3>2 · The brand vault (FAA / HSOMNI9000 / Seedwave)</h3><span class="tag real">real schema, seeded data</span></div>
+        <p>A completely separate multi-tenant "brand governance" system riding in the same D1 database and the same Worker. <code>migrations/2.sql</code> seeds three named systems with real counts: <b>FAA™</b> — 7,344 brands, "Global Trade &amp; Governance"; <b>HSOMNI9000</b> — 6,219 brands, "Advanced AI &amp; Mesh Network"; <b>Seedwave</b> — 150 brands, "Premium Sovereign Brands". Five tiers (Sovereign, Dynastic, Operational, Market, VaultMesh) and a <code>vault_mesh_id</code> field tie individual brand rows into whatever the wider mesh is. None of this touches babygrows — it's routed at <code>/api/brands</code>, <code>/api/systems</code>, <code>/api/tiers</code>, entirely separate from the storefront's order/payment path.</p>
+        <p class="meta">src/worker/routes/brands.ts + inline handlers in index.ts · migrations 1.sql, 2.sql</p>
+      </div>
+
+      <div class="layer">
+        <div class="lh"><h3>3 · The Banimal™ Connector (this session's work)</h3><span class="tag real">real, this session</span></div>
+        <p>The WordPress↔Worker bridge built across PRs #14–#23: a thin, HMAC-signed plugin client (<code>wordpress-plugin/banimal-ecosystem-connector/</code>), the <code>/api/wp/events</code> ingestion endpoint with idempotent event storage and WooCommerce order-state mapping (<code>wp-bridge.ts</code>), and the <code>/api/brand-guide</code> endpoint serving the verified Sam Fox™ CI Guide. This is the one layer with a matching Claude Code skill (<code>banimal-connector/skills/samfox-ci-guide/</code>) and four maintained reference documents in <code>docs/</code>.</p>
+        <p class="meta">src/worker/routes/{wp-bridge,brand-guide}.ts · wordpress-plugin/ · docs/</p>
+      </div>
+
+      <div class="layer">
+        <div class="lh"><h3>4 · Concept dashboards &amp; one-off documents</h3><span class="tag mock">flavor / unrelated</span></div>
+        <p>22 React pages under <code>src/react-app/pages/</code> — <code>BaobabPortal</code> ("Gateway to the 1000-Year Ecosystem"), <code>EcosystemDashboard</code> ("GhostTrace™"), <code>Omnigrid</code>, <code>NexusNair</code>, <code>ThesisDebug</code> — read as AI-generated admin-dashboard concept art layered over the same domain names, not wired to real backend logic beyond a handful of stat cards. Alongside them, three loose top-level documents with no connection to any of the above: <code>banimal_api_connector.html</code> ×2 (a mocked API-monitor referencing "FAA Inline Verification Mandate P_INV-001" protocols), a full frozen snapshot of the app from 2025-12-31 zipped at repo root (<code>Banimal Store Integration Guide.zip</code>), and the now-archived <code>Vito_Stroller.html</code>.</p>
+        <p class="meta">src/react-app/pages/*.tsx · banimal_api_connector*.html · Banimal Store Integration Guide.zip</p>
+      </div>
+    </section>
+
+    <section id="infra">
+      <div class="s-eyebrow">Infrastructure</div>
+      <h2>Config &amp; deploy metadata</h2>
+      <p class="s-dek">The identifiers that make this a specific, addressable system rather than a template.</p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>Key</th><th>Value</th></tr>
+          <tr><td>Worker / D1 / R2 name</td><td class="mono"><code>019b7175-b3fc-7a74-b270-61b38749851a</code> (same UUID-shaped string for all three — a getmocha.com-scaffolded project id, not hand-chosen)</td></tr>
+          <tr><td>Production domains</td><td class="mono">banimal.co.za, www.banimal.co.za, banimal.faa.zone — <b>used inconsistently</b>: manifest/sitemap point at <code>.co.za</code>, but email templates' shop/track links point at <code>.faa.zone</code></td></tr>
+          <tr><td>CI/CD</td><td class="mono">.github/workflows/deploy-worker.yml — auto-deploys on push to <code>main</code> touching <code>src/worker/**</code>, <code>migrations/**</code>, or config</td></tr>
+          <tr><td>Deploy trigger marker</td><td class="mono"><code>.vercel-deploy</code>: <code>trigger=2026-06-29T11:54:00Z / reason=live-paystack-keys-active</code></td></tr>
+          <tr><td>Package origin</td><td class="mono"><code>package.json</code> name <code>mocha-app</code>, pulls <code>@getmocha/vite-plugins</code> + <code>@getmocha/users-service</code> — scaffolded via getmocha.com</td></tr>
+          <tr><td>OAuth providers wired</td><td class="mono">google, facebook, github, microsoft, apple, tiktok, substack, instagram — <code>auth.ts</code>, env pattern <code>OAUTH_&lt;PROVIDER&gt;_CLIENT_{ID,SECRET}</code></td></tr>
+        </table>
+      </div>
+      <div class="callout"><b>On record already:</b> <code>INTEGRATION_CHECKLIST.md</code> itself documents that a live Paystack secret key was previously exposed in a screenshot and flags it for rotation. No live secret values are committed anywhere in source — confirmed by pattern-scanning every tracked non-binary file for <code>sk_live_</code>/<code>pk_live_</code>/AWS/GitHub/PEM-shaped strings.</div>
+    </section>
+
+    <section id="schema">
+      <div class="s-eyebrow">Database</div>
+      <h2>D1 schema, as seeded</h2>
+      <p class="s-dek">13 migration files, two of them (<code>2.sql</code>, giving/coupon tables) carrying real seed data rather than just structure.</p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>System</th><th class="num">Brands</th><th>Description</th></tr>
+          <tr><td class="mono">faa</td><td class="num">7,344</td><td>Global Trade &amp; Governance</td></tr>
+          <tr><td class="mono">hsomni</td><td class="num">6,219</td><td>Advanced AI &amp; Mesh Network</td></tr>
+          <tr><td class="mono">seedwave</td><td class="num">150</td><td>Premium Sovereign Brands</td></tr>
+          <tr><td></td><td class="num" style="font-weight:600">13,713</td><td style="font-weight:600">total seeded — close to, but not the same as, the "13,413 brands" figure this session's own audit already flagged as unreconciled in <code>docs/connector-preview.html</code>'s routing table</td></tr>
+        </table>
+      </div>
+      <p>Tiers: Sovereign → Dynastic → Operational → Market → VaultMesh (priority 1–5). Every <code>brands</code> row carries <code>vault_mesh_id</code>, <code>parent_id</code>, <code>subnodes</code> and a free-text <code>metadata</code> JSON blob — a graph bolted onto a flat table, never queried as a graph anywhere in the route code read.</p>
+    </section>
+
+    <section id="api">
+      <div class="s-eyebrow">Worker</div>
+      <h2>API surface, by route file</h2>
+      <div class="tablewrap">
+        <table>
+          <tr><th>Route</th><th>Mount</th><th>Status</th></tr>
+          <tr><td class="mono">orders.ts</td><td class="mono">/api/orders</td><td>Real Paystack init/verify — the actual checkout path</td></tr>
+          <tr><td class="mono">payments.ts</td><td class="mono">/api/payments</td><td>Generic PayPal/Stripe scaffolding — <b>not wired to the real checkout</b>, confirmed dead by <code>INTEGRATION_CHECKLIST.md</code>'s own audit</td></tr>
+          <tr><td class="mono">delivery.ts</td><td class="mono">/api/delivery, /api/shipping</td><td>Real BobGo v2, mounted at two paths because the deployed frontend bundle calls the second one</td></tr>
+          <tr><td class="mono">wp-bridge.ts</td><td class="mono">/api/wp</td><td>Real, HMAC-SHA256 signed, this session's own build</td></tr>
+          <tr><td class="mono">brand-guide.ts</td><td class="mono">/api/brand-guide</td><td>Real, this session's own build</td></tr>
+          <tr><td class="mono">giving.ts</td><td class="mono">/api/giving</td><td>Real — 15.01% calculation, tier lookup, impact totals</td></tr>
+          <tr><td class="mono">email.ts</td><td class="mono">/api/email</td><td>Real templates, SendGrid — despite the whole ecosystem living on Zoho DNS</td></tr>
+          <tr><td class="mono">coupons.ts</td><td class="mono">/api/coupons</td><td>Real codes, <b>in-memory counters that reset every Worker isolate restart</b></td></tr>
+          <tr><td class="mono">analytics.ts</td><td class="mono">/api/analytics</td><td>Real event tracking, IP/UA hashed to 4 bytes before storage</td></tr>
+          <tr><td class="mono">notifications.ts</td><td class="mono">/api/notifications</td><td>VAPID scaffolding — push send doesn't actually sign a VAPID JWT per the code's own comment</td></tr>
+          <tr><td class="mono">auth.ts</td><td class="mono">/api/auth</td><td>8 OAuth providers wired, but issues sessions as bare base64 JSON — not a signed token</td></tr>
+          <tr><td class="mono">configuration.ts</td><td class="mono">/api/configuration</td><td>Generic key/value settings CRUD over <code>app_configuration</code></td></tr>
+          <tr><td class="mono">licenses.ts</td><td class="mono">/api/licenses</td><td>A whole separate cart/checkout system for something called "licenses" — unclear relation to babygrows</td></tr>
+          <tr><td class="mono">brands.ts</td><td class="mono">/api/brands (+ inline in index.ts)</td><td>The vault-system CRUD, partly duplicated by handlers written directly in <code>index.ts</code></td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section id="findings">
+      <div class="s-eyebrow">Cross-checked, not assumed</div>
+      <h2>Inconsistencies worth knowing before dispatch</h2>
+      <p class="s-dek">Nothing here was fixed — each one only touches files outside what was asked for today.</p>
+
+      <div class="finding">
+        <span class="sev high">high</span>
+        <div class="body"><b>Two different giving rates for the same thing</b><p><code>giving.ts</code> computes the real donation rate as <code>0.1501</code> (15.01%, matches the welcome email copy). <code>orders.ts</code>'s own inline giving-allocation insert hardcodes <code>0.02</code> with the comment <code>// 2% giving</code> — a live, uncorrected contradiction in the actual checkout path.</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev high">high</span>
+        <div class="body"><b>Three order-reference formats for one concept</b><p><code>BAN-&lt;nanoid&gt;</code> (orders.ts), <code>TXN_&lt;nanoid&gt;</code> (payments.ts), <code>WC-&lt;wc_order_id&gt;</code> (wp-bridge.ts) — three ID schemes for what the schema treats as one <code>orders</code> table, with no visible reconciliation between them.</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev med">medium</span>
+        <div class="body"><b>Session tokens aren't signed</b><p><code>auth.ts</code> issues <code>btoa(JSON.stringify({...}))</code> as a bearer token — trivially forgeable, not a JWT. The code's own comment says "in production use a signed JWT."</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev med">medium</span>
+        <div class="body"><b>Coupon usage counters don't persist</b><p><code>coupons.ts</code> tracks <code>uses</code> on a module-level object in memory. Every Cloudflare Worker isolate restart (routine, frequent) resets every code's usage count to zero — <code>maxUses</code> is not actually enforced in production.</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev med">medium</span>
+        <div class="body"><b>Domain split between .co.za and .faa.zone</b><p>SEO surface (<code>manifest.json</code>, <code>sitemap.xml</code>, robots) targets <code>banimal.co.za</code>; transactional email templates (welcome, order confirmation, order update) link to <code>banimal.faa.zone/shop</code> and <code>/track/</code>. Both are live CORS origins in <code>index.ts</code>, so neither is obviously wrong — but a customer following an email link lands on a different domain than the one Google indexes.</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev low">low</span>
+        <div class="body"><b>Brand-vault seed count vs. the figure already flagged this session</b><p>7,344 + 6,219 + 150 = <b>13,713</b> seeded rows. <code>docs/connector-preview.html</code>'s routing table already flags an unrelated "13,413 brands" figure from the old Perplexity-dump research as unreconciled and unverifiable. These are two different numbers from two different sources — noted here so they aren't accidentally merged into one figure later.</p></div>
+      </div>
+      <div class="finding">
+        <span class="sev low">low</span>
+        <div class="body"><b>Frozen 2025-12-31 snapshot committed as a zip</b><p><code>Banimal Store Integration Guide.zip</code> at repo root contains a 63-file, near-complete copy of the app as it existed on 2025-12-31 — a time capsule sitting in version control rather than a release artifact or a git tag.</p></div>
+      </div>
+    </section>
+
+    <section id="loose-ends">
+      <div class="s-eyebrow">Not investigated further</div>
+      <h2>Loose ends, named so they aren't lost</h2>
+      <ul>
+        <li>The top-level <code>assets</code> file (45 bytes, plain text — not a directory) lists two servable paths: <code>/Vito_Stroller.html</code> (now archived, so this reference is dangling by design) and <code>/images/New_stroller.png</code>. What actually reads this manifest was not identified.</li>
+        <li><code>banimal_api_connector.html</code> and <code>banimal_api_connector_15-01.html</code> (two near-identical copies) reference an "FAA Inline Verification Mandate" with protocol IDs like <code>P_INV-001</code> — governance-protocol lore tied to the FAA™ brand-vault system, not explained anywhere else in the repo.</li>
+        <li>22 React dashboard pages (<code>BaobabPortal</code>, <code>Omnigrid</code>, <code>OmnigridEngine</code>, <code>NexusNair</code>, <code>ThesisDebug</code>, <code>EnterprisePayroll</code>, …) were not read line-by-line — confirmed by title/heading grep to be concept-dashboard UI over the same domain names, not verified feature-by-feature.</li>
+        <li><code>notifications.ts</code>'s push-send path needs a real VAPID-JWT signing implementation before it can work against real browser push endpoints — currently a plain POST.</li>
+      </ul>
+    </section>
+
+    <section id="sectors">
+      <div class="s-eyebrow">Forward-looking, not a plan</div>
+      <h2>A sector map, if a split is useful later</h2>
+      <p class="s-dek">Not a proposal — just how the repo's own boundaries already divide, in case a per-sector dispatch is useful once the real task lands.</p>
+      <div class="sectormap">
+        <div class="sector"><div class="n">01</div><div class="t">Storefront checkout</div><div class="d">orders, payments, delivery, coupons</div></div>
+        <div class="sector"><div class="n">02</div><div class="t">Giving &amp; impact</div><div class="d">giving.ts, migration 0002</div></div>
+        <div class="sector"><div class="n">03</div><div class="t">Comms</div><div class="d">email.ts, notifications.ts</div></div>
+        <div class="sector"><div class="n">04</div><div class="t">Analytics &amp; auth</div><div class="d">analytics.ts, auth.ts</div></div>
+        <div class="sector"><div class="n">05</div><div class="t">Brand vault</div><div class="d">brands.ts, brand_systems, brand_tiers</div></div>
+        <div class="sector"><div class="n">06</div><div class="t">Connector bridge</div><div class="d">wp-bridge.ts, brand-guide.ts, plugin/</div></div>
+        <div class="sector"><div class="n">07</div><div class="t">Configuration</div><div class="d">configuration.ts, app_configuration</div></div>
+        <div class="sector"><div class="n">08</div><div class="t">Licenses subsystem</div><div class="d">licenses.ts, cart_sessions, checkout_transactions</div></div>
+        <div class="sector"><div class="n">09</div><div class="t">Concept dashboards</div><div class="d">22 react-app/pages — unaudited</div></div>
+        <div class="sector"><div class="n">10</div><div class="t">Docs &amp; brand assets</div><div class="d">docs/, banimal-connector/</div></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Compiled 2026-08-30 from a full read of heyns1000/banimal at commit d9bd01f (main). Every figure above traces to a specific file quoted in this document — nothing here was recalled from memory.</p>
+    </footer>
+  </main>
+</div>
+
+</body></html>

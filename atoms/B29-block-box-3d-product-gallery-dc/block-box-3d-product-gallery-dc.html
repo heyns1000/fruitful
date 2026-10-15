@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Fredoka:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #eee6d6; color: #0e2148; font-family: 'Archivo', sans-serif; font-size: 14px; line-height: 1.5; }
+  h1, h2, h3 { font-family: 'Fredoka', sans-serif; font-weight: 800; margin: 0; }
+  a { color: #e8622c; text-decoration: none; }
+  .kicker { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #e8622c; font-weight: 600; margin: 0 0 12px 0; }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#eee6d6;">
+
+<div style="background:#0e2148;color:#fff;padding:120px 90px 80px;">
+  <svg width="90" height="90" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+  <div style="font-family:'DM Mono',monospace;font-size:12px;color:#f5c518;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;">Block Box</div>
+  <h1 style="font-size:48px;font-weight:800;margin-bottom:24px;">3D Product Gallery</h1>
+  <div style="font-size:16px;opacity:0.9;max-width:800px;line-height:1.6;">Complete visual showcase of all 12 EPS ceiling cornice profiles.</div>
+</div>
+
+<div style="padding:80px 90px;">
+  <div class="kicker">All Products</div>
+  <h2 style="font-size:38px;font-weight:800;color:#0e2148;margin-bottom:40px;">12 EPS Profile Series</h2>
+  
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:32px;">
+    <sc-for list="{{ items }}" as="item" hint-placeholder-count="4">
+      <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(14,33,72,0.04);">
+        <div style="width:100%;height:280px;background:linear-gradient(135deg, #f9f7f4 0%, #eee6d6 100%);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(14,33,72,0.08);flex-direction:column;gap:8px;">
+          <div style="font-size:64px;">{{ item.icon }}</div>
+          <div style="font-size:12px;color:rgba(14,33,72,0.4);">3D Render</div>
+        </div>
+        <div style="padding:20px;">
+          <div class="kicker">{{ item.code }}</div>
+          <h3 style="font-size:22px;font-weight:800;color:#0e2148;margin-bottom:10px;">{{ item.name }}</h3>
+          <p style="font-size:13px;color:rgba(14,33,72,0.7);line-height:1.5;margin:0 0 12px 0;">{{ item.desc }}</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:12px;">
+            <div><div style="color:#e8622c;font-weight:700;margin-bottom:2px;">Dimensions</div><div style="color:#0e2148;">{{ item.dim }}</div></div>
+            <div><div style="color:#e8622c;font-weight:700;margin-bottom:2px;">Length</div><div style="color:#0e2148;">{{ item.len }}</div></div>
+          </div>
+          <a href="{{ item.link }}" style="display:inline-block;padding:10px 14px;background:#0e2148;color:#fff;border-radius:6px;font-size:12px;font-weight:600;">View Card</a>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<div style="background:#0e2148;color:#fff;padding:60px 90px;">
+  <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;">
+    <svg width="40" height="40" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="7" stroke-linecap="round" fill="none"/></svg>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#f5c518;font-weight:700;">Block Box</div>
+  </div>
+  <div style="font-size:13px;opacity:0.85;">3D Product Gallery</div>
+  <div style="font-size:11px;opacity:0.5;margin-top:8px;">Heyns Schoeman · CornexConnect · Pretoria, South Africa</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;1400px&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      items: [
+        { code: 'EPS01', name: 'Cove', desc: 'Elegant curved cornice with subtle contours.', dim: '85x55x55mm', len: '1.5m', icon: '🏗', link: 'EPS01 Cove Product Card.dc.html' },
+        { code: 'EPS02', name: 'Sante', desc: 'Classic rounded profile with refined proportions.', dim: '85x55x55mm', len: '1.5m', icon: '🎨', link: '#' },
+        { code: 'EPS03', name: 'Peroni', desc: 'Contemporary linear design with sharp edges.', dim: '110x60x60mm', len: '1.5m', icon: '✨', link: '#' },
+        { code: 'EPS04', name: 'Gone', desc: 'Minimalist profile with clean geometry.', dim: '110x55x55mm', len: '1.5m', icon: '◾', link: '#' },
+        { code: 'EPS05', name: 'Magic', desc: 'Dimensional curved surface catching light.', dim: '110x65x65mm', len: '1.5m', icon: '💎', link: '#' },
+        { code: 'EPS06', name: 'Colonial', desc: 'Traditional ornamental style with deep relief.', dim: '110x70x70mm', len: '1.5m', icon: '🏛', link: '#' },
+        { code: 'EPS07', name: 'Alina', desc: 'Smooth flowing contours with sophisticated proportions.', dim: '110x60x60mm', len: '1.5m', icon: '〰', link: '#' },
+        { code: 'EPS08', name: 'Bianca', desc: 'Layered profile creating shadow play.', dim: '110x65x65mm', len: '1.5m', icon: '📐', link: '#' },
+        { code: 'EPS09', name: 'P40', desc: 'Angular contemporary design with precision edges.', dim: '140x75x75mm', len: '1.5m', icon: '⚡', link: '#' },
+        { code: 'EPS10', name: 'Tamara', desc: 'Multi-faceted geometry with architectural presence.', dim: '110x70x70mm', len: '1.5m', icon: '🔷', link: '#' },
+        { code: 'EPS11', name: 'Lisa', desc: 'Sculptural curved form with dynamic shadow play.', dim: '170x85x85mm', len: '1.5m', icon: '🌊', link: '#' },
+        { code: 'EPS12', name: 'Gloria', desc: 'Grand ornamental profile with dramatic relief.', dim: '185x95x95mm', len: '1.5m', icon: '👑', link: '#' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="present">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2148; --navy2:#14305c; --orange:#e8622c; --yellow:#f5c518; --purple:#3b2a72;
+    --cream:#f7f4ee; --ink:#1a1f2b; --paper:#ffffff; --line:rgba(14,33,72,0.12);
+    --type-hero:96px; --type-title:64px; --type-subtitle:40px; --type-body:32px; --type-small:26px; --type-label:24px;
+    --pad-top:100px; --pad-bottom:80px; --pad-x:100px; --gap-title:52px; --gap-item:28px;
+    --f-head:'Archivo',sans-serif; --f-serif:'Source Serif 4',serif;
+  }
+  body{margin:0;background:#000;font-family:var(--f-head);}
+  a{color:var(--orange);} a:hover{color:var(--yellow);}
+  .slide{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden;font-family:var(--f-head);color:var(--ink);}
+  .eyebrow{font-size:var(--type-label);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;}
+  .pagenum{position:absolute;bottom:40px;right:var(--pad-x);font-size:24px;font-weight:600;letter-spacing:0.05em;opacity:0.55;}
+  .brandmark{position:absolute;bottom:40px;left:var(--pad-x);font-size:24px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;opacity:0.6;}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%">
+
+<!-- 1 :: COVER -->
+<section data-label="Cover" data-speaker-notes="Welcome. Block Box is a patented integrated EPS cornice packaging system, now commercially validated. This deck is a licensing pitch for manufacturing and retail partners." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);">
+    <img src="assets/hero-blue-product.png" style="position:absolute;right:-40px;bottom:-40px;width:920px;object-fit:contain;filter:drop-shadow(0 40px 80px rgba(0,0,0,0.5));">
+    <div style="position:absolute;left:var(--pad-x);top:170px;width:1000px;">
+      <div class="eyebrow" style="color:var(--yellow);">Licensing Opportunity — 2026</div>
+      <div style="font-family:var(--f-head);font-weight:900;font-size:var(--type-hero);line-height:1.02;color:#fff;margin-top:28px;">BLOCK BOX</div>
+      <div style="font-family:var(--f-serif);font-weight:400;font-size:44px;color:rgba(255,255,255,0.85);margin-top:20px;max-width:820px;line-height:1.35;">A patented cornice packaging system that ships as one solid block and separates by hand — no cartons, no wrap, no wasted space.</div>
+      <div style="display:flex;gap:16px;margin-top:56px;">
+        <div style="background:var(--orange);color:#fff;font-weight:700;font-size:24px;padding:14px 26px;border-radius:6px;">Patent Pending</div>
+        <div style="background:rgba(255,255,255,0.12);color:#fff;font-weight:700;font-size:24px;padding:14px 26px;border-radius:6px;border:1px solid rgba(255,255,255,0.25);">Commercially Validated</div>
+      </div>
+    </div>
+    <div class="brandmark" style="color:rgba(255,255,255,0.5);">Heyns · Block Box</div>
+    <div class="pagenum" style="color:#fff;">01</div>
+  </div>
+</section>
+
+<!-- 2 :: THE PACKAGING PROBLEM -->
+<section data-label="The Packaging Problem" data-speaker-notes="Frame the status quo: cartons, shrink wrap, wasted space, generic commodity appearance, no brand story." style="background:var(--cream);">
+  <div class="slide" style="background:var(--cream);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">01 — Context</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1500px;line-height:1.08;">The Packaging Problem</div>
+    <div style="display:flex;gap:44px;margin-top:var(--gap-title);">
+      <div style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:44px;">
+        <div style="font-size:56px;font-weight:900;color:var(--navy);">3 layers</div>
+        <div style="font-size:var(--type-body);font-weight:600;margin-top:18px;">Cornice → cardboard box → plastic wrap → shelf</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:#555;margin-top:16px;line-height:1.5;">Every profile is boxed and wrapped separately before it ever reaches a warehouse or a store.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:44px;">
+        <div style="font-size:56px;font-weight:900;color:var(--navy);">Wasted space</div>
+        <div style="font-size:var(--type-body);font-weight:600;margin-top:18px;">Loose stacking, mixed inventory, slow counts</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:#555;margin-top:16px;line-height:1.5;">Warehouse floors show generic brown boxes with no fast way to identify or verify product.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:44px;">
+        <div style="font-size:56px;font-weight:900;color:var(--navy);">No identity</div>
+        <div style="font-size:var(--type-body);font-weight:600;margin-top:18px;">Commodity packaging, price-only competition</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:#555;margin-top:16px;line-height:1.5;">Nothing on the box signals quality, brand, or value to the people receiving it.</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">02</div>
+  </div>
+</section>
+
+<!-- 3 :: THE BLOCK BOX SYSTEM -->
+<section data-label="The Block Box System" data-speaker-notes="Introduce the invention: an integrated EPS block containing multiple cornice profiles held by tear-away bridges. Ships as one unit." style="background:var(--paper);">
+  <div class="slide" style="background:var(--paper);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">02 — The Innovation</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1300px;line-height:1.08;">The Block Box System</div>
+    <div style="display:flex;gap:60px;margin-top:44px;align-items:center;">
+      <div style="flex:0 0 640px;">
+        <img src="assets/detail-open-block.png" style="width:100%;border-radius:12px;box-shadow:0 20px 50px rgba(14,33,72,0.18);">
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:var(--f-serif);font-size:34px;line-height:1.5;color:var(--ink);max-width:780px;">Multiple cornice profiles are hot-wire cut from a single EPS block and held together by <strong>tear-away bridges</strong> — thin connective ribs that keep the block structurally whole through shipping, then let go by hand at the install site.</div>
+        <div style="display:flex;flex-direction:column;gap:var(--gap-item);margin-top:44px;">
+          <div style="display:flex;gap:20px;align-items:baseline;"><div style="font-size:34px;font-weight:800;color:var(--orange);">94%</div><div style="font-size:var(--type-small);">less packaging material than boxes and wrap</div></div>
+          <div style="display:flex;gap:20px;align-items:baseline;"><div style="font-size:34px;font-weight:800;color:var(--orange);">40–60%</div><div style="font-size:var(--type-small);">lower shipping cost per shipment</div></div>
+          <div style="display:flex;gap:20px;align-items:baseline;"><div style="font-size:34px;font-weight:800;color:var(--orange);">100%</div><div style="font-size:var(--type-small);">recyclable, mono-material construction</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">03</div>
+  </div>
+</section>
+
+<!-- 4 :: HOW IT WORKS -->
+<section data-label="How It Works" data-speaker-notes="Three step process: cut and bridge, ship as one block, tear away on site. Keep this simple and visual." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">02 — The Innovation</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;">How It Works</div>
+    <div style="display:flex;gap:40px;margin-top:70px;">
+      <div style="flex:1;">
+        <div style="font-size:100px;font-weight:900;color:var(--yellow);line-height:1;">01</div>
+        <div style="font-size:var(--type-subtitle);font-weight:700;margin-top:24px;">Cut &amp; Bridge</div>
+        <div style="font-family:var(--f-serif);font-size:28px;color:rgba(255,255,255,0.75);margin-top:16px;line-height:1.5;">CNC hot-wire cuts 5–8 profiles into one EPS block, joined by tear-away bridges.</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:100px;font-weight:900;color:var(--yellow);line-height:1;">02</div>
+        <div style="font-size:var(--type-subtitle);font-weight:700;margin-top:24px;">Ship as One Block</div>
+        <div style="font-family:var(--f-serif);font-size:28px;color:rgba(255,255,255,0.75);margin-top:16px;line-height:1.5;">No cartons, no wrap. The block stacks and palletizes on its own structure.</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:100px;font-weight:900;color:var(--yellow);line-height:1;">03</div>
+        <div style="font-size:var(--type-subtitle);font-weight:700;margin-top:24px;">Tear Away by Hand</div>
+        <div style="font-family:var(--f-serif);font-size:28px;color:rgba(255,255,255,0.75);margin-top:16px;line-height:1.5;">Bridges release with 2–5kg of manual force. No tools, no training, under 30 seconds.</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">04</div>
+  </div>
+</section>
+
+<!-- 5 :: ONE SYSTEM, EVERY PROFILE -->
+<section data-label="One System, Every Profile" data-speaker-notes="Universal applicability across decorative and plain profiles — validated with working prototypes across the full product range." style="background:var(--cream);">
+  <div class="slide" style="background:var(--cream);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">02 — The Innovation</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">One System, Every Profile</div>
+    <div style="display:flex;gap:60px;margin-top:60px;">
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:48px;">
+        <div class="eyebrow" style="color:var(--navy);">Decorative Profiles</div>
+        <div style="font-size:72px;font-weight:900;color:var(--navy);margin-top:16px;">40%</div>
+        <div style="font-size:var(--type-small);color:#555;margin-top:12px;">of global cornice volume — corrugated, high-value geometry, the premium segment.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:48px;">
+        <div class="eyebrow" style="color:var(--navy);">Plain Profiles</div>
+        <div style="font-size:72px;font-weight:900;color:var(--navy);margin-top:16px;">60%</div>
+        <div style="font-size:var(--type-small);color:#555;margin-top:12px;">of global cornice volume — flat moldings, the high-throughput commodity segment.</div>
+      </div>
+    </div>
+    <div style="font-family:var(--f-serif);font-size:30px;color:var(--ink);margin-top:48px;max-width:1300px;line-height:1.5;">Working prototypes across both segments prove the same bridge system adapts to any profile geometry — one manufacturing process addresses <strong>100% of the cornice market</strong>, not just the premium tier.</div>
+    <div class="pagenum" style="color:var(--navy);">05</div>
+  </div>
+</section>
+
+<!-- 6 :: PROVEN IN PRACTICE -->
+<section data-label="Proven in Practice" data-speaker-notes="Reduction to practice is complete — this is not a concept, working prototypes exist and have been tested." style="background:var(--paper);">
+  <div class="slide" style="background:var(--paper);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">03 — Evidence</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;">Proven in Practice</div>
+    <div style="font-family:var(--f-serif);font-size:30px;color:#444;margin-top:20px;max-width:1300px;line-height:1.5;">Physical prototypes, completed and tested, establish full reduction to practice — the strongest possible footing for licensing.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px 60px;margin-top:56px;max-width:1600px;">
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">Tear-away bridges function across every cornice geometry tested</div></div>
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">CNC hot-wire cutting produces commercial-quality results, ±0.5mm tolerance</div></div>
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">Stacked blocks hold structural integrity under 500kg+ load</div></div>
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">Corner bridges validated for drop and edge-impact resistance</div></div>
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">Manual separation confirmed safe — no tools, no sharp edges</div></div>
+      <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--orange);font-size:32px;font-weight:900;">✓</div><div style="font-size:var(--type-small);">Consistent results across EPS densities from 12DV to 36DV</div></div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">06</div>
+  </div>
+</section>
+
+<!-- 7 :: BUILT FOR EASY SEPARATION -->
+<section data-label="Built for Easy Separation" data-speaker-notes="Highlight the separation test - single hand, no tools, safe. This is what makes it viable for retail/DIY as well as commercial." style="background:var(--purple);">
+  <div class="slide" style="background:var(--purple);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">03 — Evidence</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">Built for Easy Separation</div>
+    <div style="display:flex;gap:56px;margin-top:80px;">
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:120px;font-weight:900;color:var(--yellow);line-height:1;">2–5kg</div>
+        <div style="font-size:var(--type-small);margin-top:20px;color:rgba(255,255,255,0.85);">of manual force per bridge — no power tools required</div>
+      </div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:120px;font-weight:900;color:var(--yellow);line-height:1;">&lt;30s</div>
+        <div style="font-size:var(--type-small);margin-top:20px;color:rgba(255,255,255,0.85);">to separate a full 6-profile block, single-handed</div>
+      </div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:120px;font-weight:900;color:var(--yellow);line-height:1;">0</div>
+        <div style="font-size:var(--type-small);margin-top:20px;color:rgba(255,255,255,0.85);">tools, injuries, or damaged profiles across separation testing</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">07</div>
+  </div>
+</section>
+
+<!-- 8 :: FIRST COMMERCIAL DEPLOYMENT -->
+<section data-label="First Commercial Deployment" data-speaker-notes="February 26 2026 - first client delivery. Cornice warehouse facility. This is the key validation milestone for licensees." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">04 — Commercial Proof</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1500px;line-height:1.08;">First Commercial Deployment</div>
+    <div style="display:flex;gap:70px;margin-top:60px;align-items:flex-start;">
+      <div style="flex:0 0 480px;">
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.6);">Milestone date</div>
+        <div style="font-size:56px;font-weight:900;color:var(--yellow);margin-top:8px;">Feb 26, 2026</div>
+        <div style="font-family:var(--f-serif);font-size:28px;color:rgba(255,255,255,0.8);margin-top:24px;line-height:1.5;">Block Box units — NT108 "Fresh" profile, 110mm width — delivered to a cornice warehouse distributor.</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:24px;">
+        <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--yellow);font-size:28px;">●</div><div style="font-size:var(--type-small);">Independent third-party client — not an internal test</div></div>
+        <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--yellow);font-size:28px;">●</div><div style="font-size:var(--type-small);">Real commercial transaction, standard receiving procedures applied</div></div>
+        <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--yellow);font-size:28px;">●</div><div style="font-size:var(--type-small);">Integrated into existing warehouse systems — no special handling needed</div></div>
+        <div style="display:flex;gap:20px;align-items:flex-start;"><div style="color:var(--yellow);font-size:28px;">●</div><div style="font-size:var(--type-small);">Inventor present for the delivery, overseeing quality firsthand</div></div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">08</div>
+  </div>
+</section>
+
+<!-- 9 :: THE WAREHOUSE DIFFERENCE -->
+<section data-label="The Warehouse Difference" data-speaker-notes="Visual comparison: traditional brown box chaos vs organized Block Box units in the same warehouse, same day." style="background:var(--cream);">
+  <div class="slide" style="background:var(--cream);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">04 — Commercial Proof</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">The Warehouse Difference</div>
+    <div style="font-family:var(--f-serif);font-size:28px;color:#444;margin-top:16px;max-width:1300px;">Same facility, same day, same conditions — photographed side by side at the first client deployment.</div>
+    <div style="display:flex;gap:44px;margin-top:48px;">
+      <div style="flex:1;background:var(--paper);border-radius:10px;border:1px solid var(--line);padding:40px;">
+        <div class="eyebrow" style="color:#8a6a3a;">Traditional Method</div>
+        <ul style="font-size:var(--type-small);margin-top:20px;padding-left:28px;line-height:1.9;color:var(--ink);">
+          <li>Loose, chaotic stacking</li>
+          <li>Space inefficient between units</li>
+          <li>Slow, manual inventory tracking</li>
+          <li>Generic, unbranded appearance</li>
+        </ul>
+      </div>
+      <div style="flex:1;background:var(--navy);border-radius:10px;padding:40px;color:#fff;">
+        <div class="eyebrow" style="color:var(--yellow);">Block Box System</div>
+        <ul style="font-size:var(--type-small);margin-top:20px;padding-left:28px;line-height:1.9;">
+          <li>Organized, structured blocks</li>
+          <li>Efficient use of the same footprint</li>
+          <li>Instant visual ID via yellow labels</li>
+          <li>Premium, branded presentation</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">09</div>
+  </div>
+</section>
+
+<!-- 10 :: THE VALUE GUARANTEE LABEL -->
+<section data-label="The Value Guarantee Label" data-speaker-notes="Brand system: shocking yellow label, top-face placement, Value Guarantee messaging. Functional and brand benefits." style="background:var(--paper);">
+  <div class="slide" style="background:var(--paper);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">05 — Brand System</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">The Value Guarantee Label</div>
+    <div style="display:flex;gap:64px;margin-top:56px;align-items:center;">
+      <div style="flex:0 0 420px;">
+        <div style="background:var(--yellow);border-radius:14px;padding:56px 40px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.12);">
+          <div style="font-size:44px;font-weight:900;color:var(--navy);letter-spacing:0.02em;">VALUE<br>GUARANTEE</div>
+          <div style="font-size:22px;font-weight:700;color:var(--navy);margin-top:18px;opacity:0.7;">Fresh · NT108</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:var(--f-serif);font-size:30px;color:var(--ink);line-height:1.55;max-width:900px;">A high-visibility yellow label on the top face of every block — placed for instant recognition during stacking, storage, and receiving.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;margin-top:44px;">
+          <div><div style="font-size:24px;font-weight:800;color:var(--navy);">Identification</div><div style="font-family:var(--f-serif);font-size:22px;color:#666;margin-top:6px;">Spot Block Box units from aisle distance</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--navy);">Quality Signal</div><div style="font-family:var(--f-serif);font-size:22px;color:#666;margin-top:6px;">Communicates the value guarantee promise</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--navy);">Faster Counts</div><div style="font-family:var(--f-serif);font-size:22px;color:#666;margin-top:6px;">Simplifies inventory audits and receiving</div></div>
+          <div><div style="font-size:24px;font-weight:800;color:var(--navy);">Trade Dress</div><div style="font-family:var(--f-serif);font-size:22px;color:#666;margin-top:6px;">Distinctive, protectable brand identity</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">10</div>
+  </div>
+</section>
+
+<!-- 11 :: VALUE FOR MANUFACTURING PARTNERS -->
+<section data-label="Value for Manufacturing Partners" data-speaker-notes="Four value pillars for a manufacturing licensee: cost, quality, operational, environmental." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">06 — Licensee Value</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1500px;line-height:1.08;">Value for Manufacturing Partners</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:56px;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:40px;">
+        <div style="font-size:28px;font-weight:800;color:var(--yellow);">Cost</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.85);margin-top:10px;line-height:1.5;">94% less packaging material, 40–60% lower shipping cost per unit shipped.</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:40px;">
+        <div style="font-size:28px;font-weight:800;color:var(--yellow);">Quality</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.85);margin-top:10px;line-height:1.5;">Structural guarantee through the bridge system, backed by manufacturing reputation.</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:40px;">
+        <div style="font-size:28px;font-weight:800;color:var(--yellow);">Operations</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.85);margin-top:10px;line-height:1.5;">Organized storage, fast counts, simplified handling and receiving.</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:40px;">
+        <div style="font-size:28px;font-weight:800;color:var(--yellow);">Environment</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.85);margin-top:10px;line-height:1.5;">100% recyclable mono-material, drastically reduced packaging waste.</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">11</div>
+  </div>
+</section>
+
+<!-- 12 :: TWO MARKETS, ONE PLATFORM -->
+<section data-label="Two Markets, One Platform" data-speaker-notes="Dual market discovery: commercial/contractor plus retail/DIY. This doubles addressable market." style="background:var(--cream);">
+  <div class="slide" style="background:var(--cream);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">07 — Market</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1500px;line-height:1.08;">Two Markets, One Platform</div>
+    <div style="display:flex;gap:44px;margin-top:56px;">
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:48px;">
+        <div class="eyebrow" style="color:var(--navy);">Commercial &amp; Contractor</div>
+        <div style="font-size:64px;font-weight:900;color:var(--navy);margin-top:16px;">$2.5B</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:#555;margin-top:14px;line-height:1.5;">Bulk palletized shipments, construction distribution, cost-per-meter optimization.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:48px;">
+        <div class="eyebrow" style="color:var(--navy);">Retail &amp; DIY</div>
+        <div style="font-size:64px;font-weight:900;color:var(--navy);margin-top:16px;">$2.5B+</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:#555;margin-top:14px;line-height:1.5;">Shelf-ready merchandising, hardware store point-of-sale, zero-waste consumer packaging.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:24px;margin-top:48px;">
+      <div style="font-size:34px;font-weight:800;color:var(--orange);">=</div>
+      <div style="font-size:56px;font-weight:900;color:var(--orange);">$5B+ combined addressable market</div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">12</div>
+  </div>
+</section>
+
+<!-- 13 :: THE OPPORTUNITY IN NUMBERS -->
+<section data-label="The Opportunity in Numbers" data-speaker-notes="Financial projections: license fees, royalties, lifetime patent value." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">07 — Market</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1500px;line-height:1.08;">The Opportunity in Numbers</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:70px;">
+      <div>
+        <div style="font-size:80px;font-weight:900;color:var(--yellow);">$0.5–2M</div>
+        <div style="font-size:var(--type-small);margin-top:14px;color:rgba(255,255,255,0.85);">upfront fee per major manufacturing license</div>
+      </div>
+      <div>
+        <div style="font-size:80px;font-weight:900;color:var(--yellow);">3–5%</div>
+        <div style="font-size:var(--type-small);margin-top:14px;color:rgba(255,255,255,0.85);">running royalty on Block Box sales revenue</div>
+      </div>
+      <div>
+        <div style="font-size:80px;font-weight:900;color:var(--yellow);">$2.2–2.5B</div>
+        <div style="font-size:var(--type-small);margin-top:14px;color:rgba(255,255,255,0.85);">projected patent portfolio lifetime value</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">13</div>
+  </div>
+</section>
+
+<!-- 14 :: PATENT PROTECTION -->
+<section data-label="Patent Protection" data-speaker-notes="Patent status and moat: CIPC provisional filed, reduction to practice, trade dress, competitive barriers." style="background:var(--paper);">
+  <div class="slide" style="background:var(--paper);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">08 — Protection</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">Patent Protection</div>
+    <div style="display:flex;gap:56px;margin-top:56px;">
+      <div style="flex:1;">
+        <div class="eyebrow" style="color:var(--navy);">Status</div>
+        <div style="font-family:var(--f-serif);font-size:28px;color:var(--ink);margin-top:16px;line-height:1.55;">CIPC provisional filed. Reduction to practice fully documented across working prototypes. Commercial deployment adds independent third-party validation to the record.</div>
+      </div>
+      <div style="flex:1;">
+        <div class="eyebrow" style="color:var(--navy);">Barriers to Entry</div>
+        <div style="display:flex;flex-direction:column;gap:18px;margin-top:16px;">
+          <div style="display:flex;gap:16px;"><div style="color:var(--orange);font-weight:800;">—</div><div style="font-size:var(--type-small);">Bridge geometry &amp; density adaptation, years of development</div></div>
+          <div style="display:flex;gap:16px;"><div style="color:var(--orange);font-weight:800;">—</div><div style="font-size:var(--type-small);">First-to-market position, established Feb 2026</div></div>
+          <div style="display:flex;gap:16px;"><div style="color:var(--orange);font-weight:800;">—</div><div style="font-size:var(--type-small);">Value Guarantee trade dress, distinctive &amp; consistent</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">14</div>
+  </div>
+</section>
+
+<!-- 15 :: LICENSING STRUCTURES -->
+<section data-label="Licensing Structures" data-speaker-notes="Three licensing models: manufacturing license, geographic exclusive, technology transfer + equity." style="background:var(--cream);">
+  <div class="slide" style="background:var(--cream);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);">
+    <div class="eyebrow" style="color:var(--orange);">09 — Partnership</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">Licensing Structures</div>
+    <div style="display:flex;gap:36px;margin-top:56px;">
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:44px;display:flex;flex-direction:column;">
+        <div style="font-size:24px;font-weight:800;color:var(--navy);">Manufacturing License</div>
+        <div style="font-family:var(--f-serif);font-size:24px;color:#555;margin-top:16px;line-height:1.5;flex:1;">Per-unit royalty tied to packaging cost savings, plus Value Guarantee branding rights and technical support.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:44px;display:flex;flex-direction:column;">
+        <div style="font-size:24px;font-weight:800;color:var(--navy);">Geographic Exclusive</div>
+        <div style="font-family:var(--f-serif);font-size:24px;color:#555;margin-top:16px;line-height:1.5;flex:1;">Territory exclusivity with a revenue-share royalty and milestones for retaining the territory.</div>
+      </div>
+      <div style="flex:1;background:var(--paper);border-radius:12px;border:1px solid var(--line);padding:44px;display:flex;flex-direction:column;">
+        <div style="font-size:24px;font-weight:800;color:var(--navy);">Technology Transfer + Equity</div>
+        <div style="font-family:var(--f-serif);font-size:24px;color:#555;margin-top:16px;line-height:1.5;flex:1;">Upfront transfer fee, an equity stake, and joint development of new profiles.</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:var(--navy);">15</div>
+  </div>
+</section>
+
+<!-- 16 :: TARGET PARTNERS -->
+<section data-label="Target Partners" data-speaker-notes="Manufacturing and retail target licensee lists." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">09 — Partnership</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;">Target Partners</div>
+    <div style="display:flex;gap:70px;margin-top:60px;">
+      <div style="flex:1;">
+        <div class="eyebrow" style="color:var(--yellow);">Manufacturing</div>
+        <div style="display:flex;flex-direction:column;gap:22px;margin-top:24px;font-size:var(--type-subtitle);font-weight:600;">
+          <div>Knauf Insulation</div>
+          <div>BASF (Neopor)</div>
+          <div>Saint-Gobain</div>
+          <div>JSP Corporation</div>
+          <div>Kaneka Corporation</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="eyebrow" style="color:var(--yellow);">Retail</div>
+        <div style="display:flex;flex-direction:column;gap:22px;margin-top:24px;font-size:var(--type-subtitle);font-weight:600;">
+          <div>Home Depot</div>
+          <div>Lowe's</div>
+          <div>Builders Warehouse</div>
+          <div>B&amp;Q</div>
+          <div>Bunnings</div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">16</div>
+  </div>
+</section>
+
+<!-- 17 :: WHY NOW -->
+<section data-label="Why Now" data-speaker-notes="First-mover urgency: patent priority date, commercial validation before competitors are aware." style="background:var(--orange);">
+  <div class="slide" style="background:var(--orange);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:rgba(255,255,255,0.85);">10 — Timing</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1300px;line-height:1.08;">Why Now</div>
+    <div style="display:flex;flex-direction:column;gap:30px;margin-top:70px;max-width:1400px;">
+      <div style="display:flex;gap:28px;align-items:baseline;"><div style="font-size:44px;font-weight:900;">1.</div><div style="font-size:var(--type-subtitle);font-weight:600;">Patent priority secured — first-mover advantage established before wider market awareness</div></div>
+      <div style="display:flex;gap:28px;align-items:baseline;"><div style="font-size:44px;font-weight:900;">2.</div><div style="font-size:var(--type-subtitle);font-weight:600;">Commercial validation is fresh — real client acceptance, not a theoretical projection</div></div>
+      <div style="display:flex;gap:28px;align-items:baseline;"><div style="font-size:44px;font-weight:900;">3.</div><div style="font-size:var(--type-subtitle);font-weight:600;">Dual-market discovery doubles the opportunity for early licensing partners</div></div>
+    </div>
+    <div class="pagenum" style="color:#fff;">17</div>
+  </div>
+</section>
+
+<!-- 18 :: NEXT STEPS -->
+<section data-label="Next Steps" data-speaker-notes="Close with clear next steps and contact info for interested licensees." style="background:var(--navy);">
+  <div class="slide" style="background:var(--navy);padding:var(--pad-top) var(--pad-x) var(--pad-bottom);color:#fff;">
+    <div class="eyebrow" style="color:var(--yellow);">Next Steps</div>
+    <div style="font-size:var(--type-title);font-weight:800;margin-top:20px;max-width:1400px;line-height:1.08;">Let's Build the Case Study Together</div>
+    <div style="display:flex;gap:60px;margin-top:64px;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:26px;">
+        <div style="display:flex;gap:20px;align-items:baseline;"><div style="color:var(--yellow);font-size:30px;font-weight:900;">1</div><div style="font-size:var(--type-small);">Review technical &amp; patent documentation under NDA</div></div>
+        <div style="display:flex;gap:20px;align-items:baseline;"><div style="color:var(--yellow);font-size:30px;font-weight:900;">2</div><div style="font-size:var(--type-small);">Schedule a live separation demonstration</div></div>
+        <div style="display:flex;gap:20px;align-items:baseline;"><div style="color:var(--yellow);font-size:30px;font-weight:900;">3</div><div style="font-size:var(--type-small);">Discuss licensing structure &amp; territory fit</div></div>
+      </div>
+      <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:48px;">
+        <div class="eyebrow" style="color:var(--yellow);">Contact</div>
+        <div style="font-size:36px;font-weight:700;margin-top:16px;">Heyns — Block Box Licensing</div>
+        <div style="font-family:var(--f-serif);font-size:26px;color:rgba(255,255,255,0.75);margin-top:12px;">Confidential — under NDA for technical detail</div>
+      </div>
+    </div>
+    <div class="pagenum" style="color:#fff;">18</div>
+  </div>
+</section>
+
+</x-import>
+
+</x-dc>
+</body>
+</html>

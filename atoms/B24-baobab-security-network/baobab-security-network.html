@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baobab Security Network - Global Dashboard</title>
+
+    <!-- Placeholder Comments as per requirements -->
+    <!-- Chosen Palette: Warm Earth (Tones of Beige, Brown, Green, and Blue) -->
+    <!-- Application Structure Plan: A Single-Page Application (SPA) with a fixed sidebar for navigation between 11 thematic global dashboards. The main content area dynamically displays the selected dashboard, which contains interactive charts and KPIs. A global filter allows users to segment relevant data by continent, demonstrating the platform's ability to provide both a macro and micro view of global issues. A separate, dedicated link directs users to the standalone Eskom Crisis dashboard. This structure maintains a fluid SPA experience for global data while allowing deep dives into specific regional crises via dedicated external pages. -->
+    <!-- Visualization & Content Choices: Data from the report's conceptual themes are presented through various Chart.js canvas-based visualizations. GOAL: Compare -> VIZ: Bar charts for country/regional comparisons (e.g., Deforestation Hotspots). GOAL: Change -> VIZ: Line charts for trends over time (e.g., Global Forest Cover). GOAL: Inform/Proportions -> VIZ: Doughnut/Pie charts for breakdowns (e.g., Sources of Pollution). INTERACTION: A dropdown filters all data by continent for global dashboards. This approach makes the abstract concepts of the report tangible and interactive for the user. Library: Chart.js on Canvas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F5; /* Warm Neutral: Light Beige */
+        }
+        /* Style for the fixed sidebar and its content */
+        .sidebar {
+            background-color: #FFFFFF;
+            border-right: 1px solid #E5E7EB;
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            color: #374151; /* Gray-700 */
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #EBF5FF; /* Subtle Blue accent for hover/active */
+            color: #2563EB; /* Blue-600 */
+            border-right: 3px solid #2563EB;
+        }
+        .sidebar-link.active {
+            font-weight: 600;
+        }
+        /* Hide scrollbar for main content, but allow scrolling */
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+        .main-content {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Card styling for dashboard widgets */
+        .widget-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* Chart container styling as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px; /* Base height for mobile */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px; /* Taller height on larger screens */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar w-64 flex-shrink-0 h-full overflow-y-auto hidden md:block">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-gray-800">🌳 Baobab Net</h1>
+                <p class="text-sm text-gray-500 mt-1">Global Pulse Dashboard</p>
+            </div>
+            <nav id="sidebar-nav" class="flex flex-col px-3">
+                <!-- Links will be dynamically inserted here by JS -->
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content flex-1 h-full overflow-y-auto p-4 md:p-8">
+            <!-- Header for Mobile and Top Bar -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 id="dashboard-title" class="text-3xl font-bold text-gray-900">Overview</h2>
+                    <p id="dashboard-subtitle" class="text-gray-600 mt-1">A summary of the Baobab Security Network's mission.</p>
+                </div>
+                <!-- Global Filter -->
+                <div id="global-filter-container" class="flex items-center space-x-4">
+                    <select id="continent-filter" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="All" selected>All Continents</option>
+                        <option value="Africa">Africa</option>
+                        <option value="Asia">Asia</option>
+                        <option value="Europe">Europe</option>
+                        <option value="North America">North America</option>
+                        <option value="South America">South America</option>
+                        <option value="Oceania">Oceania</option>
+                    </select>
+                </div>
+                    <!-- Mobile Nav Toggle -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Sidebar (hidden by default) -->
+            <div id="mobile-menu" class="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 hidden">
+                <aside class="sidebar w-64 h-full overflow-y-auto absolute left-0">
+                    <div class="p-6 flex justify-between items-center">
+                        <div>
+                           <h1 class="text-2xl font-bold text-gray-800">🌳 Baobab Net</h1>
+                           <p class="text-sm text-gray-500 mt-1">Global Pulse Dashboard</p>
+                        </div>
+                        <button id="close-mobile-menu" class="p-2 text-gray-600">&times;</button>
+                    </div>
+                    <nav id="mobile-sidebar-nav" class="flex flex-col px-3">
+                        <!-- Mobile links will be dynamically inserted here -->
+                    </nav>
+                </aside>
+            </div>
+
+            <!-- Dashboard Content Panels -->
+            <div id="dashboard-panels">
+                <!-- Overview Panel (Default) -->
+                <div id="overview-dashboard" class="dashboard-content">
+                    <div class="bg-white p-8 rounded-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-800">Welcome to the Baobab Security Network</h3>
+                        <p class="mt-4 text-gray-600 leading-relaxed">
+                            This platform provides a conceptual demonstration of The Baobab Security Network's vision: a world where data-driven insights empower us to protect our planet and uplift communities. By integrating AI, geospatial mapping, and real-time analytics, we can address critical global challenges.
+                        </p>
+                        <p class="mt-4 text-gray-600 leading-relaxed">
+                            Use the navigation on the left to explore the various thematic dashboards, focusing on global issues. For a deep dive into the **Eskom Crisis in South Africa**, please navigate to its dedicated page via the link in the sidebar. Each dashboard contains interactive visualizations representing key global metrics or specific crisis data. You can use the "Continent" filter at the top right to drill down into regional data and see how the insights change. This interactive experience is designed to showcase the power of a unified, intelligent approach to global sustainability and security.
+                        </p>
+
+                        <!-- NEW SECTION: Large Square Icon Buttons for Thematic Dashboards -->
+                        <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Explore Thematic Dashboards (Individual Pages)</h3>
+                            <p class="text-gray-600 mb-6 leading-relaxed">
+                                Click on a theme below to navigate to its dedicated dashboard page for a deeper dive into specific global issues.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Navigation cards to individual thematic dashboards -->
+                                <a href="deforestation_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🌳</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Deforestation</h4>
+                                    <p class="text-sm text-gray-600">Monitor forest loss.</p>
+                                </a>
+                                <a href="ocean_plastic_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🌊</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Ocean Plastic</h4>
+                                    <p class="text-sm text-gray-600">Track marine pollution.</p>
+                                </a>
+                                <a href="wildlife_protection_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🦁</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Wildlife Protection</h4>
+                                    <p class="text-sm text-gray-600">Safeguard endangered species.</p>
+                                </a>
+                                <a href="energy_optimization_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">⚡</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Energy Optimization</h4>
+                                    <p class="text-sm text-gray-600">Analyze clean energy adoption.</p>
+                                </a>
+                                <a href="resource_management_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">♻️</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Resource Management</h4>
+                                    <p class="text-sm text-gray-600">Gauge consumption patterns.</p>
+                                </a>
+                                <a href="economic_empowerment_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">💰</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Economic Empowerment</h4>
+                                    <p class="text-sm text-gray-600">Track poverty reduction.</p>
+                                </a>
+                                <a href="community_resilience_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🛡️</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Community Resilience</h4>
+                                    <p class="text-sm text-gray-600">Assess disaster preparedness.</p>
+                                </a>
+                                <a href="water_security_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">💧</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Water Security</h4>
+                                    <p class="text-sm text-gray-600">Monitor water resources.</p>
+                                </a>
+                                <a href="air_quality_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">💨</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Air Quality</h4>
+                                    <p class="text-sm text-gray-600">Analyze pollution levels.</p>
+                                </a>
+                                <a href="global_health_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">❤️</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Global Health</h4>
+                                    <p class="text-sm text-gray-600">Track public health metrics.</p>
+                                </a>
+                                <a href="land_degradation_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🌱</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Land Degradation</h4>
+                                    <p class="text-sm text-gray-600">Monitor soil erosion.</p>
+                                </a>
+                                <!-- New Overview button added here -->
+                                <a href="baobab_spa_dashboard.html" class="widget-card p-6 flex flex-col items-center justify-center text-center hover:shadow-lg transition">
+                                    <span class="text-5xl mb-3">🌍</span>
+                                    <h4 class="font-semibold text-lg text-gray-800">Overview</h4>
+                                    <p class="text-sm text-gray-600">Back to the main summary.</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- END NEW SECTION: Large Square Icon Buttons -->
+
+
+                        <!-- Existing Business Functions Section -->
+                        <div class="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Discover Our Business Functions & Services</h3>
+                            <p class="text-gray-600 mb-6 leading-relaxed">
+                                Beyond data insights, The Baobab Security Network offers comprehensive solutions tailored to your organization's needs. Explore our services, pricing models, and partnership opportunities.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Links to conceptual Business Function Pages -->
+                                <a href="pricing.html" class="flex items-center justify-center p-4 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition font-semibold">
+                                    Pricing & Plans
+                                </a>
+                                <a href="about_us.html" class="flex items-center justify-center p-4 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition font-semibold">
+                                    About Us
+                                </a>
+                                <a href="contact.html" class="flex items-center justify-center p-4 bg-purple-100 text-purple-800 rounded-lg hover:bg-purple-200 transition font-semibold">
+                                    Contact Us
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Existing Business Functions Section -->
+
+                    </div>
+                </div>
+
+                <!-- Panels for each dashboard theme will be dynamically inserted here by JS -->
+            </div>
+        </main>
+    </div>
+
+<script>
+// --- DATA SIMULATION & SETUP ---
+const dashboards = {
+    "overview": { title: "Overview", subtitle: "A summary of the Baobab Security Network's mission.", icon: '🌍' },
+    "deforestation": { title: "Deforestation", subtitle: "Monitoring forest loss and conservation.", icon: '🌳' },
+    "ocean-plastic": { title: "Ocean Plastic", subtitle: "Tracking plastic pollution and cleanup efforts.", icon: '🌊' },
+    "wildlife-protection": { title: "Wildlife Protection", subtitle: "Protecting endangered species and habitats.", icon: '🦁' },
+    "energy-optimization": { title: "Energy Optimization", subtitle: "Analyzing renewable adoption and grid efficiency.", icon: '⚡' },
+    "resource-management": { title: "Resource Management", subtitle: "Gauging consumption and circular economy progress.", icon: '♻️' },
+    "economic-empowerment": { title: "Economic Empowerment", subtitle: "Tracking poverty reduction and financial inclusion.", icon: '💰' },
+    "community-resilience": { title: "Community Resilience", subtitle: "Assessing disaster preparedness and recovery.", icon: '🛡️' },
+    "water-security": { title: "Water Security", subtitle: "Monitoring water stress and access to clean water.", icon: '💧' },
+    "air-quality": { title: "Air Quality", subtitle: "Analyzing air pollution levels and health impacts.", icon: '💨' },
+    "global-health": { title: "Global Health", subtitle: "Tracking public health metrics and outbreaks.", icon: '❤️' },
+    "land-degradation": { title: "Land Degradation", subtitle: "Monitoring desertification and soil health.", icon: '🌱' }
+};
+
+const continents = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
+const countries = [
+    { name: "Nigeria", continent: "Africa" }, { name: "Egypt", continent: "Africa" }, { name: "South Africa", continent: "Africa" },
+    { name: "China", continent: "Asia" }, { name: "India", continent: "Asia" }, { name: "Japan", continent: "Asia" },
+    { name: "Germany", continent: "Europe" }, { name: "France", continent: "Europe" }, { name: "United Kingdom", continent: "Europe" },
+    { name: "USA", continent: "North America" }, { name: "Canada", continent: "North America" }, { name: "Mexico", continent: "North America" },
+    { name: "Brazil", continent: "South America" }, { name: "Argentina", continent: "South America" }, { name: "Colombia", continent: "South America" },
+    { name: "Australia", continent: "Oceania" }, { name: "New Zealand", continent: "Oceania" }, { name: "Fiji", continent: "Oceania" }
+];
+
+// Generate simplified, random data for all countries
+const globalData = countries.map(country => ({
+    ...country,
+    // Deforestation
+    deforestationRate: (Math.random() * 2 + 0.1).toFixed(2), // % annual loss
+    forestCover: Math.floor(Math.random() * 80 + 10), // % of land
+    // Ocean Plastic
+    plasticWaste: Math.floor(Math.random() * 1000 + 50), // kilotons/year
+    recyclingRate: Math.floor(Math.random() * 60 + 5), // %
+    // Wildlife Protection
+    threatenedSpecies: Math.floor(Math.random() * 200 + 10),
+    poachingIncidents: Math.floor(Math.random() * 500),
+    // Energy
+    renewableEnergy: Math.floor(Math.random() * 90 + 5), // % of grid
+    energyEfficiency: (Math.random() * 0.5 + 0.8).toFixed(2), // index
+    // Resources
+    resourceConsumption: (Math.random() * 20 + 5).toFixed(2), // tons per capita
+    circularEconomyScore: Math.floor(Math.random() * 80 + 10),
+    // Economy
+    povertyRate: (Math.random() * 30 + 1).toFixed(2), // %
+    gdpGrowth: (Math.random() * 5 - 1).toFixed(2), // %
+    // Resilience
+    disasterRiskIndex: (Math.random() * 9 + 1).toFixed(2),
+    communityPreparedness: Math.floor(Math.random() * 90 + 10),
+    // Water
+    waterStress: (Math.random() * 100).toFixed(2), // %
+    cleanWaterAccess: Math.floor(Math.random() * 80 + 20), // %
+    // Air Quality
+    aqi: Math.floor(Math.random() * 200 + 10),
+    pm25: (Math.random() * 50 + 5).toFixed(2),
+    // Health
+    lifeExpectancy: Math.floor(Math.random() * 30 + 55),
+    healthSpending: (Math.random() * 10 + 2).toFixed(2), // % of GDP
+    // Land Degradation
+    soilHealth: (Math.random() * 0.8 + 0.1).toFixed(2), // index
+    landDegradation: (Math.random() * 40 + 5).toFixed(2) // % of land
+}));
+
+// --- CHART & APP LOGIC ---
+
+let currentDashboard = "overview";
+let currentFilter = "All";
+const chartInstances = {};
+
+// Define Chart Configurations outside DOMContentLoaded for broader scope
+const chartConfigs = {
+    'deforestation': [
+        { id: 'df-line', type: 'line', title: 'Forest Cover Change Over Time (Randomized)', dataFn: getForestCoverData },
+        { id: 'df-bar', type: 'bar', title: 'Top Deforestation Hotspots (by Rate)', dataFn: getDeforestationRateData },
+    ],
+    'ocean-plastic': [
+        { id: 'op-bar', type: 'bar', title: 'Top Plastic Waste Producers', dataFn: getPlasticWasteData },
+        { id: 'op-doughnut', type: 'doughnut', title: 'Recycling Rate Distribution', dataFn: getRecyclingRateDistributionData },
+    ],
+    'wildlife-protection': [
+        { id: 'wp-bar', type: 'bar', title: 'Countries with Most Threatened Species', dataFn: getThreatenedSpeciesData },
+        { id: 'wp-pie', type: 'pie', title: 'Poaching Incidents by Continent', dataFn: getPoachingIncidentsByContinentData },
+    ],
+    'energy-optimization': [
+        { id: 'eo-bar', type: 'bar', title: 'Top Countries by Renewable Energy %', dataFn: getRenewableData },
+        { id: 'eo-line', type: 'line', title: 'Energy Efficiency Index', dataFn: getEnergyEfficiencyData },
+    ],
+    'resource-management': [
+        { id: 'rm-bar', type: 'bar', title: 'Resource Consumption Per Capita', dataFn: getResourceConsumptionData },
+        { id: 'rm-doughnut', type: 'doughnut', title: 'Circular Economy Score Distribution', dataFn: getCircularEconomyScoreData },
+    ],
+    "economic-empowerment": [
+        { id: 'ee-bar', type: 'bar', title: 'Highest Poverty Rates', dataFn: getPovertyRateData },
+        { id: 'ee-line', type: 'line', title: 'GDP Growth Trends', dataFn: getGdpGrowthData },
+    ],
+    'community-resilience': [
+        { id: 'cr-bar', type: 'bar', title: 'Highest Disaster Risk Index', dataFn: getDisasterRiskData },
+        { id: 'cr-pie', type: 'pie', title: 'Community Preparedness by Continent', dataFn: getCommunityPreparednessByContinentData },
+    ],
+    'water-security': [
+        { id: 'ws-bar', type: 'bar', title: 'Highest Water Stress Levels', dataFn: getWaterStressData },
+        { id: 'ws-doughnut', type: 'doughnut', title: 'Clean Water Access Distribution', dataFn: getCleanWaterAccessDistributionData },
+    ],
+    'air-quality': [
+        { id: 'aq-bar', type: 'bar', title: 'Highest Average AQI', dataFn: getAqiData },
+        { id: 'aq-line', type: 'line', title: 'PM2.5 Levels', dataFn: getPm25Data },
+    ],
+    'global-health': [
+        { id: 'gh-bar', type: 'bar', title: 'Life Expectancy', dataFn: getLifeExpectancyData },
+        { id: 'gh-pie', type: 'pie', title: 'Health Spending by Continent (% of GDP)', dataFn: getHealthSpendingByContinentData },
+    ],
+    'land-degradation': [
+        { id: 'ld-bar', type: 'bar', title: 'Highest Land Degradation %', dataFn: getLandDegradationData },
+        { id: 'ld-line', type: 'line', title: 'Soil Health Index', dataFn: getSoilHealthData },
+    ],
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const mobileSidebarNav = document.getElementById('mobile-sidebar-nav');
+    const dashboardPanels = document.getElementById('dashboard-panels');
+    const globalFilterContainer = document.getElementById('global-filter-container');
+    
+    // --- 1. Populate Navigation and Dashboard Panels ---
+    // Add Overview link first explicitly
+    sidebarNav.innerHTML += `<a href="#" data-dashboard="overview" class="sidebar-link flex items-center px-3 py-3 text-sm">${dashboards.overview.icon} <span class="ml-3">${dashboards.overview.title}</span></a>`;
+    mobileSidebarNav.innerHTML += `<a href="#" data-dashboard="overview" class="sidebar-link flex items-center px-3 py-3 text-sm">${dashboards.overview.icon} <span class="ml-3">${dashboards.overview.title}</span></a>`;
+
+
+    Object.keys(dashboards).forEach(key => {
+        if (key === 'overview') return; // Skip overview, already added
+
+        const dash = dashboards[key];
+
+        // Create sidebar links for global dashboards
+        const linkHTML = `<a href="#" data-dashboard="${key}" class="sidebar-link flex items-center px-3 py-3 text-sm">${dash.icon} <span class="ml-3">${dash.title}</span></a>`;
+        sidebarNav.innerHTML += linkHTML;
+        mobileSidebarNav.innerHTML += linkHTML;
+        
+        // Create dashboard panel structure
+        const panel = document.createElement('div');
+        panel.id = `${key}-dashboard`;
+        panel.className = 'dashboard-content hidden'; // Start hidden
+        panel.innerHTML = `
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Cards for ${dash.title} will be inserted here -->
+            </div>
+        `;
+        dashboardPanels.appendChild(panel);
+    });
+
+    // Add explicit link to Eskom Crisis Dashboard (separate page)
+    // IMPORTANT: This link will NOT have a data-dashboard attribute so it's not handled by the SPA logic
+    // It will cause a full page reload to the standalone HTML file.
+    const eskomLinkHTML = `<a href="eskom_crisis_dashboard.html" class="sidebar-link flex items-center px-3 py-3 text-sm">🔌 <span class="ml-3">Eskom Crisis (SA)</span></a>`;
+    sidebarNav.innerHTML += eskomLinkHTML;
+    mobileSidebarNav.innerHTML += eskomLinkHTML;
+
+    // Set initial active link
+    document.querySelector('.sidebar-link[data-dashboard="overview"]')?.classList.add('active');
+
+
+    // Create all chart canvases for global dashboards
+    // This loop now runs for all dashboards defined in chartConfigs
+    Object.keys(chartConfigs).forEach(dashboardKey => {
+        const configs = chartConfigs[dashboardKey];
+        const panel = document.getElementById(`${dashboardKey}-dashboard`)?.querySelector('.grid');
+        
+        // Only proceed if the panel exists in the DOM. This guards against errors
+        // if a dashboard is defined in chartConfigs but its corresponding panel is not in HTML.
+        if (!panel) {
+            console.warn(`Panel for dashboard key "${dashboardKey}" not found. Skipping chart creation.`);
+            return; 
+        }
+
+        configs.forEach(config => {
+            const card = document.createElement('div');
+            card.className = 'widget-card p-4 md:p-6 flex flex-col';
+            card.innerHTML = `
+                <h3 class="font-semibold text-gray-800 mb-4">${config.title}</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="${config.id}"></canvas>
+                </div>
+            `;
+            panel.appendChild(card);
+            // Initialize chart with empty data; data will be loaded when the dashboard becomes active.
+            createChart(config.id, config.type); 
+        });
+    });
+
+
+    // --- 3. Event Listeners ---
+    document.body.addEventListener('click', (e) => {
+        const link = e.target.closest('.sidebar-link');
+        // IMPORTANT CHANGE: Only process links with data-dashboard attribute AND explicitly check if it's NOT the Eskom link
+        // The Eskom link will not have a data-dashboard attribute, so this condition prevents preventDefault() for it.
+        if (link && link.dataset.dashboard) { // Only process if data-dashboard exists
+            e.preventDefault(); // Prevent default for internal SPA links
+            const dashboardId = link.dataset.dashboard;
+            showDashboard(dashboardId);
+            
+            // Close mobile menu on link click
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+        // If it's the Eskom link (which now has no data-dashboard), or any other external link, let the browser handle the navigation naturally.
+    });
+
+    document.getElementById('continent-filter').addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        updateAllCharts();
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.remove('hidden');
+    });
+    closeMobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+    });
+    // Hide menu if clicking outside of it
+    mobileMenu.addEventListener('click', (e) => {
+        if(e.target === mobileMenu) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+
+    // Initialize with Overview dashboard
+    showDashboard('overview');
+});
+
+// --- CORE FUNCTIONS ---
+
+function showDashboard(dashboardId) {
+    currentDashboard = dashboardId;
+
+    // Hide all panels
+    document.querySelectorAll('.dashboard-content').forEach(p => p.classList.add('hidden'));
+    
+    // Show the selected panel
+    const activePanel = document.getElementById(`${dashboardId}-dashboard`);
+    if (activePanel) {
+        activePanel.classList.remove('hidden');
+    }
+
+    // Update header text
+    const dashInfo = dashboards[dashboardId];
+    document.getElementById('dashboard-title').textContent = dashInfo.title;
+    document.getElementById('dashboard-subtitle').textContent = dashInfo.subtitle;
+
+    // Update active link in sidebar
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    // Select sidebar link by data-dashboard attribute (for internal SPA links)
+    document.querySelectorAll(`.sidebar-link[data-dashboard="${dashboardId}"]`).forEach(l => l.classList.add('active'));
+
+    // Toggle global filter visibility - always visible for global dashboards
+    const globalFilterContainer = document.getElementById('global-filter-container');
+    globalFilterContainer.classList.remove('hidden'); // Always show for global dashboards
+
+    // Update charts for the current dashboard
+    updateAllCharts();
+}
+
+function createChart(canvasId, type) { 
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) {
+        console.error(`Canvas element with ID "${canvasId}" not found.`);
+        return; 
+    }
+    
+    // Initialize chart with empty data initially.
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: type === 'doughnut' || type === 'pie' ? 'top' : 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    font: { size: 12 }
+                }
+            },
+            tooltip: {
+                backgroundColor: '#333',
+                titleFont: { size: 14, weight: 'bold' },
+                bodyFont: { size: 12 },
+                padding: 10,
+                cornerRadius: 4
+            }
+        },
+        scales: (type === 'bar' || type === 'line') ? {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#E5E7EB' },
+                ticks: { font: { size: 10 } }
+            },
+            x: {
+                grid: { display: false },
+                ticks: { font: { size: 10 } }
+            }
+        } : {}
+    };
+
+    chartInstances[canvasId] = new Chart(ctx, {
+        type: type,
+        data: { labels: [], datasets: [] }, // Start with empty data
+        options: chartOptions
+    });
+}
+
+function updateAllCharts() {
+    const filteredData = getFilteredData();
+    Object.keys(chartInstances).forEach(id => {
+        const chart = chartInstances[id];
+        // Find the dashboard key this chart belongs to
+        let chartDashboardKey = null;
+        for (const dashKey in chartConfigs) {
+            if (chartConfigs[dashKey].some(config => config.id === id)) {
+                chartDashboardKey = dashKey;
+                break;
+            }
+        }
+
+        if (chartDashboardKey === currentDashboard) {
+            // Get the config for the current chart
+            const config = chartConfigs[currentDashboard].find(c => c.id === id);
+            if (config && config.dataFn) {
+                chart.data = config.dataFn(filteredData);
+                chart.update();
+            } else {
+                console.warn(`Data function not found for chart ID: ${id} in dashboard: ${currentDashboard}`);
+            }
+        } else {
+            // Clear data for charts not on the active dashboard to prevent stale data display
+            // This is primarily for global dashboards, so they don't load data for non-active themes.
+            if (chart.data.labels.length > 0) {
+                chart.data = { labels: [], datasets: [] };
+                chart.update();
+            }
+        }
+    });
+}
+
+
+function getFilteredData() {
+    // This SPA only handles global data now
+    if (currentFilter === "All") {
+        return globalData;
+    }
+    return globalData.filter(d => d.continent === currentFilter);
+}
+
+
+// --- DATA TRANSFORMATION FUNCTIONS FOR CHARTS (GLOBAL) ---
+// These functions now robustly handle filtering for "All" or a specific continent
+
+function getForestCoverData(data) {
+    const sortedData = [...data].sort((a, b) => a.forestCover - b.forestCover).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Forest Cover (%)',
+            data: sortedData.map(d => d.forestCover),
+            borderColor: '#10B981', // Green
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+}
+
+function getDeforestationRateData(data) {
+    const sortedData = [...data].sort((a, b) => b.deforestationRate - a.deforestationRate).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Annual Deforestation Rate (%)',
+            data: sortedData.map(d => d.deforestationRate),
+            backgroundColor: '#EF4444', // Red
+            borderRadius: 4
+        }]
+    };
+}
+
+function getPlasticWasteData(data) {
+    const sortedData = [...data].sort((a, b) => b.plasticWaste - a.plasticWaste).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Plastic Waste (kilotons/year)',
+            data: sortedData.map(d => d.plasticWaste),
+            backgroundColor: '#3B82F6', // Blue
+            borderRadius: 4
+        }]
+    };
+}
+
+function getRecyclingRateDistributionData(data) {
+    // This function inherently works on the provided 'data' whether it's global or filtered
+    const bins = { '0-20%': 0, '21-40%': 0, '41-60%': 0, '>60%': 0 };
+    data.forEach(d => {
+        if (d.recyclingRate <= 20) bins['0-20%']++;
+        else if (d.recyclingRate <= 40) bins['21-40%']++;
+        else if (d.recyclingRate <= 60) bins['41-60%']++;
+        else bins['>60%']++;
+    });
+    return {
+        labels: Object.keys(bins),
+        datasets: [{
+            label: 'Recycling Rate Distribution',
+            data: Object.values(bins),
+            backgroundColor: ['#EF4444', '#F97316', '#FBBF24', '#10B981'],
+        }]
+    };
+}
+
+function getThreatenedSpeciesData(data) {
+    const sortedData = [...data].sort((a, b) => b.threatenedSpecies - a.threatenedSpecies).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Threatened Species Count',
+            data: sortedData.map(d => d.threatenedSpecies),
+            backgroundColor: '#F97316', // Orange
+            borderRadius: 4
+        }]
+    };
+}
+
+function getPoachingIncidentsByContinentData(data) {
+    const continentCounts = continents.reduce((acc, c) => {
+        acc[c] = data.filter(d => d.continent === c).reduce((sum, item) => sum + item.poachingIncidents, 0);
+        return acc;
+    }, {});
+
+    // Filter out continents with 0 incidents if not 'All' view, or keep all for comparison
+    const labels = Object.keys(continentCounts).filter(c => currentFilter === 'All' || continentCounts[c] > 0);
+    const chartData = labels.map(c => continentCounts[c]); // Corrected to use continentCounts directly
+
+    return {
+        labels: labels,
+        datasets: [{
+            data: chartData,
+            backgroundColor: ['#8B5CF6', '#EC4899', '#10B981', '#FBBF24', '#3B82F6', '#6366F1'],
+        }]
+    };
+}
+
+function getRenewableData(data) {
+    const sortedData = [...data].sort((a,b) => b.renewableEnergy - a.renewableEnergy).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Renewable Energy % in Grid',
+            data: sortedData.map(d => d.renewableEnergy),
+            backgroundColor: '#22C55E',
+            borderRadius: 4
+        }]
+    };
+}
+
+function getEnergyEfficiencyData(data) {
+    const sortedData = [...data].sort((a,b) => b.energyEfficiency - a.energyEfficiency).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Energy Efficiency Index',
+            data: sortedData.map(d => d.energyEfficiency),
+            borderColor: '#FBBF24',
+            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+            fill: true
+        }]
+    };
+}
+
+function getResourceConsumptionData(data) {
+    const sortedData = [...data].sort((a, b) => b.resourceConsumption - a.resourceConsumption).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Resource Consumption (tons/capita)',
+            data: sortedData.map(d => d.resourceConsumption),
+            backgroundColor: '#A855F7',
+            borderRadius: 4
+        }]
+    };
+}
+
+function getCircularEconomyScoreData(data) {
+    const bins = { 'Poor (0-25)': 0, 'Fair (26-50)': 0, 'Good (51-75)': 0, 'Excellent (>75)': 0 };
+    data.forEach(d => {
+        if (d.circularEconomyScore <= 25) bins['Poor (0-25)']++;
+        else if (d.circularEconomyScore <= 50) bins['Fair (26-50)']++;
+        else if (d.circularEconomyScore <= 75) bins['Good (51-75)']++;
+        else bins['Excellent (>75)']++;
+    });
+    return {
+        labels: Object.keys(bins),
+        datasets: [{
+            data: Object.values(bins),
+            backgroundColor: ['#EF4444', '#F97316', '#FBBF24', '#22C55E']
+        }]
+    };
+}
+
+function getPovertyRateData(data) {
+    const sortedData = [...data].sort((a, b) => b.povertyRate - a.povertyRate).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Poverty Rate (%)',
+            data: sortedData.map(d => d.povertyRate),
+            backgroundColor: '#D946EF',
+            borderRadius: 4
+        }]
+    };
+}
+
+function getGdpGrowthData(data) {
+    const sortedData = [...data].slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'GDP Growth (%)',
+            data: sortedData.map(d => d.gdpGrowth),
+            borderColor: '#14B8A6',
+            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+            fill: true
+        }]
+    };
+}
+
+function getDisasterRiskData(data) {
+    const sortedData = [...data].sort((a, b) => b.disasterRiskIndex - a.disasterRiskIndex).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Disaster Risk Index',
+            data: sortedData.map(d => d.disasterRiskIndex),
+            backgroundColor: '#78716C', // Stone
+            borderRadius: 4
+        }]
+    };
+}
+
+function getCommunityPreparednessByContinentData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + item.communityPreparedness, 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+
+    return {
+        labels: labels,
+        datasets: [{
+            data: chartData,
+            backgroundColor: ['#8B5CF6', '#EC4899', '#10B981', '#FBBF24', '#3B82F6', '#6366F1'],
+        }]
+    };
+}
+
+function getWaterStressData(data) {
+    const sortedData = [...data].sort((a, b) => b.waterStress - a.waterStress).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Water Stress Level (%)',
+            data: sortedData.map(d => d.waterStress),
+            backgroundColor: '#0EA5E9', // Sky
+            borderRadius: 4
+        }]
+    };
+}
+
+function getCleanWaterAccessDistributionData(data) {
+    const bins = { '0-40%': 0, '41-70%': 0, '71-90%': 0, '>90%': 0 };
+    data.forEach(d => {
+        if (d.cleanWaterAccess <= 40) bins['0-40%']++;
+        else if (d.cleanWaterAccess <= 70) bins['41-70%']++;
+        else if (d.cleanWaterAccess <= 90) bins['71-90%']++;
+        else bins['>90%']++;
+    });
+    return {
+        labels: Object.keys(bins),
+        datasets: [{
+            data: Object.values(bins),
+            backgroundColor: ['#EF4444', '#F97316', '#0EA5E9', '#22C55E']
+        }]
+    };
+}
+
+function getAqiData(data) {
+    const sortedData = [...data].sort((a, b) => b.aqi - a.aqi).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Average AQI',
+            data: sortedData.map(d => d.aqi),
+            backgroundColor: '#84CC16', // Lime
+            borderRadius: 4
+        }]
+    };
+}
+
+function getPm25Data(data) {
+    const sortedData = [...data].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'PM2.5 Levels',
+            data: sortedData.map(d => d.pm25),
+            borderColor: '#64748B',
+            backgroundColor: 'rgba(100, 116, 139, 0.1)',
+            fill: true
+        }]
+    };
+}
+
+function getLifeExpectancyData(data) {
+    const sortedData = [...data].sort((a, b) => b.lifeExpectancy - a.lifeExpectancy).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Life Expectancy (Years)',
+            data: sortedData.map(d => d.lifeExpectancy),
+            backgroundColor: '#EC4899', // Pink
+            borderRadius: 4
+        }]
+    };
+}
+
+function getHealthSpendingByContinentData(data) {
+    const continentAverages = continents.reduce((acc, c) => {
+        const relevantData = data.filter(d => d.continent === c);
+        const avg = relevantData.length > 0 ? relevantData.reduce((sum, item) => sum + parseFloat(item.healthSpending), 0) / relevantData.length : 0;
+        acc[c] = avg;
+        return acc;
+    }, {});
+
+    const labels = Object.keys(continentAverages).filter(c => currentFilter === 'All' || continentAverages[c] > 0);
+    const chartData = labels.map(c => continentAverages[c]);
+
+    return {
+        labels: labels,
+        datasets: [{
+            data: chartData,
+            backgroundColor: ['#8B5CF6', '#EC4899', '#10B981', '#FBBF24', '#3B82F6', '#6366F1'],
+        }]
+    };
+}
+
+function getLandDegradationData(data) {
+    const sortedData = [...data].sort((a, b) => b.landDegradation - a.landDegradation).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Land Degradation (%)',
+            data: sortedData.map(d => d.landDegradation),
+            backgroundColor: '#CA8A04', // Yellow-600
+            borderRadius: 4
+        }]
+    };
+}
+
+function getSoilHealthData(data) {
+    const sortedData = [...data].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 10);
+    return {
+        labels: sortedData.map(d => d.name),
+        datasets: [{
+            label: 'Soil Health Index',
+            data: sortedData.map(d => d.soilHealth),
+            borderColor: '#7C2D12', // Orange-900
+            backgroundColor: 'rgba(124, 45, 18, 0.1)',
+            fill: true
+        }]
+    };
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!-- BushPortal Widget - Sovereign Signal Network Activation -->
+<!-- Inject this widget into any repository to connect to the BushPortal network -->
+
+<div id="bushportal-widget" class="bushportal-container">
+  <style>
+    .bushportal-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    }
+
+    .bushportal-badge {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: 2px solid #fbbf24;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .bushportal-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(245, 158, 11, 0.6);
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    }
+
+    .bushportal-icon {
+      font-size: 20px;
+      animation: rotate 3s linear infinite;
+    }
+
+    .vault-pulse {
+      color: #4ade80;
+      font-size: 10px;
+      letter-spacing: 2px;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 4px 30px rgba(245, 158, 11, 0.7); }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .bushportal-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: linear-gradient(135deg, #451a03 0%, #052e16 100%);
+      border: 4px solid #fbbf24;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .bushportal-modal.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: all;
+    }
+
+    .bushportal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 9998;
+    }
+
+    .bushportal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .bushportal-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .bushportal-title {
+      color: #fbbf24;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0;
+      text-shadow: 0 2px 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .bushportal-subtitle {
+      color: #fcd34d;
+      font-size: 12px;
+      letter-spacing: 2px;
+      opacity: 0.8;
+    }
+
+    .bushportal-content {
+      color: #fef3c7;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .bushportal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .stat-item {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid #f59e0b;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stat-value {
+      color: #fbbf24;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      color: #fcd34d;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+
+    .bushportal-link {
+      display: block;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      text-align: center;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 2px solid #fbbf24;
+    }
+
+    .bushportal-link:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: #fbbf24;
+      font-size: 28px;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(245, 158, 11, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .baobab-ascii {
+      text-align: center;
+      color: #4ade80;
+      font-family: monospace;
+      font-size: 10px;
+      line-height: 1.2;
+      margin: 15px 0;
+      opacity: 0.6;
+    }
+  </style>
+
+  <!-- Widget Badge -->
+  <div class="bushportal-badge" onclick="toggleBushPortal()">
+    <span class="bushportal-icon">🌳</span>
+    <span>BushPortal</span>
+    <span class="vault-pulse">●●●●●</span>
+  </div>
+
+  <!-- Overlay -->
+  <div class="bushportal-overlay" id="bushportal-overlay" onclick="toggleBushPortal()"></div>
+
+  <!-- Modal -->
+  <div class="bushportal-modal" id="bushportal-modal">
+    <button class="close-modal" onclick="toggleBushPortal()">×</button>
+
+    <div class="bushportal-header">
+      <div class="bushportal-title">🌳 BushPortal Network 🌳</div>
+      <div class="bushportal-subtitle">SOVEREIGN SIGNAL STATION</div>
+    </div>
+
+    <div class="baobab-ascii">
+        🍃
+       🌿🍃🌿
+      🍃 🌳 🍃
+         |
+         |
+        \|/
+      ═══════
+    </div>
+
+    <div class="bushportal-content">
+      <p><strong>📡 This repository is connected to the BushPortal Network</strong></p>
+      <p>Broadcasting sovereign frequencies from Mzansi to Timbuktu. Deep roots anchor modern transmission through the eternal Baobab network.</p>
+    </div>
+
+    <div class="bushportal-stats">
+      <div class="stat-item">
+        <div class="stat-value">42</div>
+        <div class="stat-label">Active Nodes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">●●●●●</div>
+        <div class="stat-label">VaultPulse</div>
+      </div>
+    </div>
+
+    <a href="https://github.com/heyns1000/baobab-bush-portal" target="_blank" class="bushportal-link">
+      🎙️ Enter the Portal
+    </a>
+  </div>
+
+  <script>
+    function toggleBushPortal() {
+      const modal = document.getElementById('bushportal-modal');
+      const overlay = document.getElementById('bushportal-overlay');
+      modal.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    // Auto-display on first visit
+    if (!sessionStorage.getItem('bushportal-seen')) {
+      setTimeout(() => {
+        toggleBushPortal();
+        sessionStorage.setItem('bushportal-seen', 'true');
+      }, 2000);
+    }
+  </script>
+</div>

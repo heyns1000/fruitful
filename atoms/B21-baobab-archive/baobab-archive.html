@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baobab Archive™ – FAA.zone Global Infrastructure Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Base Styles - Apple inspired cleanliness */
+        :root {
+            --text-color-light: #1d1d1f;
+            --text-color-dark: #f5f5f7;
+            --bg-color-light: #f5f5f7;
+            --bg-color-dark: #1a1a1c;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2a2a2e;
+            --border-color-light: #e8e8ed;
+            --border-color-dark: #3a3a3e;
+            --primary-color: #0071e3; /* Apple Blue */
+            --secondary-color: #30d158; /* Apple Green */
+            --muted-text-light: #6e6e73;
+            --muted-text-dark: #a0a0a5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.9); /* Light mode default */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color-light);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dark-mode .main-header {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .logo {
+            color: var(--text-color-dark);
+        }
+        .logo-faa {
+            color: var(--primary-color);
+        }
+        .logo-buildnest { /* Renamed for this page to reflect FAA.zone */
+            color: var(--text-color-light);
+        }
+        .dark-mode .logo-buildnest {
+            color: var(--text-color-dark);
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 25px;
+        }
+
+        .nav-list a {
+            text-decoration: none;
+            color: var(--muted-text-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .nav-list a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .nav-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hamburger-menu {
+            display: none; /* Hidden on desktop */
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .hamburger-menu {
+            color: var(--text-color-dark);
+        }
+
+        /* Section Styling */
+        .section-padding {
+            padding: 80px 20px;
+            background-color: var(--card-bg-light);
+            border-bottom: 1px solid var(--border-color-light);
+            border-top: 1px solid var(--border-color-light);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .section-padding {
+            background-color: var(--card-bg-dark);
+            border-bottom-color: var(--border-color-dark);
+            border-top-color: var(--border-color-dark);
+        }
+        .section-padding:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .section-title {
+            color: var(--text-color-dark);
+        }
+
+        /* Module Specific Sections (Adjusted for Baobab Archive) */
+        .module-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .module-hero {
+            background-color: var(--bg-color-dark);
+        }
+        .module-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-hero h1 {
+            color: var(--text-color-dark);
+        }
+        .module-hero p {
+            font-size: 1.2rem;
+            color: var(--muted-text-light);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-hero p {
+            color: var(--muted-text-dark);
+        }
+
+        .module-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .module-feature-item {
+            background-color: var(--card-bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-light);
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .dark-mode .module-feature-item {
+            background-color: var(--card-bg-dark);
+            border-color: var(--border-color-dark);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .module-feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .dark-mode .module-feature-item:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .module-feature-item .icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .module-feature-item h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-feature-item h3 {
+            color: var(--text-color-dark);
+        }
+        .module-feature-item p {
+            font-size: 0.95rem;
+            color: var(--muted-text-light);
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-feature-item p {
+            color: var(--muted-text-dark);
+        }
+        .learn-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .learn-more:hover {
+            text-decoration: underline;
+        }
+
+        .module-cta-section {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: var(--bg-color-light);
+            transition: background-color 0.3s ease;
+        }
+        .dark-mode .module-cta-section {
+            background-color: var(--bg-color-dark);
+        }
+        .module-cta-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-cta-section h2 {
+            color: var(--text-color-dark);
+        }
+        .module-cta-section p {
+            font-size: 1.1rem;
+            color: var(--muted-text-light);
+            margin-bottom: 40px;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .module-cta-section p {
+            color: var(--muted-text-dark);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: var(--card-bg-light);
+            border-top: 1px solid var(--border-color-light);
+            padding: 40px 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .dark-mode .main-footer {
+            background-color: var(--card-bg-dark);
+            border-top-color: var(--border-color-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            flex: 1 1 300px;
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--muted-text-light);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .dark-mode .copyright {
+            color: var(--muted-text-dark);
+        }
+
+        .footer-links {
+            display: flex;
+            flex: 2 1 500px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-column {
+            flex: 1 1 150px;
+        }
+
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color-light);
+            transition: color 0.3s ease;
+        }
+        .dark-mode .footer-column h4 {
+            color: var(--text-color-dark);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            color: var(--muted-text-light);
+            margin-bottom: 8px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        .dark-mode .footer-column a {
+            color: var(--muted-text-dark);
+        }
+        .dark-mode .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .main-nav {
+                display: none; /* Hidden by default on mobile */
+                flex-direction: column;
+                position: absolute;
+                top: 70px; /* Below header */
+                left: 0;
+                width: 100%;
+                background-color: var(--card-bg-light);
+                border-bottom: 1px solid var(--border-color-light);
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                padding: 20px 0;
+                z-index: 999;
+            }
+            .dark-mode .main-nav {
+                background-color: var(--card-bg-dark);
+                border-bottom-color: var(--border-color-dark);
+            }
+            .main-nav.active {
+                display: flex;
+            }
+            .nav-list {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+            }
+            .nav-list li {
+                width: 100%;
+            }
+            .nav-list a {
+                display: block;
+                padding: 10px 0;
+            }
+            .nav-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color-light);
+            }
+            .dark-mode .nav-actions {
+                border-top-color: var(--border-color-dark);
+            }
+            .nav-actions .cta-button {
+                width: calc(100% - 40px); /* Adjust for padding */
+                margin: 0 20px;
+                text-align: center;
+            }
+
+            .hamburger-menu {
+                display: block; /* Show hamburger on small screens */
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .hero-content .tagline {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .feature-item, .use-case-item, .pricing-card {
+                padding: 20px;
+            }
+            .pricing-card .price {
+                font-size: 2rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-brand, .footer-links {
+                flex: 1 1 100%;
+            }
+            .footer-column {
+                flex: 1 1 100%;
+                margin-bottom: 20px;
+            }
+            .footer-column h4 {
+                margin-bottom: 10px;
+            }
+            .footer-column ul {
+                text-align: center;
+            }
+            .footer-column a {
+                display: inline-block;
+                margin: 0 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">Baobab Archive™</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#data-integrity">Data Integrity</a></li>
+                    <li><a href="#access">Access & Retrieval</a></li>
+                    <li><a href="#get-started">Get Started</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="#" class="cta-button nav-cta">Access Archive</a>
+                </div>
+            </nav>
+            <button class="hamburger-menu" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="module-hero">
+            <div class="container hero-content">
+                <h1>Baobab Archive™: The Immutable Repository of FAA.zone's Historical Data</h1>
+                <p>The Baobab Archive™ serves as the central, immutable repository for all historical data, records, and events across the FAA.zone ecosystem. Ensuring long-term data integrity and verifiable provenance for future generations.</p>
+                <a href="#" class="cta-button hero-cta">Explore Archived Data &rarr;</a>
+            </div>
+        </section>
+
+        <section id="overview" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Overview of Baobab Archive™</h2>
+                <div class="module-features-grid">
+                    <div class="module-feature-item">
+                        <i class="fas fa-database icon"></i>
+                        <h3>Historical Data Storage</h3>
+                        <p>Securely stores all past transactions, records, and system states from the FAA.zone grid.</p>
+                    </div>
+                    <div class="module-feature-item">
+                        <i class="fas fa-fingerprint icon"></i>
+                        <h3>Immutable Records</h3>
+                        <p>Utilizes advanced cryptographic techniques to ensure data cannot be altered once archived.</p>
+                    </div>
+                    <div class="module-feature-item">
+                        <i class="fas fa-calendar-alt icon"></i>
+                        <h3>Timestamped Provenance</h3>
+                        <p>Every archived entry is precisely timestamped, providing verifiable historical context.</p>
+                    </div>
+                    <div class="module-feature-item">
+                        <i class="fas fa-globe-americas icon"></i>
+                        <h3>Global Accessibility</h3>
+                        <p>Secure and auditable access to historical data for authorized entities across the globe.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="data-integrity" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Ensuring Data Integrity</h2>
+                <p class="text-center" style="max-width: 800px; margin: 0 auto 40px;">The Baobab Archive™ employs multi-layered security and verification protocols to guarantee the absolute integrity and authenticity of every piece of archived data.</p>
+                <div class="module-features-grid">
+                    <div class="module-feature-item">
+                        <i class="fas fa-shield-alt icon"></i>
+                        <h3>Cryptographic Hashing</h3>
+                        <p>Data is hashed and chained, making any tampering immediately detectable and verifiable.</p>
+                    </div>
+                    <div class="module-feature-item">
+                        <i class="fas fa-network-wired icon"></i>
+                        <h3>Distributed Verification</h3>
+                        <p>Data integrity is continuously verified across a distributed network of nodes, ensuring resilience.</p>
+                    </div>
+                    <div class="module-feature-item">
+                        <i class="fas fa-file-contract icon"></i>
+                        <h3>Audit-Ready Records</h3>
+                        <p>All archived data is structured for easy and transparent auditing by regulatory bodies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="access" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">Access & Retrieval</h2>
+                <div class="use-case-grid">
+                    <div class="use-case-item">
+                        <i class="fas fa-search icon"></i>
+                        <h3>Advanced Search</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Powerful search capabilities for historical records.</li>
+                            <li><i class="fas fa-check"></i> Filter by date, sector, entity, and more.</li>
+                        </ul>
+                    </div>
+                    <div class="use-case-item">
+                        <i class="fas fa-download icon"></i>
+                        <h3>Secure Retrieval</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Authenticated and permissioned data retrieval.</li>
+                            <li><i class="fas fa-check"></i> Download verifiable data packages.</li>
+                        </ul>
+                    </div>
+                    <div class="use-case-item">
+                        <i class="fas fa-history icon"></i>
+                        <h3>Timeline Reconstruction</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Reconstruct past events and system states accurately.</li>
+                            <li><i class="fas fa-check"></i> Essential for forensic analysis and historical research.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="module-cta-section">
+            <div class="container">
+                <h2 class="section-title">Ready to explore FAA.zone's history?</h2>
+                <p>Access the Baobab Archive™ for verifiable, immutable historical data and insights.</p>
+                <a href="#" class="cta-button hero-cta">Access Baobab Archive™ &rarr;</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-faa">FAA.zone</span> / <span class="logo-buildnest">BuildNest™</span>
+                </div>
+                <p class="copyright">&copy; 2025 FAA.zone. All systems, symbols, and brand echoes protected by the Omni Present Copyright™.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>BuildNest™</h4>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#use-cases">Use Cases</a></li>
+                        <li><a href="index.html#pricing">Pricing</a></li>
+                        <li><a href="plotvault.html">Modules</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>FAA.zone</h4>
+                    <ul>
+                        <li><a href="about-faa.html">About FAA Systems™</a></li>
+                        <li><a href="omni-grid.html">Omni Grid™</a></li>
+                        <li><a href="baobab-archive.html">Baobab Archive™</a></li>
+                        <li><a href="compliance.html">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="contact-support.html">Contact Support</a></li>
+                        <li><a href="partner-program.html">Partner Program</a></li>
+                        <li><a href="developer-api.html">Developer API</a></li>
+                        <li><a href="legal-privacy.html">Legal & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeToggle = document.getElementById('mode-toggle');
+            const body = document.body;
+            const mainNav = document.querySelector('.main-nav');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+
+            const savedMode = localStorage.getItem('themeMode');
+            if (savedMode) {
+                body.classList.add(savedMode);
+            } else {
+                body.classList.add('light-mode');
+            }
+
+            if (modeToggle) {
+                modeToggle.addEventListener('click', () => {
+                    if (body.classList.contains('light-mode')) {
+                        body.classList.remove('light-mode');
+                        body.classList.add('dark-mode');
+                        localStorage.setItem('themeMode', 'dark-mode');
+                    } else {
+                        body.classList.remove('dark-mode');
+                        body.classList.add('light-mode');
+                        localStorage.setItem('themeMode', 'light-mode');
+                    }
+                });
+            }
+
+            if (hamburgerMenu) {
+                hamburgerMenu.addEventListener('click', () => {
+                    if (mainNav) {
+                        mainNav.classList.toggle('active');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.nav-list a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mainNav && mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                    }
+                });
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#' || href === '') {
+                        e.preventDefault();
+                    } else {
+                        const targetElement = document.querySelector(href);
+                        if (targetElement) {
+                            e.preventDefault();
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

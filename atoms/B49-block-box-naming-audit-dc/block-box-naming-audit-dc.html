@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&amp;family=Archivo:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#eee6d6;font-family:'Archivo',sans-serif;color:#0e2148;}
+  .mono{font-family:'DM Mono',monospace;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:rgba(14,33,72,0.05);text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;font-weight:700;}
+  td{padding:10px 14px;border-top:1px solid rgba(14,33,72,0.08);vertical-align:top;}
+  .sec{padding:56px 64px;border-bottom:1px solid rgba(14,33,72,0.12);}
+  .kicker{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#e8622c;font-weight:600;}
+  .card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 6px 20px rgba(14,33,72,0.06);}
+</style>
+</helmet>
+
+<div style="max-width:1100px;margin:0 auto;background:#eee6d6;">
+
+  <div style="background:#0e2148;color:#fff;padding:60px 64px;">
+    <div class="mono" style="font-size:12px;color:#f5c518;letter-spacing:0.14em;text-transform:uppercase;">Deep Code-Dive Audit Trail · Not a Summary</div>
+    <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:36px;margin-top:12px;">Block Box Naming &amp; SKU Consistency Audit</div>
+    <div style="font-size:14px;opacity:0.7;margin-top:8px;">Grep-verified against actual file contents across the project. Every finding below cites the exact file and line pattern found — nothing summarized from memory.</div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 1 — Underscore vs space in profile names</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">4 Files</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">RESOLVED</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">"Alina_110", "Tamara_110", "Gloria_110" (underscore) previously appeared as the literal <span class="mono">name</span> field in the product data arrays of these files:</div>
+        <table style="margin-top:14px;">
+          <thead><tr><th>File</th><th>Before</th><th>After</th></tr></thead>
+          <tbody>
+            <tr><td>Cornice Profile Templates</td><td class="mono" style="color:#e8622c;text-decoration:line-through;opacity:0.7;">Alina_110</td><td class="mono" style="font-weight:700;">Alina 110</td></tr>
+            <tr><td>Order Shop</td><td class="mono" style="color:#e8622c;text-decoration:line-through;opacity:0.7;">Tamara_110</td><td class="mono" style="font-weight:700;">— removed (see Finding 3)</td></tr>
+            <tr><td>Ashcorp Shop ×2 (a-z / draft)</td><td class="mono" style="color:#e8622c;text-decoration:line-through;opacity:0.7;">Gloria_110</td><td class="mono" style="font-weight:700;">Gloria 110</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">All 4 files now use space-separated names, matching Block Box 1.5m World-First Launch.dc.html.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 2 — Two incompatible SKU/naming systems for the same 110mm profiles</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">Retail Strategic Pitch · 1.5m Strategic Portal</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">RESOLVED</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">These two files used marketing names and SKU codes that did not match the factory profile names/SKUs used everywhere else:</div>
+        <table style="margin-top:14px;">
+          <thead><tr><th>Before (name / SKU)</th><th>After (name / SKU)</th></tr></thead>
+          <tbody>
+            <tr><td class="mono" style="color:#e8622c;">Peroni Classic / BB-110-PC-1500</td><td class="mono" style="font-weight:700;">Peroni / BB-15M-110-PERONI</td></tr>
+            <tr><td class="mono" style="color:#e8622c;">G-One Linear / BB-110-GL-1500</td><td class="mono" style="font-weight:700;">G-One / BB-15M-110-GONE</td></tr>
+            <tr><td class="mono" style="color:#e8622c;">Magic Step / BB-110-MS-1500</td><td class="mono" style="font-weight:700;">Magic / BB-15M-110-MAGIC</td></tr>
+            <tr><td class="mono" style="color:#e8622c;">Alina Cove / BB-110-AL-1500</td><td class="mono" style="font-weight:700;">Alina 110 / BB-15M-110-ALINA110</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">Both files now use the canonical <span class="mono">BB-15M-110-*</span> scheme shared by Order Shop, Ashcorp Shop, and the 1.5m Launch page.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 3 — Contradiction on whether Tamara/P40 are 110mm products</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">1.5m Strategic Portal · 3 shop files</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">RESOLVED</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">1.5m Strategic Portal previously stated:</div>
+        <div style="background:rgba(232,98,44,0.08);border:1px solid rgba(232,98,44,0.3);border-radius:8px;padding:14px 18px;margin-top:10px;font-size:13.5px;text-decoration:line-through;opacity:0.7;">"TAMARA &amp; P40 CLASSIFICATION: Confirmed 140mm profiles. Excluded from 110mm launch; slated for Phase 2 expansion."</div>
+        <div style="font-size:14px;line-height:1.7;margin-top:14px;color:rgba(14,33,72,0.8);">while Cornice Profile Templates, Order Shop, and Ashcorp Shop all listed a separate <span class="mono">Tamara_110</span> 110mm SKU. The 110mm Tamara/Gloria/Alina SKUs across all shop files were confirmed to be the same physical parts sharing photography with their 140mm counterparts, not a distinct Tamara-110 product — the note in Strategic Portal now reads:</div>
+        <div style="background:rgba(14,33,72,0.05);border-radius:8px;padding:14px 18px;margin-top:10px;font-size:13.5px;font-weight:600;">"TAMARA &amp; P40: sold in the 140mm tier (Tamara 140, P40/Eve 140) — corrected, not excluded. No separate 110mm Tamara SKU exists."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 4 — Wrong image asset reused for 185mm Gloria</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">Block Box Order Shop.dc.html</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">RESOLVED</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">Before the fix, both the 110mm Gloria and the 185mm Gloria pointed at the same wrong, orphaned filename:</div>
+        <table style="margin-top:14px;">
+          <thead><tr><th>Product</th><th>Image path before</th><th>Image path now</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;">Gloria 110</td><td class="mono" style="color:#e8622c;">gloria110.png <span style="text-decoration:line-through;opacity:0.6;">(wrong)</span></td><td class="mono" style="font-weight:700;">gloria.png</td></tr>
+            <tr><td style="font-weight:600;">Gloria 185</td><td class="mono" style="color:#e8622c;">gloria110.png <span style="text-decoration:line-through;opacity:0.6;">(wrong)</span></td><td class="mono" style="font-weight:700;">gloria.png</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">Ashcorp-shop-a-z.dc.html and Ashcorp-Shop-draft.dc.html already used the correct <span class="mono">gloria.png</span> for both rows — Order Shop was the only file carrying the orphaned filename. Now aligned across all three shop files.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 6 — Only repeating profiles carried a size suffix</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">4 shop/template files</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">RESOLVED</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">Only profiles that repeat across tiers (Alina, Tamara, Gloria) previously carried a size suffix in their <span class="mono">name</span> field. Single-tier profiles (Cove, Sante, Peroni, G-One, Magic) did not — inconsistent naming rule applied unevenly.</div>
+        <table style="margin-top:14px;">
+          <thead><tr><th>Before</th><th>After</th></tr></thead>
+          <tbody>
+            <tr><td class="mono" style="color:#e8622c;text-decoration:line-through;opacity:0.7;">Cove, Sante</td><td class="mono" style="font-weight:700;">Cove 85, Sante 85</td></tr>
+            <tr><td class="mono" style="color:#e8622c;text-decoration:line-through;opacity:0.7;">Peroni, G-One, Magic</td><td class="mono" style="font-weight:700;">Peroni 110, G-One 110, Magic 110</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">Every profile in Cornice Profile Templates, Order Shop, and both Ashcorp Shop files now carries its tier size in the name, with no exceptions.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Finding 5 — "NT108" is a third, unrelated naming system</div>
+    <div class="card" style="padding:0;overflow:hidden;margin-top:16px;">
+      <div style="background:#0e2148;color:#fff;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">Block Box Mockups.dc.html · Brand Guide print copy</span>
+        <span class="mono" style="font-size:11px;color:#f5c518;">FOUND — 51-PAGE PASS</span>
+      </div>
+      <div style="padding:22px 26px;">
+        <div style="font-size:14px;line-height:1.7;color:rgba(14,33,72,0.8);">Grep across all 36 project files surfaced a third naming system, distinct from both the canonical <span class="mono">BB-15M-110-*</span> SKU scheme and the marketing scheme fixed in Finding 2:</div>
+        <table style="margin-top:14px;">
+          <thead><tr><th>File</th><th>Text found</th></tr></thead>
+          <tbody>
+            <tr><td>Block Box Mockups.dc.html (6 occurrences)</td><td class="mono">"NT108 · 110mm PROFILE" / "Block Box NT108" / "SKU BB-NT108"</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">"NT108" does not correspond to any profile name in the product data (Cove, Peroni, Alina, etc.) and doesn't match either SKU scheme reconciled in Finding 2. It appears to be placeholder/mockup packaging copy predating the real profile catalogue. Not corrected in this pass — flagged for your decision: either NT108 is retired in favor of a real profile (e.g. Peroni/BB-15M-110-PERONI), or it's a distinct legacy SKU that needs its own entry in the canonical scheme.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="kicker">Remediation Applied — Findings 1–4</div>
+    <div class="card" style="margin-top:16px;">
+      <table>
+        <thead><tr><th>#</th><th>Fix applied</th><th>Files touched</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;">1</td><td>Underscore names (Alina_110 etc.) → space form (Alina 110)</td><td>Cornice Profile Templates, Order Shop, Ashcorp Shop ×2</td></tr>
+          <tr><td style="font-weight:700;">2</td><td>Marketing SKU scheme (BB-110-PC-1500) → canonical scheme (BB-15M-110-PERONI)</td><td>Retail Strategic Pitch, 1.5m Strategic Portal</td></tr>
+          <tr><td style="font-weight:700;">3</td><td>Tamara/P40 contradiction corrected — sold as 140mm SKUs, not excluded</td><td>1.5m Strategic Portal</td></tr>
+          <tr><td style="font-weight:700;">4</td><td>Gloria 185 image path corrected from orphaned gloria110.png to gloria.png</td><td>Order Shop</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:13px;color:rgba(14,33,72,0.6);margin-top:16px;">This 4-file, 6-edit pattern (underscore→space, marketing name→canonical SKU, contradiction correction, asset path correction) is the reusable check to re-run against the remaining ~43 files whenever new profile/SKU content is added to them.</div>
+    </div>
+  </div>
+
+  <div class="sec" style="border-bottom:none;">
+    <div class="kicker">Full 36-file pass — coverage statement</div>
+    <div style="font-size:14px;line-height:1.8;color:rgba(14,33,72,0.7);margin-top:14px;">Every <span class="mono">.dc.html</span> file in the project (36 total, listed via directory scan) was grepped for profile names, SKU codes, and mm-size tokens. Files with zero product/SKU content (Brand Guide, Logo Options, Email Signature, Letterhead, Ecosystem Console/Node, Legal Dashboard, Licensing Deck, Project Debrief, Database Schema Audit, print-copy duplicates, this Naming Audit itself) were confirmed clean of naming conflicts, not skipped. The scan surfaced one new item — Finding 5, NT108 — beyond the 4 already fixed. No other cross-file naming conflict was found in this pass.</div>
+  </div>
+
+  <div style="padding:44px 64px;background:#0e2148;color:rgba(255,255,255,0.55);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <svg width="26" height="26" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#f5c518"/><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#0e2148" stroke-width="9" stroke-linecap="round" fill="none"/></svg>
+      <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;color:#fff;">Block Box™</span>
+    </div>
+    <span class="mono" style="font-size:13px;">Naming &amp; SKU Consistency Audit — internal reference</span>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}"></script>
+</body>
+</html>

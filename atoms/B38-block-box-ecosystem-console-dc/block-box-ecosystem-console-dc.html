@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#0E1B2C;font-family:'Bricolage Grotesque',sans-serif;}
+  .mono{font-family:'DM Mono',monospace;}
+  a{color:#FFC145;}
+  a:hover{color:#F76B1C;}
+</style>
+</helmet>
+
+<div style="width:1760px;background:#0E1B2C;color:#F6F2E9;box-sizing:border-box;">
+
+  <!-- HEADER -->
+  <div style="padding:56px 90px 0;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <img src="./assets/fruitful-logo.png" alt="Fruitful" style="width:36px;height:36px;border-radius:9px;">
+      <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Fruitful™ Ecosystem · Logistics &amp; Packaging</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px;flex-wrap:wrap;gap:20px;">
+      <div style="display:flex;align-items:center;gap:22px;">
+        <svg width="72" height="72" viewBox="0 0 340 340" style="flex:none;">
+          <rect x="52" y="52" width="176" height="176" rx="16" fill="#fff"/>
+          <rect x="64" y="64" width="152" height="152" rx="10" fill="#FFC145" stroke="#0E1B2C" stroke-width="7"/>
+          <rect x="80" y="80" width="16" height="120" rx="3" fill="#0E1B2C"/>
+          <rect x="104" y="80" width="16" height="120" rx="3" fill="#0E1B2C"/>
+          <rect x="128" y="80" width="16" height="120" rx="3" fill="#0E1B2C"/>
+          <rect x="152" y="80" width="16" height="120" rx="3" fill="#0E1B2C"/>
+          <line x1="76" y1="165" x2="200" y2="165" stroke="#fff" stroke-width="4" stroke-dasharray="6 6"/>
+          <g transform="translate(215,60) rotate(18)">
+            <rect x="0" y="0" width="26" height="150" rx="4" fill="#F76B1C" stroke="#0E1B2C" stroke-width="6"/>
+            <line x1="-6" y1="88" x2="32" y2="88" stroke="#fff" stroke-width="3" stroke-dasharray="4 5"/>
+          </g>
+        </svg>
+        <div>
+          <div style="font-size:46px;font-weight:800;line-height:1.02;">Block Box<span style="font-size:0.4em;vertical-align:super;">™</span> Console</div>
+          <div style="font-size:18px;color:rgba(246,242,233,0.6);margin-top:6px;">Ecosystem-native IP node, managed by agents across invention, licensing, manufacturing &amp; field intelligence.</div>
+        </div>
+      </div>
+      <div class="mono" style="font-size:13px;color:rgba(246,242,233,0.45);text-align:right;">
+        Core node · Logistics &amp; Packaging<br>Operational tier · 15.63% royalty
+      </div>
+    </div>
+
+    <!-- TAB BAR -->
+    <div style="display:flex;gap:6px;margin-top:40px;border-bottom:1px solid rgba(246,242,233,0.12);">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+        <div onClick="{{ tab.onClick }}" style="{{ tab.style }}">{{ tab.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- NODE OVERVIEW -->
+  <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
+  <div style="padding:70px 90px 100px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+      <div style="background:#162945;border-radius:14px;padding:32px;">
+        <div style="font-size:44px;font-weight:800;color:#F76B1C;">94%</div>
+        <div style="font-size:16px;font-weight:600;margin-top:8px;color:rgba(246,242,233,0.75);">less packaging material per unit</div>
+      </div>
+      <div style="background:#162945;border-radius:14px;padding:32px;">
+        <div style="font-size:44px;font-weight:800;color:#F76B1C;">40–60%</div>
+        <div style="font-size:16px;font-weight:600;margin-top:8px;color:rgba(246,242,233,0.75);">lower shipping cost per shipment</div>
+      </div>
+      <div style="background:#162945;border-radius:14px;padding:32px;">
+        <div style="font-size:44px;font-weight:800;color:#F76B1C;">100%</div>
+        <div style="font-size:16px;font-weight:600;margin-top:8px;color:rgba(246,242,233,0.75);">recyclable, mono-material EPS</div>
+      </div>
+      <div style="background:#162945;border-radius:14px;padding:32px;">
+        <div style="font-size:44px;font-weight:800;color:#F76B1C;">&lt;30s</div>
+        <div style="font-size:16px;font-weight:600;margin-top:8px;color:rgba(246,242,233,0.75);">tear-away, no tools, 2–5kg force</div>
+      </div>
+    </div>
+
+    <div style="margin-top:60px;">
+      <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Node Narrative</div>
+      <div style="font-size:20px;line-height:1.7;color:rgba(246,242,233,0.8);margin-top:14px;max-width:1100px;">
+        Block Box™ is a single molded EPS unit containing nearly every cornice geometry in the catalogue — decorative and plain — pre-separated by tear-away bridges. A warehouse worker snaps out exactly the profile needed by hand, no cutting tools, no offcuts, no dedicated SKU per profile.
+      </div>
+    </div>
+
+    <div style="margin-top:60px;">
+      <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Status</div>
+      <div style="display:flex;gap:0;margin-top:26px;">
+        <div style="flex:1;border-top:4px solid #F76B1C;padding-top:20px;padding-right:30px;">
+          <div style="font-size:17px;font-weight:800;">CIPC Provisional Filed</div>
+          <div style="font-size:15px;color:rgba(246,242,233,0.6);margin-top:8px;line-height:1.5;">Patent protection secured at filing.</div>
+        </div>
+        <div style="flex:1;border-top:4px solid #F76B1C;padding-top:20px;padding-right:30px;">
+          <div style="font-size:17px;font-weight:800;">Reduction to Practice</div>
+          <div style="font-size:15px;color:rgba(246,242,233,0.6);margin-top:8px;line-height:1.5;">Working prototypes complete and validated.</div>
+        </div>
+        <div style="flex:1;border-top:4px solid #FFC145;padding-top:20px;">
+          <div style="font-size:17px;font-weight:800;">Feb 26, 2026 — First Deployment</div>
+          <div style="font-size:15px;color:rgba(246,242,233,0.6);margin-top:8px;line-height:1.5;">Client warehouse, NT108 "Fresh" 110mm profile, live commercial use.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:60px;background:#162945;border-radius:16px;padding:36px 40px;">
+      <div class="mono" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#FFC145;">Ecosystem Placement</div>
+      <div style="font-size:18px;color:rgba(246,242,233,0.75);margin-top:12px;line-height:1.6;max-width:1100px;">Fruitful™ (ecosystem &amp; governance) → Logistics &amp; Packaging (sector) → <b>Block Box™</b> (core node) → Fresh 70/90/110mm (brand-linked subnodes) → ID / Trace / Vault / License (functional subnodes).</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- AGENT ACTIONS -->
+  <sc-if value="{{ isAgents }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:70px 90px 100px;">
+    <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Agent Layer</div>
+    <div style="font-size:34px;font-weight:800;margin-top:12px;max-width:1000px;">Six agents own execution around the node</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:44px;">
+      <sc-for list="{{ agents }}" as="agent" hint-placeholder-count="6">
+        <div style="background:#162945;border-radius:16px;padding:30px;border-left:4px solid #F76B1C;">
+          <div style="font-size:19px;font-weight:800;">{{ agent.name }}</div>
+          <div style="font-size:15px;color:rgba(246,242,233,0.6);margin-top:8px;line-height:1.55;">{{ agent.role }}</div>
+          <div class="mono" style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#FFC145;margin-top:18px;">Next move</div>
+          <div style="font-size:15px;color:#F6F2E9;margin-top:6px;line-height:1.5;">{{ agent.nextMove }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- SUBNODE MAP -->
+  <sc-if value="{{ isSubnodes }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:70px 90px 100px;">
+    <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Subnode Map</div>
+    <div style="font-size:34px;font-weight:800;margin-top:12px;">Brand-linked &amp; functional subnodes</div>
+
+    <div style="margin-top:44px;">
+      <div style="font-size:15px;font-weight:700;color:#FFC145;">Fresh — brand-linked profile lineage</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:18px;">
+        <div style="background:#162945;border-radius:14px;padding:28px;">
+          <div style="font-size:24px;font-weight:800;">Fresh 70mm</div>
+          <div class="mono" style="font-size:13px;color:rgba(246,242,233,0.5);margin-top:8px;">derivative node · planned</div>
+        </div>
+        <div style="background:#162945;border-radius:14px;padding:28px;">
+          <div style="font-size:24px;font-weight:800;">Fresh 90mm</div>
+          <div class="mono" style="font-size:13px;color:rgba(246,242,233,0.5);margin-top:8px;">derivative node · planned</div>
+        </div>
+        <div style="background:#FFC145;border-radius:14px;padding:28px;">
+          <div style="font-size:24px;font-weight:800;color:#0E1B2C;">Fresh 110mm</div>
+          <div class="mono" style="font-size:13px;color:rgba(14,27,44,0.65);margin-top:8px;">live · first commercial deployment</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:50px;">
+      <div style="font-size:15px;font-weight:700;color:#FFC145;">Functional subnodes</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:18px;">
+        <div style="background:rgba(246,242,233,0.06);border:1px solid rgba(255,193,69,0.4);border-radius:10px;padding:20px;">
+          <div style="font-size:17px;font-weight:700;">Block Box ID™</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.55);margin-top:6px;">unit &amp; batch verification</div>
+        </div>
+        <div style="background:rgba(246,242,233,0.06);border:1px solid rgba(255,193,69,0.4);border-radius:10px;padding:20px;">
+          <div style="font-size:17px;font-weight:700;">Block Box Trace™</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.55);margin-top:6px;">warehouse tracking</div>
+        </div>
+        <div style="background:rgba(246,242,233,0.06);border:1px solid rgba(255,193,69,0.4);border-radius:10px;padding:20px;">
+          <div style="font-size:17px;font-weight:700;">Block Box Vault™</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.55);margin-top:6px;">patent &amp; licensing IP store</div>
+        </div>
+        <div style="background:rgba(246,242,233,0.06);border:1px solid rgba(255,193,69,0.4);border-radius:10px;padding:20px;">
+          <div style="font-size:17px;font-weight:700;">Block Box License™</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.55);margin-top:6px;">manufacturer/retail terms</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:50px;background:#162945;border-radius:16px;padding:32px 36px;">
+      <div class="mono" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#FFC145;">Adjacency watch</div>
+      <div style="font-size:16px;color:rgba(246,242,233,0.7);margin-top:10px;line-height:1.6;max-width:1000px;">Zero Waste sector cross-link candidate: Block Box's 100% recyclable, mono-material construction qualifies it as a reference case once a formal cross-sector node is proposed.</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- COMMERCIAL PATHS -->
+  <sc-if value="{{ isCommercial }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:70px 90px 100px;">
+    <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Commercial Paths</div>
+    <div style="font-size:34px;font-weight:800;margin-top:12px;">$5B+ combined addressable market, three routes in</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;">
+      <div style="background:#162945;border-radius:16px;padding:34px;">
+        <div style="font-size:14px;font-weight:700;color:#F76B1C;">COMMERCIAL</div>
+        <div style="font-size:40px;font-weight:800;margin-top:8px;">$2.5B</div>
+        <div style="font-size:16px;color:rgba(246,242,233,0.6);margin-top:8px;">Manufacturer &amp; distributor supply chains.</div>
+      </div>
+      <div style="background:#162945;border-radius:16px;padding:34px;">
+        <div style="font-size:14px;font-weight:700;color:#F76B1C;">RETAIL / DIY</div>
+        <div style="font-size:40px;font-weight:800;margin-top:8px;">$2.5B+</div>
+        <div style="font-size:16px;color:rgba(246,242,233,0.6);margin-top:8px;">Big-box home improvement shelf, direct-to-consumer.</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:36px;">
+      <div style="background:#F6F2E9;color:#0E1B2C;border-radius:16px;padding:30px;">
+        <div style="font-size:19px;font-weight:800;">Manufacturing License</div>
+        <div style="font-size:15px;color:rgba(14,27,44,0.65);margin-top:10px;line-height:1.55;">Produce Block Box™ under license within an existing EPS manufacturing footprint.</div>
+        <div class="mono" style="font-size:12px;color:rgba(14,27,44,0.45);margin-top:14px;">Prospecting: Knauf, BASF, Saint-Gobain</div>
+      </div>
+      <div style="background:#F6F2E9;color:#0E1B2C;border-radius:16px;padding:30px;">
+        <div style="font-size:19px;font-weight:800;">Geographic Exclusive</div>
+        <div style="font-size:15px;color:rgba(14,27,44,0.65);margin-top:10px;line-height:1.55;">Exclusive rights to distribute and sell within a defined region or retail network.</div>
+        <div class="mono" style="font-size:12px;color:rgba(14,27,44,0.45);margin-top:14px;">Prospecting: Home Depot, Lowe's, Builders Warehouse</div>
+      </div>
+      <div style="background:#F6F2E9;color:#0E1B2C;border-radius:16px;padding:30px;">
+        <div style="font-size:19px;font-weight:800;">Tech Transfer + Equity</div>
+        <div style="font-size:15px;color:rgba(14,27,44,0.65);margin-top:10px;line-height:1.55;">Full IP and process transfer in exchange for equity stake and royalty stream.</div>
+        <div class="mono" style="font-size:12px;color:rgba(14,27,44,0.45);margin-top:14px;">Structured deal, negotiated per partner</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- LEARNING LOOP -->
+  <sc-if value="{{ isLearning }}" hint-placeholder-val="{{ false }}">
+  <div style="padding:70px 90px 100px;">
+    <div class="mono" style="font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#FFC145;">Learning Loop</div>
+    <div style="font-size:34px;font-weight:800;margin-top:12px;max-width:1000px;">Field intelligence feeds the next node decision</div>
+
+    <div style="margin-top:44px;background:#162945;border-radius:16px;padding:36px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div style="font-size:20px;font-weight:800;">Feb 26, 2026 — First Deployment</div>
+        <div class="mono" style="font-size:12px;color:#FFC145;">NT108 "Fresh" 110mm · client warehouse</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:26px;">
+        <div>
+          <div style="font-size:32px;font-weight:800;color:#F76B1C;">94%</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.6);margin-top:4px;">material reduction observed</div>
+        </div>
+        <div>
+          <div style="font-size:32px;font-weight:800;color:#F76B1C;">40–60%</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.6);margin-top:4px;">shipping cost reduction observed</div>
+        </div>
+        <div>
+          <div style="font-size:32px;font-weight:800;color:#F76B1C;">&lt;30s</div>
+          <div style="font-size:14px;color:rgba(246,242,233,0.6);margin-top:4px;">tear-away time, no tools</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;background:rgba(246,242,233,0.05);border:1px dashed rgba(246,242,233,0.25);border-radius:16px;padding:36px;">
+      <div style="font-size:18px;font-weight:700;color:rgba(246,242,233,0.7);">Next telemetry cycle — pending</div>
+      <div style="font-size:15px;color:rgba(246,242,233,0.5);margin-top:10px;line-height:1.55;">Breakage rate, reorder frequency, and new-profile demand from the next deployment feed back into pricing, claim strength, and subnode prioritization.</div>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'overview' };
+
+  agents = [
+    { name: 'Node Strategist Agent', role: 'Maps Block Box to sector goals, subnode expansion, royalty pathways, and adjacent packaging opportunities.', nextMove: 'Propose Fresh 70mm/90mm derivative nodes for Q3 based on Fresh 110mm deployment demand.' },
+    { name: 'IP Agent', role: 'Tracks patent status, industrial design variants, claim families, filing geography, and reduction-to-practice evidence.', nextMove: 'Prepare non-provisional filing package ahead of the CIPC provisional deadline.' },
+    { name: 'Manufacturing Agent', role: 'Manages mold specs, material constraints, tear-force tolerances, QA thresholds, and licensee readiness.', nextMove: 'Validate tear-force tolerance (2–5kg) across a second mold run before licensee handoff.' },
+    { name: 'Commercial Agent', role: 'Handles licensing paths, regional exclusives, partner scoring, deal stages, and rollout sequencing.', nextMove: 'Open outreach to Knauf and Home Depot in parallel — manufacturing and retail-exclusive tracks.' },
+    { name: 'Field Intelligence Agent', role: 'Captures warehouse outcomes, packaging savings, shipping reduction, breakage rates, and new profile demand.', nextMove: 'Instrument the Feb 26 deployment site for a 90-day performance readout.' },
+    { name: 'Ecosystem Governance Agent', role: 'Links Block Box back to sector metadata, brand-node rules, royalty logic, and cross-sector learnings.', nextMove: 'Formalize the Zero Waste cross-sector link using the 100% recyclable, 94%-reduction evidence.' },
+  ];
+
+  tabDefs = [
+    { key: 'overview', label: 'Node Overview' },
+    { key: 'agents', label: 'Agent Actions' },
+    { key: 'subnodes', label: 'Subnode Map' },
+    { key: 'commercial', label: 'Commercial Paths' },
+    { key: 'learning', label: 'Learning Loop' },
+  ];
+
+  renderVals() {
+    const active = this.state.tab;
+    const tabs = this.tabDefs.map(t => ({
+      label: t.label,
+      onClick: () => this.setState({ tab: t.key }),
+      style: `padding:14px 22px;cursor:pointer;font-size:16px;font-weight:700;font-family:'Bricolage Grotesque',sans-serif;border-bottom:3px solid ${active === t.key ? '#FFC145' : 'transparent'};color:${active === t.key ? '#FFC145' : 'rgba(246,242,233,0.55)'};`,
+    }));
+
+    return {
+      tabs,
+      agents: this.agents,
+      isOverview: active === 'overview',
+      isAgents: active === 'agents',
+      isSubnodes: active === 'subnodes',
+      isCommercial: active === 'commercial',
+      isLearning: active === 'learning',
+    };
+  }
+}
+</script>
+</body>
+</html>

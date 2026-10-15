@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banimal™ FAA Smart Grid Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Updated Inter font link to include more weights for consistency -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chosen Palette: Warm Neutrals & Deep Indigo -->
+    <!-- Application Structure Plan: A tabbed dashboard interface was chosen to manage the complexity of the Banimal™ ecosystem. This structure allows users to digest information in thematic sections (Dashboard, Modules, Regions, IP, Roadmap) rather than a confusing linear format. The user flow starts with a high-level overview on the dashboard and encourages exploration into specific areas via clear navigation, making the dense report data accessible and easy to understand. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Overall system status -> Goal: Inform -> Viz: Donut Chart -> Interaction: Hover for details -> Justification: Provides a quick, visual summary of module readiness -> Library: Chart.js.
+        - Report Info: System Modules (Donation, Merch, etc.) -> Goal: Organize & Detail -> Viz: Grid of clickable cards opening a detail pane -> Interaction: Click to reveal -> Justification: Breaks down the complex system into manageable parts, allowing users to drill down into specifics without leaving the page. -> Method: HTML/CSS/JS.
+        - Report Info: Regional Distribution -> Goal: Compare & Inform -> Viz: Stylized HTML/CSS grid -> Interaction: Hover/Click for emphasis -> Justification: A clean, lightweight way to show geographic deployment status without the overhead of a full map library. -> Method: HTML/CSS/JS.
+        - Report Info: Next Modules Pipeline -> Goal: Show Future Plans -> Viz: Vertical timeline/list -> Interaction: None, clear visual hierarchy is sufficient -> Justification: Clearly communicates future developments and priorities. -> Method: HTML/CSS.
+        - Report Info: FAA/IP Data -> Goal: Build Trust -> Viz: Clean Tables -> Interaction: None -> Justification: Presents governance and legal data transparently and professionally. -> Method: HTML.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4; /* Warm neutral background */
+            color: #1d1d1f; /* Near black for primary text */
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes footer to the bottom */
+        }
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #f5f5f7;
+        }
+        body.dark-mode header {
+            background-color: rgba(26, 26, 26, 0.9);
+            border-bottom-color: #333;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+        }
+        body.dark-mode header h1 {
+            color: #f5f5f7;
+        }
+        body.dark-mode header nav a {
+            color: #f5f5f7; /* Light text in dark mode for visibility */
+        }
+        body.dark-mode header nav a:hover {
+            color: #66b2ff; /* Lighter blue for dark mode hover */
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        body.dark-mode #language-toggle, body.dark-mode #theme-toggle {
+            background-color: #3a3a3a;
+            color: #f5f5f7;
+        }
+        body.dark-mode #language-toggle:focus, body.dark-mode #theme-toggle:focus {
+            box-shadow: 0 0 0 2px rgba(102, 178, 255, 0.5); /* Blue ring for dark mode */
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            color: #4A5568;
+        }
+        .nav-button.active {
+            color: #4338CA; /* Deep Indigo */
+            border-bottom-color: #4338CA;
+        }
+        .nav-button:hover {
+            color: #4338CA;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .module-card {
+            cursor: pointer;
+        }
+        .status-verified { background-color: #D1FAE5; color: #065F46; }
+        .status-progress { background-color: #FEF3C7; color: #92400E; }
+        .status-building { background-color: #DBEAFE; color: #1E40AF; }
+        .status-dev { background-color: #E0E7FF; color: #3730A3; }
+        .status-prelaunch { background-color: #FCE7F3; color: #9D2667; }
+        .priority-high { background-color: #FEE2E2; color: #991B1B; }
+        .priority-med { background-color: #FEF3C7; color: #92400E; }
+
+        /* Footer styles from provided snippet, adapted for dark mode */
+        footer {
+            background-color: #f5f5f7;
+            color: #6e6e73;
+            padding: 2rem;
+            font-size: 0.85rem;
+            border-top: 1px solid #e8e8ed;
+            text-align: center;
+        }
+        body.dark-mode footer {
+            background-color: #1a1a1a;
+            color: #888;
+            border-top-color: #333;
+        }
+        footer .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        footer .footer-links a {
+            color: #6e6e73;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin: 0 0.5rem; /* Horizontal spacing */
+            margin-bottom: 0.5rem; /* Vertical spacing for wrapped items */
+            white-space: nowrap; /* Prevent links from breaking individually */
+        }
+        body.dark-mode footer .footer-links a {
+            color: #e0e0e0; /* Adjusted for better visibility in dark mode */
+        }
+        footer .footer-links a:hover {
+            color: #1d1d1f;
+        }
+        body.dark-mode footer .footer-links a:hover {
+            color: #f5f5f7;
+        }
+        /* Responsive adjustments for footer */
+        @media (max-width: 768px) {
+            footer {
+                padding: 1.5rem;
+            }
+            footer .footer-links a {
+                margin: 0 0.25rem; /* Smaller horizontal margin for mobile */
+                margin-bottom: 0.25rem; /* Smaller vertical margin for mobile */
+            }
+        }
+
+        /* Specific styles for the Banimal™ blue feature in the footer */
+        .banimal-footer-feature {
+            background-color: #1d1d1f; /* Dark background for this section */
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-t-lg from original snippet */
+            margin-top: 2rem; /* Space from content above */
+        }
+        body.dark-mode .banimal-footer-feature {
+            background-color: #0d0d0d; /* Even darker in dark mode */
+        }
+        .banimal-footer-feature h1 {
+            font-size: 2.25rem; /* text-3xl md:text-4xl lg:text-5xl */
+            font-weight: 800; /* font-extrabold */
+            line-height: 1.25; /* leading-tight */
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .banimal-footer-feature .text-blue-400 {
+            color: #60A5FA; /* Consistent blue-400 */
+        }
+        .banimal-footer-feature p {
+            font-size: 1rem; /* text-base md:text-lg */
+            color: #d1d5db; /* text-gray-300 */
+            line-height: 1.6; /* leading-relaxed */
+            margin-bottom: 1.5rem;
+        }
+        .banimal-footer-feature .cta-button {
+            background-color: #3B82F6; /* bg-blue-600 */
+            color: white;
+            font-weight: 600; /* font-semibold */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 9999px; /* rounded-full */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+        }
+        .banimal-footer-feature .cta-button:hover {
+            background-color: #2563EB; /* hover:bg-blue-700 */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* hover:shadow-xl */
+        }
+        .banimal-footer-feature .social-links a {
+            color: #9ca3af; /* text-gray-400 */
+            transition: color 0.2s ease;
+        }
+        .banimal-footer-feature .social-links a:hover {
+            color: #60A5FA; /* hover:text-blue-400 */
+        }
+        .banimal-footer-feature .copyright-text {
+            color: #9ca3af; /* text-gray-500 */
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">🦊 Banimal™ Smart Grid</h1>
+            <p class="mt-2 text-lg text-gray-600">FAA Systems Online Edition</p>
+            <p class="mt-1 text-sm text-indigo-600 font-semibold">System ID: FAA-BNL-042 | Rooted by Heyns Schoeman™ 🌳⚛️</p>
+            <!-- Language and Theme Toggles added to header -->
+            <div class="flex justify-center items-center space-x-4 mt-4">
+                <select id="language-toggle" class="p-2 rounded-full text-sm bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button id="theme-toggle" class="p-2 rounded-full text-sm bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">☀️</button>
+            </div>
+        </header>
+
+        <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
+            <button id="nav-dashboard" class="nav-button py-4 px-6 block hover:text-indigo-500 focus:outline-none border-b-2 font-medium">Dashboard</button>
+            <button id="nav-modules" class="nav-button py-4 px-6 block hover:text-indigo-500 focus:outline-none border-b-2 font-medium">System Modules</button>
+            <button id="nav-grid" class="nav-button py-4 px-6 block hover:text-indigo-500 focus:outline-none border-b-2 font-medium">Regional Grid</button>
+            <button id="nav-ip" class="nav-button py-4 px-6 block hover:text-indigo-500 focus:outline-none border-b-2 font-medium">FAA & IP Control</button>
+            <button id="nav-pipeline" class="nav-button py-4 px-6 block hover:text-indigo-500 focus:outline-none border-b-2 font-medium">Roadmap</button>
+        </nav>
+
+        <main id="content">
+            <!-- Dashboard Section -->
+            <section id="page-dashboard">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl font-bold text-gray-900">Live Ecosystem Overview</h2>
+                     <p class="mt-2 text-md text-gray-600">This dashboard provides a real-time summary of the Banimal™ Smart Grid's key performance indicators and overall system health. Explore the metrics and charts below to understand our current impact and operational status.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="stat-card">
+                        <h3 class="text-gray-500 text-lg font-medium">Total Meals Delivered</h3>
+                        <p class="text-4xl font-bold text-indigo-600 mt-2">1,254,830</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="text-gray-500 text-lg font-medium">Active Regions</h3>
+                        <p class="text-4xl font-bold text-indigo-600 mt-2">4</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="text-gray-500 text-lg font-medium">Verified Modules</h3>
+                        <p class="text-4xl font-bold text-indigo-600 mt-2">6 / 8</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="text-gray-500 text-lg font-medium">Sovereign IPs</h3>
+                        <p class="text-4xl font-bold text-indigo-600 mt-2">4</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-center mb-4">Module Status</h3>
+                        <div class="chart-container">
+                            <canvas id="moduleStatusChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-4">🐾 Kind Creatures Feed</h3>
+                        <p class="mb-4 text-gray-600">Real-time stories of kids impacted by the Banimal™ ecosystem.</p>
+                        <div class="space-y-4 max-h-80 overflow-y-auto pr-2">
+                            <div class="p-4 bg-amber-50 rounded-lg">
+                                <p class="font-semibold">Sipho in 🇿🇦</p>
+                                <p class="text-gray-700 text-sm">"The Banimal plushie is my new best friend! We solve the riddles together every day."</p>
+                            </div>
+                            <div class="p-4 bg-amber-50 rounded-lg">
+                                <p class="font-semibold">Amani in 🇰🇪</p>
+                                <p class="text-gray-700 text-sm">"Learning about Foxed™ and his adventures in the mobile app is so exciting!"</p>
+                            </div>
+                             <div class="p-4 bg-amber-50 rounded-lg">
+                                <p class="font-semibold">Priya in 🇮🇳</p>
+                                <p class="text-gray-700 text-sm">"I love drawing the Banimal creatures and submitting them to the Lore Compass."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Modules Section -->
+            <section id="page-modules" class="hidden">
+                 <div class="text-center mb-12">
+                     <h2 class="text-3xl font-bold text-gray-900">Core System Modules</h2>
+                     <p class="mt-2 text-md text-gray-600">The Banimal™ Smart Grid is composed of several interconnected modules, each with a specific purpose. Click on a module to learn more about its function, expansion logic, and current development status.</p>
+                </div>
+                <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Module cards will be injected here by JS -->
+                </div>
+                <div id="module-detail" class="hidden bg-white p-8 rounded-lg shadow-lg">
+                     <!-- Detailed module info will be injected here by JS -->
+                </div>
+            </section>
+
+            <!-- Regional Grid Section -->
+            <section id="page-grid" class="hidden">
+                 <div class="text-center mb-12">
+                     <h2 class="text-3xl font-bold text-gray-900">Regional Distribution Grid</h2>
+                     <p class="mt-2 text-md text-gray-600">Our operations are expanding globally, with each region playing a unique role in the ecosystem. This grid shows our current deployment status across different countries, from active meal hubs to pre-launch cultural drop points.</p>
+                </div>
+                 <div class="overflow-x-auto bg-white p-6 rounded-lg shadow-md">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="p-4 font-bold text-gray-700">Region</th>
+                                <th class="p-4 font-bold text-gray-700">Anchor</th>
+                                <th class="p-4 font-bold text-gray-700">Role</th>
+                                <th class="p-4 font-bold text-gray-700">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="regional-grid-body">
+                           <!-- Regional grid rows will be injected here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- FAA & IP Section -->
+            <section id="page-ip" class="hidden">
+                 <div class="text-center mb-12">
+                     <h2 class="text-3xl font-bold text-gray-900">FAA Verification & IP Control</h2>
+                     <p class="mt-2 text-md text-gray-600">Transparency and governance are core to our operations. This section details our FAA system compliance and the status of our intellectual property, ensuring a secure and sovereign ecosystem.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-4">🔐 IP & Licensing Control</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="p-3 font-semibold">IP</th>
+                                        <th class="p-3 font-semibold">Protected?</th>
+                                        <th class="p-3 font-semibold">Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ip-control-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold mb-4">🪪 FAA Sovereign Tags Issued</h3>
+                        <ul id="faa-tags-list" class="space-y-3">
+                            <!-- FAA Tags will be injected here -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pipeline/Roadmap Section -->
+            <section id="page-pipeline" class="hidden">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl font-bold text-gray-900">Development Roadmap</h2>
+                     <p class="mt-2 text-md text-gray-600">We are constantly growing and evolving. This roadmap outlines the next modules in our development pipeline, highlighting their function and priority level as we continue to expand the Banimal™ ecosystem.</p>
+                </div>
+                <div class="space-y-8">
+                    <div id="pipeline-list" class="space-y-6">
+                        <!-- Pipeline items will be injected here by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Combined Footer Section -->
+    <footer class="py-8 px-6 md:px-12 text-center bg-gray-100 text-gray-600 border-t border-gray-200 dark:bg-1a1a1a dark:text-gray-400 dark:border-gray-700">
+        <!-- Banimal™ Blue Feature Section -->
+        <div class="banimal-footer-feature max-w-2xl mx-auto text-center mb-8">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-white mb-2">
+                Banimal™: <br>
+                <span class="text-blue-400">🐑Kind Creatures. Global Impact.</span>
+            </h1>
+            <p class="text-base md:text-lg text-gray-300 leading-relaxed mb-6">
+                Discover Banimal's world of thoughtful baby essentials & innovative lighting. For every purchase, we deliver the same item to a child in need, identified by the Baobab Security Network's data-driven insights.
+            </p>
+            <a href="https://banimal.co.za" class="cta-button">
+                Explore Banimal's World <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+
+            <div class="social-links flex justify-center space-x-6 mt-8 mb-6">
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                    <i class="fab fa-facebook-f text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                    <i class="fab fa-twitter text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                    <i class="fab fa-linkedin-in text-2xl"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- FAA Global Footer Links -->
+        <div class="flex flex-wrap justify-center mb-4 text-sm">
+            <a href="https://footer.global.repo.seedwave.faa.zone/privacy.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerPrivacy">Privacy</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/terms.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerTerms">Terms</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/contact.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerContact">Contact</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/copyright.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerCopyrightLink">Copyright</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/developers.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerDevelopers">Developers</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/vaultmesh.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerVaultMeshLink">VaultMesh</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/fruitful.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFruitfulLink">Fruitful</a>
+            <a href="https://faa.zone/" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerFAAZoneLink">FAA.Zone</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/about.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAboutLink">About</a>
+            <a href="https://footer.global.repo.seedwave.faa.zone/accessibility.html" class="hover:text-gray-900 dark:hover:text-gray-200 transition-colors mx-2 my-1" data-i18n="footerAccessibility">Accessibility</a>
+        </div>
+        <!-- Combined Copyright Information -->
+        <p class="text-sm text-gray-500 mt-2 copyright-text">&copy; 👟2025 Banimal™. All rights reserved. A proud initiative of <a href="https://fruitful.faa.zone/" target="_blank" class="text-blue-400 hover:underline">Fruitful™ Treaty System™</a></p>
+        <span data-i18n="footerCopyright" class="copyright-text">© 2025 FAA™ Treaty System™. All Rights Reserved.</span> <span data-i18n="footerPoweredBy" class="copyright-text">Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.</span>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const data = {
+                modules: [
+                    { name: 'Crate Donation Engine', icon: '📦', purpose: 'Dynamic donation tied to crate logic + rewards.', expansion: '$1 = 1 Meal + 1 Riddle + 1 Myth Archive Record.', status: '✅ Coded + integrated with Kind Creatures backend', subpages: ['Crate to Child Allocation Log', 'Banimal™ Rewards Engine', 'Riddle-Meal Token Splitter', 'Instant Gift Code Distribution'] },
+                    { name: 'Merch & Apparel Engine', icon: '👕', purpose: 'Showcase + sell myth logic-based Banimal items.', expansion: 'Region-specific bundles, Foxed™ rarity drops, plushie logic tiers.', status: '🧱 Integration-ready', subpages: ['Myth Plushie Grid (LSM Filtered)', 'Apparel Drop Scroll (school-based themes)', 'Foxed™ 1/1 Drop Zone', 'Bundle Reward Mechanic'] },
+                    { name: 'Lore Logic + Myth Compass™', icon: '🧠', purpose: 'Score submissions for licensing + myth unlocks.', expansion: 'Banimal stories trigger Lore XP + crate design payouts.', status: '✅ Logic live, UI sync pending', subpages: ['Lore Submission Portal', 'Myth Compass Scoring Viewer', 'Crate Design Licensing Grid', 'Story to Sponsorship Chain'] },
+                    { name: 'AR + Companion Tech Layer', icon: '🧬', purpose: 'Activate plushies + riddles via mobile app.', expansion: 'Foxed™ avatars, Banimal AR scan-to-feed, scroll hunt overlays.', status: '🧪 Concept finalized, app UI in dev', subpages: ['Scan Crate AR Mode', 'Foxed™ Character Summon', 'Digital Scroll Trail', 'GeoFeed™ Meal Drop Map'] },
+                    { name: 'Donor Logic Engine', icon: '🔁', purpose: 'Behavioral forecasting for donor engagement.', expansion: 'Personalized impact reports and donation suggestions.', status: '✅ Verified', subpages: ['Donor Profile Viewer', 'Impact Forecaster', 'Recurring Donation Manager'] },
+                    { name: 'Landing Grid + Story Loop', icon: '🏠', purpose: 'Mythos Engagement and storytelling.', expansion: 'Interactive stories based on user location and donation history.', status: '✅ Verified', subpages: ['Hero Loop Manager', 'Story Popup Creator', 'NGO Feed Integrator'] }
+                ],
+                regionalGrid: [
+                    { region: '🇿🇦 SA', anchor: 'Kind Creatures Archive', role: 'Meal Hub + NGO data', status: 'Active', statusClass: 'status-verified' },
+                    { region: '🇰🇪 Kenya', anchor: 'Mobile Crate™ Pilots', role: 'Foxed™ + GPS rollout', status: 'Building', statusClass: 'status-building' },
+                    { region: '🇮🇳 India', anchor: 'Tech Archive Node', role: 'Story AI + Child Archive', status: 'In Dev', statusClass: 'status-dev' },
+                    { region: '🇨🇴 Colombia', anchor: 'Cultural Drop Point', role: 'Lore design + plush export', status: 'Pre-Launch', statusClass: 'status-prelaunch' }
+                ],
+                ipControl: [
+                    { ip: 'Banimal™', protected: '✅', type: 'Trademark (Int’l)' },
+                    { ip: 'Foxed™', protected: '✅', type: 'Rarity Logic Drop' },
+                    { ip: 'Kind Creatures Archive', protected: '✅', type: 'FAA-verified Ledger' }
+                ],
+                faaTags: [
+                    { name: 'Banimal™', id: 'Entity ID FAA-BNL-042' },
+                    { name: 'Foxed™', id: 'Sub-IP FAA-RAR-FOX-01' },
+                    { name: 'Kind Creatures Archive', id: 'Ledger Class SO-VN-ARCH-19X' },
+                    { name: 'Crate-Based Logic Engine', id: 'Atom-Level Model CR-X-004/HS' }
+                ],
+                pipeline: [
+                    { name: 'Foxed™ Mobile App', icon: '📱', func: 'Companion for plushies + AR', status: 'UI build', priority: 'HIGH', priorityClass: 'priority-high' },
+                    { name: 'Investor Deck', icon: '📃', func: 'Impact report for Tier 1 donors', status: 'Drafted', priority: 'HIGH', priorityClass: 'priority-high' },
+                    { name: 'Logic Sync w/ Fruitful', icon: '🧩', func: 'Sync all riddles, crates, meal flows', status: 'Queued', priority: 'HIGH', priorityClass: 'priority-high' },
+                    { name: 'Banimal™ Story Feed', icon: '🎥', func: 'Public-facing archive + voice overlay', status: 'Writing', priority: 'MED', priorityClass: 'priority-med' },
+                    { name: 'NGO Portal Sync', icon: '🛍️', func: 'Register new NGO pipelines', status: 'Blueprinted', priority: 'MED', priorityClass: 'priority-med' }
+                ],
+                moduleStatus: {
+                    verified: 6,
+                    inProgress: 1,
+                    certifiedSovereign: 1,
+                }
+            };
+            
+            const pages = ['dashboard', 'modules', 'grid', 'ip', 'pipeline'];
+            const navButtons = pages.map(id => document.getElementById(`nav-${id}`));
+            const pageElements = pages.map(id => document.getElementById(`page-${id}`));
+
+            function showPage(pageId) {
+                pageElements.forEach(page => page.classList.add('hidden'));
+                navButtons.forEach(button => button.classList.remove('active', 'border-indigo-500'));
+                
+                document.getElementById(`page-${pageId}`).classList.remove('hidden');
+                document.getElementById(`nav-${pageId}`).classList.add('active', 'border-indigo-500');
+            }
+
+            navButtons.forEach((button, index) => {
+                button.addEventListener('click', () => showPage(pages[index]));
+            });
+            
+            showPage('dashboard');
+
+            const modulesGrid = document.getElementById('modules-grid');
+            const moduleDetail = document.getElementById('module-detail');
+
+            data.modules.forEach((module, index) => {
+                const card = document.createElement('div');
+                card.className = 'module-card stat-card p-6 flex flex-col items-center text-center';
+                card.innerHTML = `
+                    <div class="text-5xl mb-4">${module.icon}</div>
+                    <h3 class="text-xl font-bold mb-2">${module.name}</h3>
+                    <p class="text-gray-600">${module.purpose}</p>
+                `;
+                card.addEventListener('click', () => showModuleDetail(index));
+                modulesGrid.appendChild(card);
+            });
+
+            function showModuleDetail(index) {
+                const module = data.modules[index];
+                modulesGrid.classList.add('hidden');
+                
+                let subpagesHTML = module.subpages.map(sp => `<li class="flex items-center"><span class="text-indigo-500 mr-2">›</span>${sp}</li>`).join('');
+
+                moduleDetail.innerHTML = `
+                    <button id="back-to-grid" class="mb-6 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">← Back to Modules</button>
+                    <div class="text-center mb-6">
+                        <div class="text-6xl mb-4">${module.icon}</div>
+                        <h2 class="text-3xl font-bold">${module.name}</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Purpose</h4>
+                            <p class="text-gray-700">${module.purpose}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Expansion Logic</h4>
+                            <p class="text-gray-700">${module.expansion}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Current Status</h4>
+                            <p class="text-gray-700">${module.status}</p>
+                        </div>
+                         <div>
+                            <h4 class="font-bold text-lg mb-2">Sub-Systems</h4>
+                            <ul class="text-gray-700 space-y-1">${subpagesHTML}</ul>
+                        </div>
+                    </div>
+                `;
+                moduleDetail.classList.remove('hidden');
+                document.getElementById('back-to-grid').addEventListener('click', () => {
+                    moduleDetail.classList.add('hidden');
+                    modulesGrid.classList.remove('hidden');
+                });
+            }
+
+            const regionalGridBody = document.getElementById('regional-grid-body');
+            data.regionalGrid.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="p-4 font-medium">${item.region}</td>
+                    <td class="p-4">${item.anchor}</td>
+                    <td class="p-4">${item.role}</td>
+                    <td class="p-4"><span class="px-2 py-1 text-xs font-semibold rounded-full ${item.statusClass}">${item.status}</span></td>
+                `;
+                regionalGridBody.appendChild(row);
+            });
+
+            const ipControlBody = document.getElementById('ip-control-body');
+            data.ipControl.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="p-3 font-medium">${item.ip}</td>
+                    <td class="p-3">${item.protected}</td>
+                    <td class="p-3">${item.type}</td>
+                `;
+                ipControlBody.appendChild(row);
+            });
+            
+            const faaTagsList = document.getElementById('faa-tags-list');
+            data.faaTags.forEach(tag => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-gray-50 rounded-md';
+                li.innerHTML = `
+                    <p class="font-semibold text-gray-800">${tag.name}</p>
+                    <p class="text-sm text-indigo-600 font-mono">${tag.id}</p>
+                `;
+                faaTagsList.appendChild(li);
+            });
+
+            const pipelineList = document.getElementById('pipeline-list');
+            data.pipeline.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'p-5 bg-white rounded-lg shadow-md flex items-center space-x-4';
+                itemDiv.innerHTML = `
+                    <div class="text-4xl">${item.icon}</div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-lg">${item.name}</h4>
+                        <p class="text-gray-600">${item.func}</p>
+                        <p class="text-sm text-gray-500 mt-1">Status: ${item.status}</p>
+                    </div>
+                    <div>
+                        <span class="px-3 py-1 text-sm font-bold rounded-full ${item.priorityClass}">${item.priority}</span>
+                    </div>
+                `;
+                pipelineList.appendChild(itemDiv);
+            });
+
+            const ctx = document.getElementById('moduleStatusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Verified', 'Sync in Progress', 'Certified Sovereign'],
+                    datasets: [{
+                        data: [data.moduleStatus.verified, data.moduleStatus.inProgress, data.moduleStatus.certifiedSovereign],
+                        backgroundColor: [
+                            '#10B981', // Green 500
+                            '#F59E0B', // Amber 500
+                            '#4F46E5'  // Indigo 600
+                        ],
+                        borderColor: '#F8F7F4',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Inter'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Language data for i18n
+            window.languageData = {
+                en: {
+                    pageTitle: 'Banimal™ Smart Grid Dashboard', // Adjusted title for this app
+                    footerPrivacy: 'Privacy',
+                    footerTerms: 'Terms',
+                    footerContact: 'Contact',
+                    footerCopyrightLink: 'Copyright',
+                    footerDevelopers: 'Developers',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'About',
+                    footerAccessibility: 'Accessibility',
+                    footerCopyright: '© 2025 FAA™ Treaty System™. All Rights Reserved.',
+                    footerPoweredBy: 'Powered by 🦍 glyphs + Vault API. Synced with Seedwave™.',
+                },
+                es: {
+                    pageTitle: 'Panel de Control de Banimal™ Smart Grid',
+                    footerPrivacy: 'Privacidad',
+                    footerTerms: 'Términos',
+                    footerContact: 'Contacto',
+                    footerCopyrightLink: 'Derechos de Autor',
+                    footerDevelopers: 'Desarrolladores',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'Nosotros',
+                    footerAccessibility: 'Accesibilidad',
+                    footerCopyright: '© 2025 FAA™ Treaty System™. Todos los derechos reservados.',
+                    footerPoweredBy: 'Impulsado por 🦍 glifos + API de Bóveda. Sincronizado con Seedwave™.',
+                },
+                fr: {
+                    pageTitle: 'Tableau de Bord Banimal™ Smart Grid',
+                    footerPrivacy: 'Confidentialité',
+                    footerTerms: 'Conditions',
+                    footerContact: 'Contact',
+                    footerCopyrightLink: 'Droits d\'Auteur',
+                    footerDevelopers: 'Développeurs',
+                    footerVaultMeshLink: 'VaultMesh',
+                    footerFruitfulLink: 'Fruitful',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'À Propos',
+                    footerAccessibility: 'Accessibilité',
+                    footerCopyright: '© 2025 FAA™ Treaty System™. Tous droits réservés.',
+                    footerPoweredBy: 'Propulsé par 🦍 glyphes + API du Coffre. Synchronisé avec Seedwave™.',
+                },
+                ar: {
+                    pageTitle: 'لوحة تحكم شبكة بانيمل™ الذكية',
+                    footerPrivacy: 'الخصوصية',
+                    footerTerms: 'الشروط',
+                    footerContact: 'اتصل بنا',
+                    footerCopyrightLink: 'حقوق النشر',
+                    footerDevelopers: 'المطورون',
+                    footerVaultMeshLink: 'شبكة الكهف',
+                    footerFruitfulLink: 'مثمر',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: 'حول',
+                    footerAccessibility: 'إمكانية الوصول',
+                    footerCopyright: '© 2025 نظام معاهدة FAA™. جميع الحقوق محفوظة.',
+                    footerPoweredBy: 'مدعوم بواسطة 🦍 الرموز + واجهة برمجة تطبيقات Vault. متزامن مع Seedwave™.',
+                },
+                zh: {
+                    pageTitle: 'Banimal™ 智能电网仪表板',
+                    footerPrivacy: '隐私',
+                    footerTerms: '条款',
+                    footerContact: '联系',
+                    footerCopyrightLink: '版权',
+                    footerDevelopers: '开发者',
+                    footerVaultMeshLink: '金库网格',
+                    footerFruitfulLink: '丰硕',
+                    footerFAAZoneLink: 'FAA.Zone',
+                    footerAboutLink: '关于',
+                    footerAccessibility: '无障碍',
+                    footerCopyright: '© 2025 FAA™ 条约系统™。保留所有权利。',
+                    footerPoweredBy: '由 🦍 符文 + 金库 API 提供支持。与 Seedwave™ 同步。',
+                }
+            };
+
+            // Theme Toggle Logic
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                if (themeToggle) themeToggle.innerText = '🌙';
+            } else {
+                if (themeToggle) themeToggle.innerText = '☀️';
+            }
+
+            // Load saved language
+            const savedLang = localStorage.getItem('language') || 'en';
+            if (languageToggle) languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Theme toggle event listener
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    if (body.classList.contains('dark-mode')) {
+                        body.classList.remove('dark-mode');
+                        localStorage.setItem('theme', 'light');
+                        themeToggle.innerText = '☀️';
+                    } else {
+                        body.classList.add('dark-mode');
+                        localStorage.setItem('theme', 'dark');
+                        themeToggle.innerText = '🌙';
+                    }
+                });
+            }
+
+            // Language toggle event listener
+            if (languageToggle) {
+                languageToggle.addEventListener('change', (event) => {
+                    const newLang = event.target.value;
+                    updateLanguage(newLang);
+                    localStorage.setItem('language', newLang);
+                });
+            }
+
+            // Function to update text content based on selected language
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-i18n]');
+                elements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (window.languageData[lang] && window.languageData[lang][key]) {
+                        el.innerHTML = window.languageData[lang][key];
+                    }
+                });
+                document.title = window.languageData[lang]?.pageTitle || 'Banimal™ Smart Grid Dashboard';
+            }
+        });
+    </script>
+
+</body>
+</html>

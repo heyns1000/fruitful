@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banimal™ | Eco-Friendly Baby Essentials - FAA™ Enhanced SPA</title>
+    <link rel="icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .header-bg { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .main-content-area { background-color: #ffffff; border-top: 8px solid #4f46e5; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.06); border-radius: 1.5rem; }
+        .fruitful-logo-text { font-family: 'Inter', sans-serif; font-size: 2.5rem; font-weight: 800; color: #4f46e5; }
+        .btn-primary { background-color: #4f46e5; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s ease; }
+        .btn-primary:hover { background-color: #6d28d9; }
+        .card { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); padding: 1.5rem; transition: transform 0.2s ease-in-out; }
+        .card:hover { transform: translateY(-5px); }
+        .product-image { width: 100%; height: 200px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1rem; }
+        .feature-icon { font-size: 2.5rem; color: #4f46e5; margin-bottom: 0.75rem; }
+        .footer-bg { background-color: #1a1a1a; color: white; }
+        .footer-link { color: #a78bfa; text-decoration: none; }
+        .footer-link:hover { text-decoration: underline; }
+        .custom-message-box { position: fixed; inset: 0; background-color: rgba(107,114,128,0.5); display: flex; align-items: center; justify-content: center; z-index: 50; }
+        .in-stock { color: #22c55e; font-weight: 600; }
+        .out-of-stock { color: #ef4444; font-weight: 600; }
+        .chatbot-container { position: fixed; bottom: 20px; right: 20px; width: 300px; background-color: white; border-radius: 0.75rem; box-shadow: 0 8px 16px rgba(0,0,0,0.2); z-index: 1000; overflow: hidden; display: flex; flex-direction: column; max-height: 80vh; }
+        .chatbot-header { background-color: #4f46e5; color: white; padding: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .chatbot-body { padding: 1rem; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+        .chatbot-input-area { display: flex; padding: 1rem; border-top: 1px solid #e2e8f0; }
+        .chat-message { padding: 0.5rem 0.75rem; border-radius: 0.5rem; max-width: 80%; }
+        .chat-message.user { background-color: #eef2ff; align-self: flex-end; }
+        .chat-message.bot { background-color: #f0f8ff; align-self: flex-start; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="header-bg py-4 px-8 flex justify-between items-center w-full">
+        <div class="flex items-center">
+            <span class="fruitful-logo-text mr-2">Fruitful™</span>
+            <h1 class="text-2xl font-bold text-slate-800">Banimal™</h1>
+        </div>
+        <nav class="space-x-4">
+            <a href="#home" class="nav-link text-slate-700 hover:text-indigo-600 font-medium" data-section="home">Home</a>
+            <a href="#shop" class="nav-link text-slate-700 hover:text-indigo-600 font-medium" data-section="shop">Shop</a>
+            <a href="#about" class="nav-link text-slate-700 hover:text-indigo-600 font-medium" data-section="about">About</a>
+            <a href="#contact" class="nav-link text-slate-700 hover:text-indigo-600 font-medium" data-section="contact">Contact</a>
+            <a href="#my-account" class="nav-link text-slate-700 hover:text-indigo-600 font-medium" data-section="my-account">My Account</a>
+            <button id="cart-button" class="text-slate-700 hover:text-indigo-600 font-medium">
+                <i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)
+            </button>
+        </nav>
+    </header>
+    <main class="flex-grow container mx-auto p-4 md:p-8">
+        <div class="main-content-area p-8 rounded-3xl max-w-4xl w-full mx-auto">
+            <section id="home" class="page-section">
+                <div class="text-center mb-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-8 rounded-xl shadow-lg">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">Banimal™: Kind Creatures. Global Impact.</h2>
+                    <p class="text-lg md:text-xl mb-6">Eco-Friendly Baby Clothing & Accessories. Every purchase helps a child in need.</p>
+                    <button class="btn-primary text-lg px-8 py-3" onclick="showSection('shop')">Shop Our Collection <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Featured Products</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="featured-product-grid"></div>
+                </section>
+                <section class="mb-12 bg-purple-50 p-8 rounded-xl shadow-inner">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-slate-800">AI Product Description Generator ✨</h2>
+                    <p class="text-slate-700 text-center mb-6">Generate compelling product descriptions instantly using our AI.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-4">
+                        <input type="text" id="product-keywords" placeholder="e.g., Organic cotton onesie, soft, breathable" class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                        <button id="generate-description-btn" class="btn-primary flex-shrink-0">Generate Description ✨</button>
+                    </div>
+                    <div id="description-output" class="bg-white p-4 rounded-lg border border-gray-200 min-h-[100px] text-slate-700 whitespace-pre-wrap">Your AI-generated description will appear here.</div>
+                    <div id="description-loading" class="hidden text-center text-purple-600 mt-2">Generating...</div>
+                </section>
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Powered by FAA™: Smart & Secure E-commerce</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-robot"></i></div><h3 class="text-xl font-semibold mb-2">AI-Driven Personalization</h3><p class="text-slate-600">Dynamic recommendations and smart content tailored for you.</p></div>
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-globe"></i></div><h3 class="text-xl font-semibold mb-2">Global Multi-Currency</h3><p class="text-slate-600">Auto-detects your location and converts prices in real-time.</p></div>
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-truck-fast"></i></div><h3 class="text-xl font-semibold mb-2">Smart Delivery & Tracking</h3><p class="text-slate-600">AI-optimized shipping routes and real-time tracking.</p></div>
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3 class="text-xl font-semibold mb-2">FAA™ Security & Compliance</h3><p class="text-slate-600">Atom-level data encryption and full legal compliance.</p></div>
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-comments"></i></div><h3 class="text-xl font-semibold mb-2">24/7 AI Chatbot Support</h3><p class="text-slate-600">Instant answers powered by advanced NLP.</p></div>
+                        <div class="card text-center"><div class="feature-icon"><i class="fas fa-gift"></i></div><h3 class="text-xl font-semibold mb-2">Loyalty & Rewards</h3><p class="text-slate-600">Earn Banimal Points™ with every purchase.</p></div>
+                    </div>
+                </section>
+                <section class="bg-indigo-50 p-8 rounded-xl shadow-inner text-center mb-12">
+                    <h2 class="text-2xl font-bold mb-4 text-slate-800">Join Our Newsletter & Get 10% Off!</h2>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <input type="email" placeholder="Enter your email address" class="flex-grow sm:flex-grow-0 sm:w-2/3 p-3 rounded-lg border border-gray-300">
+                        <button class="btn-primary">Subscribe Now</button>
+                    </div>
+                </section>
+            </section>
+            <section id="shop" class="page-section hidden">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 text-center">Our Eco-Friendly Collection</h2>
+                <section class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-2">
+                        <label for="category-filter" class="font-medium text-slate-700">Category:</label>
+                        <select id="category-filter" class="p-2 border border-gray-300 rounded-md">
+                            <option value="all">All</option>
+                            <option value="babygrow">Babygrows</option>
+                            <option value="bibs">Bibs</option>
+                            <option value="lamps">Lamps</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="sort-by" class="font-medium text-slate-700">Sort By:</label>
+                        <select id="sort-by" class="p-2 border border-gray-300 rounded-md">
+                            <option value="featured">Featured</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="name-asc">Name: A-Z</option>
+                        </select>
+                    </div>
+                </section>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="product-catalog-grid"></div>
+            </section>
+            <section id="about" class="page-section hidden">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 text-center">About Banimal™</h2>
+                <div class="prose max-w-none text-slate-700">
+                    <p>Banimal™ is more than just an e-commerce store; it's a movement towards a more sustainable and compassionate future for our children. We specialize in eco-friendly baby clothing and accessories, crafted with the utmost care for both your little ones and the planet.</p>
+                    <p>Every purchase contributes directly to helping a child in need, identified through the insightful data from the Baobab Security Network. Join the Banimal™ family and be a part of a community that values kindness, sustainability, and making a tangible difference in the world.</p>
+                </div>
+            </section>
+            <section id="contact" class="page-section hidden">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 text-center">Contact Us</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-700">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">General Inquiries</h3>
+                        <p class="mb-2"><i class="fas fa-envelope mr-2 text-indigo-600"></i> support@banimal.com</p>
+                        <p class="mb-2"><i class="fas fa-phone mr-2 text-indigo-600"></i> +1 (123) 456-7890</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">AI Chatbot Support</h3>
+                        <button class="btn-primary text-sm px-4 py-2" onclick="toggleChatbot()">Open Chatbot <i class="fas fa-comments ml-2"></i></button>
+                    </div>
+                </div>
+            </section>
+            <section id="my-account" class="page-section hidden">
+                <h2 class="text-4xl font-extrabold mb-4 text-slate-800 text-center">My Account</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-6"><h3 class="text-xl font-semibold mb-3">Order History</h3><ul class="list-disc list-inside space-y-2"><li>Order #12345: Shipped</li><li>Order #12344: Delivered</li></ul></div>
+                    <div class="card p-6"><h3 class="text-xl font-semibold mb-3">Loyalty & Rewards</h3><p><strong>Banimal Points™:</strong> 500 points</p></div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <div class="chatbot-container" id="chatbot-container">
+        <div class="chatbot-header" id="chatbot-header"><span>Banimal AI Support</span><i class="fas fa-plus" id="chatbot-toggle"></i></div>
+        <div class="chatbot-body hidden" id="chatbot-body"><div class="chat-message bot">Hello! How can I assist you today?</div></div>
+        <div class="chatbot-input-area hidden" id="chatbot-input-area">
+            <input type="text" id="chatbot-input" class="flex-grow p-2 border border-gray-300 rounded-lg" placeholder="Type your question...">
+            <button id="chatbot-send" class="ml-2 btn-primary px-4 py-2">Send</button>
+        </div>
+    </div>
+    <footer class="footer-bg py-8 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-3xl font-extrabold text-white mb-4">Banimal™: <span class="text-blue-400">Kind Creatures. Global Impact.</span></h3>
+            <p class="text-gray-300 mb-6">For every purchase, we deliver the same item to a child in need.</p>
+            <p class="text-gray-500 text-sm">&copy; 2025 Banimal™. All rights reserved.</p>
+            <p class="text-gray-500 text-sm mt-1">A proud initiative of <a href="https://fruitful.faa.zone/" target="_blank" class="footer-link">Fruitful™ Treaty System™</a></p>
+        </div>
+    </footer>
+    <script>
+        const mockProducts = [
+            { id: 1, name: "Organic Cotton Onesie", price: 25.00, image: "https://placehold.co/400x200/ADD8E6/000000?text=Onesie", category: "babygrow", isFeatured: true },
+            { id: 2, name: "Bamboo Baby Bib Set", price: 18.50, image: "https://placehold.co/400x200/ADD8E6/000000?text=BibSet", category: "bibs", isFeatured: true },
+            { id: 3, name: "Eco-Friendly Teething Toy", price: 15.00, image: "https://placehold.co/400x200/ADD8E6/000000?text=Teether", category: "toys", isFeatured: true },
+            { id: 4, name: "Banimal Short Sleeve Babygrow", price: 111.39, image: "https://placehold.co/400x200/000000/FFFFFF?text=Babygrow", category: "babygrow", stock: "IN STOCK" },
+            { id: 5, name: "Bunnies Bandanna Bib", price: 55.65, image: "https://placehold.co/400x200/D3D3D3/000000?text=Bib", category: "bibs", stock: "IN STOCK" },
+            { id: 6, name: "Mushroom Lamp", price: 220.00, image: "https://placehold.co/400x200/ADFF2F/000000?text=Lamp", category: "lamps", stock: "IN STOCK" }
+        ];
+        let cartCount = 0;
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            history.pushState(null, '', '#' + id);
+            if (id === 'shop') displayProductsInCatalog();
+            else if (id === 'home') displayFeaturedProducts();
+        }
+        function displayFeaturedProducts() {
+            const grid = document.getElementById('featured-product-grid');
+            if (!grid) return;
+            grid.innerHTML = mockProducts.filter(p => p.isFeatured).map(p =>
+                '<div class="card text-center"><img src="' + p.image + '" alt="' + p.name + '" class="product-image"><h3 class="text-lg font-bold mb-2">' + p.name + '</h3><p class="text-gray-700 text-xl font-semibold mb-4">R' + p.price.toFixed(2) + '</p><button class="btn-primary w-full" onclick="addToCart(' + p.id + ')">Add to Cart</button></div>'
+            ).join('');
+        }
+        function displayProductsInCatalog() {
+            const grid = document.getElementById('product-catalog-grid');
+            if (!grid) return;
+            const cat = document.getElementById('category-filter') ? document.getElementById('category-filter').value : 'all';
+            let prods = mockProducts.filter(p => !p.isFeatured && (cat === 'all' || p.category === cat));
+            grid.innerHTML = prods.map(p =>
+                '<div class="card text-center"><img src="' + p.image + '" alt="' + p.name + '" class="product-image"><h3 class="text-lg font-bold mb-2">' + p.name + '</h3><p class="text-gray-700 text-xl font-semibold mb-2">R' + p.price.toFixed(2) + '</p><p class="text-sm in-stock mb-4">' + (p.stock || '') + '</p><button class="btn-primary w-full" onclick="addToCart(' + p.id + ')">Add to Cart</button></div>'
+            ).join('');
+        }
+        function addToCart(id) {
+            cartCount++;
+            document.getElementById('cart-count').textContent = cartCount;
+        }
+        function toggleChatbot() {
+            const body = document.getElementById('chatbot-body');
+            const inputArea = document.getElementById('chatbot-input-area');
+            const icon = document.getElementById('chatbot-toggle');
+            body.classList.toggle('hidden');
+            inputArea.classList.toggle('hidden');
+            icon.classList.toggle('fa-plus');
+            icon.classList.toggle('fa-minus');
+        }
+        document.getElementById('chatbot-header').addEventListener('click', toggleChatbot);
+        document.getElementById('chatbot-send').addEventListener('click', function() {
+            const input = document.getElementById('chatbot-input');
+            const val = input.value.trim();
+            if (!val) return;
+            const body = document.getElementById('chatbot-body');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'chat-message user';
+            userDiv.textContent = val;
+            body.appendChild(userDiv);
+            input.value = '';
+            const botDiv = document.createElement('div');
+            botDiv.className = 'chat-message bot';
+            botDiv.textContent = 'Thanks for your message! Our team will get back to you shortly.';
+            body.appendChild(botDiv);
+            body.scrollTop = body.scrollHeight;
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.substring(1) || 'home';
+            showSection(hash);
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showSection(e.target.dataset.section);
+                });
+            });
+            const catFilter = document.getElementById('category-filter');
+            const sortBy = document.getElementById('sort-by');
+            if (catFilter) catFilter.addEventListener('change', displayProductsInCatalog);
+            if (sortBy) sortBy.addEventListener('change', displayProductsInCatalog);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">BuildNest™ - The Future of Housing & Infrastructure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base Light Mode Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #005f73, #ca6702);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            transition: background-color 0.3s, border-color 0.3s;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .tag {
+            background-color: rgba(0, 95, 115, 0.1);
+            color: #005f73;
+            border: 1px solid #005f73;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pending { background-color: #f59e0b; }
+        .status-error { background-color: #ef4444; }
+        .status-offline { background-color: #6b7280; }
+        .status-certified { background-color: #22c55e; }
+        
+        /* Modal styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #d2d2d7;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .loader {
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #005f73;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #001219;
+            color: #e9d8a6;
+        }
+        body.dark-mode .gradient-text {
+            background: linear-gradient(90deg, #94d2bd, #ee9b00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.dark-mode .card {
+            background-color: rgba(0, 42, 58, 0.6);
+            border: 1px solid #0a9396;
+        }
+        body.dark-mode .tag {
+            background-color: rgba(148, 210, 189, 0.2);
+            color: #94d2bd;
+            border: 1px solid #94d2bd;
+        }
+        body.dark-mode .text-gray-400 {
+             color: #a0a0a0;
+        }
+        body.dark-mode .text-gray-300 {
+            color: #c0c0c0;
+        }
+        body.dark-mode .text-indigo-300 {
+            color: #94d2bd;
+        }
+        body.dark-mode .text-orange-300 {
+            color: #ee9b00;
+        }
+        body.dark-mode .bg-gray-800\/50 {
+            background-color: rgba(0, 63, 92, 0.5);
+        }
+        body.dark-mode .border-gray-700 {
+            border-color: #0a9396;
+        }
+        body.dark-mode .bg-indigo-600 { background-color: #0a9396; }
+        body.dark-mode .bg-indigo-600:hover { background-color: #94d2bd; color: #001219; }
+        body.dark-mode .bg-orange-500 { background-color: #ee9b00; }
+        body.dark-mode .bg-orange-500:hover { background-color: #e9d8a6; color: #001219;}
+        body.dark-mode .bg-gray-600 { background-color: #003f5c; }
+        body.dark-mode .bg-gray-600:hover { background-color: #002a3a; }
+        body.dark-mode .bg-gray-700 { background-color: #002a3a; }
+        body.dark-mode .bg-gray-700:hover { background-color: #001219; }
+        body.dark-mode .placeholder-gray-500::placeholder { color: #888; }
+        body.dark-mode .modal-content {
+            background-color: #002a3a;
+            border: 1px solid #0a9396;
+        }
+        body.dark-mode .loader {
+            border-top-color: #94d2bd;
+        }
+    </style>
+</head>
+<body>
+    <header class="p-4 flex justify-end items-center space-x-2">
+        <select id="language-toggle" class="p-2 rounded-full text-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 dark:bg-gray-700 dark:text-gray-100">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+            <option value="ru">Русский</option>
+            <option value="pt">Português</option>
+            <option value="it">Italiano</option>
+            <option value="zh">中文</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ja">日本語</option>
+            <option value="ar">العربية</option>
+            <option value="ko">한국어</option>
+            <option value="zu">isiZulu</option>
+            <option value="af">Afrikaans</option>
+            <option value="xh">isiXhosa</option>
+            <option value="ve">Tshivenḓa</option>
+            <option value="st">Sesotho</option>
+            <option value="nso">Sepedi</option>
+            <option value="sw">Kiswahili</option>
+            <option value="fn">Fanagalo</option>
+        </select>
+        <button id="theme-toggle" class="p-2 w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-200 dark:bg-gray-700 dark:text-gray-100">
+        </button>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header Section -->
+        <header class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-black mb-4" data-i18n="mainTitle">
+                <span class="gradient-text">BuildNest™</span> Core Protocol
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto" data-i18n="mainSubtitle">
+                A cutting-edge <span class="font-bold text-indigo-300">FAA.ZONE</span> solution for the 🏗️ Housing & Infrastructure sector, seamlessly integrated with the global <span class="font-bold text-orange-300">PulseGrid</span> for unparalleled performance and data integrity.
+            </p>
+        </header>
+
+        <!-- Key Features Section -->
+        <section id="features" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8" data-i18n="featuresTitle">🎛️ Key Features</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature List -->
+                <div class="card p-6 rounded-xl">
+                    <ul class="space-y-4 text-gray-300">
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature1Desc">Direct integration with FAA 🧾 Professional Services Mesh.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature2Desc">Advanced data sync with PlotVault.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature3Desc">Real-time compliance validation via VaultLink™.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature4Desc">Scalable architecture for x29 node expansion.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature5Desc">Predictive analytics for BuildNest performance.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature6Desc">API access for seamless interoperability.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature7Desc">Cross-sector data interoperability.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature8Desc">Self-optimizing node distribution.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature9Desc">Dynamic resource allocation.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature10Desc">AI-driven anomaly detection & fraud prevention.</span></li>
+                        <li class="flex items-start"><span class="text-indigo-400 mr-3">✓</span> <span data-i18n="feature11Desc">One-click regulatory reporting and audit trails.</span></li>
+                    </ul>
+                </div>
+                <!-- Subnodes -->
+                <div class="card p-6 rounded-xl lg:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 text-orange-300" data-i18n="subnodesTitle">Integrated Subnodes</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700"><strong>Subnode:</strong> PlotVault</div>
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700"><strong>Subnode:</strong> GridPermit</div>
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700"><strong>Subnode:</strong> ScrollClaim</div>
+                        <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700"><strong>Subnode:</strong> LandNode</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gemini API Feature: Scenario Forecaster -->
+        <section id="forecaster" class="mb-16 card p-8 rounded-xl text-center">
+            <h2 class="text-3xl font-bold text-center mb-4" data-i18n="forecasterTitle">🔮 ✨ Scenario Forecaster</h2>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-6" data-i18n="forecasterSubtitle">Describe a potential project challenge or goal. Our AI, powered by Gemini, will analyze it against the BuildNest™ protocol and forecast potential scenarios, risks, and strategic recommendations.</p>
+            <div class="max-w-xl mx-auto">
+                <textarea id="scenario-input" class="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none" rows="3" data-i18n-placeholder="forecasterPlaceholder"></textarea>
+                <button id="forecast-button" class="mt-4 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center" data-i18n="forecasterButton">
+                    Forecast Scenarios
+                </button>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8" data-i18n="pricingTitle">💳 Pricing Structure</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Starter Node -->
+                <div class="card p-8 rounded-xl flex flex-col">
+                    <h3 class="text-2xl font-bold text-indigo-300" data-i18n="starterTitle">Starter Node</h3>
+                    <p class="text-4xl font-black my-4">FCU 68<span class="text-lg font-medium text-gray-400">/mo</span></p>
+                    <p class="text-gray-400 mb-6 flex-grow" data-i18n="starterDesc">Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.</p>
+                    <ul class="space-y-2 mb-6 text-gray-300">
+                        <li data-i18n="starterFeat1">✓ Essential features</li>
+                        <li data-i18n="starterFeat2">✓ Basic data sync</li>
+                        <li data-i18n="starterFeat3">✓ Community support</li>
+                    </ul>
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="getStartedButton">Get Started</button>
+                </div>
+                <!-- Pro Grid -->
+                <div class="card p-8 rounded-xl flex flex-col border-2 border-orange-400 relative">
+                     <span class="absolute top-0 right-8 -mt-4 bg-orange-400 text-gray-900 text-sm font-bold px-3 py-1 rounded-full" data-i18n="popularTag">POPULAR</span>
+                    <h3 class="text-2xl font-bold text-orange-300" data-i18n="proTitle">Pro Grid</h3>
+                    <p class="text-4xl font-black my-4">FCU 225<span class="text-lg font-medium text-gray-400">/mo</span></p>
+                    <p class="text-gray-400 mb-6 flex-grow" data-i18n="proDesc">Designed for growing firms needing advanced capabilities. Includes 7 core features and enhanced performance.</p>
+                    <ul class="space-y-2 mb-6 text-gray-300">
+                        <li data-i18n="proFeat1">✓ Advanced features</li>
+                        <li data-i18n="proFeat2">✓ High-volume data processing</li>
+                        <li data-i18n="proFeat3">✓ Priority support</li>
+                        <li data-i18n="proFeat4">✓ Expanded analytics</li>
+                    </ul>
+                    <button class="w-full bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="chooseProButton">Choose Pro</button>
+                </div>
+                <!-- Enterprise Omni-Sync -->
+                <div class="card p-8 rounded-xl flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-300" data-i18n="enterpriseTitle">Enterprise Omni-Sync</h3>
+                    <p class="text-4xl font-black my-4" data-i18n="customPrice">Custom</p>
+                    <p class="text-gray-400 mb-6 flex-grow" data-i18n="enterpriseDesc">For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.</p>
+                    <ul class="space-y-2 mb-6 text-gray-300">
+                        <li data-i18n="enterpriseFeat1">✓ Full VaultMesh access</li>
+                        <li data-i18n="enterpriseFeat2">✓ Dedicated account management</li>
+                        <li data-i18n="enterpriseFeat3">✓ Custom integrations</li>
+                        <li data-i18n="enterpriseFeat4">✓ 24/7 Premium Support</li>
+                    </ul>
+                    <button id="generate-brief-button" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg transition-colors mb-2" data-i18n="generateBriefButton">✨ Generate Project Brief</button>
+                    <button class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="contactSalesButton">Contact Sales</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics & Compliance -->
+        <section id="status" class="grid lg:grid-cols-5 gap-8">
+            <!-- FAA Metadata -->
+            <div class="lg:col-span-2 card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-indigo-300" data-i18n="metadataTitle">🔗 FAA Metadata & Compliance</h3>
+                <div class="space-y-3 text-sm">
+                    <p><strong>Product ID:</strong> <span class="font-mono text-gray-400">BUI-HOU-7277</span></p>
+                    <p><strong>VaultID:</strong> <span class="font-mono text-gray-400">VAULT-W7H0</span></p>
+                    <p><strong>Signal Echo Layer:</strong> <span class="font-mono text-gray-400">Layer Alpha v1.7</span></p>
+                    <p><strong>Deployment Zone:</strong> <span class="font-mono text-gray-400">Zone B 4</span></p>
+                    <p><strong>Security Rating:</strong> <span class="tag px-2 py-1 rounded-md text-sm font-bold">FAA-SEC A+</span></p>
+                    <p><strong data-i18n="activeNodesLabel">Active Nodes:</strong> <span id="active-nodes" class="font-mono text-gray-400">3,482</span></p>
+                    <p><strong data-i18n="lastAuditLabel">Last Audit:</strong> <span class="font-mono text-gray-400">2025-06-29</span></p>
+                    <p><strong data-i18n="complianceStatusLabel">Compliance Status:</strong> <span class="font-semibold text-green-400 flex items-center"><span class="status-dot status-certified"></span><span data-i18n="complianceStatus">Active & Certified</span></span></p>
+                </div>
+            </div>
+
+            <!-- Real-Time Metrics -->
+            <div class="lg:col-span-3 card p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-orange-300" data-i18n="metricsTitle">📊 Real-Time Metrics Overview</h3>
+                <div class="grid md:grid-cols-3 gap-4 mb-6 text-center">
+                    <div>
+                        <p class="text-gray-400 text-sm" data-i18n="pulseActivityLabel">Pulse Activity</p>
+                        <p id="pulse-activity" class="text-3xl font-bold">44,403</p>
+                        <p class="text-gray-500 text-xs" data-i18n="pulseUnit">pulses/sec</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-sm" data-i18n="dataVolumeLabel">Data Volume (24h)</p>
+                        <p id="data-volume" class="text-3xl font-bold">25.94</p>
+                        <p class="text-gray-500 text-xs">TB</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-sm" data-i18n="latencyLabel">Avg. Latency</p>
+                        <p id="latency" class="text-3xl font-bold">30</p>
+                        <p class="text-gray-500 text-xs">ms</p>
+                    </div>
+                </div>
+                <h4 class="font-bold mb-2 text-gray-300" data-i18n="ledgerTitle">VaultTrace™ Ledger Entries:</h4>
+                <div class="font-mono text-sm space-y-2 bg-gray-900/50 p-4 rounded-lg">
+                    <p class="flex items-center"><span class="status-dot status-pending"></span>#4708 - BUILD Pulse Tx - <span class="text-yellow-400" data-i18n="ledgerPending">Pending</span></p>
+                    <p class="flex items-center"><span class="status-dot status-error"></span>#2539 - HOUSI Data Sync - <span class="text-red-400" data-i18n="ledgerError">Error</span></p>
+                    <p class="flex items-center"><span class="status-dot status-offline"></span>#1296 - Node Actuation Confirm - <span class="text-gray-500" data-i18n="ledgerOffline">Offline</span></p>
+                    <p class="flex items-center"><span class="status-dot status-certified"></span>#551 - VaultTrace Auth - <span class="text-green-400" data-i18n="ledgerSuccess">Success</span></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scenario Forecaster Modal -->
+    <div id="scenario-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold mb-4 text-indigo-300" data-i18n="forecasterModalTitle">Scenario Forecast</h3>
+            <div id="scenario-result" class="text-gray-300 space-y-4">
+                <!-- Gemini API result will be injected here -->
+            </div>
+            <button onclick="closeModal('scenario-modal')" class="mt-6 w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg" data-i18n="closeButton">Close</button>
+        </div>
+    </div>
+
+    <!-- Project Brief Modal -->
+    <div id="brief-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold mb-4 text-orange-300" data-i18n="briefModalTitle">✨ Generate Project Brief</h3>
+            <p class="text-gray-400 mb-4" data-i18n="briefModalDesc">Describe your project, and our AI will draft a professional brief outlining objectives, scope, and key milestones.</p>
+            <textarea id="brief-input" class="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:outline-none" rows="4" data-i18n-placeholder="briefModalPlaceholder"></textarea>
+            <button id="generate-brief-action" class="mt-4 w-full bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-4 rounded-lg transition-colors" data-i18n="generateBriefModalButton">Generate Brief</button>
+            <div id="brief-result" class="mt-6 text-gray-300 space-y-4 whitespace-pre-wrap">
+                <!-- Gemini API result for brief will be injected here -->
+            </div>
+            <button onclick="closeModal('brief-modal')" class="mt-6 w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg" data-i18n="closeButton">Close</button>
+        </div>
+    </div>
+
+
+    <script>
+        const languageData = {
+            en: {
+                pageTitle: "BuildNest™ - The Future of Housing & Infrastructure",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Core Protocol",
+                mainSubtitle: "A cutting-edge <span class='font-bold text-indigo-300'>FAA.ZONE</span> solution for the 🏗️ Housing & Infrastructure sector, seamlessly integrated with the global <span class='font-bold text-orange-300'>PulseGrid</span> for unparalleled performance and data integrity.",
+                featuresTitle: "🎛️ Key Features",
+                feature1Desc: "Direct integration with FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Advanced data sync with PlotVault.",
+                feature3Desc: "Real-time compliance validation via VaultLink™.",
+                feature4Desc: "Scalable architecture for x29 node expansion.",
+                feature5Desc: "Predictive analytics for BuildNest performance.",
+                feature6Desc: "API access for seamless interoperability.",
+                feature7Desc: "Cross-sector data interoperability.",
+                feature8Desc: "Self-optimizing node distribution.",
+                feature9Desc: "Dynamic resource allocation.",
+                feature10Desc: "AI-driven anomaly detection & fraud prevention.",
+                feature11Desc: "One-click regulatory reporting and audit trails.",
+                subnodesTitle: "Integrated Subnodes",
+                forecasterTitle: "🔮 ✨ Scenario Forecaster",
+                forecasterSubtitle: "Describe a potential project challenge or goal. Our AI, powered by Gemini, will analyze it against the BuildNest™ protocol and forecast potential scenarios, risks, and strategic recommendations.",
+                forecasterPlaceholder: "e.g., 'Developing a 500-unit residential complex in a high-risk seismic zone.'",
+                forecasterButton: "Forecast Scenarios",
+                pricingTitle: "💳 Pricing Structure",
+                starterTitle: "Starter Node",
+                starterDesc: "Ideal for small teams and pilot projects. Access essential features and secure basic data synchronization.",
+                starterFeat1: "✓ Essential features",
+                starterFeat2: "✓ Basic data sync",
+                starterFeat3: "✓ Community support",
+                getStartedButton: "Get Started",
+                popularTag: "POPULAR",
+                proTitle: "Pro Grid",
+                proDesc: "Designed for growing firms needing advanced capabilities. Includes 7 core features and enhanced performance.",
+                proFeat1: "✓ Advanced features",
+                proFeat2: "✓ High-volume data processing",
+                proFeat3: "✓ Priority support",
+                proFeat4: "✓ Expanded analytics",
+                chooseProButton: "Choose Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Custom",
+                enterpriseDesc: "For large organizations requiring full VaultMesh access, custom integrations, and dedicated resources.",
+                enterpriseFeat1: "✓ Full VaultMesh access",
+                enterpriseFeat2: "✓ Dedicated account management",
+                enterpriseFeat3: "✓ Custom integrations",
+                enterpriseFeat4: "✓ 24/7 Premium Support",
+                generateBriefButton: "✨ Generate Project Brief",
+                contactSalesButton: "Contact Sales",
+                metadataTitle: "🔗 FAA Metadata & Compliance",
+                activeNodesLabel: "Active Nodes:",
+                lastAuditLabel: "Last Audit:",
+                complianceStatusLabel: "Compliance Status:",
+                complianceStatus: "Active & Certified",
+                metricsTitle: "📊 Real-Time Metrics Overview",
+                pulseActivityLabel: "Pulse Activity",
+                pulseUnit: "pulses/sec",
+                dataVolumeLabel: "Data Volume (24h)",
+                latencyLabel: "Avg. Latency",
+                ledgerTitle: "VaultTrace™ Ledger Entries:",
+                ledgerPending: "Pending",
+                ledgerError: "Error",
+                ledgerOffline: "Offline",
+                ledgerSuccess: "Success",
+                forecasterModalTitle: "Scenario Forecast",
+                briefModalTitle: "✨ Generate Project Brief",
+                briefModalDesc: "Describe your project, and our AI will draft a professional brief outlining objectives, scope, and key milestones.",
+                briefModalPlaceholder: "e.g., 'An affordable housing initiative in downtown, focusing on sustainable materials and community integration.'",
+                generateBriefModalButton: "Generate Brief",
+                closeButton: "Close"
+            },
+            es: {
+                pageTitle: "BuildNest™ - El Futuro de la Vivienda y la Infraestructura",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Protocolo Central",
+                mainSubtitle: "Una solución de vanguardia de <span class='font-bold text-indigo-300'>FAA.ZONE</span> para el sector de 🏗️ Vivienda e Infraestructura, integrada perfectamente con la <span class='font-bold text-orange-300'>PulseGrid</span> global para un rendimiento e integridad de datos inigualables.",
+                featuresTitle: "🎛️ Características Clave",
+                feature1Desc: "Integración directa con la Malla de Servicios Profesionales de FAA 🧾.",
+                feature2Desc: "Sincronización de datos avanzada con PlotVault.",
+                feature3Desc: "Validación de cumplimiento en tiempo real a través de VaultLink™.",
+                feature4Desc: "Arquitectura escalable para expansión de x29 nodos.",
+                feature5Desc: "Análisis predictivo para el rendimiento de BuildNest.",
+                feature6Desc: "Acceso a API para una interoperabilidad perfecta.",
+                feature7Desc: "Interoperabilidad de datos intersectorial.",
+                feature8Desc: "Distribución de nodos auto-optimizada.",
+                feature9Desc: "Asignación dinámica de recursos.",
+                feature10Desc: "Detección de anomalías y prevención de fraudes impulsada por IA.",
+                feature11Desc: "Informes regulatorios y pistas de auditoría con un solo clic.",
+                subnodesTitle: "Subnodos Integrados",
+                forecasterTitle: "🔮 ✨ Pronosticador de Escenarios",
+                forecasterSubtitle: "Describa un desafío u objetivo potencial del proyecto. Nuestra IA, impulsada por Gemini, lo analizará en función del protocolo BuildNest™ y pronosticará posibles escenarios, riesgos y recomendaciones estratégicas.",
+                forecasterPlaceholder: "p.ej., 'Desarrollar un complejo residencial de 500 unidades en una zona sísmica de alto riesgo.'",
+                forecasterButton: "Pronosticar Escenarios",
+                pricingTitle: "💳 Estructura de Precios",
+                starterTitle: "Nodo de Inicio",
+                starterDesc: "Ideal para equipos pequeños y proyectos piloto. Acceda a funciones esenciales y asegure la sincronización básica de datos.",
+                starterFeat1: "✓ Funciones esenciales",
+                starterFeat2: "✓ Sincronización de datos básica",
+                starterFeat3: "✓ Soporte comunitario",
+                getStartedButton: "Empezar",
+                popularTag: "POPULAR",
+                proTitle: "Red Pro",
+                proDesc: "Diseñado para empresas en crecimiento que necesitan capacidades avanzadas. Incluye 7 funciones principales y un rendimiento mejorado.",
+                proFeat1: "✓ Funciones avanzadas",
+                proFeat2: "✓ Procesamiento de datos de alto volumen",
+                proFeat3: "✓ Soporte prioritario",
+                proFeat4: "✓ Análisis expandido",
+                chooseProButton: "Elegir Pro",
+                enterpriseTitle: "Omni-Sync Empresarial",
+                customPrice: "Personalizado",
+                enterpriseDesc: "Para grandes organizaciones que requieren acceso completo a VaultMesh, integraciones personalizadas y recursos dedicados.",
+                enterpriseFeat1: "✓ Acceso completo a VaultMesh",
+                enterpriseFeat2: "✓ Gestión de cuenta dedicada",
+                enterpriseFeat3: "✓ Integraciones personalizadas",
+                enterpriseFeat4: "✓ Soporte Premium 24/7",
+                generateBriefButton: "✨ Generar Resumen del Proyecto",
+                contactSalesButton: "Contactar a Ventas",
+                metadataTitle: "🔗 Metadatos y Cumplimiento de FAA",
+                activeNodesLabel: "Nodos Activos:",
+                lastAuditLabel: "Última Auditoría:",
+                complianceStatusLabel: "Estado de Cumplimiento:",
+                complianceStatus: "Activo y Certificado",
+                metricsTitle: "📊 Resumen de Métricas en Tiempo Real",
+                pulseActivityLabel: "Actividad de Pulso",
+                pulseUnit: "pulsos/seg",
+                dataVolumeLabel: "Volumen de Datos (24h)",
+                latencyLabel: "Latencia Promedio",
+                ledgerTitle: "Entradas del Libro Mayor de VaultTrace™:",
+                ledgerPending: "Pendiente",
+                ledgerError: "Error",
+                ledgerOffline: "Desconectado",
+                ledgerSuccess: "Éxito",
+                forecasterModalTitle: "Pronóstico de Escenario",
+                briefModalTitle: "✨ Generar Resumen del Proyecto",
+                briefModalDesc: "Describa su proyecto y nuestra IA redactará un resumen profesional que describa los objetivos, el alcance y los hitos clave.",
+                briefModalPlaceholder: "p.ej., 'Una iniciativa de vivienda asequible en el centro, centrada en materiales sostenibles e integración comunitaria.'",
+                generateBriefModalButton: "Generar Resumen",
+                closeButton: "Cerrar"
+            },
+            de: {
+                pageTitle: "BuildNest™ - Die Zukunft des Wohnungsbaus & der Infrastruktur",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Kernprotokoll",
+                mainSubtitle: "Eine hochmoderne <span class='font-bold text-indigo-300'>FAA.ZONE</span>-Lösung für den 🏗️ Wohnungsbau- & Infrastruktursektor, nahtlos integriert in das globale <span class='font-bold text-orange-300'>PulseGrid</span> für unübertroffene Leistung und Datenintegrität.",
+                featuresTitle: "🎛️ Hauptmerkmale",
+                feature1Desc: "Direkte Integration mit dem FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Erweiterte Datensynchronisation mit PlotVault.",
+                feature3Desc: "Echtzeit-Compliance-Validierung über VaultLink™.",
+                feature4Desc: "Skalierbare Architektur für die Erweiterung um x29 Knoten.",
+                feature5Desc: "Prädiktive Analysen für die BuildNest-Leistung.",
+                feature6Desc: "API-Zugang für nahtlose Interoperabilität.",
+                feature7Desc: "Sektorübergreifende Dateninteroperabilität.",
+                feature8Desc: "Selbstoptimierende Knotenverteilung.",
+                feature9Desc: "Dynamische Ressourcenzuweisung.",
+                feature10Desc: "KI-gesteuerte Anomalieerkennung & Betrugsprävention.",
+                feature11Desc: "Ein-Klick-Berichterstattung und Audit-Trails.",
+                subnodesTitle: "Integrierte Subknoten",
+                forecasterTitle: "🔮 ✨ Szenario-Prognose",
+                forecasterSubtitle: "Beschreiben Sie eine potenzielle Projektherausforderung oder ein Ziel. Unsere KI, angetrieben von Gemini, wird es anhand des BuildNest™-Protokolls analysieren und potenzielle Szenarien, Risiken und strategische Empfehlungen prognostizieren.",
+                forecasterPlaceholder: "z.B. 'Entwicklung eines Wohnkomplexes mit 500 Einheiten in einer Hochrisiko-Erdbebenzone.'",
+                forecasterButton: "Szenarien prognostizieren",
+                pricingTitle: "💳 Preisstruktur",
+                starterTitle: "Starter-Knoten",
+                starterDesc: "Ideal für kleine Teams und Pilotprojekte. Greifen Sie auf wesentliche Funktionen zu und sichern Sie die grundlegende Datensynchronisation.",
+                starterFeat1: "✓ Wesentliche Funktionen",
+                starterFeat2: "✓ Grundlegende Datensynchronisation",
+                starterFeat3: "✓ Community-Support",
+                getStartedButton: "Loslegen",
+                popularTag: "BELIEBT",
+                proTitle: "Pro-Grid",
+                proDesc: "Entwickelt für wachsende Unternehmen, die erweiterte Funktionen benötigen. Umfasst 7 Kernfunktionen und verbesserte Leistung.",
+                proFeat1: "✓ Erweiterte Funktionen",
+                proFeat2: "✓ Hochvolumige Datenverarbeitung",
+                proFeat3: "✓ Priorisierter Support",
+                proFeat4: "✓ Erweiterte Analysen",
+                chooseProButton: "Pro wählen",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Benutzerdefiniert",
+                enterpriseDesc: "Für große Organisationen, die vollen VaultMesh-Zugang, benutzerdefinierte Integrationen und dedizierte Ressourcen benötigen.",
+                enterpriseFeat1: "✓ Voller VaultMesh-Zugang",
+                enterpriseFeat2: "✓ Dediziertes Account Management",
+                enterpriseFeat3: "✓ Benutzerdefinierte Integrationen",
+                enterpriseFeat4: "✓ 24/7 Premium-Support",
+                generateBriefButton: "✨ Projekt-Briefing erstellen",
+                contactSalesButton: "Vertrieb kontaktieren",
+                metadataTitle: "🔗 FAA-Metadaten & Compliance",
+                activeNodesLabel: "Aktive Knoten:",
+                lastAuditLabel: "Letztes Audit:",
+                complianceStatusLabel: "Compliance-Status:",
+                complianceStatus: "Aktiv & Zertifiziert",
+                metricsTitle: "📊 Echtzeit-Metriken-Übersicht",
+                pulseActivityLabel: "Puls-Aktivität",
+                pulseUnit: "pulse/sek",
+                dataVolumeLabel: "Datenvolumen (24h)",
+                latencyLabel: "Durchschn. Latenz",
+                ledgerTitle: "VaultTrace™-Ledger-Einträge:",
+                ledgerPending: "Ausstehend",
+                ledgerError: "Fehler",
+                ledgerOffline: "Offline",
+                ledgerSuccess: "Erfolgreich",
+                forecasterModalTitle: "Szenario-Prognose",
+                briefModalTitle: "✨ Projekt-Briefing erstellen",
+                briefModalDesc: "Beschreiben Sie Ihr Projekt, und unsere KI wird ein professionelles Briefing entwerfen, das Ziele, Umfang und wichtige Meilensteine umreißt.",
+                briefModalPlaceholder: "z.B. 'Eine Initiative für bezahlbaren Wohnraum in der Innenstadt, die sich auf nachhaltige Materialien und die Integration der Gemeinschaft konzentriert.'",
+                generateBriefModalButton: "Briefing erstellen",
+                closeButton: "Schließen"
+            },
+            ru: {
+                pageTitle: "BuildNest™ - Будущее жилищного строительства и инфраструктуры",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Основной протокол",
+                mainSubtitle: "Передовое решение <span class='font-bold text-indigo-300'>FAA.ZONE</span> для сектора 🏗️ жилищного строительства и инфраструктуры, легко интегрированное с глобальной сетью <span class='font-bold text-orange-300'>PulseGrid</span> для непревзойденной производительности и целостности данных.",
+                featuresTitle: "🎛️ Ключевые особенности",
+                feature1Desc: "Прямая интеграция с FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Расширенная синхронизация данных с PlotVault.",
+                feature3Desc: "Проверка соответствия в реальном времени через VaultLink™.",
+                feature4Desc: "Масштабируемая архитектура для расширения до x29 узлов.",
+                feature5Desc: "Предиктивная аналитика для производительности BuildNest.",
+                feature6Desc: "Доступ по API для бесшовной совместимости.",
+                feature7Desc: "Межсекторальная совместимость данных.",
+                feature8Desc: "Самооптимизирующееся распределение узлов.",
+                feature9Desc: "Динамическое распределение ресурсов.",
+                feature10Desc: "Обнаружение аномалий и предотвращение мошенничества на основе ИИ.",
+                feature11Desc: "Регуляторная отчетность и аудиторские следы в один клик.",
+                subnodesTitle: "Интегрированные подузлы",
+                forecasterTitle: "🔮 ✨ Прогнозирование сценариев",
+                forecasterSubtitle: "Опишите потенциальную проблему или цель проекта. Наш ИИ, работающий на Gemini, проанализирует это в соответствии с протоколом BuildNest™ и спрогнозирует возможные сценарии, риски и стратегические рекомендации.",
+                forecasterPlaceholder: "например, 'Строительство жилого комплекса на 500 квартир в сейсмоопасной зоне.'",
+                forecasterButton: "Прогнозировать сценарии",
+                pricingTitle: "💳 Структура цен",
+                starterTitle: "Стартовый узел",
+                starterDesc: "Идеально подходит для небольших команд и пилотных проектов. Получите доступ к основным функциям и базовой синхронизации данных.",
+                starterFeat1: "✓ Основные функции",
+                starterFeat2: "✓ Базовая синхронизация данных",
+                starterFeat3: "✓ Поддержка сообщества",
+                getStartedButton: "Начать",
+                popularTag: "ПОПУЛЯРНО",
+                proTitle: "Pro Grid",
+                proDesc: "Разработано для растущих компаний, нуждающихся в расширенных возможностях. Включает 7 основных функций и повышенную производительность.",
+                proFeat1: "✓ Расширенные функции",
+                proFeat2: "✓ Обработка больших объемов данных",
+                proFeat3: "✓ Приоритетная поддержка",
+                proFeat4: "✓ Расширенная аналитика",
+                chooseProButton: "Выбрать Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Индивидуально",
+                enterpriseDesc: "Для крупных организаций, которым требуется полный доступ к VaultMesh, пользовательские интеграции и выделенные ресурсы.",
+                enterpriseFeat1: "✓ Полный доступ к VaultMesh",
+                enterpriseFeat2: "✓ Выделенный менеджер по работе с клиентами",
+                enterpriseFeat3: "✓ Пользовательские интеграции",
+                enterpriseFeat4: "✓ Премиум-поддержка 24/7",
+                generateBriefButton: "✨ Создать бриф проекта",
+                contactSalesButton: "Связаться с отделом продаж",
+                metadataTitle: "🔗 Метаданные и соответствие FAA",
+                activeNodesLabel: "Активные узлы:",
+                lastAuditLabel: "Последний аудит:",
+                complianceStatusLabel: "Статус соответствия:",
+                complianceStatus: "Активен и сертифицирован",
+                metricsTitle: "📊 Обзор метрик в реальном времени",
+                pulseActivityLabel: "Активность пульса",
+                pulseUnit: "импульсов/сек",
+                dataVolumeLabel: "Объем данных (24ч)",
+                latencyLabel: "Сред. задержка",
+                ledgerTitle: "Записи в реестре VaultTrace™:",
+                ledgerPending: "В ожидании",
+                ledgerError: "Ошибка",
+                ledgerOffline: "Офлайн",
+                ledgerSuccess: "Успешно",
+                forecasterModalTitle: "Прогноз сценария",
+                briefModalTitle: "✨ Создать бриф проекта",
+                briefModalDesc: "Опишите свой проект, и наш ИИ составит профессиональный бриф с изложением целей, объема и ключевых этапов.",
+                briefModalPlaceholder: "например, 'Инициатива по доступному жилью в центре города, ориентированная на устойчивые материалы и интеграцию с сообществом.'",
+                generateBriefModalButton: "Создать бриф",
+                closeButton: "Закрыть"
+            },
+            pt: {
+                pageTitle: "BuildNest™ - O Futuro da Habitação e Infraestrutura",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Protocolo Principal",
+                mainSubtitle: "Uma solução de ponta da <span class='font-bold text-indigo-300'>FAA.ZONE</span> para o setor de 🏗️ Habitação e Infraestrutura, perfeitamente integrada com a <span class='font-bold text-orange-300'>PulseGrid</span> global para desempenho e integridade de dados incomparáveis.",
+                featuresTitle: "🎛️ Principais Características",
+                feature1Desc: "Integração direta com a Malha de Serviços Profissionais da FAA 🧾.",
+                feature2Desc: "Sincronização avançada de dados com o PlotVault.",
+                feature3Desc: "Validação de conformidade em tempo real via VaultLink™.",
+                feature4Desc: "Arquitetura escalável para expansão de x29 nós.",
+                feature5Desc: "Análise preditiva para o desempenho do BuildNest.",
+                feature6Desc: "Acesso à API para interoperabilidade perfeita.",
+                feature7Desc: "Interoperabilidade de dados intersetorial.",
+                feature8Desc: "Distribuição de nós auto-otimizada.",
+                feature9Desc: "Alocação dinâmica de recursos.",
+                feature10Desc: "Deteção de anomalias e prevenção de fraudes impulsionada por IA.",
+                feature11Desc: "Relatórios regulatórios e trilhas de auditoria com um clique.",
+                subnodesTitle: "Subnós Integrados",
+                forecasterTitle: "🔮 ✨ Previsor de Cenários",
+                forecasterSubtitle: "Descreva um desafio ou objetivo potencial do projeto. Nossa IA, alimentada por Gemini, irá analisá-lo em relação ao protocolo BuildNest™ e prever cenários potenciais, riscos e recomendações estratégicas.",
+                forecasterPlaceholder: "ex: 'Desenvolver um complexo residencial de 500 unidades em uma zona sísmica de alto risco.'",
+                forecasterButton: "Prever Cenários",
+                pricingTitle: "💳 Estrutura de Preços",
+                starterTitle: "Nó Inicial",
+                starterDesc: "Ideal para equipes pequenas e projetos piloto. Acesse recursos essenciais e garanta a sincronização básica de dados.",
+                starterFeat1: "✓ Recursos essenciais",
+                starterFeat2: "✓ Sincronização básica de dados",
+                starterFeat3: "✓ Suporte da comunidade",
+                getStartedButton: "Começar",
+                popularTag: "POPULAR",
+                proTitle: "Rede Pro",
+                proDesc: "Projetado para empresas em crescimento que precisam de recursos avançados. Inclui 7 recursos principais e desempenho aprimorado.",
+                proFeat1: "✓ Recursos avançados",
+                proFeat2: "✓ Processamento de dados de alto volume",
+                proFeat3: "✓ Suporte prioritário",
+                proFeat4: "✓ Análise expandida",
+                chooseProButton: "Escolher Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Personalizado",
+                enterpriseDesc: "Para grandes organizações que exigem acesso total ao VaultMesh, integrações personalizadas e recursos dedicados.",
+                enterpriseFeat1: "✓ Acesso total ao VaultMesh",
+                enterpriseFeat2: "✓ Gerenciamento de conta dedicado",
+                enterpriseFeat3: "✓ Integrações personalizadas",
+                enterpriseFeat4: "✓ Suporte Premium 24/7",
+                generateBriefButton: "✨ Gerar Briefing do Projeto",
+                contactSalesButton: "Contatar Vendas",
+                metadataTitle: "🔗 Metadados e Conformidade da FAA",
+                activeNodesLabel: "Nós Ativos:",
+                lastAuditLabel: "Última Auditoria:",
+                complianceStatusLabel: "Status de Conformidade:",
+                complianceStatus: "Ativo e Certificado",
+                metricsTitle: "📊 Visão Geral das Métricas em Tempo Real",
+                pulseActivityLabel: "Atividade de Pulso",
+                pulseUnit: "pulsos/seg",
+                dataVolumeLabel: "Volume de Dados (24h)",
+                latencyLabel: "Latência Média",
+                ledgerTitle: "Entradas do Ledger VaultTrace™:",
+                ledgerPending: "Pendente",
+                ledgerError: "Erro",
+                ledgerOffline: "Offline",
+                ledgerSuccess: "Sucesso",
+                forecasterModalTitle: "Previsão de Cenário",
+                briefModalTitle: "✨ Gerar Briefing do Projeto",
+                briefModalDesc: "Descreva seu projeto e nossa IA elaborará um briefing profissional descrevendo objetivos, escopo e marcos importantes.",
+                briefModalPlaceholder: "ex: 'Uma iniciativa de habitação acessível no centro da cidade, com foco em materiais sustentáveis e integração comunitária.'",
+                generateBriefModalButton: "Gerar Briefing",
+                closeButton: "Fechar"
+            },
+            it: {
+                pageTitle: "BuildNest™ - Il Futuro dell'Edilizia e delle Infrastrutture",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Protocollo Core",
+                mainSubtitle: "Una soluzione all'avanguardia di <span class='font-bold text-indigo-300'>FAA.ZONE</span> per il settore 🏗️ Edilizia e Infrastrutture, perfettamente integrata con la <span class='font-bold text-orange-300'>PulseGrid</span> globale per prestazioni e integrità dei dati senza pari.",
+                featuresTitle: "🎛️ Caratteristiche Principali",
+                feature1Desc: "Integrazione diretta con la Mesh dei Servizi Professionali di FAA 🧾.",
+                feature2Desc: "Sincronizzazione dati avanzata con PlotVault.",
+                feature3Desc: "Validazione della conformità in tempo reale tramite VaultLink™.",
+                feature4Desc: "Architettura scalabile per l'espansión di x29 nodi.",
+                feature5Desc: "Analisi predittiva per le prestazioni di BuildNest.",
+                feature6Desc: "Accesso API per un'interoperabilità senza soluzione di continuità.",
+                feature7Desc: "Interoperabilità dei dati intersettoriale.",
+                feature8Desc: "Distribuzione dei nodi auto-ottimizzante.",
+                feature9Desc: "Allocazione dinamica delle risorse.",
+                feature10Desc: "Rilevamento anomalie e prevenzione frodi basati su IA.",
+                feature11Desc: "Reportistica normativa e audit trail con un clic.",
+                subnodesTitle: "Sottonodi Integrati",
+                forecasterTitle: "🔮 ✨ Previsore di Scenari",
+                forecasterSubtitle: "Descrivi una potenziale sfida o obiettivo di progetto. La nostra IA, basata su Gemini, lo analizzerà rispetto al protocollo BuildNest™ e prevederà scenari potenziali, rischi e raccomandazioni strategiche.",
+                forecasterPlaceholder: "es. 'Sviluppo di un complesso residenziale di 500 unità in una zona ad alto rischio sismico.'",
+                forecasterButton: "Prevedi Scenari",
+                pricingTitle: "💳 Struttura dei Prezzi",
+                starterTitle: "Nodo Starter",
+                starterDesc: "Ideale per piccoli team e progetti pilota. Accedi alle funzionalità essenziali e assicurati una sincronizzazione dati di base.",
+                starterFeat1: "✓ Funzionalità essenziali",
+                starterFeat2: "✓ Sincronizzazione dati di base",
+                starterFeat3: "✓ Supporto della community",
+                getStartedButton: "Inizia",
+                popularTag: "POPOLARE",
+                proTitle: "Grid Pro",
+                proDesc: "Progettato per aziende in crescita che necessitano di funzionalità avanzate. Include 7 funzionalità principali e prestazioni migliorate.",
+                proFeat1: "✓ Funzionalità avanzate",
+                proFeat2: "✓ Elaborazione dati ad alto volume",
+                proFeat3: "✓ Supporto prioritario",
+                proFeat4: "✓ Analisi estesa",
+                chooseProButton: "Scegli Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Personalizzato",
+                enterpriseDesc: "Per grandi organizzazioni che richiedono accesso completo a VaultMesh, integrazioni personalizzate e risorse dedicate.",
+                enterpriseFeat1: "✓ Accesso completo a VaultMesh",
+                enterpriseFeat2: "✓ Account manager dedicato",
+                enterpriseFeat3: "✓ Integrazioni personalizzate",
+                enterpriseFeat4: "✓ Supporto Premium 24/7",
+                generateBriefButton: "✨ Genera Brief di Progetto",
+                contactSalesButton: "Contatta le Vendite",
+                metadataTitle: "🔗 Metadati e Conformità FAA",
+                activeNodesLabel: "Nodi Attivi:",
+                lastAuditLabel: "Ultimo Audit:",
+                complianceStatusLabel: "Stato Conformità:",
+                complianceStatus: "Attivo e Certificato",
+                metricsTitle: "📊 Panoramica Metriche in Tempo Reale",
+                pulseActivityLabel: "Attività Impulsi",
+                pulseUnit: "impulsi/sec",
+                dataVolumeLabel: "Volume Dati (24h)",
+                latencyLabel: "Latenza Media",
+                ledgerTitle: "Voci Ledger VaultTrace™:",
+                ledgerPending: "In attesa",
+                ledgerError: "Errore",
+                ledgerOffline: "Offline",
+                ledgerSuccess: "Successo",
+                forecasterModalTitle: "Previsione Scenario",
+                briefModalTitle: "✨ Genera Brief di Progetto",
+                briefModalDesc: "Descrivi il tuo progetto e la nostra IA redigerà un brief professionale che delinea obiettivi, ambito e tappe fondamentali.",
+                briefModalPlaceholder: "es. 'Un'iniziativa di edilizia a prezzi accessibili in centro, incentrata su materiali sostenibili e integrazione della comunità.'",
+                generateBriefModalButton: "Genera Brief",
+                closeButton: "Chiudi"
+            },
+            zh: {
+                pageTitle: "BuildNest™ - 住房和基础设施的未来",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> 核心协议",
+                mainSubtitle: "一个尖端的 <span class='font-bold text-indigo-300'>FAA.ZONE</span> 解决方案，适用于 🏗️ 住房和基础设施领域，与全球 <span class='font-bold text-orange-300'>PulseGrid</span> 无缝集成，以实现无与伦比的性能和数据完整性。",
+                featuresTitle: "🎛️ 主要特点",
+                feature1Desc: "与 FAA 🧾 专业服务网格直接集成。",
+                feature2Desc: "与 PlotVault 的高级数据同步。",
+                feature3Desc: "通过 VaultLink™ 进行实时合规性验证。",
+                feature4Desc: "可扩展架构，支持 x29 节点扩展。",
+                feature5Desc: "用于 BuildNest 性能的预测分析。",
+                feature6Desc: "用于无缝互操作性的 API 访问。",
+                feature7Desc: "跨部门数据互操作性。",
+                feature8Desc: "自优化节点分布。",
+                feature9Desc: "动态资源分配。",
+                feature10Desc: "人工智能驱动的异常检测和欺诈预防。",
+                feature11Desc: "一键式监管报告和审计追踪。",
+                subnodesTitle: "集成子节点",
+                forecasterTitle: "🔮 ✨ 场景预测器",
+                forecasterSubtitle: "描述一个潜在的项目挑战或目标。我们由 Gemini 提供支持的人工智能将根据 BuildNest™ 协议对其进行分析，并预测潜在的场景、风险和战略建议。",
+                forecasterPlaceholder: "例如“在一个高风险地震带开发一个有500个单元的住宅综合体。”",
+                forecasterButton: "预测场景",
+                pricingTitle: "💳 定价结构",
+                starterTitle: "入门节点",
+                starterDesc: "非常适合小型团队和试点项目。访问基本功能并确保基本数据同步。",
+                starterFeat1: "✓ 基本功能",
+                starterFeat2: "✓ 基本数据同步",
+                starterFeat3: "✓ 社区支持",
+                getStartedButton: "开始使用",
+                popularTag: "热门",
+                proTitle: "专业网格",
+                proDesc: "专为需要高级功能的成长型公司设计。包括 7 个核心功能和增强的性能。",
+                proFeat1: "✓ 高级功能",
+                proFeat2: "✓ 大容量数据处理",
+                proFeat3: "✓ 优先支持",
+                proFeat4: "✓ 扩展分析",
+                chooseProButton: "选择专业版",
+                enterpriseTitle: "企业全同步",
+                customPrice: "定制",
+                enterpriseDesc: "适用于需要完全访问 VaultMesh、自定义集成和专用资源的大型组织。",
+                enterpriseFeat1: "✓ 完全访问 VaultMesh",
+                enterpriseFeat2: "✓ 专属客户经理",
+                enterpriseFeat3: "✓ 自定义集成",
+                enterpriseFeat4: "✓ 24/7 高级支持",
+                generateBriefButton: "✨ 生成项目简介",
+                contactSalesButton: "联系销售",
+                metadataTitle: "🔗 FAA 元数据与合规性",
+                activeNodesLabel: "活动节点：",
+                lastAuditLabel: "上次审计：",
+                complianceStatusLabel: "合规状态：",
+                complianceStatus: "活动并已认证",
+                metricsTitle: "📊 实时指标概览",
+                pulseActivityLabel: "脉冲活动",
+                pulseUnit: "脉冲/秒",
+                dataVolumeLabel: "数据量 (24小时)",
+                latencyLabel: "平均延迟",
+                ledgerTitle: "VaultTrace™ 分类帐条目：",
+                ledgerPending: "待定",
+                ledgerError: "错误",
+                ledgerOffline: "离线",
+                ledgerSuccess: "成功",
+                forecasterModalTitle: "场景预测",
+                briefModalTitle: "✨ 生成项目简介",
+                briefModalDesc: "描述您的项目，我们的人工智能将起草一份专业的简介，概述目标、范围和关键里程碑。",
+                briefModalPlaceholder: "例如“市中心的一项经济适用房计划，专注于可持续材料和社区融合。”",
+                generateBriefModalButton: "生成简介",
+                closeButton: "关闭"
+            },
+            hi: {
+                pageTitle: "बिल्डनेस्ट™ - आवास और बुनियादी ढांचे का भविष्य",
+                mainTitle: "<span class='gradient-text'>बिल्डनेस्ट™</span> कोर प्रोटोकॉल",
+                mainSubtitle: "🏗️ आवास और अवसंरचना क्षेत्र के लिए एक अत्याधुनिक <span class='font-bold text-indigo-300'>FAA.ZONE</span> समाधान, जो अद्वितीय प्रदर्शन और डेटा अखंडता के लिए वैश्विक <span class='font-bold text-orange-300'>पल्सग्रिड</span> के साथ सहज रूप से एकीकृत है।",
+                featuresTitle: "🎛️ मुख्य विशेषताएं",
+                feature1Desc: "FAA 🧾 व्यावसायिक सेवा मेष के साथ सीधा एकीकरण।",
+                feature2Desc: "प्लॉटवॉल्ट के साथ उन्नत डेटा सिंक।",
+                feature3Desc: "वॉल्टलिंक™ के माध्यम से वास्तविक समय में अनुपालन सत्यापन।",
+                feature4Desc: "x29 नोड विस्तार के लिए स्केलेबल आर्किटेक्चर।",
+                feature5Desc: "बिल्डनेस्ट प्रदर्शन के लिए भविष्य कहनेवाला विश्लेषण।",
+                feature6Desc: "निर्बाध अंतर-संचालन के लिए एपीआई एक्सेस।",
+                feature7Desc: "क्रॉस-सेक्टर डेटा इंटरऑपरेबिलिटी।",
+                feature8Desc: "स्व-अनुकूलन नोड वितरण।",
+                feature9Desc: "गतिशील संसाधन आवंटन।",
+                feature10Desc: "एआई-संचालित विसंगति का पता लगाना और धोखाधड़ी की रोकथाम।",
+                feature11Desc: "एक-क्लिक नियामक रिपोर्टिंग और ऑडिट ट्रेल्स।",
+                subnodesTitle: "एकीकृत सबनोड्स",
+                forecasterTitle: "🔮 ✨ परिदृश्य भविष्यवक्ता",
+                forecasterSubtitle: "एक संभावित परियोजना चुनौती या लक्ष्य का वर्णन करें। हमारा एआई, जो जेमिनी द्वारा संचालित है, बिल्डनेस्ट™ प्रोटोकॉल के खिलाफ इसका विश्लेषण करेगा और संभावित परिदृश्यों, जोखिमों और रणनीतिक सिफारिशों का पूर्वानुमान लगाएगा।",
+                forecasterPlaceholder: "उदा., 'एक उच्च जोखिम वाले भूकंपीय क्षेत्र में 500-इकाई आवासीय परिसर का विकास करना।'",
+                forecasterButton: "परिदृश्यों का पूर्वानुमान करें",
+                pricingTitle: "💳 मूल्य निर्धारण संरचना",
+                starterTitle: "स्टार्टर नोड",
+                starterDesc: "छोटी टीमों और पायलट परियोजनाओं के लिए आदर्श। आवश्यक सुविधाओं तक पहुंचें और बुनियादी डेटा सिंक्रनाइज़ेशन सुरक्षित करें।",
+                starterFeat1: "✓ आवश्यक सुविधाएँ",
+                starterFeat2: "✓ बेसिक डेटा सिंक",
+                starterFeat3: "✓ सामुदायिक सहायता",
+                getStartedButton: "शुरू हो जाओ",
+                popularTag: "लोकप्रिय",
+                proTitle: "प्रो ग्रिड",
+                proDesc: "उन्नत क्षमताओं की आवश्यकता वाली बढ़ती फर्मों के लिए डिज़ाइन किया गया। इसमें 7 मुख्य विशेषताएं और उन्नत प्रदर्शन शामिल हैं।",
+                proFeat1: "✓ उन्नत सुविधाएँ",
+                proFeat2: "✓ उच्च-मात्रा डेटा प्रसंस्करण",
+                proFeat3: "✓ प्राथमिकता समर्थन",
+                proFeat4: "✓ विस्तारित विश्लेषण",
+                chooseProButton: "प्रो चुनें",
+                enterpriseTitle: "एंटरप्राइज ओमनी-सिंक",
+                customPrice: "कस्टम",
+                enterpriseDesc: "पूर्ण वॉल्टमेश एक्सेस, कस्टम इंटीग्रेशन और समर्पित संसाधनों की आवश्यकता वाले बड़े संगठनों के लिए।",
+                enterpriseFeat1: "✓ पूर्ण वॉल्टमेश एक्सेस",
+                enterpriseFeat2: "✓ समर्पित खाता प्रबंधन",
+                enterpriseFeat3: "✓ कस्टम इंटीग्रेशन",
+                enterpriseFeat4: "✓ 24/7 प्रीमियम सहायता",
+                generateBriefButton: "✨ प्रोजेक्ट ब्रीफ बनाएं",
+                contactSalesButton: "बिक्री से संपर्क करें",
+                metadataTitle: "🔗 एफएए मेटाडेटा और अनुपालन",
+                activeNodesLabel: "सक्रिय नोड्स:",
+                lastAuditLabel: "पिछला ऑडिट:",
+                complianceStatusLabel: "अनुपालन स्थिति:",
+                complianceStatus: "सक्रिय और प्रमाणित",
+                metricsTitle: "📊 रीयल-टाइम मेट्रिक्स अवलोकन",
+                pulseActivityLabel: "पल्स गतिविधि",
+                pulseUnit: "पल्स/सेकंड",
+                dataVolumeLabel: "डेटा वॉल्यूम (24 घंटे)",
+                latencyLabel: "औसत विलंबता",
+                ledgerTitle: "वॉल्टट्रेस™ लेजर प्रविष्टियाँ:",
+                ledgerPending: "लंबित",
+                ledgerError: "त्रुटि",
+                ledgerOffline: "ऑफलाइन",
+                ledgerSuccess: "सफलता",
+                forecasterModalTitle: "परिदृश्य पूर्वानुमान",
+                briefModalTitle: "✨ प्रोजेक्ट ब्रीफ बनाएं",
+                briefModalDesc: "अपने प्रोजेक्ट का वर्णन करें, और हमारा AI उद्देश्यों, दायरे और प्रमुख मील के पत्थर को रेखांकित करते हुए एक पेशेवर संक्षिप्त विवरण तैयार करेगा।",
+                briefModalPlaceholder: "उदा., 'शहर के केंद्र में एक किफायती आवास पहल, जो टिकाऊ सामग्री और सामुदायिक एकीकरण पर केंद्रित है।'",
+                generateBriefModalButton: "ब्रीफ बनाएं",
+                closeButton: "बंद करें"
+            },
+            ja: {
+                pageTitle: "BuildNest™ - 住宅とインフラの未来",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> コアプロトコル",
+                mainSubtitle: "🏗️ 住宅・インフラストラクチャセクター向けの最先端の <span class='font-bold text-indigo-300'>FAA.ZONE</span> ソリューション。比類のないパフォーマンスとデータ整合性のために、グローバルな <span class='font-bold text-orange-300'>PulseGrid</span> とシームレスに統合されています。",
+                featuresTitle: "🎛️ 主な機能",
+                feature1Desc: "FAA 🧾 プロフェッショナルサービスメッシュとの直接統合。",
+                feature2Desc: "PlotVault との高度なデータ同期。",
+                feature3Desc: "VaultLink™ を介したリアルタイムのコンプライアンス検証。",
+                feature4Desc: "x29 ノード拡張のためのスケーラブルなアーキテクチャ。",
+                feature5Desc: "BuildNest のパフォーマンスに関する予測分析。",
+                feature6Desc: "シームレスな相互運用性のための API アクセス。",
+                feature7Desc: "セクター間のデータ相互運用性。",
+                feature8Desc: "自己最適化ノード配布。",
+                feature9Desc: "動的なリソース割り当て。",
+                feature10Desc: "AI を活用した異常検出と不正防止。",
+                feature11Desc: "ワンクリックでの規制報告と監査証跡。",
+                subnodesTitle: "統合されたサブノード",
+                forecasterTitle: "🔮 ✨ シナリオ予測",
+                forecasterSubtitle: "潜在的なプロジェクトの課題や目標を説明してください。Gemini を搭載した当社の AI が、BuildNest™ プロトコルに照らしてそれを分析し、潜在的なシナリオ、リスク、戦略的推奨事項を予測します。",
+                forecasterPlaceholder: "例：「高リスクの地震地帯で 500 戸の住宅団地を開発する。」",
+                forecasterButton: "シナリオを予測する",
+                pricingTitle: "💳 価格体系",
+                starterTitle: "スターターノード",
+                starterDesc: "小規模なチームやパイロットプロジェクトに最適です。基本的な機能にアクセスし、基本的なデータ同期を確保します。",
+                starterFeat1: "✓ 基本的な機能",
+                starterFeat2: "✓ 基本的なデータ同期",
+                starterFeat3: "✓ コミュニティサポート",
+                getStartedButton: "始める",
+                popularTag: "人気",
+                proTitle: "プログリッド",
+                proDesc: "高度な機能を必要とする成長中の企業向けに設計されています。7 つのコア機能と強化されたパフォーマンスが含まれています。",
+                proFeat1: "✓ 高度な機能",
+                proFeat2: "✓ 大量のデータ処理",
+                proFeat3: "✓ 優先サポート",
+                proFeat4: "✓ 拡張された分析",
+                chooseProButton: "プロを選択",
+                enterpriseTitle: "エンタープライズオムニシンク",
+                customPrice: "カスタム",
+                enterpriseDesc: "完全な VaultMesh アクセス、カスタム統合、専用リソースを必要とする大規模な組織向け。",
+                enterpriseFeat1: "✓ 完全な VaultMesh アクセス",
+                enterpriseFeat2: "✓ 専任のアカウント管理",
+                enterpriseFeat3: "✓ カスタム統合",
+                enterpriseFeat4: "✓ 24 時間年中無休のプレミアムサポート",
+                generateBriefButton: "✨ プロジェクト概要を作成",
+                contactSalesButton: "営業担当者に連絡",
+                metadataTitle: "🔗 FAA メタデータとコンプライアンス",
+                activeNodesLabel: "アクティブなノード:",
+                lastAuditLabel: "最終監査:",
+                complianceStatusLabel: "コンプライアンスステータス:",
+                complianceStatus: "アクティブ＆認定済み",
+                metricsTitle: "📊 リアルタイムメトリクスの概要",
+                pulseActivityLabel: "パルスアクティビティ",
+                pulseUnit: "パルス/秒",
+                dataVolumeLabel: "データ量 (24時間)",
+                latencyLabel: "平均遅延",
+                ledgerTitle: "VaultTrace™ 台帳エントリ:",
+                ledgerPending: "保留中",
+                ledgerError: "エラー",
+                ledgerOffline: "オフライン",
+                ledgerSuccess: "成功",
+                forecasterModalTitle: "シナリオ予測",
+                briefModalTitle: "✨ プロジェクト概要を作成",
+                briefModalDesc: "プロジェクトを説明してください。当社の AI が、目的、範囲、主要なマイルストーンを概説した専門的な概要を作成します。",
+                briefModalPlaceholder: "例：「持続可能な素材とコミュニティの統合に焦点を当てた、ダウンタウンでの手頃な価格の住宅イニシアチブ。」",
+                generateBriefModalButton: "概要を作成",
+                closeButton: "閉じる"
+            },
+            ar: {
+                pageTitle: "BuildNest™ - مستقبل الإسكان والبنية التحتية",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> البروتوكول الأساسي",
+                mainSubtitle: "حل <span class='font-bold text-indigo-300'>FAA.ZONE</span> متطور لقطاع 🏗️ الإسكان والبنية التحتية، متكامل بسلاسة مع <span class='font-bold text-orange-300'>PulseGrid</span> العالمي لتحقيق أداء وسلامة بيانات لا مثيل لهما.",
+                featuresTitle: "🎛️ الميزات الرئيسية",
+                feature1Desc: "تكامل مباشر مع شبكة الخدمات المهنية FAA 🧾.",
+                feature2Desc: "مزامنة بيانات متقدمة مع PlotVault.",
+                feature3Desc: "التحقق من الامتثال في الوقت الفعلي عبر VaultLink™.",
+                feature4Desc: "هندسة قابلة للتطوير لتوسيع x29 عقدة.",
+                feature5Desc: "تحليلات تنبؤية لأداء BuildNest.",
+                feature6Desc: "الوصول إلى واجهة برمجة التطبيقات للتشغيل البيني السلس.",
+                feature7Desc: "التشغيل البيني للبيانات عبر القطاعات.",
+                feature8Desc: "توزيع العقد ذاتي التحسين.",
+                feature9Desc: "تخصيص الموارد الديناميكي.",
+                feature10Desc: "كشف الشذوذ ومنع الاحتيال المدفوع بالذكاء الاصطناعي.",
+                feature11Desc: "إعداد تقارير تنظيمية ومسارات تدقيق بنقرة واحدة.",
+                subnodesTitle: "العقد الفرعية المتكاملة",
+                forecasterTitle: "🔮 ✨ متنبئ السيناريوهات",
+                forecasterSubtitle: "صف تحديًا أو هدفًا محتملاً للمشروع. سيقوم الذكاء الاصطناعي لدينا، المدعوم من Gemini، بتحليله مقابل بروتوكول BuildNest™ والتنبؤ بالسيناريوهات والمخاطر والتوصيات الاستراتيجية المحتملة.",
+                forecasterPlaceholder: "على سبيل المثال، 'تطوير مجمع سكني مكون من 500 وحدة في منطقة زلزالية عالية الخطورة.'",
+                forecasterButton: "تنبؤ بالسيناريوهات",
+                pricingTitle: "💳 هيكل التسعير",
+                starterTitle: "عقدة البداية",
+                starterDesc: "مثالية للفرق الصغيرة والمشاريع التجريبية. يمكنك الوصول إلى الميزات الأساسية وتأمين مزامنة البيانات الأساسية.",
+                starterFeat1: "✓ الميزات الأساسية",
+                starterFeat2: "✓ مزامنة البيانات الأساسية",
+                starterFeat3: "✓ دعم المجتمع",
+                getStartedButton: "البدء",
+                popularTag: "شائع",
+                proTitle: "الشبكة الاحترافية",
+                proDesc: "مصممة للشركات المتنامية التي تحتاج إلى إمكانات متقدمة. تتضمن 7 ميزات أساسية وأداءً محسنًا.",
+                proFeat1: "✓ ميزات متقدمة",
+                proFeat2: "✓ معالجة كميات كبيرة من البيانات",
+                proFeat3: "✓ دعم ذو أولوية",
+                proFeat4: "✓ تحليلات موسعة",
+                chooseProButton: "اختر الاحترافي",
+                enterpriseTitle: "المزامنة الشاملة للمؤسسات",
+                customPrice: "مخصص",
+                enterpriseDesc: "للمؤسسات الكبيرة التي تتطلب وصولاً كاملاً إلى VaultMesh وتكاملات مخصصة وموارد مخصصة.",
+                enterpriseFeat1: "✓ وصول كامل إلى VaultMesh",
+                enterpriseFeat2: "✓ إدارة حسابات مخصصة",
+                enterpriseFeat3: "✓ تكاملات مخصصة",
+                enterpriseFeat4: "✓ دعم متميز على مدار الساعة طوال أيام الأسبوع",
+                generateBriefButton: "✨ إنشاء موجز المشروع",
+                contactSalesButton: "اتصل بالمبيعات",
+                metadataTitle: "🔗 بيانات وصفية وامتثال FAA",
+                activeNodesLabel: "العقد النشطة:",
+                lastAuditLabel: "آخر تدقيق:",
+                complianceStatusLabel: "حالة الامتثال:",
+                complianceStatus: "نشط ومعتمد",
+                metricsTitle: "📊 نظرة عامة على المقاييس في الوقت الفعلي",
+                pulseActivityLabel: "نشاط النبض",
+                pulseUnit: "نبضة/ثانية",
+                dataVolumeLabel: "حجم البيانات (24 ساعة)",
+                latencyLabel: "متوسط ​​زمن الوصول",
+                ledgerTitle: "إدخالات دفتر الأستاذ VaultTrace™:",
+                ledgerPending: "قيد الانتظار",
+                ledgerError: "خطأ",
+                ledgerOffline: "غير متصل",
+                ledgerSuccess: "نجاح",
+                forecasterModalTitle: "تنبؤ السيناريو",
+                briefModalTitle: "✨ إنشاء موجز المشروع",
+                briefModalDesc: "صف مشروعك، وسيقوم الذكاء الاصطناعي لدينا بصياغة موجز احترافي يوضح الأهداف والنطاق والمعالم الرئيسية.",
+                briefModalPlaceholder: "على سبيل المثال، 'مبادرة إسكان ميسور التكلفة في وسط المدينة، تركز على المواد المستدامة والتكامل المجتمعي.'",
+                generateBriefModalButton: "إنشاء موجز",
+                closeButton: "إغلاق"
+            },
+            ko: {
+                pageTitle: "BuildNest™ - 주택 및 인프라의 미래",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> 핵심 프로토콜",
+                mainSubtitle: "🏗️ 주택 및 인프라 부문을 위한 최첨단 <span class='font-bold text-indigo-300'>FAA.ZONE</span> 솔루션으로, 전 세계 <span class='font-bold text-orange-300'>PulseGrid</span>와 원활하게 통합되어 탁월한 성능과 데이터 무결성을 제공합니다.",
+                featuresTitle: "🎛️ 주요 기능",
+                feature1Desc: "FAA 🧾 전문 서비스 메시와 직접 통합.",
+                feature2Desc: "PlotVault를 사용한 고급 데이터 동기화.",
+                feature3Desc: "VaultLink™를 통한 실시간 규정 준수 확인.",
+                feature4Desc: "x29 노드 확장을 위한 확장 가능한 아키텍처.",
+                feature5Desc: "BuildNest 성능을 위한 예측 분석.",
+                feature6Desc: "원활한 상호 운용성을 위한 API 액세스.",
+                feature7Desc: "부문 간 데이터 상호 운용성.",
+                feature8Desc: "자체 최적화 노드 배포.",
+                feature9Desc: "동적 리소스 할당.",
+                feature10Desc: "AI 기반 이상 감지 및 사기 방지.",
+                feature11Desc: "원클릭 규제 보고 및 감사 추적.",
+                subnodesTitle: "통합된 하위 노드",
+                forecasterTitle: "🔮 ✨ 시나리오 예측기",
+                forecasterSubtitle: "잠재적인 프로젝트 과제나 목표를 설명하십시오. Gemini 기반의 AI가 BuildNest™ 프로토콜에 대해 분석하고 잠재적인 시나리오, 위험 및 전략적 권장 사항을 예측합니다.",
+                forecasterPlaceholder: "예: '고위험 지진 지역에 500세대 주거 단지 개발.'",
+                forecasterButton: "시나리오 예측",
+                pricingTitle: "💳 가격 구조",
+                starterTitle: "스타터 노드",
+                starterDesc: "소규모 팀 및 파일럿 프로젝트에 이상적입니다. 필수 기능에 액세스하고 기본 데이터 동기화를 보호합니다.",
+                starterFeat1: "✓ 필수 기능",
+                starterFeat2: "✓ 기본 데이터 동기화",
+                starterFeat3: "✓ 커뮤니티 지원",
+                getStartedButton: "시작하기",
+                popularTag: "인기",
+                proTitle: "프로 그리드",
+                proDesc: "고급 기능이 필요한 성장하는 기업을 위해 설계되었습니다. 7가지 핵심 기능과 향상된 성능을 포함합니다.",
+                proFeat1: "✓ 고급 기능",
+                proFeat2: "✓ 대용량 데이터 처리",
+                proFeat3: "✓ 우선 지원",
+                proFeat4: "✓ 확장된 분석",
+                chooseProButton: "프로 선택",
+                enterpriseTitle: "엔터프라이즈 옴니 싱크",
+                customPrice: "맞춤형",
+                enterpriseDesc: "전체 VaultMesh 액세스, 맞춤형 통합 및 전용 리소스가 필요한 대규모 조직용.",
+                enterpriseFeat1: "✓ 전체 VaultMesh 액세스",
+                enterpriseFeat2: "✓ 전담 계정 관리",
+                enterpriseFeat3: "✓ 맞춤형 통합",
+                enterpriseFeat4: "✓ 연중무휴 프리미엄 지원",
+                generateBriefButton: "✨ 프로젝트 개요 생성",
+                contactSalesButton: "영업팀에 문의",
+                metadataTitle: "🔗 FAA 메타데이터 및 규정 준수",
+                activeNodesLabel: "활성 노드:",
+                lastAuditLabel: "최종 감사:",
+                complianceStatusLabel: "규정 준수 상태:",
+                complianceStatus: "활성 및 인증됨",
+                metricsTitle: "📊 실시간 메트릭 개요",
+                pulseActivityLabel: "펄스 활동",
+                pulseUnit: "펄스/초",
+                dataVolumeLabel: "데이터 볼륨(24시간)",
+                latencyLabel: "평균 지연 시간",
+                ledgerTitle: "VaultTrace™ 원장 항목:",
+                ledgerPending: "보류 중",
+                ledgerError: "오류",
+                ledgerOffline: "오프라인",
+                ledgerSuccess: "성공",
+                forecasterModalTitle: "시나리오 예측",
+                briefModalTitle: "✨ 프로젝트 개요 생성",
+                briefModalDesc: "프로젝트를 설명하면 AI가 목표, 범위 및 주요 마일스톤을 요약한 전문적인 개요를 작성합니다.",
+                briefModalPlaceholder: "예: '지속 가능한 자재와 지역 사회 통합에 중점을 둔 도심의 저렴한 주택 이니셔티브.'",
+                generateBriefModalButton: "개요 생성",
+                closeButton: "닫기"
+            },
+            zu: {
+                pageTitle: "BuildNest™ - Ikusasa Lezezindlu Nengqalasizinda",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Iphrothokholi Eyinhloko",
+                mainSubtitle: "Isixazululo se-<span class='font-bold text-indigo-300'>FAA.ZONE</span> esisezingeni eliphezulu somkhakha we-🏗️ Wezindlu Nengqalasizinda, esihlanganiswe ngaphandle komthungo ne-<span class='font-bold text-orange-300'>PulseGrid</span> yomhlaba wonke ukuze kusebenze kahle kakhulu nobuqotho bedatha.",
+                featuresTitle: "🎛️ Izici Eziyinhloko",
+                feature1Desc: "Ukuhlanganiswa okuqondile ne-FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Ukuvumelanisa kwedatha okuthuthukile ne-PlotVault.",
+                feature3Desc: "Ukuqinisekiswa kokuthobela ngesikhathi sangempela nge-VaultLink™.",
+                feature4Desc: "Ukwakheka okukalayo kokunwetshwa kwama-node angu-x29.",
+                feature5Desc: "Izibikezelo zokuhlaziya zokusebenza kwe-BuildNest.",
+                feature6Desc: "Ukufinyelela kwe-API kokusebenzisana okungenamthungo.",
+                feature7Desc: "Ukusebenzisana kwedatha emikhakheni ehlukene.",
+                feature8Desc: "Ukusatshalaliswa kwama-node okuzithuthukisayo.",
+                feature9Desc: "Ukwabiwa kwezinsiza okuguqukayo.",
+                feature10Desc: "Ukutholwa kokungajwayelekile okushayelwa yi-AI nokuvinjelwa kokukhwabanisa.",
+                feature11Desc: "Ukubikwa kokulawulwa ngokuchofoza okukodwa kanye nemizila yokucwaningwa kwamabhuku.",
+                subnodesTitle: "Ama-Subnode Ahlanganisiwe",
+                forecasterTitle: "🔮 ✨ Isibikezeli Sesimo",
+                forecasterSubtitle: "Chaza inselelo noma umgomo wephrojekthi ongaba khona. I-AI yethu, enikwa amandla yi-Gemini, izoyihlaziya ngokumelene nephrothokholi ye-BuildNest™ futhi ibikezele izimo ezingaba khona, ubungozi, nezincomo zamasu.",
+                forecasterPlaceholder: "isb., 'Ukwakha inxanxathela yezindlu zokuhlala enamayunithi angu-500 endaweni enengozi enkulu yokuzamazama komhlaba.'",
+                forecasterButton: "Bikezela Izimo",
+                pricingTitle: "💳 Isakhiwo Sentengo",
+                starterTitle: "I-Node Yokuqala",
+                starterDesc: "Ilungele amaqembu amancane namaphrojekthi okulinga. Finyelela izici ezibalulekile futhi uvikele ukuvumelanisa kwedatha okuyisisekelo.",
+                starterFeat1: "✓ Izici ezibalulekile",
+                starterFeat2: "✓ Ukuvumelanisa kwedatha okuyisisekelo",
+                starterFeat3: "✓ Ukusekelwa komphakathi",
+                getStartedButton: "Qalisa",
+                popularTag: "KUDUMILE",
+                proTitle: "I-Pro Grid",
+                proDesc: "Yakhelwe amafemu akhulayo adinga amakhono athuthukile. Kufaka izici eziyisi-7 eziyinhloko nokusebenza okuthuthukisiwe.",
+                proFeat1: "✓ Izici ezithuthukile",
+                proFeat2: "✓ Ukucutshungulwa kwedatha enevolumu ephezulu",
+                proFeat3: "✓ Ukusekelwa okubalulekile",
+                proFeat4: "✓ Izibalo ezinwetshiwe",
+                chooseProButton: "Khetha i-Pro",
+                enterpriseTitle: "I-Enterprise Omni-Sync",
+                customPrice: "Ngokwezifiso",
+                enterpriseDesc: "Ezinhlanganweni ezinkulu ezidinga ukufinyelela okugcwele kwe-VaultMesh, ukuhlanganiswa ngokwezifiso, nezinsiza ezizinikezele.",
+                enterpriseFeat1: "✓ Ukufinyelela okugcwele kwe-VaultMesh",
+                enterpriseFeat2: "✓ Ukuphathwa kwe-akhawunti okuzinikezele",
+                enterpriseFeat3: "✓ Ukuhlanganiswa ngokwezifiso",
+                enterpriseFeat4: "✓ Ukusekelwa Kwe-Premium 24/7",
+                generateBriefButton: "✨ Khiqiza Isifinyezo Sephrojekthi",
+                contactSalesButton: "Xhumana Nabokuthengisa",
+                metadataTitle: "🔗 Imininingwane ye-FAA Nokuthobela",
+                activeNodesLabel: "Ama-node Asebenzayo:",
+                lastAuditLabel: "Ukucwaningwa Kokugcina:",
+                complianceStatusLabel: "Isimo Sokuthobela:",
+                complianceStatus: "Kuyasebenza futhi Kuqinisekisiwe",
+                metricsTitle: "📊 Uhlolojikelele Lwezinkomba Zesikhathi Sangempela",
+                pulseActivityLabel: "Umsebenzi Wokushaya Kwenhliziyo",
+                pulseUnit: "ama-pulse/ngomzuzwana",
+                dataVolumeLabel: "Ivolumu Yedatha (24h)",
+                latencyLabel: "Isilinganiso Sokubambezeleka",
+                ledgerTitle: "Okufakiwe Kwe-Ledger ye-VaultTrace™:",
+                ledgerPending: "Kulindile",
+                ledgerError: "Iphutha",
+                ledgerOffline: "Ayixhunyiwe ku-inthanethi",
+                ledgerSuccess: "Impumelelo",
+                forecasterModalTitle: "Isibikezelo Sesimo",
+                briefModalTitle: "✨ Khiqiza Isifinyezo Sephrojekthi",
+                briefModalDesc: "Chaza iphrojekthi yakho, futhi i-AI yethu izobhala isifinyezo sochwepheshe esichaza izinjongo, ububanzi, nezigigaba ezibalulekile.",
+                briefModalPlaceholder: "isb., 'Uhlelo lwezindlu ezingabizi edolobheni, olugxile ezintweni ezisimeme nokuhlanganiswa komphakathi.'",
+                generateBriefModalButton: "Khiqiza Isifinyezo",
+                closeButton: "Vala"
+            },
+            af: {
+                pageTitle: "BuildNest™ - Die Toekoms van Behuising & Infrastruktuur",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Kernprotokol",
+                mainSubtitle: "'n Voorpunt <span class='font-bold text-indigo-300'>FAA.ZONE</span> oplossing vir die 🏗️ Behuising & Infrastruktuur sektor, naatloos geïntegreer met die globale <span class='font-bold text-orange-300'>PulseGrid</span> vir ongeëwenaarde prestasie en data-integriteit.",
+                featuresTitle: "🎛️ Sleutelkenmerke",
+                feature1Desc: "Direkte integrasie met FAA 🧾 Professionele Dienste Mesh.",
+                feature2Desc: "Gevorderde data-sinchronisasie met PlotVault.",
+                feature3Desc: "Intydse nakoming-validering via VaultLink™.",
+                feature4Desc: "Skaalbare argitektuur vir x29 nodus-uitbreiding.",
+                feature5Desc: "Voorspellende analise vir BuildNest-prestasie.",
+                feature6Desc: "API-toegang vir naatlose interoperabiliteit.",
+                feature7Desc: "Kruis-sektor data-interoperabiliteit.",
+                feature8Desc: "Self-optimaliserende nodusverspreiding.",
+                feature9Desc: "Dinamiese hulpbrontoewysing.",
+                feature10Desc: "KI-gedrewe anomalie-opsporing en bedrogvoorkoming.",
+                feature11Desc: "Een-klik regulatoriese verslagdoening en ouditspore.",
+                subnodesTitle: "Geïntegreerde Subnodusse",
+                forecasterTitle: "🔮 ✨ Scenario Voorspeller",
+                forecasterSubtitle: "Beskryf 'n potensiële projekuitdaging of -doelwit. Ons KI, aangedryf deur Gemini, sal dit teen die BuildNest™-protokol analiseer en potensiële scenario's, risiko's en strategiese aanbevelings voorspel.",
+                forecasterPlaceholder: "bv. 'Die ontwikkeling van 'n 500-eenheid residensiële kompleks in 'n hoë-risiko seismiese sone.'",
+                forecasterButton: "Voorspel Scenario's",
+                pricingTitle: "💳 Prysstruktuur",
+                starterTitle: "Beginner Nodus",
+                starterDesc: "Ideaal vir klein spanne en loodsprojekte. Toegang tot noodsaaklike kenmerke en veilige basiese data-sinchronisasie.",
+                starterFeat1: "✓ Noodsaaklike kenmerke",
+                starterFeat2: "✓ Basiese data-sinchronisasie",
+                starterFeat3: "✓ Gemeenskapsondersteuning",
+                getStartedButton: "Begin Nou",
+                popularTag: "GEWILD",
+                proTitle: "Pro Rooster",
+                proDesc: "Ontwerp vir groeiende firmas wat gevorderde vermoëns benodig. Sluit 7 kernkenmerke en verbeterde prestasie in.",
+                proFeat1: "✓ Gevorderde kenmerke",
+                proFeat2: "✓ Hoë-volume dataverwerking",
+                proFeat3: "✓ Prioriteitsondersteuning",
+                proFeat4: "✓ Uitgebreide analise",
+                chooseProButton: "Kies Pro",
+                enterpriseTitle: "Onderneming Omni-Sync",
+                customPrice: "Pasgemaak",
+                enterpriseDesc: "Vir groot organisasies wat volle VaultMesh-toegang, pasgemaakte integrasies en toegewyde hulpbronne vereis.",
+                enterpriseFeat1: "✓ Volle VaultMesh-toegang",
+                enterpriseFeat2: "✓ Toegewyde rekeningbestuur",
+                enterpriseFeat3: "✓ Pasgemaakte integrasies",
+                enterpriseFeat4: "✓ 24/7 Premium Ondersteuning",
+                generateBriefButton: "✨ Genereer Projek-opdrag",
+                contactSalesButton: "Kontak Verkope",
+                metadataTitle: "🔗 FAA Metadata & Nakoming",
+                activeNodesLabel: "Aktiewe Nodules:",
+                lastAuditLabel: "Laaste Oudit:",
+                complianceStatusLabel: "Nakomingstatus:",
+                complianceStatus: "Aktief & Gesertifiseer",
+                metricsTitle: "📊 Intydse Metrieke Oorsig",
+                pulseActivityLabel: "Polsaktiwiteit",
+                pulseUnit: "pulse/sek",
+                dataVolumeLabel: "Data Volume (24h)",
+                latencyLabel: "Gem. Latensie",
+                ledgerTitle: "VaultTrace™ Grootboekinskrywings:",
+                ledgerPending: "Hangende",
+                ledgerError: "Fout",
+                ledgerOffline: "Vanlyn",
+                ledgerSuccess: "Sukses",
+                forecasterModalTitle: "Scenario Voorspelling",
+                briefModalTitle: "✨ Genereer Projek-opdrag",
+                briefModalDesc: "Beskryf jou projek, en ons KI sal 'n professionele opdrag opstel wat doelwitte, omvang en sleutelmylpale uiteensit.",
+                briefModalPlaceholder: "bv. ''n Bekostigbare behuisingsinisiatief in die middestad, gefokus op volhoubare materiale en gemeenskapsintegrasie.'",
+                generateBriefModalButton: "Genereer Opdrag",
+                closeButton: "Maak toe"
+            },
+            xh: {
+                pageTitle: "BuildNest™ - Ikamva leZindlu noPhuhliso lweziThuthi",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> IProtocol ePhambili",
+                mainSubtitle: "Isisombululo esiphucukileyo se-<span class='font-bold text-indigo-300'>FAA.ZONE</span> secandelo le-🏗️ leZindlu noPhuhliso lweziThuthi, esidityaniswe ngokungenamthungo ne-<span class='font-bold text-orange-300'>PulseGrid</span> yehlabathi ukuze kusebenze ngokugqwesileyo nangokuthembeka kwedatha.",
+                featuresTitle: "🎛️ Iimpawu eziPhambili",
+                feature1Desc: "Ukudityaniswa ngokuthe ngqo ne-FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Ulandelelaniso lwedatha oluphucukileyo ne-PlotVault.",
+                feature3Desc: "Ukuqinisekiswa kokuthotyelwa komthetho ngexesha lokwenyani nge-VaultLink™.",
+                feature4Desc: "Ulwakhiwo olukwaziyo ukwandiswa ukuze lwandiswe iinodi ezingama-x29.",
+                feature5Desc: "Uhlalutyo lokuqikelela ukusebenza kwe-BuildNest.",
+                feature6Desc: "Ufikelelo lwe-API ukuze kubekho ukusebenzisana okungenamthungo.",
+                feature7Desc: "Ukusebenzisana kwedatha kumacandelo ahlukeneyo.",
+                feature8Desc: "Ulwabiwo lweenodi oluzilungisayo.",
+                feature9Desc: "Ulwabiwo lwezixhobo oluguqukayo.",
+                feature10Desc: "Ukufunyanwa kwezinto ezingaqhelekanga eziqhutywa yi-AI kunye nokuthintelwa kobuqhophololo.",
+                feature11Desc: "Ingxelo yolawulo ngonqakrazo olunye kunye neendlela zophicotho.",
+                subnodesTitle: "IiNodi ezidityanisiweyo",
+                forecasterTitle: "🔮 ✨ Umqikeleli weMeko",
+                forecasterSubtitle: "Chaza umceli mngeni okanye usukelo lweprojekthi olunokubakho. I-AI yethu, exhaswa yi-Gemini, iya kuyihlalutya ngokuchasene neprotocol ye-BuildNest™ kwaye iqikelele iimeko ezinokubakho, imingcipheko, kunye neengcebiso zobuchule.",
+                forecasterPlaceholder: "umz., 'Ukuphuhlisa indawo yokuhlala enamagumbi angama-500 kwindawo enomngcipheko omkhulu wokunyikima komhlaba.'",
+                forecasterButton: "Qikelela iimeko",
+                pricingTitle: "💳 Ulwakhiwo lwaMaxabiso",
+                starterTitle: "INodi yokuQalisa",
+                starterDesc: "Ilungele amaqela amancinci kunye neeprojekthi zokulinga. Fumana iimpawu ezibalulekileyo kwaye ukhusele ulandelelaniso lwedatha olusisiseko.",
+                starterFeat1: "✓ Iimpawu ezibalulekileyo",
+                starterFeat2: "✓ Ulandelelaniso lwedatha olusisiseko",
+                starterFeat3: "✓ Inkxaso yoluntu",
+                getStartedButton: "Qalisa",
+                popularTag: "ITHANDWAYO",
+                proTitle: "Igridi yePro",
+                proDesc: "Yenzelwe iifemu ezikhulayo ezifuna amandla aphucukileyo. Ibandakanya iimpawu ezi-7 ezingundoqo kunye nokusebenza okuphuculweyo.",
+                proFeat1: "✓ Iimpawu eziphucukileyo",
+                proFeat2: "✓ Ukulungiswa kwedatha enomthamo omkhulu",
+                proFeat3: "✓ Inkxaso ephambili",
+                proFeat4: "✓ Uhlalutyo olwandisiweyo",
+                chooseProButton: "Khetha iPro",
+                enterpriseTitle: "I-Enterprise Omni-Sync",
+                customPrice: "NgokweSiko",
+                enterpriseDesc: "Kwimibutho emikhulu efuna ufikelelo olupheleleyo lwe-VaultMesh, udibaniso lwesiko, kunye nezixhobo ezizinikeleyo.",
+                enterpriseFeat1: "✓ Ufikelelo olupheleleyo lwe-VaultMesh",
+                enterpriseFeat2: "✓ Ulawulo lweakhawunti olunikezelweyo",
+                enterpriseFeat3: "✓ Udibaniso lwesiko",
+                enterpriseFeat4: "✓ Inkxaso yePrimiyamu ye-24/7",
+                generateBriefButton: "✨ Yenza iSishwankathelo seProjekthi",
+                contactSalesButton: "Qhagamshelana neNtengiso",
+                metadataTitle: "🔗 I-Metadata ye-FAA kunye nokuThotyelwa",
+                activeNodesLabel: "IiNodi eziSebenzayo:",
+                lastAuditLabel: "Uphicotho lokugqibela:",
+                complianceStatusLabel: "Isimo sokuThotyelwa:",
+                complianceStatus: "Iyasebenza kwaye iqinisekisiwe",
+                metricsTitle: "📊 Uhlolisiso lweMetrikhi zexesha lokwenyani",
+                pulseActivityLabel: "Umsebenzi wokuBethwa kwentliziyo",
+                pulseUnit: "amaza/ngomzuzwana",
+                dataVolumeLabel: "Umthamo weDatha (24h)",
+                latencyLabel: "Umyinge wokuLibaziseka",
+                ledgerTitle: "Amangeniso eLeja yeVaultTrace™:",
+                ledgerPending: "Kulindile",
+                ledgerError: "Impazamo",
+                ledgerOffline: "Ayikho kwi-intanethi",
+                ledgerSuccess: "Impumelelo",
+                forecasterModalTitle: "Uqikelelo lweMeko",
+                briefModalTitle: "✨ Yenza iSishwankathelo seProjekthi",
+                briefModalDesc: "Chaza iprojekthi yakho, kwaye i-AI yethu iya kubhala isishwankathelo sobuchwephesha esichaza iinjongo, umda, kunye nezigaba ezibalulekileyo.",
+                briefModalPlaceholder: "umz., 'Iprojekthi yezindlu ezifikelelekayo edolophini, egxile kwizinto ezizinzileyo kunye nokudityaniswa koluntu.'",
+                generateBriefModalButton: "Yenza iSishwankathelo",
+                closeButton: "Vala"
+            },
+            ve: {
+                pageTitle: "BuildNest™ - Vhumatshelo ha Vhudzulo na Vhupo",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Phurothokholi ya Vhukati",
+                mainSubtitle: "Khandiso ya <span class='font-bold text-indigo-300'>FAA.ZONE</span> ya vhutsila vhuṱuku ya sekithara ya 🏗️ Vhudzulo na Vhupo, yo 🔗waho zwavhuḓi na <span class='font-bold text-orange-300'>PulseGrid</span> ya lefhasî kaṱa u itela vhukoni vhu sa vhambedzwi na vhutanzi ha data.",
+                featuresTitle: "🎛️ Vhutsila Vhuhulwane",
+                feature1Desc: "U 🔗wa ho livhaho na FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "U vumelanisa data ha vhutsila na PlotVault.",
+                feature3Desc: "U khwaṱhisedza u tevhedzwa ha milayo nga tshifhinga tsha vhukuma nga VaultLink™.",
+                feature4Desc: "Vhuimbi vhu aluwaho ha u engedza node dza x29.",
+                feature5Desc: "Analitiki dza vhuporofita ha vhukoni ha BuildNest.",
+                feature6Desc: "U wana API u itela u shumisana ho leluwaho.",
+                feature7Desc: "U shumisana ha data kha sekithara dzo fhambanaho.",
+                feature8Desc: "U phaḓaladzwa ha node ho ḓi-optimisaho.",
+                feature9Desc: "U kovhiwa ha zwishumiswa zwi dinamisaho.",
+                feature10Desc: "U wanulusa zwi sa ḓowelei zwo khwaṱhiswaho nga AI na u thivhela vhufhura.",
+                feature11Desc: "U vhiga zwa mulayo nga u thiga luthihi na mutevhe wa oditho.",
+                subnodesTitle: "Subnode dzo 🔗waho",
+                forecasterTitle: "🔮 ✨ Muporofita wa Tshiimo",
+                forecasterSubtitle: "Ṱalutshedza khaedu ya phurojeki i nga vhaho hone kana ndivho. AI yashu, ine ya khwaṱhiswa nga Gemini, i ḓo saukanya zwithu zwi tshi tevhedza phurothokholi ya BuildNest™ na u porofita zwiimo zwi nga vhaho hone, khombo, na themendelo dza maano.",
+                forecasterPlaceholder: "tsh., 'U fhaṱa fhethu ha vhudzulo ha yuniti dza 500 fhethu hune ha vha na khombo khulwane ya mudzinginyo wa shango.'",
+                forecasterButton: "Porofita Zwiimo",
+                pricingTitle: "💳 Sisiteme ya Mutengo",
+                starterTitle: "Node ya u Thoma",
+                starterDesc: "Zwo luga kha zwigwada zwiṱuku na phurojeki dza u linga. Wanani vhutsila vhuhulwane na u tsireledza u vumelanisa ha data ha mutheo.",
+                starterFeat1: "✓ Vhutsila vhuhulwane",
+                starterFeat2: "✓ U vumelanisa ha data ha mutheo",
+                starterFeat3: "✓ Thikhedzo ya tshitshavha",
+                getStartedButton: "Thoma",
+                popularTag: "Tshi ḓivheaho",
+                proTitle: "Gridi ya Pro",
+                proDesc: "Yo itelwa firma dzi aluwaho dzi ṱoḓaho vhukoni ha nṱha. I katela vhutsila vhu 7 vhuhulwane na vhukoni ho khwiniswaho.",
+                proFeat1: "✓ Vhutsila ha nṱha",
+                proFeat2: "✓ U shuma na data ya volumu ya nṱha",
+                proFeat3: "✓ Thikhedzo ya u rangisa",
+                proFeat4: "✓ Analitiki dzo engedzwaho",
+                chooseProButton: "Nangna Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Zwo ḽoweledzwaho",
+                enterpriseDesc: "Kha dzangano khulwane dzi ṱoḓaho u wana ho fhelelaho ha VaultMesh, u 🔗wa ho ḽoweledzwaho, na zwishumiswa zwo khetheaho.",
+                enterpriseFeat1: "✓ U wana ho fhelelaho ha VaultMesh",
+                enterpriseFeat2: "✓ Vhulanguli ha akhaunthu ho khetheaho",
+                enterpriseFeat3: "✓ U 🔗wa ho ḽoweledzwaho",
+                enterpriseFeat4: "✓ Thikhedzo ya Premium 24/7",
+                generateBriefButton: "✨ Ita Pfufhifhadzo ya Phurojeki",
+                contactSalesButton: "Vhudavhidzani na Vhurengisi",
+                metadataTitle: "🔗 Metadata ya FAA na u Tevhedzela",
+                activeNodesLabel: "Node dzi Shumaho:",
+                lastAuditLabel: "Oditho ya u Fhedza:",
+                complianceStatusLabel: "Tshiimo tsha u Tevhedzela:",
+                complianceStatus: "Tshi shuma & tsho Tendelwaho",
+                metricsTitle: "📊 Mavhonele a Metriki nga Tshifhinga tsha Vhukuma",
+                pulseActivityLabel: "Mugero wa Pulsi",
+                pulseUnit: "pulsi/sekene",
+                dataVolumeLabel: "Volumu ya Data (24h)",
+                latencyLabel: "U Lenga ha Vhukati",
+                ledgerTitle: "Zwi dzheniswaho kha Ledzhere ya VaultTrace™:",
+                ledgerPending: "Zwo Lindelwa",
+                ledgerError: "Vukhakhi",
+                ledgerOffline: "Zwi offline",
+                ledgerSuccess: "Vhukoni",
+                forecasterModalTitle: "Vhuporofita ha Tshiimo",
+                briefModalTitle: "✨ Ita Pfufhifhadzo ya Phurojeki",
+                briefModalDesc: "Ṱalutshedza phurojeki yau, nahone AI yashu i ḓo ṅwala pfufhifhadzo ya vhutsila ine ya ṱalutshedza ndivho, vhuṱanzi, na zwiga zwa ndeme.",
+                briefModalPlaceholder: "tsh., 'Fulufhelo ḽa vhudzulo vhu sa ḓuri vhu wanalaho ḓoroboni, ḽo sedza kha zwishumiswa zwi bveledzwaho na u 🔗wa ha tshitshavha.'",
+                generateBriefModalButton: "Ita Pfufhifhadzo",
+                closeButton: "Vala"
+            },
+            st: {
+                pageTitle: "BuildNest™ - Bokamoso ba Matlo le Meaho",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Protocol ea Sehlooho",
+                mainSubtitle: "Tharollo e tsoetseng pele ea <span class='font-bold text-indigo-300'>FAA.ZONE</span> bakeng sa lekala la 🏗️ Matlo le Meaho, e kopantsoeng ntle le sekoli le <span class='font-bold text-orange-300'>PulseGrid</span> ea lefats'e bakeng sa ts'ebetso e ke keng ea lekanngoa le bots'epehi ba data.",
+                featuresTitle: "🎛️ Likarolo tsa Bohlokoa",
+                feature1Desc: "Kopano e tobileng le FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Khokahano e tsoetseng pele ea data le PlotVault.",
+                feature3Desc: "Netefatso ea tumellano ka nako ea nnete ka VaultLink™.",
+                feature4Desc: "Kaho e ka holisoang bakeng sa katoloso ea li-node tsa x29.",
+                feature5Desc: "Tlhahlobo ea polelo-pele bakeng sa ts'ebetso ea BuildNest.",
+                feature6Desc: "Phumano ea API bakeng sa ts'ebelisano e se nang sekoli.",
+                feature7Desc: "Ts'ebelisano ea data lipakeng tsa makala.",
+                feature8Desc: "Kabo ea li-node e itlhophisang.",
+                feature9Desc: "Kabo ea lisebelisoa e matla.",
+                feature10Desc: "Ho lemoha ho sa tloaelehang ho tsamaisoang ke AI le thibelo ea bosholu.",
+                feature11Desc: "Tlaleho ea taolo ka ho tobetsa hang le litsela tsa tlhahlobo.",
+                subnodesTitle: "Li-Subnode tse Kopantsoeng",
+                forecasterTitle: "🔮 ✨ Moprofeta oa Boemo",
+                forecasterSubtitle: "Hlalosa phephetso kapa sepheo se ka bang teng sa morero. AI ea rona, e tsamaisoang ke Gemini, e tla e sekaseka khahlanong le protocol ea BuildNest™ mme e bolele esale pele maemo a ka bang teng, likotsi le likhothaletso tsa maano.",
+                forecasterPlaceholder: "mohl., 'Ho nts'etsapele sebaka sa bolulo sa li-unit tse 500 sebakeng se kotsi haholo sa ts'isinyeho ea lefatše.'",
+                forecasterButton: "Bolela Pele Maemo",
+                pricingTitle: "💳 Sebopeho sa Theko",
+                starterTitle: "Node ea ho Qala",
+                starterDesc: "E loketse lihlopha tse nyane le merero ea liteko. Fumana likarolo tsa bohlokoa 'me u boloke khokahano ea data ea mantlha.",
+                starterFeat1: "✓ Likarolo tsa bohlokoa",
+                starterFeat2: "✓ Khokahano ea data ea mantlha",
+                starterFeat3: "✓ Tšehetso ea sechaba",
+                getStartedButton: "Qala",
+                popularTag: "E RATOANG",
+                proTitle: "Pro Grid",
+                proDesc: "E etselitsoe lifeme tse ntseng li hola tse hlokang bokhoni bo tsoetseng pele. E kenyelletsa likarolo tse 7 tsa mantlha le ts'ebetso e ntlafalitsoeng.",
+                proFeat1: "✓ Likarolo tse tsoetseng pele",
+                proFeat2: "✓ Ts'ebetso ea data e ngata",
+                proFeat3: "✓ Tšehetso e tlang pele",
+                proFeat4: "✓ Tlhahlobo e atolositsoeng",
+                chooseProButton: "Khetha Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Tloaelo",
+                enterpriseDesc: "Bakeng sa mekhatlo e meholo e hlokang phihlello e felletseng ea VaultMesh, likhokahano tsa moetlo le lisebelisoa tse inehetseng.",
+                enterpriseFeat1: "✓ Phihlello e felletseng ea VaultMesh",
+                enterpriseFeat2: "✓ Tsamaiso ea ak'haonte e inehetseng",
+                enterpriseFeat3: "✓ Likhokahano tsa moetlo",
+                enterpriseFeat4: "✓ Tšehetso ea Premium 24/7",
+                generateBriefButton: "✨ Hlahisa Kakaretso ea Morero",
+                contactSalesButton: "Iteanye le Barekisi",
+                metadataTitle: "🔗 Metadata ea FAA le Tumellano",
+                activeNodesLabel: "Li-node tse sebetsang:",
+                lastAuditLabel: "Tlhahlobo ea ho qetela:",
+                complianceStatusLabel: "Boemo ba Tumellano:",
+                complianceStatus: "E sebetsa ebile e netefalitsoe",
+                metricsTitle: "📊 Kakaretso ea Metrics ea Nako ea Nnete",
+                pulseActivityLabel: "Ketsahalo ea Pulse",
+                pulseUnit: "li-pulse/sek",
+                dataVolumeLabel: "Bophahamo ba data (24h)",
+                latencyLabel: "Karolelano ea Tieho",
+                ledgerTitle: "Lits'oants'o tsa Ledger tsa VaultTrace™:",
+                ledgerPending: "E emetse",
+                ledgerError: "Phoso",
+                ledgerOffline: "Ha e fumanehe",
+                ledgerSuccess: "Katleho",
+                forecasterModalTitle: "Polelo-pele ea Boemo",
+                briefModalTitle: "✨ Hlahisa Kakaretso ea Morero",
+                briefModalDesc: "Hlalosa morero oa hau, 'me AI ea rona e tla ngola kakaretso ea profeshenale e hlalosang sepheo, boholo le mehato ea bohlokoa.",
+                briefModalPlaceholder: "mohl., 'Morero oa matlo a theko e tlaase toropong, o shebaneng le lisebelisoa tse tšoarellang le kopanyo ea sechaba.'",
+                generateBriefModalButton: "Hlahisa Kakaretso",
+                closeButton: "Koala"
+            },
+            nso: {
+                pageTitle: "BuildNest™ - Bokamoso bja Madulo le Meralo",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Protocol ya Motheo",
+                mainSubtitle: "Tharollo ya maemo a godimo ya <span class='font-bold text-indigo-300'>FAA.ZONE</span> bakeng sa lekala la 🏗️ Madulo le Meralo, yeo e kopantšwego ka botlalo le <span class='font-bold text-orange-300'>PulseGrid</span> ya lefase ka bophara bakeng sa ts'ebetso ye e sa lekanego le botshepegi bja data.",
+                featuresTitle: "🎛️ Dikarolo tša Bohlokwa",
+                feature1Desc: "Kopanyo ya thwii le FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Khokahano ya data ya maemo a godimo le PlotVault.",
+                feature3Desc: "Netefatšo ya tumelelo ka nako ya nnete ka VaultLink™.",
+                feature4Desc: "Kago yeo e ka oketšwago bakeng sa katoloso ya di-node tša x29.",
+                feature5Desc: "Tshekatsheko ya ponelopele bakeng sa ts'ebetso ya BuildNest.",
+                feature6Desc: "Phihlelelo ya API bakeng sa ts'ebelisano ye e se nago mathata.",
+                feature7Desc: "Ts'ebelisano ya data magareng ga makala.",
+                feature8Desc: "Kabo ya di-node yeo e itlhophisago.",
+                feature9Desc: "Kabo ya methopo ye e fetogago.",
+                feature10Desc: "Go lemoga dilo tšeo di sa tlwaelegago go laolwa ke AI le thibelo ya bomenetša.",
+                feature11Desc: "Pegelo ya taolo ka go kgotla gatee le ditsela tša tlhahlobo.",
+                subnodesTitle: "Di-Subnode tše di Kopantšwego",
+                forecasterTitle: "🔮 ✨ Moprofeta wa Maemo",
+                forecasterSubtitle: "Hlalosa tlhotlo goba pakane ye e ka bago gona ya morero. AI ya rena, yeo e maatlafatšwago ke Gemini, e tla e sekaseka kgahlanong le protocol ya BuildNest™ gomme ya bolela esale pele maemo a ka bago gona, dikotsi le dikgothaletšo tša maano.",
+                forecasterPlaceholder: "mohl., 'Go hlabolla lefelo la bodulo la diyuniti tše 500 lefelong leo le nago le kotsi ye kgolo ya tsitsinyo ya lefase.'",
+                forecasterButton: "Bolela Pele Maemo",
+                pricingTitle: "💳 Sebopego sa Theko",
+                starterTitle: "Node ya go Thoma",
+                starterDesc: "E loketše dihlopha tše nnyane le merero ya diteko. Fihlelela dikarolo tša bohlokwa gomme o boloke khokahano ya data ya motheo.",
+                starterFeat1: "✓ Dikarolo tša bohlokwa",
+                starterFeat2: "✓ Khokahano ya data ya motheo",
+                starterFeat3: "✓ Thekgo ya setšhaba",
+                getStartedButton: "Thoma",
+                popularTag: "E RATEGAGO",
+                proTitle: "Pro Grid",
+                proDesc: "E diretšwe difeme tšeo di golago tšeo di hlokago bokgoni bja maemo a godimo. E akaretša dikarolo tše 7 tša motheo le ts'ebetso ye e kaonefaditšwego.",
+                proFeat1: "✓ Dikarolo tša maemo a godimo",
+                proFeat2: "✓ Ts'ebetšo ya data ya bolumo ye kgolo",
+                proFeat3: "✓ Thekgo ya go tla pele",
+                proFeat4: "✓ Tshekatsheko ye e katološitšwego",
+                chooseProButton: "Kgetha Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Tloaelo",
+                enterpriseDesc: "Bakeng sa mekgatlo ye megolo yeo e hlokago phihlelelo ye e tletšego ya VaultMesh, dikopanyo tša moetlo le methopo ye e ineetšego.",
+                enterpriseFeat1: "✓ Phihlelelo ye e tletšego ya VaultMesh",
+                enterpriseFeat2: "✓ Taolo ya akhaonto ye e ineetšego",
+                enterpriseFeat3: "✓ Dikopanyo tša moetlo",
+                enterpriseFeat4: "✓ Thekgo ya Premium 24/7",
+                generateBriefButton: "✨ Hlahisa Kakaretšo ya Morero",
+                contactSalesButton: "Ikgokaganye le Barekiši",
+                metadataTitle: "🔗 Metadata ya FAA le Tumelelo",
+                activeNodesLabel: "Di-node tše di šomago:",
+                lastAuditLabel: "Tlhahlobo ya mafelelo:",
+                complianceStatusLabel: "Boemo bja Tumelelo:",
+                complianceStatus: "E a šoma ebile e netefaditšwe",
+                metricsTitle: "📊 Kakaretšo ya Metrics ya Nako ya Nnete",
+                pulseActivityLabel: "Mošomo wa Pulse",
+                pulseUnit: "di-pulse/sek",
+                dataVolumeLabel: "Bolumo ya data (24h)",
+                latencyLabel: "Karolelano ya Tieho",
+                ledgerTitle: "Ditseno tša Ledger tša VaultTrace™:",
+                ledgerPending: "E letetše",
+                ledgerError: "Phošo",
+                ledgerOffline: "Ga e gokagane",
+                ledgerSuccess: "Katlego",
+                forecasterModalTitle: "Ponelopele ya Maemo",
+                briefModalTitle: "✨ Hlahisa Kakaretšo ya Morero",
+                briefModalDesc: "Hlalosa morero wa gago, gomme AI ya rena e tla ngwala kakaretšo ya profešenale yeo e hlalošago diphetho, bogolo le dikgato tša bohlokwa.",
+                briefModalPlaceholder: "mohl., 'Morero wa madulo a theko ya fase toropong, wo o lebišitšego go didirišwa tšeo di swarelelago le kopanyo ya setšhaba.'",
+                generateBriefModalButton: "Hlahisa Kakaretšo",
+                closeButton: "Tswalela"
+            },
+            sw: {
+                pageTitle: "BuildNest™ - Mustakabali wa Makazi na Miundombinu",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Itifaki ya Msingi",
+                mainSubtitle: "Suluhisho la kisasa la <span class='font-bold text-indigo-300'>FAA.ZONE</span> kwa sekta ya 🏗️ Makazi na Miundombinu, lililounganishwa bila mshono na <span class='font-bold text-orange-300'>PulseGrid</span> ya kimataifa kwa utendakazi usio na kifani na uadilifu wa data.",
+                featuresTitle: "🎛️ Sifa Kuu",
+                feature1Desc: "Ujumuishaji wa moja kwa moja na FAA 🧾 Mesh ya Huduma za Kitaalamu.",
+                feature2Desc: "Usawazishaji wa data wa hali ya juu na PlotVault.",
+                feature3Desc: "Uthibitishaji wa kufuata sheria kwa wakati halisi kupitia VaultLink™.",
+                feature4Desc: "Usanifu unaoweza kupanuliwa kwa upanuzi wa nodi x29.",
+                feature5Desc: "Uchanganuzi wa utabiri kwa utendakazi wa BuildNest.",
+                feature6Desc: "Ufikiaji wa API kwa ushirikiano usio na mshono.",
+                feature7Desc: "Ushirikiano wa data baina ya sekta.",
+                feature8Desc: "Usambazaji wa nodi unaojiboresha.",
+                feature9Desc: "Ugawaji wa rasilimali unaobadilika.",
+                feature10Desc: "Utambuzi wa kasoro unaoendeshwa na AI na uzuiaji wa ulaghai.",
+                feature11Desc: "Ripoti za udhibiti kwa kubofya mara moja na njia za ukaguzi.",
+                subnodesTitle: "Nodi Ndogo Zilizounganishwa",
+                forecasterTitle: "🔮 ✨ Kitabiri cha Hali",
+                forecasterSubtitle: "Eleza changamoto au lengo la mradi linalowezekana. AI yetu, inayoendeshwa na Gemini, itaichanganua dhidi ya itifaki ya BuildNest™ na kutabiri hali zinazowezekana, hatari, na mapendekezo ya kimkakati.",
+                forecasterPlaceholder: "k.m., 'Kuendeleza jengo la makazi la vitengo 500 katika eneo lenye hatari kubwa ya tetemeko la ardhi.'",
+                forecasterButton: "Tabiri Hali",
+                pricingTitle: "💳 Muundo wa Bei",
+                starterTitle: "Nodi ya Kuanzia",
+                starterDesc: "Inafaa kwa timu ndogo na miradi ya majaribio. Pata ufikiaji wa sifa muhimu na uhakikishe usawazishaji wa data wa msingi.",
+                starterFeat1: "✓ Sifa muhimu",
+                starterFeat2: "✓ Usawazishaji wa data wa msingi",
+                starterFeat3: "✓ Usaidizi wa jamii",
+                getStartedButton: "Anza",
+                popularTag: "MAARUFU",
+                proTitle: "Gridi ya Kitaalamu",
+                proDesc: "Imeundwa kwa ajili ya makampuni yanayokua yanayohitaji uwezo wa hali ya juu. Inajumuisha sifa 7 za msingi na utendakazi ulioboreshwa.",
+                proFeat1: "✓ Sifa za hali ya juu",
+                proFeat2: "✓ Uchakataji wa data wa kiwango cha juu",
+                proFeat3: "✓ Usaidizi wa kipaumbele",
+                proFeat4: "✓ Uchanganuzi uliopanuliwa",
+                chooseProButton: "Chagua Kitaalamu",
+                enterpriseTitle: "Usawazishaji wa Kila Kitu wa Biashara",
+                customPrice: "Maalum",
+                enterpriseDesc: "Kwa mashirika makubwa yanayohitaji ufikiaji kamili wa VaultMesh, ujumuishaji maalum, na rasilimali zilizojitolea.",
+                enterpriseFeat1: "✓ Ufikiaji kamili wa VaultMesh",
+                enterpriseFeat2: "✓ Usimamizi wa akaunti uliojitolea",
+                enterpriseFeat3: "✓ Ujumuishaji maalum",
+                enterpriseFeat4: "✓ Usaidizi wa Kwanza wa 24/7",
+                generateBriefButton: "✨ Tengeneza Muhtasari wa Mradi",
+                contactSalesButton: "Wasiliana na Mauzo",
+                metadataTitle: "🔗 Metadata ya FAA na Uzingatiaji",
+                activeNodesLabel: "Nodi Zinazofanya Kazi:",
+                lastAuditLabel: "Ukaguzi wa Mwisho:",
+                complianceStatusLabel: "Hali ya Uzingatiaji:",
+                complianceStatus: "Inafanya Kazi na Imethibitishwa",
+                metricsTitle: "📊 Muhtasari wa Vipimo vya Wakati Halisi",
+                pulseActivityLabel: "Shughuli za Mapigo",
+                pulseUnit: "mapigo/sekunde",
+                dataVolumeLabel: "Kiwango cha Data (24h)",
+                latencyLabel: "Wastani wa Kuchelewa",
+                ledgerTitle: "Maingizo ya Leja ya VaultTrace™:",
+                ledgerPending: "Inasubiri",
+                ledgerError: "Kosa",
+                ledgerOffline: "Nje ya Mtandao",
+                ledgerSuccess: "Imefanikiwa",
+                forecasterModalTitle: "Utabiri wa Hali",
+                briefModalTitle: "✨ Tengeneza Muhtasari wa Mradi",
+                briefModalDesc: "Eleza mradi wako, na AI yetu itatayarisha muhtasari wa kitaalamu unaoelezea malengo, wigo, na hatua muhimu.",
+                briefModalPlaceholder: "k.m., 'Mpango wa makazi ya bei nafuu katikati mwa jiji, unaozingatia vifaa endelevu na ujumuishaji wa jamii.'",
+                generateBriefModalButton: "Tengeneza Muhtasari",
+                closeButton: "Funga"
+            },
+            fn: {
+                pageTitle: "BuildNest™ - Future lapa Housing & Infrastructure",
+                mainTitle: "<span class='gradient-text'>BuildNest™</span> Core Protocol",
+                mainSubtitle: "Lo solution ya top <span class='font-bold text-indigo-300'>FAA.ZONE</span> lapa 🏗️ Housing & Infrastructure sector, yena integrate smooth na lo global <span class='font-bold text-orange-300'>PulseGrid</span> lapa performance na data integrity ya phezulu.",
+                featuresTitle: "🎛️ Key Features",
+                feature1Desc: "Direct integration na lo FAA 🧾 Professional Services Mesh.",
+                feature2Desc: "Advanced data sync na PlotVault.",
+                feature3Desc: "Real-time compliance validation via VaultLink™.",
+                feature4Desc: "Scalable architecture lapa x29 node expansion.",
+                feature5Desc: "Predictive analytics lapa performance ya BuildNest.",
+                feature6Desc: "API access lapa seamless interoperability.",
+                feature7Desc: "Cross-sector data interoperability.",
+                feature8Desc: "Self-optimizing node distribution.",
+                feature9Desc: "Dynamic resource allocation.",
+                feature10Desc: "AI-driven anomaly detection & fraud prevention.",
+                feature11Desc: "One-click regulatory reporting na audit trails.",
+                subnodesTitle: "Integrated Subnodes",
+                forecasterTitle: "🔮 ✨ Scenario Forecaster",
+                forecasterSubtitle: "Describe lo potential project challenge or goal. Lo AI yathu, powered by Gemini, yita analyze yona against lo BuildNest™ protocol na forecast potential scenarios, risks, na strategic recommendations.",
+                forecasterPlaceholder: "e.g., 'Developing a 500-unit residential complex in a high-risk seismic zone.'",
+                forecasterButton: "Forecast Scenarios",
+                pricingTitle: "💳 Pricing Structure",
+                starterTitle: "Starter Node",
+                starterDesc: "Ideal lapa small teams na pilot projects. Access essential features na secure basic data synchronization.",
+                starterFeat1: "✓ Essential features",
+                starterFeat2: "✓ Basic data sync",
+                starterFeat3: "✓ Community support",
+                getStartedButton: "Get Started",
+                popularTag: "POPULAR",
+                proTitle: "Pro Grid",
+                proDesc: "Designed lapa growing firms needing advanced capabilities. Includes 7 core features na enhanced performance.",
+                proFeat1: "✓ Advanced features",
+                proFeat2: "✓ High-volume data processing",
+                proFeat3: "✓ Priority support",
+                proFeat4: "✓ Expanded analytics",
+                chooseProButton: "Choose Pro",
+                enterpriseTitle: "Enterprise Omni-Sync",
+                customPrice: "Custom",
+                enterpriseDesc: "For large organizations requiring full VaultMesh access, custom integrations, na dedicated resources.",
+                enterpriseFeat1: "✓ Full VaultMesh access",
+                enterpriseFeat2: "✓ Dedicated account management",
+                enterpriseFeat3: "✓ Custom integrations",
+                enterpriseFeat4: "✓ 24/7 Premium Support",
+                generateBriefButton: "✨ Generate Project Brief",
+                contactSalesButton: "Contact Sales",
+                metadataTitle: "🔗 FAA Metadata & Compliance",
+                activeNodesLabel: "Active Nodes:",
+                lastAuditLabel: "Last Audit:",
+                complianceStatusLabel: "Compliance Status:",
+                complianceStatus: "Active & Certified",
+                metricsTitle: "📊 Real-Time Metrics Overview",
+                pulseActivityLabel: "Pulse Activity",
+                pulseUnit: "pulses/sec",
+                dataVolumeLabel: "Data Volume (24h)",
+                latencyLabel: "Avg. Latency",
+                ledgerTitle: "VaultTrace™ Ledger Entries:",
+                ledgerPending: "Pending",
+                ledgerError: "Error",
+                ledgerOffline: "Offline",
+                ledgerSuccess: "Success",
+                forecasterModalTitle: "Scenario Forecast",
+                briefModalTitle: "✨ Generate Project Brief",
+                briefModalDesc: "Describe lo project yaho, na lo AI yathu yita draftha professional brief outlining objectives, scope, na key milestones.",
+                briefModalPlaceholder: "e.g., 'An affordable housing initiative in downtown, focusing on sustainable materials and community integration.'",
+                generateBriefModalButton: "Generate Brief",
+                closeButton: "Close"
+            }
+        };
+
+        function updateLanguage(lang) {
+            const translations = languageData[lang] || languageData['en'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[key] !== undefined) {
+                    el.innerHTML = translations[key];
+                }
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[key] !== undefined) {
+                    el.placeholder = translations[key];
+                }
+            });
+            document.title = translations.pageTitle || languageData['en'].pageTitle;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const languageToggle = document.getElementById('language-toggle');
+
+            // Theme setup
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                const isDark = body.classList.toggle('dark-mode');
+                const newTheme = isDark ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                themeToggle.innerHTML = isDark ? '☀️' : '🌙';
+            });
+
+            // Language setup
+            const savedLang = localStorage.getItem('language') || 'en';
+            languageToggle.value = savedLang;
+            updateLanguage(savedLang);
+
+            languageToggle.addEventListener('change', (e) => {
+                const newLang = e.target.value;
+                localStorage.setItem('language', newLang);
+                updateLanguage(newLang);
+            });
+
+            // Metric simulation
+            const pulseActivityEl = document.getElementById('pulse-activity');
+            const dataVolumeEl = document.getElementById('data-volume');
+            const latencyEl = document.getElementById('latency');
+            const activeNodesEl = document.getElementById('active-nodes');
+
+            let basePulse = 44403;
+            let baseNodes = 3482;
+            let baseLatency = 30;
+
+            setInterval(() => {
+                pulseActivityEl.textContent = (basePulse + Math.floor(Math.random() * 200) - 100).toLocaleString();
+                latencyEl.textContent = baseLatency + Math.floor(Math.random() * 5) - 2;
+                let currentVolume = parseFloat(dataVolumeEl.textContent);
+                dataVolumeEl.textContent = (currentVolume + 0.01).toFixed(2);
+            }, 1500);
+
+            setInterval(() => {
+                 const nodeChange = Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0;
+                 if (nodeChange !== 0) {
+                     baseNodes += nodeChange;
+                     activeNodesEl.textContent = baseNodes.toLocaleString();
+                 }
+            }, 5000);
+            
+            // --- Gemini API Feature Logic ---
+            const forecastButton = document.getElementById('forecast-button');
+            const scenarioModal = document.getElementById('scenario-modal');
+            const scenarioResult = document.getElementById('scenario-result');
+            const scenarioInput = document.getElementById('scenario-input');
+
+            const generateBriefButton = document.getElementById('generate-brief-button');
+            const briefModal = document.getElementById('brief-modal');
+            const generateBriefAction = document.getElementById('generate-brief-action');
+            const briefInput = document.getElementById('brief-input');
+            const briefResult = document.getElementById('brief-result');
+
+            forecastButton.addEventListener('click', async () => {
+                const userInput = scenarioInput.value.trim();
+                if (!userInput) {
+                    scenarioResult.innerHTML = '<p class="text-red-400">Please enter a scenario or goal.</p>';
+                    openModal('scenario-modal');
+                    return;
+                }
+                
+                openModal('scenario-modal');
+                scenarioResult.innerHTML = '<div class="loader"></div>';
+
+                const prompt = `As an expert AI for the BuildNest™ protocol, analyze the following project scenario: "${userInput}". Based on BuildNest's capabilities (real-time compliance, predictive analytics, AI anomaly detection, cross-sector data interoperability), provide a forecast. Structure your response with three sections: 1. Potential Outcomes (Optimistic, Realistic, Pessimistic). 2. Key Risks & Mitigation Strategies using BuildNest features. 3. Strategic Recommendations leveraging the BuildNest protocol. Format the output as clean HTML using h4 for titles and ul/li for lists.`;
+                
+                try {
+                    const generatedText = await callGeminiAPI(prompt);
+                    scenarioResult.innerHTML = generatedText;
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    scenarioResult.innerHTML = '<p class="text-red-400">Failed to get forecast. Please try again later.</p>';
+                }
+            });
+
+            generateBriefButton.addEventListener('click', () => {
+                briefResult.innerHTML = '';
+                briefInput.value = '';
+                openModal('brief-modal');
+            });
+
+            generateBriefAction.addEventListener('click', async () => {
+                const userInput = briefInput.value.trim();
+                if (!userInput) {
+                    briefResult.innerHTML = '<p class="text-red-400">Please describe your project.</p>';
+                    return;
+                }
+
+                briefResult.innerHTML = '<div class="loader"></div>';
+                generateBriefAction.disabled = true;
+
+                const prompt = `Generate a professional project brief for a housing/infrastructure project based on the following description: "${userInput}". The brief should be structured with these sections: Project Title, Executive Summary, Objectives, Scope (In-Scope and Out-of-Scope), Key Milestones, and Stakeholders. The tone should be formal and suitable for enterprise clients considering the BuildNest™ protocol.`;
+
+                try {
+                    const generatedText = await callGeminiAPI(prompt);
+                    briefResult.textContent = generatedText;
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    briefResult.innerHTML = '<p class="text-red-400">Failed to generate brief. Please try again later.</p>';
+                } finally {
+                    generateBriefAction.disabled = false;
+                }
+            });
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        async function callGeminiAPI(prompt) {
+            const apiKey = ""; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API call failed with status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Unexpected API response structure:", result);
+                throw new Error("Invalid response from API.");
+            }
+        }
+    </script>
+</body>
+</html>

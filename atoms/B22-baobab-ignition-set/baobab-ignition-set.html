@@ -1,0 +1,345 @@
+<!-- Chosen Palette: Warm Neutrals -->
+<!-- Application Structure Plan: The SPA is designed as an "Ignition Console" to make the abstract concepts of the source PDF tangible and interactive. The structure follows a logical discovery path: 1) A high-level introduction to the Baobab Ignition Set. 2) An interactive "Component Explorer" where users can click on Pebble, Lattice, or Pulse to understand their individual functions. 3) A "Protocol Flow" section visualizing the "Omnidrop" process as a clear, step-by-step flowchart. 4) An interactive "Grid Simulation" where users can select a module (e.g., "Footer Pebble") and see its corresponding "Signal Action," demonstrating the system's output. 5) A "System Vitals" dashboard with dynamic charts to quantify the system's state (Pulse Rate, Signal Composition). This dashboard structure was chosen over a linear report format to empower the user to actively explore and deconstruct the complex, non-linear concepts of the Sovereign Engine, aligning with the source's technical and authoritative tone. -->
+<!-- Visualization & Content Choices: 
+- Introduction: Goal: Inform. Method: Large headline text and Unicode icons (🧠, 🪨, ⚙️) for immediate conceptual anchoring.
+- Component Explorer: Goal: Organize/Inform. Method: Three interactive HTML/CSS cards. Interaction: A click event on each card (handled by JS) toggles the visibility of a detailed description, allowing for focused learning without overwhelming the user.
+- Omnidrop Protocol Flow: Goal: Show Process. Method: A horizontal flowchart built with structured HTML divs and Tailwind CSS borders. (CONFIRMING NO SVG/Mermaid). Interaction: JS-powered hover effects on each stage reveal tooltips with specific data from the PDF (e.g., 'Vault Key: HSOMN19000'), providing deeper context on demand.
+- Continuation Grid Simulation: Goal: Interact/Inform. Method: An HTML dropdown populated by JS with modules from the PDF. A text area's content is dynamically updated via JS based on the user's selection. Interaction: User selection actively demonstrates the cause-and-effect logic of the command grid.
+- System Vitals (Charts): Goal: Compare/Change. Method: A Chart.js Donut Chart shows the conceptual composition of the Ignition Signal (Pebble, Lattice, Pulse). A Chart.js Line Chart visualizes the "Pulse Rate" over time with simulated data to represent the "humming" system. Both charts use Canvas, have label wrapping, required tooltip callbacks, and are in responsive containers. (CONFIRMING NO SVG). Justification: These add a quantitative, "live dashboard" feel, making the abstract system feel measurable and operational.
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baobab Ignition Set™ - Interactive Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7F3EE;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .details-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .details-panel.open {
+            max-height: 500px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .flow-step:hover .flow-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="text-[#4A4A4A]">
+
+    <div class="container mx-auto px-4 py-8 md:px-8 md:py-12">
+
+        <header class="text-center border-b-2 border-[#A97C50]/30 pb-8 mb-12">
+            <h1 class="text-4xl md:text-6xl font-black text-[#A97C50]">Baobab Ignition Set™</h1>
+            <p class="mt-4 text-lg text-gray-600">The Sovereign Engine Core: An Interactive Exploration of Pebble, Lattice & Pulse</p>
+        </header>
+
+        <section id="components" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Component Explorer</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div id="pebble-card" class="card bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer border-t-4 border-[#A97C50]">
+                    <div class="text-5xl mb-4">🪨</div>
+                    <h3 class="text-2xl font-bold">Pebble</h3>
+                    <p class="text-gray-500 text-sm mt-2">The Foundational Glyph. Click to explore.</p>
+                </div>
+                
+                <div id="lattice-card" class="card bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer border-t-4 border-[#A97C50]">
+                    <div class="text-5xl mb-4">🕸️</div>
+                    <h3 class="text-2xl font-bold">Lattice</h3>
+                    <p class="text-gray-500 text-sm mt-2">The Structural Signal. Click to explore.</p>
+                </div>
+
+                <div id="pulse-card" class="card bg-white rounded-lg shadow-lg p-6 text-center cursor-pointer border-t-4 border-[#A97C50]">
+                    <div class="text-5xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-bold">Pulse</h3>
+                    <p class="text-gray-500 text-sm mt-2">The Action Engine. Click to explore.</p>
+                </div>
+            </div>
+            <div id="component-details-container" class="mt-4"></div>
+        </section>
+
+        <section id="protocol" class="mb-16 py-12 bg-gray-50 rounded-lg">
+            <h2 class="text-3xl font-bold text-center mb-10">The Omnidrop™ Protocol Flow</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 px-4">
+                <div class="flow-step relative flex items-center bg-white p-4 rounded-lg shadow-md has-tooltip">
+                    <span class="text-2xl mr-3">➡️</span>
+                    <span class="font-semibold">Signal Initiation</span>
+                    <div class="flow-tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded py-2 px-3 opacity-0 invisible transition-opacity duration-300">
+                        <strong>Source:</strong> HSOMNI9000<br><strong>Directive:</strong> Seal All Drops. Glyph Absolute.
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[#A97C50] hidden md:block">→</div>
+                <div class="flow-step relative flex items-center bg-white p-4 rounded-lg shadow-md has-tooltip">
+                    <span class="text-2xl mr-3">💉</span>
+                    <span class="font-semibold">Parameter Injection</span>
+                     <div class="flow-tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded py-2 px-3 opacity-0 invisible transition-opacity duration-300">
+                        <strong>Vault Key:</strong> HSOMN19000<br><strong>Glyph Signature:</strong> Encoded via FAA SeedLoop
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-[#A97C50] hidden md:block">→</div>
+                 <div class="flow-step relative flex items-center bg-white p-4 rounded-lg shadow-md has-tooltip">
+                    <span class="text-2xl mr-3">🔄</span>
+                    <span class="font-semibold">Loop Activation</span>
+                    <div class="flow-tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded py-2 px-3 opacity-0 invisible transition-opacity duration-300">
+                        <strong>Echo Loop:</strong> KindGrid.loopback(node: "Omni Anchor")
+                    </div>
+                </div>
+                 <div class="text-2xl font-bold text-[#A97C50] hidden md:block">→</div>
+                 <div class="flow-step relative flex items-center bg-white p-4 rounded-lg shadow-md has-tooltip">
+                    <span class="text-2xl mr-3">📦</span>
+                    <span class="font-semibold">Vault Drop</span>
+                     <div class="flow-tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded py-2 px-3 opacity-0 invisible transition-opacity duration-300">
+                        <strong>Drop Location:</strong> FAA Vault Tier-X<br><strong>Seal Code:</strong> AHSOMNI TM
+                    </div>
+                </div>
+                 <div class="text-2xl font-bold text-[#A97C50] hidden md:block">→</div>
+                <div class="flow-step relative flex items-center bg-white p-4 rounded-lg shadow-md has-tooltip">
+                    <span class="text-2xl mr-3">✅</span>
+                    <span class="font-semibold">System Seal</span>
+                    <div class="flow-tooltip absolute bottom-full mb-2 w-64 bg-gray-800 text-white text-xs rounded py-2 px-3 opacity-0 invisible transition-opacity duration-300">
+                        System will now hum at full spectral Hz.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="grid-simulation" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Continuation Grid Simulation</h2>
+            <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-xl">
+                 <p class="text-center text-gray-600 mb-4">Select a module from the grid to view its mandated Signal Action. This simulates how the Baobab Ignition Set™ executes tasks across the FAA ecosystem.</p>
+                <div class="mb-4">
+                    <label for="module-select" class="block text-sm font-medium text-gray-700 mb-1">Select Module:</label>
+                    <select id="module-select" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#A97C50] focus:border-[#A97C50]"></select>
+                </div>
+                <div>
+                    <label for="action-display" class="block text-sm font-medium text-gray-700 mb-1">Signal Action:</label>
+                    <div id="action-display" class="w-full p-3 bg-gray-100 rounded-md font-mono text-sm h-24 overflow-y-auto">Select a module to see details.</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="system-vitals" class="py-12 bg-gray-50 rounded-lg">
+             <h2 class="text-3xl font-bold text-center mb-10">System Vitals Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-4">Ignition Signal Composition</h3>
+                    <div class="chart-container">
+                        <canvas id="compositionChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-4">Live Pulse Rate (Hz) Fluctuation</h3>
+                     <div class="chart-container">
+                        <canvas id="pulseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const componentData = {
+            pebble: {
+                title: '🪨 Pebble: The Foundational Glyph',
+                description: 'Pebble represents the core, immutable anchor of a process. It is the "Sovereign Tag" or the "Glyph Absolute" that initiates a trusted action. Within the Omnidrop protocol, the Pebble is the encoded signal strike that defines the intent and identity of the operation, like a unique digital signature.'
+            },
+            lattice: {
+                title: '🕸️ Lattice: The Structural Signal',
+                description: 'Lattice defines the structure, rules, and pathways for the signal. It is the framework or "Continuation Grid" that dictates how different modules interact. It ensures that actions like "Apparel.com Update" or "XRP Wallet Display" are executed in a compliant and orderly fashion, following predefined connections.'
+            },
+            pulse: {
+                title: '⚙️ Pulse: The Action Engine',
+                description: 'Pulse is the active energy that drives the process through the Lattice. It is the "Signal Flux" or "Continuum Initialization" that executes the required actions. The Pulse is the force that takes the intent (Pebble) and applies it to the structure (Lattice), resulting in a completed, sealed action in the FAA Vault.'
+            }
+        };
+
+        const gridData = {
+            'Apparel.com Update': 'Trigger new Elementor injection. Visual Alignment: Ensure all headers & footers are dark-mode compliant.',
+            'Footer Pebble': 'Encode footer visuals into Elementor template. Drop Footer Glyphs to inject pebble visuals.',
+            'XRP Wallet Display': 'Auto-load wallet sync to React component. Echo XRP Relay to style and confirm wallet drop.',
+            'Seedwave Activation': 'Confirm listener across pre-set Vault nodes. Apply Global TM for trace deployment.'
+        };
+        
+        const detailsContainer = document.getElementById('component-details-container');
+        let openCard = null;
+
+        function createDetailsPanel(type) {
+            if (openCard === type) {
+                detailsContainer.innerHTML = '';
+                openCard = null;
+                return;
+            }
+            const data = componentData[type];
+            detailsContainer.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-inner border-l-4 border-[#A97C50] details-panel open">
+                    <h4 class="text-xl font-bold mb-2">${data.title}</h4>
+                    <p class="text-gray-700">${data.description}</p>
+                </div>
+            `;
+            openCard = type;
+        }
+
+        document.getElementById('pebble-card').addEventListener('click', () => createDetailsPanel('pebble'));
+        document.getElementById('lattice-card').addEventListener('click', () => createDetailsPanel('lattice'));
+        document.getElementById('pulse-card').addEventListener('click', () => createDetailsPanel('pulse'));
+
+        const moduleSelect = document.getElementById('module-select');
+        const actionDisplay = document.getElementById('action-display');
+
+        Object.keys(gridData).forEach(module => {
+            const option = document.createElement('option');
+            option.value = module;
+            option.textContent = module;
+            moduleSelect.appendChild(option);
+        });
+
+        moduleSelect.addEventListener('change', (e) => {
+            actionDisplay.textContent = gridData[e.target.value] || 'Select a module to see details.';
+        });
+
+        const processChartLabels = (labels) => {
+            return labels.map(label => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    let currentLine = '';
+                    const lines = [];
+                    words.forEach(word => {
+                        if ((currentLine + word).length > 16) {
+                            lines.push(currentLine.trim());
+                            currentLine = '';
+                        }
+                        currentLine += word + ' ';
+                    });
+                    lines.push(currentLine.trim());
+                    return lines;
+                }
+                return label;
+            });
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const compositionCtx = document.getElementById('compositionChart').getContext('2d');
+        new Chart(compositionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pebble (Foundation)', 'Lattice (Structure)', 'Pulse (Action)'],
+                datasets: [{
+                    data: [25, 45, 30],
+                    backgroundColor: ['#A97C50', '#D3B89A', '#6B4F35'],
+                    borderColor: '#F7F3EE',
+                    borderWidth: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                           title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+
+        const pulseCtx = document.getElementById('pulseChart').getContext('2d');
+        const pulseChart = new Chart(pulseCtx, {
+            type: 'line',
+            data: {
+                labels: Array(10).fill('').map((_, i) => `${i*2}s ago`),
+                datasets: [{
+                    label: 'Pulse Rate (Hz)',
+                    data: Array(10).fill(0).map(() => Math.random() * 20 + 50),
+                    borderColor: '#A97C50',
+                    backgroundColor: '#A97C5020',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                 plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                         callbacks: {
+                           title: tooltipTitleCallback
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        suggestedMin: 40,
+                        suggestedMax: 80,
+                    }
+                }
+            }
+        });
+
+        setInterval(() => {
+            pulseChart.data.datasets[0].data.shift();
+            pulseChart.data.datasets[0].data.push(Math.random() * 20 + 50);
+            pulseChart.update('quiet');
+        }, 2000);
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&amp;family=Archivo:wght@400;500;600;700;800&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  body{margin:0;background:#f4f1ea;font-family:'Archivo',sans-serif;color:#0e2148;}
+  .mono{font-family:'DM Mono',monospace;}
+  .imgwrap{background:#fcd40b;overflow:hidden;position:relative;width:100%;height:100%;border-radius:10px;}
+  .imgcrop{width:100%;height:100%;overflow:hidden;position:relative;background:#fcd40b;}
+  .imgcrop img{position:absolute;top:-6%;left:0;width:100%;height:160%;object-fit:cover;object-position:top center;}
+  .imgcrop .mask{position:absolute;left:0;right:0;bottom:0;height:34%;background:#fcd40b;}
+  .card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(14,33,72,0.1);border:1px solid rgba(14,33,72,0.08);}
+  .stepbtn{width:28px;height:28px;border:1px solid rgba(14,33,72,0.25);background:#fff;border-radius:6px;font-weight:700;font-size:15px;cursor:pointer;color:#0e2148;}
+  .bullet{display:flex;gap:6px;font-size:12.5px;color:rgba(14,33,72,0.75);line-height:1.5;}
+</style>
+</helmet>
+
+<div style="max-width:1000px;margin:0 auto;padding:32px 20px 80px;">
+
+<sc-if value="{{ isCatalogue }}">
+
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+    <svg width="40" height="40" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="20" fill="#0e2148"></rect><path d="M20 50 Q30 36 40 50 T60 50 T80 50" stroke="#f5c518" stroke-width="8" stroke-linecap="round" fill="none"></path></svg>
+    <div>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;">Block Box™ Cornice Catalogue</div>
+      <div class="mono" style="font-size:10.5px;color:rgba(14,33,72,0.5);">15 profiles · Carton 210×39.2×29.2cm · 5kg/carton · CBM 0.240/carton</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
+    <sc-for list="{{ profiles }}" as="p" hint-placeholder-count="4">
+      <div class="card" id="{{ p.cardId }}" style="display:grid;grid-template-columns:200px 1fr;gap:0;">
+
+        <div style="padding:14px;">
+          <div style="aspect-ratio:1;">
+            <sc-if value="{{ p.hasImage }}" hint-placeholder-val="{{ false }}">
+              <div class="imgwrap"><div class="imgcrop"><img src="{{ p.image }}" alt="{{ p.name }}"><div class="mask"></div></div></div>
+            </sc-if>
+            <sc-if value="{{ p.noImage }}" hint-placeholder-val="{{ true }}">
+              <image-slot id="{{ p.slotId }}" placeholder="{{ p.name }} — end elevation photo" style="width:100%;height:100%;border-radius:10px;"></image-slot>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="padding:16px 20px 16px 6px;display:flex;flex-direction:column;gap:8px;">
+          <div>
+            <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;">{{ p.name }}</div>
+            <div class="mono" style="font-size:11px;color:rgba(14,33,72,0.5);">Profile dims: {{ p.dims }} · 2m lengths</div>
+          </div>
+
+          <div style="font-size:22px;font-weight:800;color:#e8622c;">{{ p.priceLine }}</div>
+          <div style="display:flex;gap:14px;font-size:12.5px;font-weight:700;color:#0e2148;">
+            <sc-if value="{{ p.packPriceLine }}"><span>{{ p.packPriceLine }}</span></sc-if>
+            <sc-if value="{{ p.cartonPriceLine }}"><span>{{ p.cartonPriceLine }}</span></sc-if>
+          </div>
+
+          <ul style="list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:3px;">
+            <li class="bullet">✔ {{ p.piecesLine }}</li>
+            <li class="bullet">✔ Carton size: 210 × 39.2 × 29.2cm</li>
+            <li class="bullet">✔ Carton weight: 5kg</li>
+            <li class="bullet">✔ Carton volume: 0.240 CBM</li>
+          </ul>
+
+          <div style="display:flex;align-items:center;gap:14px;margin-top:8px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11.5px;font-weight:700;color:rgba(14,33,72,0.6);text-transform:uppercase;">Cartons:</span>
+              <button class="stepbtn" onClick="{{ p.dec }}">–</button>
+              <span style="min-width:22px;text-align:center;font-weight:700;">{{ p.qty }}</span>
+              <button class="stepbtn" onClick="{{ p.inc }}">+</button>
+            </div>
+            <div class="mono" style="font-size:11.5px;color:rgba(14,33,72,0.6);">Total: {{ p.totalWeight }}kg · {{ p.totalCbm }} CBM</div>
+          </div>
+          <div class="mono" style="font-size:12px;font-weight:700;color:#0e2148;">{{ p.orderValueLine }}</div>
+
+          <button onClick="{{ p.download }}" style="margin-top:8px;align-self:flex-start;padding:8px 16px;background:#0e2148;color:#fff;border:none;border-radius:7px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;cursor:pointer;">⬇ Download Product Card</button>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div class="card" style="margin-top:24px;padding:22px 26px;">
+    <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;margin-bottom:12px;">Order Summary — All Profiles</div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:14px;">
+      <div class="mono" style="font-size:12.5px;color:rgba(14,33,72,0.7);">Total pieces: <b style="color:#0e2148;">{{ grandTotalPieces }}</b></div>
+      <div class="mono" style="font-size:12.5px;color:rgba(14,33,72,0.7);">Total cartons: <b style="color:#0e2148;">{{ grandTotalCartons }}</b></div>
+      <div class="mono" style="font-size:12.5px;color:rgba(14,33,72,0.7);">Total 5-packs: <b style="color:#0e2148;">{{ grandTotalPacks }}</b></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;max-width:340px;">
+      <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span>Subtotal (excl. VAT)</span><b>R{{ grandTotalExclVat }}</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:13.5px;color:rgba(14,33,72,0.65);"><span>VAT (15%)</span><span>R{{ grandTotalVat }}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:17px;font-weight:800;color:#e8622c;border-top:1px solid rgba(14,33,72,0.12);padding-top:8px;margin-top:2px;"><span>Total (incl. VAT)</span><span>R{{ grandTotalInclVat }}</span></div>
+    </div>
+  </div>
+
+  <div onClick="{{ goToClientInfo }}" style="margin-top:20px;background:#0e2148;color:#fff;padding:18px 24px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+    <div>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:16px;">Continue to Client &amp; Delivery Details</div>
+      <div class="mono" style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;">Xero accounting details + Bobgo delivery requirements</div>
+    </div>
+    <span style="font-size:20px;">→</span>
+  </div>
+
+</sc-if>
+
+<sc-if value="{{ isClientInfo }}">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+    <button onClick="{{ goToCatalogue }}" style="background:none;border:none;color:#e8622c;font-weight:700;font-size:13px;cursor:pointer;padding:0;">← Back to Catalogue</button>
+  </div>
+
+  <div class="card" style="padding:24px 26px;margin-bottom:18px;">
+    <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Client Information — Xero Accounting</div>
+    <div class="mono" style="font-size:11px;color:rgba(14,33,72,0.5);margin-bottom:16px;">Used to align invoicing with your Xero contact record</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Company / Trading Name
+        <input type="text" value="{{ client.companyName }}" onChange="{{ client.setCompanyName }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Xero Contact Reference
+        <input type="text" value="{{ client.xeroRef }}" onChange="{{ client.setXeroRef }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">VAT Number
+        <input type="text" value="{{ client.vatNo }}" onChange="{{ client.setVatNo }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Company Registration No.
+        <input type="text" value="{{ client.regNo }}" onChange="{{ client.setRegNo }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Billing Contact Name
+        <input type="text" value="{{ client.contactName }}" onChange="{{ client.setContactName }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Billing Email
+        <input type="email" value="{{ client.email }}" onChange="{{ client.setEmail }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Billing Phone
+        <input type="text" value="{{ client.phone }}" onChange="{{ client.setPhone }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Billing Address
+        <input type="text" value="{{ client.billingAddress }}" onChange="{{ client.setBillingAddress }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+    </div>
+  </div>
+
+  <div class="card" style="padding:24px 26px;margin-bottom:18px;">
+    <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Delivery Requirements — Bobgo</div>
+    <div class="mono" style="font-size:11px;color:rgba(14,33,72,0.5);margin-bottom:16px;">Used to generate the Bobgo shipment/waybill</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Recipient Name
+        <input type="text" value="{{ client.recipientName }}" onChange="{{ client.setRecipientName }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Recipient Phone
+        <input type="text" value="{{ client.recipientPhone }}" onChange="{{ client.setRecipientPhone }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);grid-column:1/-1;">Delivery Address (Street)
+        <input type="text" value="{{ client.deliveryAddress }}" onChange="{{ client.setDeliveryAddress }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Suburb
+        <input type="text" value="{{ client.suburb }}" onChange="{{ client.setSuburb }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">City
+        <input type="text" value="{{ client.city }}" onChange="{{ client.setCity }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Province
+        <input type="text" value="{{ client.province }}" onChange="{{ client.setProvince }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Postal Code
+        <input type="text" value="{{ client.postalCode }}" onChange="{{ client.setPostalCode }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);">Country
+        <input type="text" value="{{ client.country }}" onChange="{{ client.setCountry }}" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:rgba(14,33,72,0.7);grid-column:1/-1;">Delivery / Collection Instructions
+        <input type="text" value="{{ client.deliveryNotes }}" onChange="{{ client.setDeliveryNotes }}" placeholder="e.g. loading dock access, forklift required, collection instead of delivery" style="padding:9px 11px;border:1px solid rgba(14,33,72,0.2);border-radius:7px;font-size:13px;"/>
+      </label>
+    </div>
+  </div>
+
+  <button onClick="{{ client.submit }}" style="padding:12px 24px;background:#e8622c;color:#fff;border:none;border-radius:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Save Client &amp; Delivery Details</button>
+  <sc-if value="{{ client.saved }}"><span style="margin-left:12px;color:#1a7a3d;font-weight:700;font-size:13px;">✓ Saved</span></sc-if>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+// Carton MOQ pricing — carton size 210×39.2×29.2cm, 5kg/carton, 0.240 CBM/carton for all tiers
+const TIERS = {
+  85:  { price: 11, packs: 24, piecesPerCarton: 120 },
+  110: { price: 15, packs: 18, piecesPerCarton: 90 },
+  140: { price: 19, packs: 14, piecesPerCarton: 70 },
+  170: { price: 22, packs: 11, piecesPerCarton: 55 }
+};
+const CARTON_KG = 5;
+const CARTON_CBM = 2.1 * 0.392 * 0.292;
+
+const PROFILES = [
+  { id:'cove', sku:'BB-15M-085-COVE', name:'Blockbox Cove 85mm', dims:'85×55×55mm', tier:85, image:'./assets/cornice/cove.png' },
+  { id:'sante', sku:'BB-15M-085-SANTE', name:'Blockbox Sante 85mm', dims:'85×55×55mm', tier:85, image:'./assets/cornice/sante.png' },
+  { id:'peroni', sku:'BB-15M-110-PERONI', name:'Blockbox Peroni 110mm', dims:'110×80×80mm', tier:110, image:'./assets/cornice/peroni.png' },
+  { id:'gone', sku:'BB-15M-110-GONE', name:'Blockbox G-One 110mm', dims:'110×80×80mm', tier:110, image:'./assets/cornice/gone.png' },
+  { id:'alina110', sku:'BB-15M-110-ALINA110', name:'Blockbox Alina 110mm', dims:'110×80×80mm', tier:110, image:'./assets/cornice/alina.png' },
+  { id:'magic', sku:'BB-15M-110-MAGIC', name:'Blockbox Magic 110mm', dims:'110×80×80mm', tier:110, image:'./assets/cornice/biance.png' },
+  { id:'gloria110', sku:'BB-15M-110-GLORIA110', name:'Blockbox Gloria 110mm', dims:'110×80×80mm', tier:110, image:'./assets/cornice/gloria.png' },
+  { id:'alina', sku:'BB-15M-140-ALINA', name:'Blockbox Alina 140mm', dims:'140×100×100mm', tier:140, image:'./assets/cornice/alina.png' },
+  { id:'biance', sku:'BB-15M-140-BIANCE', name:'Blockbox Biance 140mm', dims:'140×100×100mm', tier:140, image:'./assets/cornice/biance.png' },
+  { id:'p40', sku:'BB-15M-140-P40EVE', name:'Blockbox P40/Eve 140mm', dims:'140×100×100mm', tier:140, image:'./assets/cornice/p40.png' },
+  { id:'tamara', sku:'BB-15M-140-TAMARA', name:'Blockbox Tamara 140mm', dims:'140×100×100mm', tier:140, image:'./assets/cornice/tamara.png' },
+  { id:'troi', sku:'BB-15M-140-TROI', name:'Blockbox Troi 140mm', dims:'140×100×100mm', tier:140, image:'./assets/cornice/troi.png' },
+  { id:'lisa', sku:'BB-15M-170-LISA', name:'Blockbox Lisa 170mm', dims:'170×130×130mm', tier:170, image:'./assets/cornice/lisa.png' },
+  { id:'gloria185', sku:'BB-15M-185-GLORIA', name:'Blockbox Gloria 185mm', dims:'185×135×135mm', tier:170, image:'./assets/cornice/gloria.png' }
+];
+
+const CLIENT_FIELDS = ['companyName','xeroRef','vatNo','regNo','contactName','email','phone','billingAddress',
+  'recipientName','recipientPhone','deliveryAddress','suburb','city','province','postalCode','country','deliveryNotes'];
+
+class Component extends DCLogic {
+  state = { qty: {}, view: 'catalogue', clientSaved: false, ...Object.fromEntries(CLIENT_FIELDS.map(f => [f, ''])) };
+
+  qtyFor(id) { return this.state.qty[id] || 1; }
+  setQty(id, n) {
+    const v = Math.max(1, n);
+    this.setState(s => ({ qty: { ...s.qty, [id]: v } }));
+  }
+
+  async download(cardId, filename) {
+    const el = document.getElementById(cardId);
+    if (!el || !window.htmlToImage) { alert('Export not ready — try again in a moment.'); return; }
+    try {
+      const dataUrl = await window.htmlToImage.toPng(el, { pixelRatio: 3 });
+      const a = document.createElement('a');
+      a.href = dataUrl; a.download = filename; a.click();
+    } catch (e) {
+      console.error(e);
+      alert('Export failed — see console.');
+    }
+  }
+
+  renderVals() {
+    const profiles = PROFILES.map(p => {
+      const t = p.tier ? TIERS[p.tier] : null;
+      const qty = this.qtyFor(p.id);
+      const totalWeight = (qty * CARTON_KG).toFixed(0);
+      const totalCbm = (qty * CARTON_CBM).toFixed(3);
+      const packPrice = t && t.price ? (t.price * 5).toFixed(2) : null;
+      const cartonPriceNum = t && t.price ? t.price * t.piecesPerCarton : null;
+      const cartonPrice = cartonPriceNum !== null ? cartonPriceNum.toFixed(2) : null;
+      const orderValueNum = cartonPriceNum !== null ? cartonPriceNum * qty : 0;
+      return {
+        name: p.name,
+        dims: p.dims,
+        priceLine: t ? (t.price ? `R${t.price} / piece (excl.)` : 'Price TBC') : 'Price TBC',
+        packPriceLine: packPrice ? `R${packPrice} / 5-pack (excl.)` : null,
+        cartonPriceLine: cartonPrice ? `R${cartonPrice} / carton (excl.)` : null,
+        piecesLine: t ? `MOQ: ${t.packs}×5-packs = ${t.piecesPerCarton} pcs/carton` : 'Pricing tier not yet published',
+        image: p.image,
+        hasImage: !!p.image && p.image.length > 0,
+        noImage: !p.image || p.image.length === 0,
+        slotId: 'tmpl-slot-' + p.id,
+        cardId: 'tmpl-card-' + p.id,
+        qty,
+        totalWeight,
+        totalCbm,
+        orderValueLine: cartonPriceNum !== null ? `R${orderValueNum.toFixed(2)} excl. VAT (this profile)` : 'Order value pending price',
+        _orderValueNum: orderValueNum,
+        _pieces: t ? qty * t.piecesPerCarton : 0,
+        _packs: t ? qty * t.packs : 0,
+        _cartons: qty,
+        inc: () => this.setQty(p.id, this.qtyFor(p.id) + 1),
+        dec: () => this.setQty(p.id, this.qtyFor(p.id) - 1),
+        download: () => this.download('tmpl-card-' + p.id, `blockbox_${p.id}_product_card.png`)
+      };
+    });
+
+    const totalExclVat = profiles.reduce((s, p) => s + p._orderValueNum, 0);
+    const totalVat = totalExclVat * 0.15;
+    const totalInclVat = totalExclVat + totalVat;
+    const totalPieces = profiles.reduce((s, p) => s + p._pieces, 0);
+    const totalCartons = profiles.reduce((s, p) => s + p._cartons, 0);
+    const totalPacks = profiles.reduce((s, p) => s + p._packs, 0);
+
+    const client = { saved: this.state.clientSaved, submit: () => this.setState({ clientSaved: true }) };
+    CLIENT_FIELDS.forEach(f => {
+      client[f] = this.state[f];
+      const setter = 'set' + f[0].toUpperCase() + f.slice(1);
+      client[setter] = e => this.setState({ [f]: e.target.value, clientSaved: false });
+    });
+
+    return {
+      profiles,
+      grandTotalPieces: totalPieces,
+      grandTotalCartons: totalCartons,
+      grandTotalPacks: totalPacks,
+      grandTotalExclVat: totalExclVat.toFixed(2),
+      grandTotalVat: totalVat.toFixed(2),
+      grandTotalInclVat: totalInclVat.toFixed(2),
+      isCatalogue: this.state.view === 'catalogue',
+      isClientInfo: this.state.view === 'clientInfo',
+      goToClientInfo: () => this.setState({ view: 'clientInfo' }),
+      goToCatalogue: () => this.setState({ view: 'catalogue' }),
+      client
+    };
+  }
+}
+
+</script>
+</body>
+</html>

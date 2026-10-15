@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700;800&family=Archivo:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body{margin:0;background:#f9f6f0;font-family:'Archivo',sans-serif;}
+  .mono{font-family:'DM Mono',monospace;}
+  a{color:#e8622c;} a:hover{color:#0e2148;}
+  .bbc-btn{cursor:pointer;border:none;}
+</style>
+</helmet>
+
+<div style="max-width:1360px;margin:0 auto;padding:40px 24px 80px;display:flex;flex-direction:column;gap:44px;color:#0e2148;">
+
+  <!-- HEADER -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;border-bottom:1px solid rgba(14,33,72,0.1);padding-bottom:24px;">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(232,98,44,0.1);color:#e8622c;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">✦ Interactive Brand Suite v1.1</div>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:36px;letter-spacing:-0.01em;line-height:1.1;">Corporate Brand Center &amp; Asset Vault</div>
+      <div style="font-size:14px;color:rgba(14,33,72,0.65);max-width:760px;margin-top:8px;line-height:1.6;">One-click copy of vector logos and brand specs, plus a live merchandise &amp; marketing designer you can export as a production spec sheet.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: LOGO VAULT -->
+  <div style="background:#fff;border-radius:24px;padding:32px;border:1px solid rgba(14,33,72,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;flex-direction:column;gap:24px;">
+    <div>
+      <span class="mono" style="font-size:11px;color:#e8622c;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">Section 01 · Direct Asset Retrieval</span>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:24px;margin-top:6px;">Approved Corporate Logos</div>
+      <div style="font-size:12px;color:rgba(14,33,72,0.6);margin-top:4px;">Click to instantly copy raw SVG code or a data URI — vector formats scale infinitely for print &amp; web.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;">
+
+      <div style="background:rgba(249,246,240,0.7);border:1px solid rgba(14,33,72,0.06);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div style="width:88px;height:88px;margin:0 auto;background:#fff;border:1px solid rgba(14,33,72,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 100 100" width="56" height="56"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#f5c518" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#eee6d6" stroke-width="2.5" stroke-linecap="round" fill="none"/><circle cx="50" cy="50" r="3" fill="#e8622c"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Standard Corporate Navy</div>
+          <div style="font-size:11px;color:rgba(14,33,72,0.6);margin-top:4px;line-height:1.5;">Main signage, physical crates, high-contrast stationery.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(14,33,72,0.06);padding-top:12px;">
+          <button class="bbc-btn" onClick="{{ copySvgNavy }}" style="width:100%;padding:8px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Raw SVG</span><span style="color:#f5c518;">{{ copiedLabelNavySvg }}</span>
+          </button>
+          <button class="bbc-btn" onClick="{{ copyUriNavy }}" style="width:100%;padding:8px 10px;background:#eee6d6;color:#0e2148;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Data URI</span><span style="color:#e8622c;">{{ copiedLabelNavyUri }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.7);border:1px solid rgba(14,33,72,0.06);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div style="width:88px;height:88px;margin:0 auto;background:rgba(245,197,24,0.15);border:1px solid rgba(245,197,24,0.35);border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 100 100" width="56" height="56"><rect x="5" y="5" width="90" height="90" rx="18" fill="#f5c518"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#0e2148" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#eee6d6" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">High-Vis Value Seal</div>
+          <div style="font-size:11px;color:rgba(14,33,72,0.6);margin-top:4px;line-height:1.5;">Applied to EPS blocks to validate authenticity and value guarantee.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(14,33,72,0.06);padding-top:12px;">
+          <button class="bbc-btn" onClick="{{ copySvgGold }}" style="width:100%;padding:8px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Raw SVG</span><span style="color:#f5c518;">{{ copiedLabelGoldSvg }}</span>
+          </button>
+          <button class="bbc-btn" onClick="{{ copyUriGold }}" style="width:100%;padding:8px 10px;background:#eee6d6;color:#0e2148;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Data URI</span><span style="color:#e8622c;">{{ copiedLabelGoldUri }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.7);border:1px solid rgba(14,33,72,0.06);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div style="width:88px;height:88px;margin:0 auto;background:rgba(232,98,44,0.15);border:1px solid rgba(232,98,44,0.35);border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 100 100" width="56" height="56"><rect x="5" y="5" width="90" height="90" rx="18" fill="#e8622c"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#eee6d6" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#0e2148" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Logistics Safety Signal</div>
+          <div style="font-size:11px;color:rgba(14,33,72,0.6);margin-top:4px;line-height:1.5;">Fleet stickers, perimeter safety tags, depot packaging.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(14,33,72,0.06);padding-top:12px;">
+          <button class="bbc-btn" onClick="{{ copySvgOrange }}" style="width:100%;padding:8px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Raw SVG</span><span style="color:#f5c518;">{{ copiedLabelOrangeSvg }}</span>
+          </button>
+          <button class="bbc-btn" onClick="{{ copyUriOrange }}" style="width:100%;padding:8px 10px;background:#eee6d6;color:#0e2148;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Data URI</span><span style="color:#e8622c;">{{ copiedLabelOrangeUri }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.7);border:1px solid rgba(14,33,72,0.06);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:16px;">
+        <div style="width:88px;height:88px;margin:0 auto;background:rgba(238,230,214,0.4);border:1px solid rgba(14,33,72,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 100 100" width="56" height="56"><rect x="5" y="5" width="90" height="90" rx="18" fill="none" stroke="#0e2148" stroke-width="5"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#0e2148" stroke-width="8" stroke-linecap="round" fill="none"/></svg>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Minimalist Stencil Core</div>
+          <div style="font-size:11px;color:rgba(14,33,72,0.6);margin-top:4px;line-height:1.5;">Mono-color engraving, hot-branding, screen printing.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid rgba(14,33,72,0.06);padding-top:12px;">
+          <button class="bbc-btn" onClick="{{ copySvgStencil }}" style="width:100%;padding:8px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Raw SVG</span><span style="color:#f5c518;">{{ copiedLabelStencilSvg }}</span>
+          </button>
+          <button class="bbc-btn" onClick="{{ copyUriStencil }}" style="width:100%;padding:8px 10px;background:#eee6d6;color:#0e2148;border-radius:8px;font-size:10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;">
+            <span>Copy Data URI</span><span style="color:#e8622c;">{{ copiedLabelStencilUri }}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 2: COLORS + TYPOGRAPHY -->
+  <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px;">
+
+    <div style="background:#fff;border-radius:24px;padding:32px;border:1px solid rgba(14,33,72,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;flex-direction:column;gap:18px;">
+      <div>
+        <span class="mono" style="font-size:11px;color:#e8622c;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">Section 02 · Identity Swatch Matrix</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;margin-top:6px;">Physical Swatches</div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#0e2148;box-shadow:inset 0 2px 4px rgba(0,0,0,0.2);"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Corporate Navy</div><div class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);">--color-navy</div></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="bbc-btn" onClick="{{ copyNavyHex }}" style="padding:6px 10px;background:#0e2148;color:#fff;border-radius:6px;font-size:10px;" class="mono">#0e2148 {{ copiedLabelColorNavyHex }}</button>
+          <button class="bbc-btn" onClick="{{ copyNavyRgb }}" style="padding:6px 10px;background:#eee6d6;color:#0e2148;border-radius:6px;font-size:10px;">RGB {{ copiedLabelColorNavyRgb }}</button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#f5c518;box-shadow:inset 0 2px 4px rgba(0,0,0,0.15);"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Value Gold</div><div class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);">--color-brand-yellow</div></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="bbc-btn" onClick="{{ copyGoldHex }}" style="padding:6px 10px;background:#0e2148;color:#fff;border-radius:6px;font-size:10px;">#f5c518 {{ copiedLabelColorGoldHex }}</button>
+          <button class="bbc-btn" onClick="{{ copyGoldRgb }}" style="padding:6px 10px;background:#eee6d6;color:#0e2148;border-radius:6px;font-size:10px;">RGB {{ copiedLabelColorGoldRgb }}</button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#e8622c;box-shadow:inset 0 2px 4px rgba(0,0,0,0.15);"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Safety Orange</div><div class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);">--color-brand-orange</div></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="bbc-btn" onClick="{{ copyOrangeHex }}" style="padding:6px 10px;background:#0e2148;color:#fff;border-radius:6px;font-size:10px;">#e8622c {{ copiedLabelColorOrangeHex }}</button>
+          <button class="bbc-btn" onClick="{{ copyOrangeRgb }}" style="padding:6px 10px;background:#eee6d6;color:#0e2148;border-radius:6px;font-size:10px;">RGB {{ copiedLabelColorOrangeRgb }}</button>
+        </div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:10px;background:#eee6d6;border:1px solid rgba(14,33,72,0.1);"></div>
+          <div><div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Natural Cream</div><div class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);">--color-cream</div></div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="bbc-btn" onClick="{{ copyCreamHex }}" style="padding:6px 10px;background:#0e2148;color:#fff;border-radius:6px;font-size:10px;">#eee6d6 {{ copiedLabelColorCreamHex }}</button>
+          <button class="bbc-btn" onClick="{{ copyCreamRgb }}" style="padding:6px 10px;background:#0e2148;color:#fff;opacity:0.7;border-radius:6px;font-size:10px;">RGB {{ copiedLabelColorCreamRgb }}</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="background:#fff;border-radius:24px;padding:32px;border:1px solid rgba(14,33,72,0.06);box-shadow:0 1px 3px rgba(0,0,0,0.05);display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <span class="mono" style="font-size:11px;color:#e8622c;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">Section 03 · Display &amp; Body Schemes</span>
+        <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:22px;margin-top:6px;">Typography</div>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;"><span class="mono" style="font-size:10px;color:#e8622c;font-weight:700;text-transform:uppercase;">Display Headers</span><span class="mono" style="font-size:9px;background:rgba(14,33,72,0.06);padding:2px 8px;border-radius:6px;">Semi-Bold/Bold</span></div>
+        <div style="background:#fff;border:1px solid rgba(14,33,72,0.06);border-radius:10px;padding:10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;">One block. Every profile. No waste.</div>
+        <button class="bbc-btn" onClick="{{ copyDisplayFont }}" style="padding:7px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;">Copy CSS Family {{ copiedLabelDisplayFont }}</button>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;"><span class="mono" style="font-size:10px;color:#e8622c;font-weight:700;text-transform:uppercase;">Body &amp; Microcopy</span><span class="mono" style="font-size:9px;background:rgba(14,33,72,0.06);padding:2px 8px;border-radius:6px;">Regular/Medium</span></div>
+        <div style="background:#fff;border:1px solid rgba(14,33,72,0.06);border-radius:10px;padding:10px;font-family:'Archivo',sans-serif;font-size:12px;">Welcome to Block Box Depot — the direct supply hub for 20DV EPS profiles.</div>
+        <button class="bbc-btn" onClick="{{ copyBodyFont }}" style="padding:7px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;">Copy CSS Family {{ copiedLabelBodyFont }}</button>
+      </div>
+
+      <div style="background:rgba(249,246,240,0.6);border:1px solid rgba(14,33,72,0.06);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;"><span class="mono" style="font-size:10px;color:#e8622c;font-weight:700;text-transform:uppercase;">Technical Metadata</span><span class="mono" style="font-size:9px;background:rgba(14,33,72,0.06);padding:2px 8px;border-radius:6px;">Regular/Medium</span></div>
+        <div style="background:#fff;border:1px solid rgba(14,33,72,0.06);border-radius:10px;padding:10px;font-family:'DM Mono',monospace;font-size:12px;">SKU: BB-NT108 · PATENT PENDING</div>
+        <button class="bbc-btn" onClick="{{ copyMonoFont }}" style="padding:7px 10px;background:#0e2148;color:#fff;border-radius:8px;font-size:10px;font-weight:700;">Copy CSS Family {{ copiedLabelMonoFont }}</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 4: MERCHANDISE DESIGNER -->
+  <div style="background:#0e2148;color:#fff;border-radius:24px;padding:32px 32px 36px;box-shadow:0 20px 50px rgba(14,33,72,0.35);display:flex;flex-direction:column;gap:24px;">
+    <div style="border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:20px;">
+      <span class="mono" style="font-size:11px;color:#f5c518;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">Section 04 · Exclusive Brand Workspace</span>
+      <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:26px;margin-top:6px;">Merchandise &amp; Marketing Designer</div>
+      <div style="font-size:12px;color:rgba(238,230,214,0.7);margin-top:6px;max-width:700px;">Select a canvas, set your text and colors, and export a production spec sheet.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:24px;align-items:stretch;">
+
+      <!-- LEFT: CONTROLS -->
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:18px;">
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <span class="mono" style="font-size:10px;color:#f5c518;font-weight:700;text-transform:uppercase;">1. Select Marketing Canvas</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="bbc-btn" onClick="{{ selectCards }}" style="{{ styleBtnCards }}">💳 Business Cards<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-DOC-01</div></button>
+            <button class="bbc-btn" onClick="{{ selectHats }}" style="{{ styleBtnHats }}">🧢 Crew Cap<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-CAP-05</div></button>
+            <button class="bbc-btn" onClick="{{ selectShirts }}" style="{{ styleBtnShirts }}">👕 Crew T-Shirt<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-TEE-12</div></button>
+            <button class="bbc-btn" onClick="{{ selectJackets }}" style="{{ styleBtnJackets }}">🧥 Bomber Jacket<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-JKT-09</div></button>
+            <button class="bbc-btn" onClick="{{ selectGazebo }}" style="{{ styleBtnGazebo }}">⛺ Event Gazebo<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-OUT-44</div></button>
+            <button class="bbc-btn" onClick="{{ selectCars }}" style="{{ styleBtnCars }}">🚚 Fleet Branding<div class="mono" style="font-size:8px;opacity:0.6;margin-top:4px;">MERCH-VEH-88</div></button>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;">
+          <span class="mono" style="font-size:10px;color:#f5c518;font-weight:700;text-transform:uppercase;">2. Print Details</span>
+          <label style="font-size:10px;color:rgba(238,230,214,0.75);">Slogan / Main Text</label>
+          <input type="text" value="{{ merchSlogan }}" onChange="{{ onSloganChange }}" maxlength="50" style="width:100%;box-sizing:border-box;background:#0e2148;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:9px 12px;color:#fff;font-size:12px;"/>
+          <label style="font-size:10px;color:rgba(238,230,214,0.75);">Contact / Region Metadata</label>
+          <input type="text" value="{{ merchContact }}" onChange="{{ onContactChange }}" maxlength="60" style="width:100%;box-sizing:border-box;background:#0e2148;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:9px 12px;color:#fff;font-size:12px;"/>
+          <label style="font-size:10px;color:rgba(238,230,214,0.75);">Print / Embroidery Placement</label>
+          <select value="{{ merchPlacement }}" onChange="{{ onPlacementChange }}" style="width:100%;box-sizing:border-box;background:#0e2148;border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:9px 12px;color:#fff;font-size:12px;">
+            <option value="Left Chest Pocket area">Left Chest Pocket area</option>
+            <option value="Centered Bold Front Panel">Centered Bold Front Panel</option>
+            <option value="Full Back Panel Sweep">Full Back Panel Sweep</option>
+            <option value="Full Perimeter Valance Printed">Full Perimeter Valance Printed</option>
+            <option value="Double Door Decal + Hood Spot">Double Door Decal + Hood Spot</option>
+            <option value="Front-and-Back Double Sided">Front-and-Back Double Sided</option>
+          </select>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(255,255,255,0.1);padding-top:14px;">
+          <span class="mono" style="font-size:10px;color:#f5c518;font-weight:700;text-transform:uppercase;">3. Color Scheme</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+              <div style="font-size:10px;color:rgba(238,230,214,0.75);margin-bottom:6px;">Fabric Color</div>
+              <div style="display:flex;gap:6px;">
+                <button class="bbc-btn" onClick="{{ setColorNavy }}" style="{{ swatchNavy }}"></button>
+                <button class="bbc-btn" onClick="{{ setColorOrange }}" style="{{ swatchOrange }}"></button>
+                <button class="bbc-btn" onClick="{{ setColorYellow }}" style="{{ swatchYellow }}"></button>
+                <button class="bbc-btn" onClick="{{ setColorBlack }}" style="{{ swatchBlack }}"></button>
+                <button class="bbc-btn" onClick="{{ setColorWhite }}" style="{{ swatchWhite }}"></button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(238,230,214,0.75);margin-bottom:6px;">Logo Accent</div>
+              <div style="display:flex;gap:6px;">
+                <button class="bbc-btn" onClick="{{ setAccentGold }}" style="{{ accentGold }}"></button>
+                <button class="bbc-btn" onClick="{{ setAccentNavy }}" style="{{ accentNavy }}"></button>
+                <button class="bbc-btn" onClick="{{ setAccentOrange }}" style="{{ accentOrange }}"></button>
+                <button class="bbc-btn" onClick="{{ setAccentWhite }}" style="{{ accentWhite }}"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: LIVE PREVIEW -->
+      <div style="background:#eee6d6;color:#0e2148;border-radius:16px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(14,33,72,0.12);padding-bottom:12px;">
+          <div>
+            <span class="mono" style="font-size:9px;color:#e8622c;background:rgba(232,98,44,0.1);padding:3px 10px;border-radius:999px;font-weight:700;text-transform:uppercase;">Live Spec Render</span>
+            <div class="mono" style="font-size:10px;color:rgba(14,33,72,0.5);margin-top:6px;">SKU: {{ selectedProductCode }} · {{ merchPlacement }}</div>
+          </div>
+        </div>
+
+        <div style="min-height:280px;display:flex;align-items:center;justify-content:center;padding:24px 8px;">
+
+          <sc-if value="{{ isCards }}">
+            <div style="{{ cardsPreviewStyle }}">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <svg viewBox="0 0 100 100" width="26" height="26"><rect x="5" y="5" width="90" height="90" rx="18" fill="{{ logoAccent }}"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ merchColor }}" stroke-width="10" stroke-linecap="round" fill="none"/></svg>
+                  <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;">Block Box</span>
+                </div>
+                <span class="mono" style="font-size:8px;opacity:0.7;text-transform:uppercase;">Depot Partner</span>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:17px;">{{ merchSlogan }}</div>
+                <div style="font-size:9px;opacity:0.6;margin-top:4px;">Authorized Installer Spec</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.15);padding-top:8px;" class="mono">
+                <span style="font-size:8px;">NODE 05 · CAPE WINELANDS</span><span style="font-size:8px;">{{ merchContact }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isHats }}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <div style="position:relative;width:180px;height:150px;">
+                <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:170px;height:30px;border-radius:999px;{{ capBg }}"></div>
+                <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:140px;height:105px;border-radius:70px 70px 0 0;{{ capBg }};display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;box-sizing:border-box;">
+                  <svg viewBox="0 0 100 100" width="34" height="34"><rect x="5" y="5" width="90" height="90" rx="18" fill="none" stroke="{{ logoAccent }}" stroke-width="8"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ logoAccent }}" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                  <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:8px;text-transform:uppercase;margin-top:6px;color:{{ logoAccent }};max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ merchSlogan }}</span>
+                </div>
+              </div>
+              <span class="mono" style="font-size:10px;color:rgba(14,33,72,0.4);text-transform:uppercase;">Embroidery Simulation</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isShirts }}">
+            <div style="position:relative;width:230px;height:230px;">
+              <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);width:190px;height:75px;border-radius:16px;{{ shirtBg }}"></div>
+              <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);width:130px;height:190px;border-radius:22px 22px 8px 8px;{{ shirtBg }}"></div>
+              <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:58px;height:28px;border-radius:999px;background:#eee6d6;border:2px solid rgba(0,0,0,0.1);"></div>
+              <div style="position:absolute;top:88px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;max-width:110px;">
+                <div style="width:44px;height:44px;background:#0e2148;border-radius:10px;padding:5px;box-sizing:border-box;"><svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ logoAccent }}" stroke-width="10" stroke-linecap="round" fill="none"/></svg></div>
+                <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;color:{{ textOnMerch }};">{{ merchSlogan }}</div>
+                <div class="mono" style="font-size:7px;opacity:0.6;color:{{ textOnMerch }};">{{ merchContact }}</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isJackets }}">
+            <div style="position:relative;width:230px;height:230px;">
+              <div style="position:absolute;top:36px;left:50%;transform:translateX(-50%);width:200px;height:100px;border-radius:999px;{{ jacketBg }}"></div>
+              <div style="position:absolute;top:28px;left:50%;transform:translateX(-50%);width:144px;height:180px;border-radius:22px;{{ jacketBg }}"></div>
+              <div style="position:absolute;top:24px;left:50%;transform:translateX(-50%);width:56px;height:14px;background:rgba(0,0,0,0.25);border-radius:999px;"></div>
+              <div style="position:absolute;top:70px;left:calc(50% - 45px);display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.3);padding:6px 8px;border-radius:8px;max-width:110px;">
+                <div style="width:18px;height:18px;background:#0e2148;border-radius:5px;flex:none;"><svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ logoAccent }}" stroke-width="12" stroke-linecap="round" fill="none"/></svg></div>
+                <span class="mono" style="font-size:7px;color:#fff;font-weight:700;text-transform:uppercase;">{{ merchSlogan }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isGazebo }}">
+            <div style="display:flex;flex-direction:column;align-items:center;">
+              <div style="width:0;height:0;border-left:100px solid transparent;border-right:100px solid transparent;border-bottom:72px solid {{ merchColor }};"></div>
+              <div style="width:200px;height:30px;{{ gazeboBg }};display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-sizing:border-box;border-bottom:2px solid rgba(0,0,0,0.1);">
+                <svg viewBox="0 0 100 100" width="16" height="16"><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ logoAccent }}" stroke-width="12" stroke-linecap="round" fill="none"/></svg>
+                <span style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:9px;text-transform:uppercase;color:{{ textOnMerch }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ merchSlogan }}</span>
+                <span class="mono" style="font-size:7px;opacity:0.7;color:{{ textOnMerch }};">NODE 05</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;width:180px;height:70px;">
+                <div style="width:10px;background:#d4d4d4;border:1px solid #aaa;"></div>
+                <div style="width:10px;background:#d4d4d4;border:1px solid #aaa;"></div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isCars }}">
+            <div style="position:relative;width:260px;height:150px;background:#e4e4e4;border-radius:16px;border:1px solid #ccc;padding:12px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;">
+              <div style="position:absolute;top:10px;left:24px;right:36px;height:40px;background:rgba(50,60,70,0.85);border-radius:14px 24px 0 0;"></div>
+              <div style="position:relative;margin-top:56px;background:{{ merchColor }};border-radius:8px 8px 0 0;padding:12px;display:flex;align-items:center;gap:10px;">
+                <div style="width:38px;height:38px;background:#0e2148;border-radius:8px;flex:none;padding:5px;box-sizing:border-box;"><svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="{{ logoAccent }}" stroke-width="12" stroke-linecap="round" fill="none"/></svg></div>
+                <div>
+                  <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;color:{{ textOnMerch }};">{{ merchSlogan }}</div>
+                  <div class="mono" style="font-size:8px;opacity:0.7;color:{{ textOnMerch }};">{{ merchContact }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <div style="border-top:1px solid rgba(14,33,72,0.12);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div style="font-size:11px;color:rgba(14,33,72,0.7);">Ready for manufacture.</div>
+          <div style="display:flex;gap:8px;">
+            <button class="bbc-btn" onClick="{{ downloadPdf }}" style="padding:10px 16px;background:#0e2148;color:#fff;border-radius:10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;">⬇ Download Spec Sheet</button>
+            <button class="bbc-btn" onClick="{{ submitDesign }}" style="padding:10px 16px;background:#e8622c;color:#fff;border-radius:10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;">{{ submitLabel }}</button>
+          </div>
+        </div>
+
+        <sc-if value="{{ syncSuccess }}">
+          <div style="position:absolute;top:16px;left:16px;right:16px;background:#1a8a4a;color:#fff;padding:12px 14px;border-radius:12px;font-size:11px;box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+            ✓ Designed &amp; saved — synchronized with Cape Winelands Depot Node 05.
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+const NAVY = '#0e2148', GOLD = '#f5c518', ORANGE = '#e8622c', BLACK = '#222222', WHITE = '#f9f6f0';
+
+class Component extends DCLogic {
+  state = {
+    copiedId: null,
+    selectedProductId: 'cards',
+    merchColor: NAVY,
+    logoAccent: GOLD,
+    merchSlogan: 'One block. Every profile. No waste.',
+    merchContact: '+27 82 000 0000 · info@blockbox.store',
+    merchPlacement: 'Front Center Print',
+    syncing: false,
+    syncSuccess: false
+  };
+
+  PRODUCT_CODES = { cards: 'MERCH-DOC-01', hats: 'MERCH-CAP-05', shirts: 'MERCH-TEE-12', jackets: 'MERCH-JKT-09', gazebo: 'MERCH-OUT-44', cars: 'MERCH-VEH-88' };
+  PRODUCT_DEFAULTS = {
+    cards: { slogan: 'One block. Every profile. No waste.', placement: 'Front-and-Back Double Sided', color: NAVY, accent: GOLD },
+    hats: { slogan: 'VALUE GUARANTEE', placement: 'Centered Bold Front Panel', color: ORANGE, accent: NAVY },
+    shirts: { slogan: 'No Packaging. No Waste.', placement: 'Left Chest Pocket area', color: NAVY, accent: GOLD },
+    jackets: { slogan: 'DEPOT OPERATOR 05', placement: 'Left Chest Pocket area', color: BLACK, accent: GOLD },
+    gazebo: { slogan: 'BLOCK BOX SUPPLY HUB', placement: 'Full Perimeter Valance Printed', color: NAVY, accent: GOLD },
+    cars: { slogan: 'DIRECT BULK CORNICES', placement: 'Double Door Decal + Hood Spot', color: NAVY, accent: GOLD }
+  };
+
+  copy(text, id) {
+    navigator.clipboard.writeText(text);
+    this.setState({ copiedId: id });
+    setTimeout(() => this.setState(s => s.copiedId === id ? { copiedId: null } : {}), 2000);
+  }
+
+  selectProduct(id) {
+    const d = this.PRODUCT_DEFAULTS[id];
+    this.setState({ selectedProductId: id, merchSlogan: d.slogan, merchPlacement: d.placement, merchColor: d.color, logoAccent: d.accent });
+  }
+
+  submitDesign() {
+    this.setState({ syncing: true });
+    setTimeout(() => {
+      this.setState({ syncing: false, syncSuccess: true });
+      setTimeout(() => this.setState({ syncSuccess: false }), 4000);
+    }, 1200);
+  }
+
+  downloadPdf() {
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const navy = [14, 33, 72], gold = [245, 197, 24], orange = [232, 98, 44], light = [249, 246, 240];
+      const s = this.state;
+      const name = { cards: 'Premium Corporate Business Cards', hats: 'Classic Embroidered Cap', shirts: '100% Cotton Crewneck T-Shirt', jackets: 'Premium Tech Bomber Jacket', gazebo: 'Heavy-Duty Event Gazebo', cars: 'Commercial Transit Car Branding' }[s.selectedProductId];
+      const code = this.PRODUCT_CODES[s.selectedProductId];
+
+      doc.setFillColor(...navy); doc.rect(0, 0, 210, 42, 'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(22);
+      doc.text('BLOCK BOX BRAND CENTER', 15, 16);
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(200,200,200);
+      doc.text('AUTOMATED CLIENT MERCHANDISE SPEC SHEET', 15, 24);
+      doc.text('Patent Pending · Node 05 Ingress Operations', 15, 29);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...gold);
+      doc.text('SPECIFICATION RENDER', 140, 16);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(255,255,255);
+      doc.text(`Specs #: BB-SPEC-${Math.floor(100000 + Math.random()*900000)}`, 140, 23);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 140, 28);
+
+      doc.setFillColor(...orange); doc.rect(0, 42, 210, 3, 'F');
+
+      doc.setTextColor(...navy); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text('1. SELECTED PRODUCT SPECIFICATIONS', 15, 58);
+      doc.setFillColor(...light); doc.rect(15, 63, 180, 50, 'F');
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text('Product Name:', 22, 70); doc.text('Product SKU Code:', 22, 76);
+      doc.text('Fabric Color:', 22, 82); doc.text('Slogan:', 22, 88);
+      doc.text('Logo Accent:', 22, 94); doc.text('Placement:', 22, 100);
+      doc.setFont('helvetica','normal');
+      doc.text(name, 90, 70); doc.text(code, 90, 76);
+      doc.text(s.merchColor, 90, 82); doc.text(`"${s.merchSlogan}"`, 90, 88);
+      doc.text(s.logoAccent, 90, 94); doc.text(s.merchPlacement, 90, 100);
+
+      doc.setTextColor(...navy); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text('2. CONTACT / NOTES', 15, 122);
+      doc.setDrawColor(220,225,230); doc.rect(15, 127, 180, 24);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+      doc.text(s.merchContact, 22, 134);
+      doc.text('Verify placement with Cape Winelands Depot Node 05 before batch manufacturing.', 22, 143);
+
+      doc.setDrawColor(...navy); doc.line(15, 236, 195, 236);
+      doc.setTextColor(110,110,110); doc.setFont('helvetica','oblique'); doc.setFontSize(8);
+      doc.text('Present this sheet at Node 05 to trigger production. Patent Pending.', 15, 242);
+
+      doc.save(`blockbox_merch_${s.selectedProductId}.pdf`);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to generate PDF — see console.');
+    }
+  }
+
+  renderVals() {
+    const s = this.state;
+    const isSel = id => s.selectedProductId === id;
+    const btnStyle = id => `padding:12px;border-radius:10px;text-align:left;font-size:11px;font-weight:600;box-sizing:border-box;${isSel(id) ? `background:${GOLD};color:${NAVY};font-weight:800;` : 'background:rgba(255,255,255,0.06);color:#fff;'}`;
+    const swatch = (hex, active) => `width:24px;height:24px;border-radius:999px;background:${hex};border:2px solid ${active ? '#f5c518' : 'rgba(255,255,255,0.25)'};${active ? 'transform:scale(1.12);' : ''}`;
+    const textOnMerch = (s.merchColor === WHITE || s.merchColor === GOLD) ? NAVY : WHITE;
+
+    return {
+      copiedLabelNavySvg: s.copiedId === 'navy-svg' ? 'Copied!' : '',
+      copiedLabelNavyUri: s.copiedId === 'navy-uri' ? 'Copied!' : '',
+      copiedLabelGoldSvg: s.copiedId === 'gold-svg' ? 'Copied!' : '',
+      copiedLabelGoldUri: s.copiedId === 'gold-uri' ? 'Copied!' : '',
+      copiedLabelOrangeSvg: s.copiedId === 'orange-svg' ? 'Copied!' : '',
+      copiedLabelOrangeUri: s.copiedId === 'orange-uri' ? 'Copied!' : '',
+      copiedLabelStencilSvg: s.copiedId === 'stencil-svg' ? 'Copied!' : '',
+      copiedLabelStencilUri: s.copiedId === 'stencil-uri' ? 'Copied!' : '',
+      copySvgNavy: () => this.copy(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#f5c518" stroke-width="8" stroke-linecap="round" fill="none"/></svg>`, 'navy-svg'),
+      copyUriNavy: () => this.copy(`data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#0e2148"/></svg>')}`, 'navy-uri'),
+      copySvgGold: () => this.copy(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#f5c518"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#0e2148" stroke-width="9" stroke-linecap="round" fill="none"/></svg>`, 'gold-svg'),
+      copyUriGold: () => this.copy(`data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#f5c518"/></svg>')}`, 'gold-uri'),
+      copySvgOrange: () => this.copy(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#e8622c"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#eee6d6" stroke-width="8" stroke-linecap="round" fill="none"/></svg>`, 'orange-svg'),
+      copyUriOrange: () => this.copy(`data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="#e8622c"/></svg>')}`, 'orange-uri'),
+      copySvgStencil: () => this.copy(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="none" stroke="#0e2148" stroke-width="5"/><path d="M20 50 Q35 32 50 50 T80 50" stroke="#0e2148" stroke-width="8" stroke-linecap="round" fill="none"/></svg>`, 'stencil-svg'),
+      copyUriStencil: () => this.copy(`data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="5" y="5" width="90" height="90" rx="18" fill="none" stroke="#0e2148" stroke-width="5"/></svg>')}`, 'stencil-uri'),
+
+      copiedLabelColorNavyHex: s.copiedId === 'c-navy-hex' ? ' ✓' : '',
+      copiedLabelColorNavyRgb: s.copiedId === 'c-navy-rgb' ? ' ✓' : '',
+      copiedLabelColorGoldHex: s.copiedId === 'c-gold-hex' ? ' ✓' : '',
+      copiedLabelColorGoldRgb: s.copiedId === 'c-gold-rgb' ? ' ✓' : '',
+      copiedLabelColorOrangeHex: s.copiedId === 'c-orange-hex' ? ' ✓' : '',
+      copiedLabelColorOrangeRgb: s.copiedId === 'c-orange-rgb' ? ' ✓' : '',
+      copiedLabelColorCreamHex: s.copiedId === 'c-cream-hex' ? ' ✓' : '',
+      copiedLabelColorCreamRgb: s.copiedId === 'c-cream-rgb' ? ' ✓' : '',
+      copyNavyHex: () => this.copy('#0e2148', 'c-navy-hex'),
+      copyNavyRgb: () => this.copy('rgb(14, 33, 72)', 'c-navy-rgb'),
+      copyGoldHex: () => this.copy('#f5c518', 'c-gold-hex'),
+      copyGoldRgb: () => this.copy('rgb(245, 197, 24)', 'c-gold-rgb'),
+      copyOrangeHex: () => this.copy('#e8622c', 'c-orange-hex'),
+      copyOrangeRgb: () => this.copy('rgb(232, 98, 44)', 'c-orange-rgb'),
+      copyCreamHex: () => this.copy('#eee6d6', 'c-cream-hex'),
+      copyCreamRgb: () => this.copy('rgb(238, 230, 214)', 'c-cream-rgb'),
+
+      copiedLabelDisplayFont: s.copiedId === 'font-display' ? ' ✓' : '',
+      copiedLabelBodyFont: s.copiedId === 'font-body' ? ' ✓' : '',
+      copiedLabelMonoFont: s.copiedId === 'font-mono' ? ' ✓' : '',
+      copyDisplayFont: () => this.copy(`font-family: 'Fredoka', sans-serif;`, 'font-display'),
+      copyBodyFont: () => this.copy(`font-family: 'Archivo', system-ui, sans-serif;`, 'font-body'),
+      copyMonoFont: () => this.copy(`font-family: 'DM Mono', monospace;`, 'font-mono'),
+
+      merchSlogan: s.merchSlogan,
+      merchContact: s.merchContact,
+      merchPlacement: s.merchPlacement,
+      merchColor: s.merchColor,
+      logoAccent: s.logoAccent,
+      selectedProductCode: this.PRODUCT_CODES[s.selectedProductId],
+      onSloganChange: e => this.setState({ merchSlogan: e.target.value }),
+      onContactChange: e => this.setState({ merchContact: e.target.value }),
+      onPlacementChange: e => this.setState({ merchPlacement: e.target.value }),
+
+      selectCards: () => this.selectProduct('cards'),
+      selectHats: () => this.selectProduct('hats'),
+      selectShirts: () => this.selectProduct('shirts'),
+      selectJackets: () => this.selectProduct('jackets'),
+      selectGazebo: () => this.selectProduct('gazebo'),
+      selectCars: () => this.selectProduct('cars'),
+      styleBtnCards: btnStyle('cards'), styleBtnHats: btnStyle('hats'), styleBtnShirts: btnStyle('shirts'),
+      styleBtnJackets: btnStyle('jackets'), styleBtnGazebo: btnStyle('gazebo'), styleBtnCars: btnStyle('cars'),
+
+      setColorNavy: () => this.setState({ merchColor: NAVY }), setColorOrange: () => this.setState({ merchColor: ORANGE }),
+      setColorYellow: () => this.setState({ merchColor: GOLD }), setColorBlack: () => this.setState({ merchColor: BLACK }),
+      setColorWhite: () => this.setState({ merchColor: WHITE }),
+      swatchNavy: swatch(NAVY, s.merchColor === NAVY), swatchOrange: swatch(ORANGE, s.merchColor === ORANGE),
+      swatchYellow: swatch(GOLD, s.merchColor === GOLD), swatchBlack: swatch(BLACK, s.merchColor === BLACK),
+      swatchWhite: swatch(WHITE, s.merchColor === WHITE),
+
+      setAccentGold: () => this.setState({ logoAccent: GOLD }), setAccentNavy: () => this.setState({ logoAccent: NAVY }),
+      setAccentOrange: () => this.setState({ logoAccent: ORANGE }), setAccentWhite: () => this.setState({ logoAccent: '#ffffff' }),
+      accentGold: swatch(GOLD, s.logoAccent === GOLD), accentNavy: swatch(NAVY, s.logoAccent === NAVY),
+      accentOrange: swatch(ORANGE, s.logoAccent === ORANGE), accentWhite: swatch('#ffffff', s.logoAccent === '#ffffff'),
+
+      isCards: isSel('cards'), isHats: isSel('hats'), isShirts: isSel('shirts'),
+      isJackets: isSel('jackets'), isGazebo: isSel('gazebo'), isCars: isSel('cars'),
+      textOnMerch,
+      cardsPreviewStyle: `width:100%;max-width:340px;aspect-ratio:1.75/1;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.25);padding:20px;display:flex;flex-direction:column;justify-content:space-between;box-sizing:border-box;background:${s.merchColor};color:${textOnMerch};`,
+      capBg: `background:${s.merchColor};`,
+      shirtBg: `background:${s.merchColor};`,
+      jacketBg: `background:${s.merchColor};`,
+      gazeboBg: `background:${s.merchColor};`,
+
+      submitLabel: s.syncing ? 'Syncing…' : '✦ Submit to Production',
+      submitDesign: () => this.submitDesign(),
+      downloadPdf: () => this.downloadPdf(),
+      syncSuccess: s.syncSuccess
+    };
+  }
+}
+
+</script>
+</body>
+</html>
